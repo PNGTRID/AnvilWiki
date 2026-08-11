@@ -10,8 +10,7 @@ import { z } from 'astro/zod';
  * e.g. "en/bosses/gelum".
  *
  * Frontmatter is validated at build time by the Zod schema below. A missing or
- * malformed field fails the build immediately — this is the core advantage over
- * the legacy `export const metadata = {}` approach.
+ * malformed field fails the build immediately.
  */
 const wiki = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/wiki' }),

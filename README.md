@@ -1,10 +1,10 @@
 # AnvilWiki ⚒️
 
 > 一个开源的、为 Cloudflare Pages 原生优化的游戏 wiki 站点模板。
-> 让新手零成本免费部署上线，性能优于传统 Next.js 方案。
+> 让新手零成本免费部署上线，性能好，适配 wiki 游戏站。
 >
 > An open-source game wiki site template, natively optimized for Cloudflare Pages.
-> Free to deploy, beginner-friendly, and faster than legacy Next.js solutions.
+> Free to deploy, beginner-friendly, fast, and built for game wikis.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Astro](https://img.shields.io/badge/Astro-5.x-FF5D01?logo=astro&logoColor=white)](https://astro.build)
@@ -18,7 +18,7 @@
 
 AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某款游戏（Roblox、Steam 新游等）的攻略内容站，通过 SEO 获取流量，通过广告变现。
 
-它解决了一个具体痛点：现有的 Next.js 游戏 wiki 模板因为 Cloudflare 适配器废弃，被迫降级到 Netlify（100GB/月带宽限制）；AnvilWiki 用 **Astro + Cloudflare Pages** 一举解决，享受**免费无限带宽 + 更高性能**。
+技术栈是 **Astro + Cloudflare Pages**：纯静态输出、零适配器、免费无限带宽、全球 CDN、零 JS 优先（首屏极快）。
 
 ### 核心特性
 
@@ -85,7 +85,7 @@ pnpm dev
 
 AnvilWiki is an **open-source game wiki site template** designed for building content sites around specific games (Roblox, Steam new releases, etc.), driving traffic via SEO, and monetizing with ads.
 
-It solves a specific pain point: existing Next.js game wiki templates had their Cloudflare adapter deprecated, forcing a downgrade to Netlify (100GB/month bandwidth limit). AnvilWiki uses **Astro + Cloudflare Pages** to solve this, enjoying **free unlimited bandwidth + better performance**.
+Built on **Astro + Cloudflare Pages**: pure static output, zero adapters, free unlimited bandwidth, global CDN, and zero-JS by default for blazing-fast first paint.
 
 ### Key Features
 

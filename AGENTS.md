@@ -4,7 +4,7 @@ Workspace instructions for ZCode agents working on AnvilWiki.
 
 ## Repository Purpose
 
-AnvilWiki is an **open-source (MIT) game wiki site template** built with **Astro 5 + Cloudflare Pages**. It exists because the common Next.js-based game wiki templates rely on `@cloudflare/next-on-pages`, which Cloudflare has deprecated — forcing a downgrade to Netlify (100GB/month bandwidth cap). AnvilWiki solves this with a static-first Astro setup that deploys to Cloudflare with zero adapters and enjoys free unlimited bandwidth.
+AnvilWiki is an **open-source (MIT) game wiki site template** built with **Astro 5 + Cloudflare Pages**. It is a static-first Astro setup that deploys to Cloudflare with zero adapters and enjoys free unlimited bandwidth.
 
 Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimited bandwidth) in ~30 minutes, with strong SEO, i18n, and ad-monetization built in.
 

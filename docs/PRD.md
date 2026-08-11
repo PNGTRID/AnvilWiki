@@ -12,7 +12,7 @@
 
 - [第 1 章 项目背景](#第-1-章-项目背景)
 - [第 2 章 目标与非目标](#第-2-章-目标与非目标)
-- [第 3 章 竞品分析与技术选型](#第-3-章-竞品分析与技术选型)
+- [第 3 章 技术选型](#第-3-章-技术选型)
 - [第 4 章 整体架构](#第-4-章-整体架构)
 - [第 5 章 目录结构](#第-5-章-目录结构)
 - [第 6 章 数据模型](#第-6-章-数据模型)
@@ -45,31 +45,22 @@
 - **批量换皮**——同一套框架服务几十上百个不同游戏，换游戏只改配置和内容，不动框架代码。
 - **免费部署 + 高带宽**——单个站流量周期 2-3 个月，流量峰值可能很高，需要免费且不限带宽的部署方案。
 
-### 1.2 现状与痛点（来自社区实战）
+### 1.2 设计目标
 
-当前主流方案（参考现有 Next.js wiki 模板实践）使用 **Next.js 15 App Router + @next/mdx + next-intl + Tailwind + shadcn/ui** 技术栈，属于典型的传统 Next.js 游戏站模板。
+AnvilWiki 围绕游戏 wiki 站点的技术特征，确立以下设计目标：
 
-该方案在工程上较为成熟，但在**部署环节**存在一个已被实测确认的硬伤：
+- **免费部署**：选择 Cloudflare Pages 作为默认部署平台，享受无限带宽 + 全球 CDN + 免费 SSL，单站流量再大也不产生费用。
+- **高性能**：静态优先架构，零 JS by default，目标 Lighthouse Performance ≥ 95，Core Web Vitals 全绿。
+- **SEO 工程化**：sitemap / JSON-LD / hreflang / robots / 内链结构全部由代码自动生成，填内容即生效。
+- **多语言**：as-needed 前缀策略（英文无前缀），文章单篇 fallback 英文不 404，列表不 fallback。
+- **批量换皮**：同一套框架服务几十上百个不同游戏，换游戏只改配置和内容，不动框架代码。
+- **新手友好**：连 GitHub 仓库自动部署，无需理解适配器/middleware，30 分钟内完成 fork → 换皮 → 部署上线全流程。
 
-| 痛点 | 说明 | 影响 |
-|---|---|---|
-| **Cloudflare 适配器废弃** | Next.js 部署到 Cloudflare Pages 的官方适配器 `@cloudflare/next-on-pages` 已被 Cloudflare 官方废弃（提示改用 OpenNext）。 | Next.js 项目部署到 Cloudflare 会踩坑（已在 Steal a Brainrot 站实测确认）。 |
-| **被迫降级到 Netlify** | 临时解是改用 Netlify（Next.js 原生零配置支持）。 | Netlify 免费版有 **100GB/月带宽限制**，而 Cloudflare 静态站是**无限带宽**。 |
-| **Netlify 配置坑** | 模板自带的 `netlify.toml` 若含 `NETLIFY_NEXT_PLUGIN_SKIP = "true"`，会让 next-intl middleware 失效，全站 404。 | 新手不易排查。 |
-| **Next.js 体积偏大** | 重框架，客户端 JS 体积大，Lighthouse 性能分有上限。 | 对 SEO 排名（Core Web Vitals）有负面影响。 |
+> AnvilWiki 选择纯静态输出，部署到 Cloudflare Pages 无需适配器，直接托管 `dist/` 静态文件即可。
 
-### 1.3 机会
+### 1.3 AnvilWiki 的定位
 
-游戏 wiki 的「纯内容站」本质，决定了它**天然适合静态优先方案**。如果换一个 Cloudflare 原生友好的静态优先框架，可以一举解决上述所有痛点：
-
-- 部署到 Cloudflare 零适配（纯静态输出，直接托管）。
-- 享受免费无限带宽 + 全球 CDN。
-- 性能更高（零 JS by default，Lighthouse 通常 95+）。
-- 新手部署更简单（连 GitHub 仓库自动部署，无需理解适配器/middleware）。
-
-### 1.4 AnvilWiki 的定位
-
-**AnvilWiki 是一个开源（MIT）的游戏 wiki 站点模板**，用 Astro + Cloudflare Pages 技术栈，让新手零成本免费部署上线，性能优于 Next.js 方案，且与现有工具生态（seoscout 内容生成、same.new UI 克隆、换皮提示词工作流）保持兼容。
+**AnvilWiki 是一个开源（MIT）的游戏 wiki 站点模板**，用 Astro + Cloudflare Pages 技术栈，让新手零成本免费部署上线，且与现有工具生态（seoscout 内容生成、same.new UI 克隆、换皮提示词工作流）保持兼容。
 
 > **命名由来**：Anvil（铁砧）——锻造装备的基础工具，寓意这是「锻造游戏 wiki 站的基础模板」。
 
@@ -106,33 +97,31 @@
 
 | 画像 | 特征 | AnvilWiki 如何服务 |
 |---|---|---|
-| **P1：有建站经验的开发者** | 有游戏 wiki 建站经验，会用 Cursor/Claude Code，想搭一套自己的站。 | 兼容现有工具生态（seoscout/same.new/换皮提示词），可直接替换传统 Next.js 模板。 |
+| **P1：有建站经验的开发者** | 有游戏 wiki 建站经验，会用 Cursor/Claude Code，想搭一套自己的站。 | 兼容现有工具生态（seoscout/same.new/换皮提示词），fork 即用，工具链无需切换。 |
 | **P2：独立开发者** | 有前端基础，想快速做内容站变现。 | 提供完整文档 + 示例 demo，fork 即用。 |
 | **P3：完全新手** | 无代码基础，只会按教程操作。 | README 写到截图级，Cloudflare Pages 零配置部署，5 分钟上线。 |
 
 ---
 
-## 第 3 章 竞品分析与技术选型
+## 第 3 章 技术选型
 
-### 3.1 竞品对比
+### 3.1 技术选型概览
 
-| 维度 | ① 传统 Next.js wiki 模板 | ② Astro Starlight | ③ VitePress | ④ **AnvilWiki** |
-|---|---|---|---|---|
-| 定位 | 游戏 wiki 模板 | 技术文档站模板 | 技术文档站模板 | **游戏 wiki 模板** |
-| 框架 | Next.js 15（重） | Astro（轻） | Vite + Vue（轻） | **Astro（轻）** |
-| 部署 | Netlify（100GB 限） | Cloudflare/Vercel/Netlify | Cloudflare/Vercel/Netlify | **Cloudflare Pages（无限）** |
-| Cloudflare 兼容 | ❌ 适配器废弃 | ✅ 原生 | ✅ 原生 | ✅ **原生** |
-| 内容管理 | @next/mdx 动态 import | Content Collections | Markdown | **Content Collections** |
-| 多语言 | next-intl as-needed | i18n（弱） | i18n（弱） | **Astro i18n as-needed** |
-| 首页模块 | JSON 驱动 8 模块 | 固定文档站结构 | 固定文档站结构 | **JSON 驱动 8 模块** |
-| SEO 工程化 | 完整（sitemap/JSON-LD/hreflang） | 基础 | 基础 | **完整（平移自①）** |
-| 广告系统 | Adsterra iframe 隔离 | ❌ 无 | ❌ 无 | **Adsterra iframe 隔离** |
-| 换皮流程 | 4 阶段 7 Part 提示词 | ❌ 无 | ❌ 无 | **4 阶段 7 Part 提示词** |
-| 游戏站适配 | ✅ 专为游戏站设计 | ❌ 通用文档站 | ❌ 通用文档站 | ✅ **专为游戏站设计** |
+AnvilWiki 面向「游戏 wiki 站点」这一特定场景，在框架、部署、内容、SEO 等关键维度上做了如下选型：
 
-**结论**：
-- ②③虽然技术栈更轻，但**不是为游戏 wiki 设计的**——缺首页 8 模块、广告系统、换皮流程、游戏站特定的 SEO（ItemList/Breadcrumb）。
-- ①是当前最成熟的游戏 wiki 模板，**AnvilWiki 直接平移其所有优秀设计**（三层架构、JSON 驱动首页、主题色变量、SEO 工程化、广告隔离、换皮流程），只把底层框架从 Next.js 换成 Astro，部署从 Netlify 换成 Cloudflare Pages。
+| 维度 | AnvilWiki 选型 | 选型理由 |
+|---|---|---|
+| 定位 | 游戏 wiki 模板 | 专为游戏 wiki 内容站设计，覆盖攻略/兑换码/tier list 等典型内容形态。 |
+| 框架 | Astro（轻量） | 静态优先、零 JS by default、岛屿架构（只在交互处 hydrate），Cloudflare 原生友好。 |
+| 部署 | Cloudflare Pages（无限带宽） | 免费无限带宽 + 全球 CDN + 免费 SSL + Git 自动部署，匹配游戏站 2-3 个月高流量周期。 |
+| Cloudflare 兼容 | 原生（纯静态，零适配器） | 纯静态输出，直接托管 `dist/`，无需任何 adapter。 |
+| 内容管理 | Content Collections | 类型安全 + Zod schema 校验，构建时发现字段错误。 |
+| 多语言 | Astro i18n as-needed | `prefixDefaultLocale: false` 实现默认语言（英文）无前缀。 |
+| 首页模块 | JSON 驱动 8 模块 | 文案与组件解耦，换游戏只改 JSON，组件零改动。 |
+| SEO 工程化 | 完整（sitemap/JSON-LD/hreflang/robots） | sitemap / JSON-LD（Organization/WebSite/Article/BreadcrumbList/ItemList/FAQPage）/ hreflang / robots 全部代码自动生成。 |
+| 广告系统 | Adsterra iframe 隔离 | 每个广告位独立 html，避免 atOptions 串号；环境变量驱动，新手填 key 即生效。 |
+| 换皮流程 | 4 阶段 7 Part 提示词 | 换游戏只改配置层 + 替换内容层，框架层不动。 |
+| 游戏站适配 | 专为游戏站设计 | 内置游戏站特定的 SEO（ItemList/Breadcrumb）+ 兑换码/tier list 专用 displayType。 |
 
 ### 3.2 技术栈选型
 
@@ -140,10 +129,10 @@
 |---|---|---|---|
 | **框架** | Astro | 5.x（最新稳定） | 静态优先，岛屿架构（只在交互处 hydrate），零 JS by default，Cloudflare 原生友好。 |
 | **输出模式** | `output: 'static'` | — | 纯静态 HTML，无需 adapter，直接部署 Cloudflare Pages。 |
-| **内容** | Content Layer API + `glob()` loader | 内置 | 类型安全，Zod schema 校验，构建时发现字段错误。取代传统模板的 `export const metadata = {}` 方案。 |
+| **内容** | Content Layer API + `glob()` loader | 内置 | 类型安全，Zod schema 校验，构建时发现字段错误。配合 YAML frontmatter，替代 `export const metadata = {}` 方案。 |
 | **MDX** | `@astrojs/mdx` | latest | 支持 MDX 组件，兼容 seoscout 输出。 |
-| **样式** | Tailwind CSS | 4.x | 原子化 CSS，零运行时，与传统模板 1:1 平移。 |
-| **主题色** | CSS 变量 `--nav-theme` + `--nav-theme-light` | — | 直接平移现有方案，换皮改 4 行。 |
+| **样式** | Tailwind CSS | 4.x | 原子化 CSS，零运行时，主题色与组件样式解耦。 |
+| **主题色** | CSS 变量 `--nav-theme` + `--nav-theme-light` | — | 换皮改 4 行（`:root` 2 行 + `.dark` 2 行），其他变量通过 `var()` 自动跟随。 |
 | **图标** | lucide（通过 `astro-icon` 或 inline SVG） | latest | 兼容「禁止 emoji」规则。 |
 | **UI 组件** | **纯 Astro 原生组件**（`.astro`） | — | 不引入 React/Vue runtime。FAQ 用原生 `<details>`，移动端菜单用 `<details>` 或极少 JS。 |
 | **i18n** | Astro 内置 i18n + 自建 fallback 封装 | — | `routing.prefixDefaultLocale: false` 实现 as-needed 前缀。 |
@@ -156,23 +145,20 @@
 
 ### 3.3 关键技术决策记录（ADR）
 
-#### ADR-001：为什么选 Astro 而不是 Next.js / SvelteKit / VitePress
+#### ADR-001：为什么选 Astro
 
-| 选项 | 优势 | 劣势 | 决策 |
-|---|---|---|---|
-| Next.js | 生态成熟，传统模板在用 | Cloudflare 适配器废弃，体积大 | ❌ |
-| SvelteKit | 轻、快 | 生态小，shadcn/ui 等组件库不兼容换皮流程 | ❌ |
-| VitePress | 极轻、快 | 为文档站设计，缺游戏站首页/广告/SEO 工程化 | ❌ |
-| **Astro** | 静态优先、零 JS、Cloudflare 原生、Content Collections、Vue/React/Svelte agnostic | 需要重写框架层 | ✅ |
+AnvilWiki 选择 Astro 作为底层框架，基于以下优势：
+
+- **静态优先**：默认输出纯静态 HTML，无需 adapter，直接部署 Cloudflare Pages。
+- **零 JS by default**：页面默认不携带 framework runtime，只在交互处按需 hydrate（岛屿架构），客户端体积小。
+- **Cloudflare 原生友好**：纯静态输出与 Cloudflare Pages 静态托管天然契合。
+- **Content Collections**：内置类型安全的内容管理机制，配合 Zod schema 实现构建时字段校验。
+- **框架 agnostic**：支持按需引入 React/Vue/Svelte island，未来扩展交互组件时不会被单一框架锁定。
+- **i18n 内置**：原生支持 `prefixDefaultLocale: false`（as-needed 前缀策略），符合多语言 URL 规划。
 
 #### ADR-002：为什么用纯 Astro 原生组件而不是 React islands
 
-传统 Next.js 模板用 shadcn/ui（React），但游戏 wiki 99% 的页面是静态展示（首页模块、文章页、列表页），只有极少数交互（FAQ 折叠、移动端菜单、广告关闭按钮）。
-
-引入 `@astrojs/react` 会带来：
-- 完整 React runtime（~40KB gzipped）
-- 抵消 Astro 零 JS 的核心优势
-- 增加 Cloudflare 构建时间和部署体积
+游戏 wiki 99% 的页面是静态展示（首页模块、文章页、列表页），只有极少数交互（FAQ 折叠、移动端菜单、广告关闭按钮）。纯 Astro 原生组件足够覆盖这些场景，无需引入 framework runtime。
 
 **决策**：交互组件用纯 Astro 原生方案——
 - FAQ 手风琴 → 原生 `<details>` + `<summary>`（零 JS）
@@ -184,25 +170,25 @@
 
 #### ADR-003：Cloudflare Pages vs Cloudflare Workers
 
-2026 年 Cloudflare 官方推荐新项目用 **Workers**（统一了 Pages 和 Workers）。但 AnvilWiki 选择 **Pages**，因为：
+Cloudflare 同时提供 Pages（静态托管）和 Workers（边缘计算）两种方案。AnvilWiki 是纯静态站点（无 SSR、无 API、无按需渲染），选择 **Pages** 的理由：
 
-| 维度 | Pages | Workers |
+| 维度 | AnvilWiki 需求 | Pages 是否满足 |
 |---|---|---|
-| 静态站适配 | ✅ 原生（`dist/` 直接托管） | ⚠️ 需配置 assets binding |
-| Git 自动部署 | ✅ 原生（连 GitHub 自动构建） | ⚠️ 需 Wrangler CI |
-| 新手友好 | ✅ UI 一键部署 | ⚠️ 需理解 Worker 概念 |
-| 无限带宽 | ✅ | ✅ |
-| 未来迁移 | 可平滑迁移到 Workers | — |
+| 托管 `dist/` 静态文件 | ✅ 需要 | ✅ 原生（`dist/` 直接托管） |
+| 连 GitHub 自动构建部署 | ✅ 需要（新手零配置） | ✅ 原生（连 GitHub 自动构建） |
+| UI 一键部署 | ✅ 需要（新手友好） | ✅ 原生 |
+| 无限带宽 + 全球 CDN | ✅ 需要 | ✅ |
+| 未来迁移到 Workers（若需要 SSR/API） | 可选 | ✅ 可平滑迁移 |
 
-**决策**：默认 Pages（新手友好），文档补充 Workers 部署方式（进阶用户）。
+**决策**：默认 Pages（新手友好、静态站原生适配），文档补充 Workers 部署方式（进阶用户、需要 SSR/API 时）。
 
 ---
 
 ## 第 4 章 整体架构
 
-### 4.1 三层架构（平移自传统模板，验证有效）
+### 4.1 三层架构
 
-AnvilWiki 保留传统 Next.js wiki 模板最优秀的设计——**三层分离**：
+AnvilWiki 采用**三层分离**的架构设计：
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -411,7 +397,7 @@ anvilwiki/
 
 ### 5.1 目录设计要点
 
-1. **`src/content/` 而非根目录 `content/`**：Astro 5 的 Content Layer API 用 `glob({ base: './src/content' })` 显式指定，比传统 Next.js 模板的根目录 `content/` 更规范（不污染项目根）。
+1. **`src/content/` 而非根目录 `content/`**：Astro 5 的 Content Layer API 用 `glob({ base: './src/content' })` 显式指定，内容统一收敛在 `src/` 下，不污染项目根目录。
 2. **`content.config.ts` 在根目录**：Astro 5 的约定（取代老的 `src/content/config.ts`）。
 3. **配置文件集中在 `src/config/`**：新手换皮时只关注这一个目录 + `globals.css` + `locales/`。
 4. **`scripts/` 提供脚手架**：降低新手写 MDX 的门槛。
@@ -450,9 +436,10 @@ const wiki = defineCollection({
 export const collections = { wiki };
 ```
 
-**对比传统模板的优势**：
-- 传统 Next.js 模板：`export const metadata = { title: "..." }`（JS export，无类型校验，字段拼错不报错）。
-- AnvilWiki：YAML frontmatter + Zod schema，**构建时校验**，字段缺失/类型错误立即 fail build。
+**Content Collections 的优势**：
+- YAML frontmatter + Zod schema，**构建时校验**，字段缺失/类型错误立即 fail build。
+- 类型安全的 entry（`{ id, data, body, render() }`），组件 props 自动推断，无需手动 cast。
+- frontmatter 与正文分离，MDX 作者只关心内容，字段规范由 schema 强约束。
 
 ### 6.2 文章示例
 
@@ -530,14 +517,14 @@ export const NAVIGATION_CONFIG: NavigationItem[] = [
 export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
 ```
 
-**关键约束**（与传统 Next.js 模板一致）：
+**关键约束**：
 - `key` 必须与 `src/content/<locale>/<key>/` 子目录名一一对应。
 - `key` 必须与 `locales/en.json` 的 `nav.<key>` 翻译键对应。
 - 改这一个文件 → 导航菜单 / 路由 / sitemap / 内容加载全部自动跟随。
 
 ### 6.5 首页 JSON schema（`src/locales/en.json` 的 `home` 命名空间）
 
-**完全平移传统 Next.js 模板的结构**（验证有效，不重复造轮子）：
+**首页 JSON 结构**（覆盖 hero / updates / start / popular / aboutGame / explore / faq / finalCta 八大区块）：
 
 ```json
 {
@@ -623,7 +610,7 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
 }
 ```
 
-**4 种 displayType**（平移自传统 Next.js 模板）：
+**4 种 displayType**（首页 explore 模块的渲染类型）：
 - `code-cards`：兑换码卡片（label + detail + badge）
 - `step-by-step`：步骤指引（label 是数字 1-6）
 - `tier-grid`：分级网格（label 是 S/A/B/C）
@@ -637,7 +624,7 @@ export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = 'en';
 ```
 
-**三处必须同步**（与传统 Next.js 模板一致，文档强调）：
+**三处必须同步**（新增/删除语言时务必同时改动）：
 1. `src/i18n/routing.ts` 的 `locales` 数组
 2. `src/locales/` 下实际存在的 JSON 文件
 3. `src/content/<locale>/` 下实际存在的目录（无内容也要建空目录）
@@ -656,7 +643,7 @@ export const defaultLocale: Locale = 'en';
 ```
 1. SiteHeader（导航栏）
 2. Hero（标题 + 描述 + stats + CTA 按钮 + 视频预览）
-3. VideoSection（YouTube 嵌入，紧跟 Hero）  ← 传统模板强调视频必须在 Hero 正下方
+3. VideoSection（YouTube 嵌入，紧跟 Hero）  ← 视频必须在 Hero 正下方（SEO + 用户停留时长）
 4. RecentUpdates + StartHere（两栏：最近更新 + 新手教程卡片）
 5. TrendingNow（横向滚动热门文章）
 6. AboutGame（游戏介绍 + 数据卡片）
@@ -681,7 +668,7 @@ export const defaultLocale: Locale = 'en';
 **空状态**：无文章时显示 `shared.noArticles` 文案。
 **SEO**：ItemList JSON-LD（每篇文章一个条目，含序号/URL/标题）。
 
-**关键约束（与传统模板一致）**：
+**关键约束**：
 - **列表不 fallback 英文**——该语言没翻译的文章不出现，列表为空就显示空状态。
 - 防止「列表显示 28 篇但只有 1 篇有 MDX」导致 sitemap 产生 27 个 404。
 
@@ -697,7 +684,7 @@ export const defaultLocale: Locale = 'en';
 - 相关文章：按 `tags` 匹配，最多 3 篇。
 **SEO**：Article + BreadcrumbList JSON-LD。
 
-**关键约束（与传统模板一致）**：
+**关键约束**：
 - **单篇文章 fallback 英文**——访问 `/ja/bosses/gelum` 若无日文版，显示英文版（metadata 也是英文），**不 404**。
 - 这与列表页的「不 fallback」看似矛盾，实则合理：列表保证准确性（不展示没有的内容），详情保证可达性（直接 URL 访问不 404）。
 
@@ -779,7 +766,7 @@ export const defaultLocale: Locale = 'en';
 
 ### 8.3 sitemap 生成规则（关键！）
 
-**核心原则（从实战踩坑总结）**：sitemap 必须只包含**实际存在的 MDX 文件**对应的 URL，**禁止**从硬编码数组生成。
+**核心原则**：sitemap 必须只包含**实际存在的 MDX 文件**对应的 URL，**禁止**从硬编码数组生成。
 
 ```typescript
 // src/pages/sitemap.xml.ts
@@ -864,7 +851,7 @@ export default defineConfig({
 });
 ```
 
-> **验证状态**：已确认 Astro 5 原生支持 `prefixDefaultLocale: false`（对应传统 Next.js 模板 next-intl 的 `localePrefix: 'as-needed'`）。原「待验证清单」第 1 条 ✅ 通过。
+> **验证状态**：已确认 Astro 5 原生支持 `prefixDefaultLocale: false`（即 as-needed 前缀策略，默认语言无前缀）。原「待验证清单」第 1 条 ✅ 通过。
 
 ### 9.2 路由实现
 
@@ -940,7 +927,7 @@ export function getUi(locale: Locale) {
 
 ## 第 10 章 广告系统
 
-### 10.1 设计原则（平移自实战经验）
+### 10.1 设计原则
 
 **核心**：iframe 隔离——每个广告位一个独立 html 文件，避免多个 `window.atOptions` 串号。
 
@@ -1055,7 +1042,7 @@ const adKey = import.meta.env.PUBLIC_AD_MOBILE_320X50;
 
 **换皮**（skinning）= 把通用 AnvilWiki 模板变成特定游戏的站点。
 
-AnvilWiki 完全保留传统 Next.js 模板的「4 阶段 7 Part」换皮方法论骨架（这套方法论经过实战验证，非常成熟），只把文件路径从 Next.js 结构改为 Astro 结构，提示词的「目标+参照+约束+禁止+验证」六要素不变。
+AnvilWiki 采用「4 阶段 7 Part」换皮方法论，提示词遵循「目标+参照+约束+禁止+验证」六要素结构，把换皮过程拆成可复现的步骤。
 
 ### 11.2 4 阶段 7 Part 流程
 
@@ -1072,24 +1059,26 @@ AnvilWiki 完全保留传统 Next.js 模板的「4 阶段 7 Part」换皮方法�
                     Part 7 Sitemap URL 检查与自动修复
 ```
 
-### 11.3 AnvilWiki vs 传统模板的路径对照
+### 11.3 换皮改动对象与 AnvilWiki 路径对照
 
-| 改动对象 | 传统 Next.js 模板路径 | AnvilWiki 路径（Astro） |
-|---|---|---|
-| 主题色 | `src/app/globals.css` | `src/styles/globals.css` |
-| 站点信息 | `src/locales/en.json` 的 `site` | `src/config/site.ts` + `locales/en.json` |
-| 导航配置 | `src/config/navigation.ts` | `src/config/navigation.ts`（一致） |
-| 语言列表 | `src/i18n/routing.ts` | `src/i18n/routing.ts`（一致） |
-| UI 文案 | `src/i18n/request.ts` + `src/locales/*.json` | `src/i18n/ui.ts` + `src/locales/*.json` |
-| 首页文案 | `src/locales/en.json` 的 `home` | `src/locales/en.json` 的 `home`（一致） |
-| 文章目录 | `content/<locale>/<type>/*.mdx` | `src/content/<locale>/<type>/*.mdx` |
-| 文章元数据 | `export const metadata = {...}`（JS export） | YAML frontmatter `---\n...---` |
-| sitemap | `src/app/sitemap.ts` | `src/pages/sitemap.xml.ts` |
-| robots | `src/app/robots.ts` | `src/pages/robots.txt.ts` |
-| 法律页 | `src/app/[locale]/*/page.tsx` | `src/pages/[locale]/*.astro` |
-| 首页路由 | `src/app/[locale]/page.tsx` + `HomePageClient.tsx` | `src/pages/[locale]/index.astro` + `components/home/` |
-| 列表/详情路由 | `src/app/[locale]/[...slug]/page.tsx` | `src/pages/[locale]/[...slug].astro` |
-| YouTube video ID | `HomePageClient.tsx` 的 `YOUTUBE_VIDEO_ID` 常量 | `src/config/site.ts` 或 `locales/en.json` 的 `home.hero.videoId` |
+下表列出换皮时需要改动的对象及其在 AnvilWiki 中的位置（`docs/migration-from-nextjs.md` 提供 Next.js 结构的迁移映射，供从 Next.js 项目迁移过来的用户参考）：
+
+| 改动对象 | AnvilWiki 路径（Astro） |
+|---|---|
+| 主题色 | `src/styles/globals.css` |
+| 站点信息 | `src/config/site.ts` + `locales/en.json` |
+| 导航配置 | `src/config/navigation.ts` |
+| 语言列表 | `src/i18n/routing.ts` |
+| UI 文案 | `src/i18n/ui.ts` + `src/locales/*.json` |
+| 首页文案 | `src/locales/en.json` 的 `home` 命名空间 |
+| 文章目录 | `src/content/<locale>/<type>/*.mdx` |
+| 文章元数据 | YAML frontmatter `---\n...---` |
+| sitemap | `src/pages/sitemap.xml.ts` |
+| robots | `src/pages/robots.txt.ts` |
+| 法律页 | `src/pages/[locale]/*.astro` |
+| 首页路由 | `src/pages/[locale]/index.astro` + `components/home/` |
+| 列表/详情路由 | `src/pages/[locale]/[...slug].astro` |
+| YouTube video ID | `src/config/site.ts` 或 `locales/en.json` 的 `home.hero.videoId` |
 
 ### 11.4 提示词骨架（每个 Part 都遵循）
 
@@ -1119,7 +1108,7 @@ AnvilWiki 完全保留传统 Next.js 模板的「4 阶段 7 Part」换皮方法�
 ```
 ```
 
-### 11.5 关键换皮约束（从实战踩坑总结）
+### 11.5 关键换皮约束
 
 | 约束 | 说明 |
 |---|---|
@@ -1135,11 +1124,11 @@ AnvilWiki 完全保留传统 Next.js 模板的「4 阶段 7 Part」换皮方法�
 
 ### 11.6 完整换皮提示词
 
-各 Part 的完整提示词原文放在 `docs/skinning.md`（开发阶段补全）。骨架与传统模板一致，仅路径替换。
+各 Part 的完整提示词原文放在 `docs/skinning.md`（开发阶段补全）。骨架统一遵循六要素结构，路径为 Astro 结构。
 
 ### 11.7 seoscout 内容适配
 
-seoscout 输出的 MDX 格式是 `export const metadata = {...}`（传统 Next.js 模板的 JS export 格式）。AnvilWiki 用 YAML frontmatter。
+seoscout 输出的 MDX 格式是 `export const metadata = {...}`（JS export 格式）。AnvilWiki 用 YAML frontmatter。
 
 **适配方案**：
 1. **脚本转换**（推荐）：`scripts/convert-from-seoscout.ts` 一行命令把 seoscout 输出转为 AnvilWiki 格式。
@@ -1323,7 +1312,7 @@ describe('sitemap', () => {
 | 首屏 HTML 体积（gzipped） | < 50KB | curl + gzip |
 | 构建时间（100 篇文章） | < 60s | CI 日志 |
 
-**对比目标**：所有指标全面优于传统 Next.js 模板（v1.0 交付时出基准对比报告）。
+**性能目标**：v1.0 交付时附带性能基准实测报告，验证上述目标全部达成。
 
 ---
 
@@ -1340,9 +1329,9 @@ describe('sitemap', () => {
 | **MVP-4**：主题换肤 | CSS 变量双变量（`--nav-theme` + `--nav-theme-light`）+ 暗色模式 + 主题切换器 | 改 globals.css 4 行整站变色 | 0.5 天 |
 | **MVP-5**：广告系统 | Adsterra iframe 隔离（6 种广告位）+ Sticky 320×50 + 环境变量驱动 + 关闭按钮 | 移动端 + 桌面端广告正常显示不串号 | 1 天 |
 | **MVP-6**：换皮文档 | 重写 4 阶段 7 Part 提示词（适配 Astro 路径）+ 新手 README + docs/ 全套 | 新手照 README 30 分钟内部署上线 | 1-2 天 |
-| **v1.0**：基准对比与发布 | AnvilWiki demo 站 + vs 传统 Next.js 模板的 Lighthouse/体积/带宽/部署体验对比报告 + GitHub Release | 性能/带宽/部署体验全面优于传统模板 | 1 天 |
+| **v1.0**：基准实测与发布 | AnvilWiki demo 站 + 性能基准实测报告（Lighthouse/体积/构建时间）+ GitHub Release | 性能目标全部达成，demo 站可访问 | 1 天 |
 
-**总计**：约 **7-10 天**可交付 v1.0（已有传统模板的完整设计可平移，不需从零设计）。
+**总计**：约 **7-10 天**可交付 v1.0。
 
 ### 14.2 v1.0 后的迭代方向
 
@@ -1357,18 +1346,18 @@ describe('sitemap', () => {
 
 ### 14.3 「待验证清单」回填计划
 
-来自《Astro+Cloudflare部署方案_理论待验证.md》的 9 条，在 MVP 阶段逐条验证：
+以下 9 项关键技术假设，在 MVP 阶段逐条验证：
 
 | # | 待验证项 | 验证里程碑 | 状态 |
 |---|---|---|---|
 | 1 | i18n as-needed 路由策略 | MVP-1 | ✅ 已确认（`prefixDefaultLocale: false`） |
 | 2 | 文章语言 fallback | MVP-1 | ⏳ 待实现验证 |
 | 3 | seoscout MDX 格式适配 | v1.1 | ⏳ 待实现验证 |
-| 4 | shadcn/ui 在 Astro 下的体验 | — | ❌ 决策不用（改纯 Astro 原生） |
+| 4 | shadcn/ui 在 Astro 下的体验 | — | ❌ 决策不用（采用纯 Astro 原生组件，见 ADR-002） |
 | 5 | 多语言 sitemap/hreflang 自动生成 | MVP-3 | ⏳ 待实现验证 |
 | 6 | 侧边栏动态导航 | MVP-2 | ⏳ 待实现验证 |
-| 7 | 主题色方案 1:1 平移 | MVP-4 | ⏳ 待实现验证 |
-| 8 | 性能基准（Astro vs Next.js） | v1.0 | ⏳ 待实测对比 |
+| 7 | 主题色方案落地 | MVP-4 | ⏳ 待实现验证 |
+| 8 | 性能基准实测 | v1.0 | ⏳ 待实测 |
 | 9 | 迁移成本核算 | v1.0 | ⏳ 待总结 |
 
 ---
@@ -1583,7 +1572,7 @@ PUBLIC_GA_ID=
 
 | 日期 | 版本 | 说明 |
 |---|---|---|
-| 2026-08-11 | v0.1 | PRD 初稿，基于现有 Next.js wiki 模板实践分析和《Astro+Cloudflare部署方案_理论待验证.md》整理；技术事实已通过 Astro 官方文档核实 |
+| 2026-08-11 | v0.1 | PRD 初稿；技术事实已通过 Astro 官方文档核实 |
 
 ---
 

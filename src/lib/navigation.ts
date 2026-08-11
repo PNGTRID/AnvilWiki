@@ -1,7 +1,7 @@
 /**
  * Dynamic sidebar navigation — scans actual MDX files to build nav groups.
  *
- * Equivalent to the legacy template's getDynamicNavigation(). No hardcoded lists:
+ * No hardcoded lists:
  * if you add an MDX file, it appears in the sidebar automatically.
  */
 

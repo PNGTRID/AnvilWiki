@@ -4,19 +4,6 @@
 
 ---
 
-## 为什么要迁移
-
-| 维度 | Next.js 模板 | AnvilWiki |
-|---|---|---|
-| Cloudflare 部署 | ❌ `@cloudflare/next-on-pages` 已废弃 | ✅ 原生静态，零适配 |
-| 免费带宽 | ⚠️ Netlify 100GB/月 | ✅ Cloudflare 无限 |
-| 性能 | 中（Next.js 体积大） | ✅ 高（零 JS by default） |
-| 配置复杂度 | 高（middleware/Turbopack 坑） | 低（纯静态） |
-
-> **建议**：不要为了迁移而迁移。如果你现在的站跑得好（流量 < 100GB/月），不用动。等真爆量或做**新站**时再用 AnvilWiki。
-
----
-
 ## 迁移路径对照表
 
 | Next.js 模板 | AnvilWiki | 迁移动作 |
@@ -76,12 +63,12 @@ date: 2026-08-11
 
 ### 3. 内容加载
 
-**Next.js**：`src/lib/content.ts` 用 webpack 动态 `import()` 加载 MDX，Turbopack 下有坑
-**AnvilWiki**：Content Collections API，构建时类型安全，无运行时坑
+**Next.js**：`src/lib/content.ts` 用 webpack 动态 `import()` 加载 MDX
+**AnvilWiki**：Content Collections API，构建时类型安全
 
 ### 4. 部署
 
-**Next.js**：需要 `next-on-pages`（废弃）或 OpenNext（复杂）
+**Next.js**：需要额外适配器
 **AnvilWiki**：`pnpm build` → `dist/` → Cloudflare 直连，零配置
 
 ---
@@ -129,17 +116,6 @@ pnpm dev    # 逐页访问确认正常
 ### Step 5 — 部署
 
 按 [部署指南](./deployment.md) 部署到 Cloudflare Pages。
-
----
-
-## 不要迁移的场景
-
-| 场景 | 建议 |
-|---|---|
-| 现有站流量 < 100GB/月、跑得好 | ❌ 不要迁移，重做成本 > 收益 |
-| 现有站用了大量 React 交互组件 | ⚠️ 评估交互能否用纯 Astro 重写 |
-| 做新站 | ✅ 直接用 AnvilWiki |
-| 现有站爆量（>100GB/月） | ✅ 值得迁移，省带宽费 |
 
 ---
 
