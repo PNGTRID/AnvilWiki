@@ -188,6 +188,7 @@ file public/images/hero.*
 - home.hero.description（含游戏名 + 核心卖点）
 - home.hero.primaryCta / secondaryCta / tertiaryCta
 - home.hero.stats（4 条游戏特色数据）
+- home.hero.videoId（YouTube 视频 ID，留空则首页不显示视频区块）
 - home.finalCta.title / description / primary / secondary
 
 ⚠️ 域名不要硬编码在组件里——所有绝对 URL 走 SITE_URL 环境变量。

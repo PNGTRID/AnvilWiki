@@ -9,9 +9,9 @@
 文章放在 `src/content/wiki/<locale>/<category>/<slug>.mdx`：
 
 ```
-src/content/wiki/en/bosses/gelum.mdx       → /bosses/gelum
-src/content/wiki/en/guides/beginner.mdx    → /guides/beginner
-src/content/wiki/ja/bosses/gelum.mdx       → /ja/bosses/gelum（日文版）
+src/content/wiki/en/bosses/gelum.mdx           → /bosses/gelum
+src/content/wiki/en/guides/beginner-guide.mdx  → /guides/beginner-guide
+src/content/wiki/ja/bosses/gelum.mdx           → /ja/bosses/gelum（日文版）
 ```
 
 > `category` 必须与 `src/config/navigation.ts` 的 `key` 一致。

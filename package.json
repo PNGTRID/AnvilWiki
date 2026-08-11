@@ -20,7 +20,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check-sitemap": "tsx scripts/check-sitemap.ts",
-    "new-post": "tsx scripts/new-post.ts"
+    "new-post": "tsx scripts/new-post.ts",
+    "convert-seoscout": "tsx scripts/convert-from-seoscout.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.14",

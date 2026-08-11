@@ -231,7 +231,7 @@ Astro 构建时（pnpm build）
   ├── 为每篇文章生成类型安全的 entry（{ id, data, body, render() }）
   ├── 多语言 fallback 封装：getEntryWithFallback(type, slug, locale)
   ├── 动态路由 src/pages/[locale]/[...slug].astro 预生成所有静态 HTML
-  ├── sitemap.xml.ts 扫描所有实际存在的 entry 生成 URL 列表
+  ├── @astrojs/sitemap 集成自动扫描所有页面生成 sitemap
   ├── JSON-LD 组件为每页注入结构化数据
   └── 输出到 dist/
          │
@@ -325,7 +325,7 @@ anvilwiki/
 │   │   │   ├── copyright.astro
 │   │   │   ├── about.astro
 │   │   │   └── 404.astro
-│   │   ├── sitemap.xml.ts        # ⭐ 动态 sitemap（扫描 Content Collection）
+│   │   ├── robots.txt.ts         # 动态 robots（sitemap 由 @astrojs/sitemap 集成自动生成）
 │   │   ├── robots.txt.ts         # 动态 robots
 │   │   └── ads/                  # 广告 iframe 占位（如需 SSR 注入 key，否则用 public/ads/*.html）
 │   ├── components/               # ⭐ 框架层：纯 Astro 组件
@@ -737,7 +737,7 @@ export const defaultLocale: Locale = 'en';
 | `BaseLayout.astro` | 全局 `<head>`：title 模板、description、og:*、twitter:*、Organization JSON-LD | 所有页面 |
 | `JsonLd.astro` | 通用 JSON-LD 注入（接受 data prop） | 按需 |
 | `lib/seo.ts` | JSON-LD 对象构造函数 | 各页面调用 |
-| `sitemap.xml.ts` | 动态 sitemap | `/sitemap.xml` |
+| `@astrojs/sitemap` 集成 | 自动生成 sitemap（含 i18n hreflang） | `/sitemap-index.xml` |
 | `robots.txt.ts` | 动态 robots（含 sitemap 链接） | `/robots.txt` |
 
 ### 8.2 各页面 SEO 产出
@@ -769,7 +769,7 @@ export const defaultLocale: Locale = 'en';
 **核心原则**：sitemap 必须只包含**实际存在的 MDX 文件**对应的 URL，**禁止**从硬编码数组生成。
 
 ```typescript
-// src/pages/sitemap.xml.ts
+// 原理示意（实际用 @astrojs/sitemap 集成，无需手写此文件）
 import { getCollection } from 'astro:content';
 import { SITE_URL } from 'astro:env';
 import { locales, defaultLocale } from '~/i18n/routing';
@@ -1073,7 +1073,7 @@ AnvilWiki 采用「4 阶段 7 Part」换皮方法论，提示词遵循「目标+
 | 首页文案 | `src/locales/en.json` 的 `home` 命名空间 |
 | 文章目录 | `src/content/<locale>/<type>/*.mdx` |
 | 文章元数据 | YAML frontmatter `---\n...---` |
-| sitemap | `src/pages/sitemap.xml.ts` |
+| sitemap | `@astrojs/sitemap` 集成（自动生成，无需手写） |
 | robots | `src/pages/robots.txt.ts` |
 | 法律页 | `src/pages/[locale]/*.astro` |
 | 首页路由 | `src/pages/[locale]/index.astro` + `components/home/` |

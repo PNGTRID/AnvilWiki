@@ -14,8 +14,8 @@
  *      <locale>/<category>/<slug>.mdx structure.
  *
  * Usage:
- *   pnpm tsx scripts/convert-from-seoscout.ts <input-dir> <output-dir>
- *   pnpm tsx scripts/convert-from-seoscout.ts requirements/articles src/content/wiki
+ *   pnpm convert-seoscout <input-dir> <output-dir>
+ *   pnpm convert-seoscout requirements/articles src/content/wiki
  *
  * Fields mapped:
  *   title        → title (required)
@@ -151,9 +151,9 @@ function main() {
   const [inputDir, outputDir] = process.argv.slice(2);
 
   if (!inputDir || !outputDir) {
-    console.error('Usage: pnpm tsx scripts/convert-from-seoscout.ts <input-dir> <output-dir>');
+    console.error('Usage: pnpm convert-seoscout <input-dir> <output-dir>');
     console.error(
-      'Example: pnpm tsx scripts/convert-from-seoscout.ts requirements/articles src/content/wiki',
+      'Example: pnpm convert-seoscout requirements/articles src/content/wiki',
     );
     process.exit(1);
   }
