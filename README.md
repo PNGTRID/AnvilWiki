@@ -38,7 +38,7 @@ AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某
 # 1. Fork 本仓库到你的 GitHub
 
 # 2. 本地克隆 & 安装
-git clone https://github.com/<你的用户名>/anvilwiki.git
+git clone https://github.com/PNGTRID/AnvilWiki.git
 cd anvilwiki
 pnpm install
 
@@ -111,7 +111,7 @@ It solves a specific pain point: existing Next.js game wiki templates had their 
 # 1. Fork this repo to your GitHub
 
 # 2. Clone & install locally
-git clone https://github.com/<your-username>/anvilwiki.git
+git clone https://github.com/PNGTRID/AnvilWiki.git
 cd anvilwiki
 pnpm install
 
@@ -136,6 +136,7 @@ See [`docs/deployment.md`](docs/deployment.md) for detailed guide.
 
 > **Status**: ✅ MVP complete — 27 pages build clean, typecheck passes (0 errors), Cloudflare-ready
 >
-> **Demo**: Coming soon at `anvilwiki.pages.dev`
+> **Demo**: Not deployed yet — run locally with `pnpm dev` after clone.
+> Deploy your own to Cloudflare Pages in 5 minutes (see [docs/deployment.md](docs/deployment.md)).
 >
 > 状态：✅ MVP 完成 — 27 页全部构建通过，typecheck 0 错误，可部署到 Cloudflare
