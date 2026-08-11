@@ -11,7 +11,13 @@
  */
 interface Props {
   /** Ad slot identifier, matches a file in public/ads/<type>.html. */
-  type: 'banner-320x50' | 'banner-300x250' | 'banner-728x90' | 'banner-468x60' | 'sidebar-160x600' | 'sidebar-160x300';
+  type:
+    | 'banner-320x50'
+    | 'banner-300x250'
+    | 'banner-728x90'
+    | 'banner-468x60'
+    | 'sidebar-160x600'
+    | 'sidebar-160x300';
   /** Load eagerly (above-the-fold ads) or lazily. */
   eager?: boolean;
   /** Extra classes for the wrapper. */
@@ -24,6 +30,7 @@ const match = type.match(/(\d+)x(\d+)/);
 const width = match ? parseInt(match[1], 10) : 300;
 const height = match ? parseInt(match[2], 10) : 50;
 ---
+
 <div class:list={['flex items-center justify-center', className]}>
   <iframe
     src={`/ads/${type}.html`}
@@ -33,6 +40,5 @@ const height = match ? parseInt(match[2], 10) : 50;
     loading={eager ? 'eager' : 'lazy'}
     style="border:none; margin:0; padding:0;"
     title={`advertisement ${type}`}
-    aria-hidden="true"
-  ></iframe>
+    aria-hidden="true"></iframe>
 </div>

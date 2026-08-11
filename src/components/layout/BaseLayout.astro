@@ -41,7 +41,12 @@ const {
 
 const fullTitle = title.includes(site.name) ? title : `${title} — ${site.name}`;
 const orgJsonLd = organizationJsonLd();
+
+// Optional analytics / verification (env-var gated — empty = not injected).
+const gaId = import.meta.env.PUBLIC_GA_ID as string | undefined;
+const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION as string | undefined;
 ---
+
 <!doctype html>
 <html lang={locale} class="scroll-smooth">
   <head>
@@ -58,7 +63,11 @@ const orgJsonLd = organizationJsonLd();
 
     {/* hreflang alternates */}
     {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
-    <link rel="alternate" hreflang="x-default" href={`${siteUrl}${Astro.url.pathname.replace(/^\/(en|ja)/, '')}`} />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={`${siteUrl}${Astro.url.pathname.replace(/^\/(en|ja)/, '')}`}
+    />
 
     {/* Open Graph */}
     <meta property="og:type" content={article ? 'article' : 'website'} />
@@ -77,6 +86,24 @@ const orgJsonLd = organizationJsonLd();
 
     {/* Theme color (browser chrome) */}
     <meta name="theme-color" content="hsl(var(--nav-theme))" />
+
+    {/* Google Search Console verification (optional) */}
+    {gscVerification && <meta name="google-site-verification" content={gscVerification} />}
+
+    {/* Google Analytics (optional, env-var gated) */}
+    {gaId && (
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+    )}
+    {gaId && (
+      <script is:inline define:vars={{ gaId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', gaId);
+      </script>
+    )}
 
     {/* JSON-LD: Organization (global) + any page-specific */}
     <JsonLd data={orgJsonLd} />

@@ -40,6 +40,7 @@ if (!LEGAL_PAGES.includes(legal)) {
 }
 const pageKey = legal as 'about' | 'privacy-policy' | 'terms-of-service' | 'copyright';
 ---
+
 <LegalPage locale={locale} title={titles[pageKey]} lastUpdated="2026-08-11">
   <LegalContent page={pageKey} />
 </LegalPage>

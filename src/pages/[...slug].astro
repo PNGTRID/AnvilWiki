@@ -65,5 +65,6 @@ if (view === 'not-found') {
   return new Response('Not Found', { status: 404 });
 }
 ---
+
 {view === 'list' && <ListPage locale={locale} category={category} />}
 {view === 'article' && resolved && <ArticlePage locale={locale} resolved={resolved} />}

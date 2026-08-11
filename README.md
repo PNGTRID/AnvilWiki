@@ -57,25 +57,25 @@ pnpm dev
 
 ### 文档导航
 
-| 文档 | 内容 |
-|---|---|
-| [docs/PRD.md](docs/PRD.md) | ⭐ **完整产品设计文档**（架构、数据模型、模块设计、路线图） |
-| [docs/deployment.md](docs/deployment.md) | Cloudflare Pages 部署详细指南 |
-| [docs/skinning.md](docs/skinning.md) | 换皮工作流（4 阶段 7 Part 提示词） |
-| [docs/content-format.md](docs/content-format.md) | MDX 文章格式规范 |
-| [docs/seo.md](docs/seo.md) | SEO 工程化说明 |
-| [docs/ads.md](docs/ads.md) | Adsterra 广告接入指南 |
-| [docs/migration-from-nextjs.md](docs/migration-from-nextjs.md) | 从 Next.js 模板迁移指南 |
+| 文档                                                           | 内容                                                        |
+| -------------------------------------------------------------- | ----------------------------------------------------------- |
+| [docs/PRD.md](docs/PRD.md)                                     | ⭐ **完整产品设计文档**（架构、数据模型、模块设计、路线图） |
+| [docs/deployment.md](docs/deployment.md)                       | Cloudflare Pages 部署详细指南                               |
+| [docs/skinning.md](docs/skinning.md)                           | 换皮工作流（4 阶段 7 Part 提示词）                          |
+| [docs/content-format.md](docs/content-format.md)               | MDX 文章格式规范                                            |
+| [docs/seo.md](docs/seo.md)                                     | SEO 工程化说明                                              |
+| [docs/ads.md](docs/ads.md)                                     | Adsterra 广告接入指南                                       |
+| [docs/migration-from-nextjs.md](docs/migration-from-nextjs.md) | 从 Next.js 模板迁移指南                                     |
 
 ### 技术栈
 
-| 技术 | 用途 |
-|---|---|
-| [Astro 5](https://astro.build) | 静态优先框架 |
-| [Content Collections](https://docs.astro.build/en/guides/content-collections/) | 类型安全的内容管理 |
-| [Tailwind CSS 4](https://tailwindcss.com) | 原子化样式 |
-| [Cloudflare Pages](https://pages.cloudflare.com) | 免费部署 + 无限带宽 |
-| [pnpm](https://pnpm.io) | 包管理 |
+| 技术                                                                           | 用途                |
+| ------------------------------------------------------------------------------ | ------------------- |
+| [Astro 5](https://astro.build)                                                 | 静态优先框架        |
+| [Content Collections](https://docs.astro.build/en/guides/content-collections/) | 类型安全的内容管理  |
+| [Tailwind CSS 4](https://tailwindcss.com)                                      | 原子化样式          |
+| [Cloudflare Pages](https://pages.cloudflare.com)                               | 免费部署 + 无限带宽 |
+| [pnpm](https://pnpm.io)                                                        | 包管理              |
 
 ---
 

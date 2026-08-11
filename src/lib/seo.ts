@@ -8,7 +8,7 @@
 import { siteUrl } from '~/config/site';
 import { site } from '~/config/site';
 import { locales, defaultLocale, type Locale } from '~/i18n/routing';
-import { absoluteUrl, detailPath, listPath } from './url';
+import { detailPath, listPath } from './url';
 
 /** Organization JSON-LD — injected globally in BaseLayout. */
 export function organizationJsonLd() {
@@ -51,16 +51,7 @@ export function articleJsonLd(opts: {
   slug: string;
   locale: Locale;
 }) {
-  const {
-    title,
-    description,
-    image,
-    datePublished,
-    dateModified,
-    category,
-    slug,
-    locale,
-  } = opts;
+  const { title, description, image, datePublished, dateModified, category, slug, locale } = opts;
   const coverUrl = image
     ? image.startsWith('http')
       ? image

@@ -48,22 +48,22 @@ git push -u origin main
 
 Cloudflare 会自动检测 Astro，但请确认以下设置：
 
-| 字段 | 值 |
-|---|---|
-| **Project name** | 你的站点名（如 `anvil-quest-wiki`） |
-| **Production branch** | `main` |
-| **Framework preset** | `Astro`（自动识别） |
-| **Build command** | `pnpm build` |
-| **Build output directory** | `dist` |
-| **Root directory** | `/`（留空） |
+| 字段                       | 值                                  |
+| -------------------------- | ----------------------------------- |
+| **Project name**           | 你的站点名（如 `anvil-quest-wiki`） |
+| **Production branch**      | `main`                              |
+| **Framework preset**       | `Astro`（自动识别）                 |
+| **Build command**          | `pnpm build`                        |
+| **Build output directory** | `dist`                              |
+| **Root directory**         | `/`（留空）                         |
 
 展开 **Environment variables (advanced)**，添加：
 
-| 变量名 | 值 | 说明 |
-|---|---|---|
-| `NODE_VERSION` | `20` | 确保 Node 版本 |
-| `SITE_URL` | `https://<project>.pages.dev` | **先用临时域名**，绑定自定义域名后再改 |
-| `PUBLIC_AD_MOBILE_320X50` | （你的 Adsterra key） | 可选，留空则不显示广告 |
+| 变量名                    | 值                            | 说明                                   |
+| ------------------------- | ----------------------------- | -------------------------------------- |
+| `NODE_VERSION`            | `20`                          | 确保 Node 版本                         |
+| `SITE_URL`                | `https://<project>.pages.dev` | **先用临时域名**，绑定自定义域名后再改 |
+| `PUBLIC_AD_MOBILE_320X50` | （你的 Adsterra key）         | 可选，留空则不显示广告                 |
 
 > ⚠️ **`SITE_URL` 很重要**——它影响 sitemap、og:image、robots.txt 里所有绝对 URL 的生成。先用 `https://<project>.pages.dev`，绑定域名后改回真实域名并重新部署。
 
@@ -91,11 +91,11 @@ Cloudflare 会自动检测 Astro，但请确认以下设置：
 
 推荐平台（按价格/易用度）：
 
-| 平台 | 后缀推荐 | 价格 |
-|---|---|---|
-| [Spaceship](https://spaceship.com) | `.wiki` / `.com` | ~十几元/年 |
-| [Cloudflare Registrar](https://dash.cloudflare.com/domains) | `.com` / `.net` | 成本价 |
-| [Namecheap](https://namecheap.com) | `.xyz` / `.com` | ~十几元/年 |
+| 平台                                                        | 后缀推荐         | 价格       |
+| ----------------------------------------------------------- | ---------------- | ---------- |
+| [Spaceship](https://spaceship.com)                          | `.wiki` / `.com` | ~十几元/年 |
+| [Cloudflare Registrar](https://dash.cloudflare.com/domains) | `.com` / `.net`  | 成本价     |
+| [Namecheap](https://namecheap.com)                          | `.xyz` / `.com`  | ~十几元/年 |
 
 > 游戏 wiki 站首选 `.wiki` 后缀——便宜、相关性高、SEO 友好。
 
@@ -162,12 +162,12 @@ wrangler pages deploy dist --project-name=<你的项目名>
 
 AnvilWiki 是纯静态站点（`dist/`），可以部署到任何静态托管：
 
-| 平台 | 配置 | 免费额度 |
-|---|---|---|
-| **Netlify** | Build: `pnpm build`，Publish: `dist` | 100GB/月带宽 |
-| **Vercel** | 自动识别 Astro | 100GB/月带宽 |
-| **GitHub Pages** | 需配 `base` | 100GB/月带宽 |
-| **自建 VPS** | `scp -r dist/ user@vps:/var/www/` + nginx | 看你的 VPS |
+| 平台             | 配置                                      | 免费额度     |
+| ---------------- | ----------------------------------------- | ------------ |
+| **Netlify**      | Build: `pnpm build`，Publish: `dist`      | 100GB/月带宽 |
+| **Vercel**       | 自动识别 Astro                            | 100GB/月带宽 |
+| **GitHub Pages** | 需配 `base`                               | 100GB/月带宽 |
+| **自建 VPS**     | `scp -r dist/ user@vps:/var/www/` + nginx | 看你的 VPS   |
 
 > ⚠️ 只有 Cloudflare Pages 是**无限带宽**。其他平台超量后要么限速要么收费。这也是 AnvilWiki 默认推荐 Cloudflare 的原因。
 
@@ -177,19 +177,19 @@ AnvilWiki 是纯静态站点（`dist/`），可以部署到任何静态托管：
 
 在 Pages → **Settings** → **Environment variables** 配置。支持 Production / Preview 两套。
 
-| 变量 | 必填 | 说明 |
-|---|---|---|
-| `SITE_URL` | ✅ | 站点绝对 URL（无尾斜杠），影响 sitemap/og:image/robots |
-| `NODE_VERSION` | ✅ | 固定 `20` |
-| `PUBLIC_AD_MOBILE_320X50` | 可选 | Adsterra 320×50 Sticky 广告 key |
-| `PUBLIC_AD_SIDEBAR_160X600` | 可选 | 侧边栏竖幅 key |
-| `PUBLIC_AD_SIDEBAR_160X300` | 可选 | 侧边栏半高 key |
-| `PUBLIC_AD_BANNER_728X90` | 可选 | 大横幅 key |
-| `PUBLIC_AD_BANNER_300X250` | 可选 | 中等矩形 key |
-| `PUBLIC_AD_BANNER_468X60` | 可选 | 经典横幅 key |
-| `PUBLIC_AD_NATIVE_BANNER` | 可选 | Native banner key |
-| `PUBLIC_GOOGLE_ADSENSE_ID` | 可选 | AdSense 自动广告 ID |
-| `PUBLIC_GA_ID` | 可选 | Google Analytics ID |
+| 变量                        | 必填 | 说明                                                   |
+| --------------------------- | ---- | ------------------------------------------------------ |
+| `SITE_URL`                  | ✅   | 站点绝对 URL（无尾斜杠），影响 sitemap/og:image/robots |
+| `NODE_VERSION`              | ✅   | 固定 `20`                                              |
+| `PUBLIC_AD_MOBILE_320X50`   | 可选 | Adsterra 320×50 Sticky 广告 key                        |
+| `PUBLIC_AD_SIDEBAR_160X600` | 可选 | 侧边栏竖幅 key                                         |
+| `PUBLIC_AD_SIDEBAR_160X300` | 可选 | 侧边栏半高 key                                         |
+| `PUBLIC_AD_BANNER_728X90`   | 可选 | 大横幅 key                                             |
+| `PUBLIC_AD_BANNER_300X250`  | 可选 | 中等矩形 key                                           |
+| `PUBLIC_AD_BANNER_468X60`   | 可选 | 经典横幅 key                                           |
+| `PUBLIC_AD_NATIVE_BANNER`   | 可选 | Native banner key                                      |
+| `PUBLIC_GOOGLE_ADSENSE_ID`  | 可选 | AdSense 自动广告 ID                                    |
+| `PUBLIC_GA_ID`              | 可选 | Google Analytics ID                                    |
 
 完整清单见 [`.env.example`](../.env.example)。所有广告变量**留空时对应广告位不渲染**——新手可以先不配广告把站上线，后续再加。
 
@@ -253,6 +253,7 @@ A: Cloudflare Pages 的 Node 版本可能不对。确认环境变量 `NODE_VERSI
 ### Q: 构建失败，报 `ERR_PNPM_IGNORED_BUILDS`
 
 A: pnpm 版本太新，需要 `pnpm-workspace.yaml` 里的 `allowBuilds` 配置（仓库已自带）。确认文件存在：
+
 ```bash
 cat pnpm-workspace.yaml
 # 应该看到:
@@ -268,6 +269,7 @@ A: 检查 Cloudflare 的 **Build output directory** 是不是 `dist`（不是 `p
 ### Q: 图片不显示 / og:image 抓不到
 
 A: og:image 必须是**绝对路径**。确认：
+
 1. `SITE_URL` 环境变量已配为最终域名
 2. `public/images/hero.webp`（或你的封面图）确实存在且不是 0 字节占位文件
 3. 用 `curl` 检查：`curl -I https://<你的域名>/images/hero.webp` 应返回 200

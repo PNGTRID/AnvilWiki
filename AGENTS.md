@@ -17,19 +17,19 @@ Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimi
 
 ## Intended Tech Stack (verified, as of 2026-08-11)
 
-| Layer | Choice | Notes |
-|---|---|---|
-| Framework | Astro 5 (`output: 'static'`) | Pure static, **no adapter** (unlike Next.js) |
-| Content | Content Layer API + `glob()` loader, Zod schema | Defined in root `content.config.ts`. Base dir is `./src/content/wiki` (subdirectory required to avoid Astro's legacy auto-collection of `src/content/<locale>/` folders). |
-| MDX | `@astrojs/mdx` ^4.3.x | **mdx 3.x fails with Astro 5.18** (`./jsx/renderer.js` not in exports). mdx 4.x pairs with astro 5.x; mdx 7.x needs astro 7.x. |
-| Styles | Tailwind CSS 3 + `@astrojs/tailwind` | Theme via CSS variables mapped in `tailwind.config.mjs` (shadcn-style tokens). |
-| Icons | `astro-icon` + `@iconify-json/lucide` | Use `lucide:` prefix on every icon name. `reddit` does NOT exist in lucide (use `globe`). |
-| UI | **Pure Astro native components (`.astro`)** | Do NOT introduce React/Vue/Svelte runtime. Use `<details>`/`<dialog>` + minimal vanilla JS for interactivity. |
-| i18n | Astro built-in (`prefixDefaultLocale: false`) | English has no `/en` prefix, others prefixed. Spread `[...locales]` into config — Astro's `Locales` type rejects readonly tuples. |
-| Sitemap | `@astrojs/sitemap` | Auto-generates hreflang alternates from the i18n config. |
-| Deploy | Cloudflare Pages | `pnpm build` → `dist/` |
-| Pkg manager | pnpm 11 | **`allowBuilds:` in `pnpm-workspace.yaml`** (NOT `onlyBuiltDependencies` — that's pnpm 10, dead in v11). esbuild + sharp need build approval or `astro build` fails during its pre-build dep check. |
-| Node | 20 LTS | |
+| Layer       | Choice                                          | Notes                                                                                                                                                                                               |
+| ----------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework   | Astro 5 (`output: 'static'`)                    | Pure static, **no adapter** (unlike Next.js)                                                                                                                                                        |
+| Content     | Content Layer API + `glob()` loader, Zod schema | Defined in root `content.config.ts`. Base dir is `./src/content/wiki` (subdirectory required to avoid Astro's legacy auto-collection of `src/content/<locale>/` folders).                           |
+| MDX         | `@astrojs/mdx` ^4.3.x                           | **mdx 3.x fails with Astro 5.18** (`./jsx/renderer.js` not in exports). mdx 4.x pairs with astro 5.x; mdx 7.x needs astro 7.x.                                                                      |
+| Styles      | Tailwind CSS 3 + `@astrojs/tailwind`            | Theme via CSS variables mapped in `tailwind.config.mjs` (shadcn-style tokens).                                                                                                                      |
+| Icons       | `astro-icon` + `@iconify-json/lucide`           | Use `lucide:` prefix on every icon name. `reddit` does NOT exist in lucide (use `globe`).                                                                                                           |
+| UI          | **Pure Astro native components (`.astro`)**     | Do NOT introduce React/Vue/Svelte runtime. Use `<details>`/`<dialog>` + minimal vanilla JS for interactivity.                                                                                       |
+| i18n        | Astro built-in (`prefixDefaultLocale: false`)   | English has no `/en` prefix, others prefixed. Spread `[...locales]` into config — Astro's `Locales` type rejects readonly tuples.                                                                   |
+| Sitemap     | `@astrojs/sitemap`                              | Auto-generates hreflang alternates from the i18n config.                                                                                                                                            |
+| Deploy      | Cloudflare Pages                                | `pnpm build` → `dist/`                                                                                                                                                                              |
+| Pkg manager | pnpm 11                                         | **`allowBuilds:` in `pnpm-workspace.yaml`** (NOT `onlyBuiltDependencies` — that's pnpm 10, dead in v11). esbuild + sharp need build approval or `astro build` fails during its pre-build dep check. |
+| Node        | 20 LTS                                          |                                                                                                                                                                                                     |
 
 ## Architecture: Three-Layer Separation (critical)
 
@@ -102,4 +102,3 @@ These behaviors are NOT obvious from the docs and cost significant debugging tim
 5. **`src/content/<locale>/` triggers legacy auto-collection.** If MDX files sit directly under `src/content/<locale>/`, Astro 5 auto-generates a collection named after the locale and prints a deprecation warning. The fix: put content under a named collection dir like `src/content/wiki/<locale>/`, with `glob({ base: './src/content/wiki' })`.
 
 6. **`prefixDefaultLocale: false` means `/` is the English homepage.** Do NOT redirect `/` to `/en/`. The English homepage lives at `src/pages/index.astro`; non-default locales live at `src/pages/[locale]/index.astro`. Similarly, English content routes are at `src/pages/[...slug].astro` (no locale segment), other locales at `src/pages/[locale]/[...slug].astro`.
-

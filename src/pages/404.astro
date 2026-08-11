@@ -8,12 +8,15 @@ import { Icon } from 'astro-icon/components';
 import { site } from '~/config/site';
 import { defaultLocale } from '~/i18n/routing';
 ---
+
 <BaseLayout
   locale={defaultLocale}
   title="404 - Page Not Found"
   description="The page you are looking for does not exist."
 >
-  <div class="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-4 text-center">
+  <div
+    class="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-4 text-center"
+  >
     <Icon name="lucide:compass" class="h-16 w-16 text-nav" />
     <h1 class="mt-6 text-6xl font-extrabold">404</h1>
     <p class="mt-2 text-lg font-semibold">Page Not Found</p>

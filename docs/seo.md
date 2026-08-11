@@ -8,22 +8,22 @@
 
 ## 自动生成的 SEO 要素
 
-| 要素 | 哪里生成 | 数据来源 |
-|---|---|---|
-| `<title>` | `BaseLayout.astro` | 各页面的 title prop |
-| `<meta description>` | `BaseLayout.astro` | 各页面的 description prop |
-| `og:title` / `og:description` / `og:image` | `BaseLayout.astro` | 同上 + image prop |
-| `twitter:card` | `BaseLayout.astro` | 自动 summary_large_image（文章页）或 summary |
-| Organization JSON-LD | `BaseLayout.astro`（全站） | `src/config/site.ts` |
-| WebSite JSON-LD | 首页 `index.astro` | `site.ts` |
-| Article JSON-LD | `ArticlePage.astro` | 文章 frontmatter |
-| BreadcrumbList JSON-LD | `ArticlePage.astro` | 文章 + 分类 |
-| ItemList JSON-LD | `ListPage.astro` | 分类下所有文章 |
-| FAQPage JSON-LD | 首页（可选） | `en.json` 的 `home.faq.items` |
-| hreflang alternates | `BaseLayout.astro` | 遍历 `routing.locales` |
-| sitemap.xml | `@astrojs/sitemap` | 自动扫描所有页面 |
-| robots.txt | `src/pages/robots.txt.ts` | 含 sitemap 链接 |
-| canonical URL | `BaseLayout.astro` | `SITE_URL` + 当前路径 |
+| 要素                                       | 哪里生成                   | 数据来源                                     |
+| ------------------------------------------ | -------------------------- | -------------------------------------------- |
+| `<title>`                                  | `BaseLayout.astro`         | 各页面的 title prop                          |
+| `<meta description>`                       | `BaseLayout.astro`         | 各页面的 description prop                    |
+| `og:title` / `og:description` / `og:image` | `BaseLayout.astro`         | 同上 + image prop                            |
+| `twitter:card`                             | `BaseLayout.astro`         | 自动 summary_large_image（文章页）或 summary |
+| Organization JSON-LD                       | `BaseLayout.astro`（全站） | `src/config/site.ts`                         |
+| WebSite JSON-LD                            | 首页 `index.astro`         | `site.ts`                                    |
+| Article JSON-LD                            | `ArticlePage.astro`        | 文章 frontmatter                             |
+| BreadcrumbList JSON-LD                     | `ArticlePage.astro`        | 文章 + 分类                                  |
+| ItemList JSON-LD                           | `ListPage.astro`           | 分类下所有文章                               |
+| FAQPage JSON-LD                            | 首页（可选）               | `en.json` 的 `home.faq.items`                |
+| hreflang alternates                        | `BaseLayout.astro`         | 遍历 `routing.locales`                       |
+| sitemap.xml                                | `@astrojs/sitemap`         | 自动扫描所有页面                             |
+| robots.txt                                 | `src/pages/robots.txt.ts`  | 含 sitemap 链接                              |
+| canonical URL                              | `BaseLayout.astro`         | `SITE_URL` + 当前路径                        |
 
 ---
 

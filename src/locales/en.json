@@ -54,12 +54,7 @@
       "eyebrow": "Fan-Made Community Wiki",
       "title": "Anvil Quest Wiki",
       "description": "Your complete guide to Anvil Quest. Boss strategies, active codes, item locations, tier lists, and everything you need to master the forge.",
-      "stats": [
-        "28 Bosses Covered",
-        "150+ Items Documented",
-        "Daily Code Updates",
-        "4 Languages"
-      ],
+      "stats": ["28 Bosses Covered", "150+ Items Documented", "Daily Code Updates", "4 Languages"],
       "primaryCta": "Play Anvil Quest",
       "secondaryCta": "Browse Guides",
       "tertiaryCta": "Latest Codes",

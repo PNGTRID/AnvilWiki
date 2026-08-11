@@ -628,21 +628,21 @@ echo "检查完成"
 
 ## 路径速查表
 
-| 改什么 | 改哪个文件 |
-|---|---|
-| 游戏名/域名/社交链接 | `src/config/site.ts` |
-| 导航分类（bosses/guides/codes...） | `src/config/navigation.ts` |
-| 支持的语言列表 | `src/i18n/routing.ts` + `src/i18n/ui.ts` |
-| 主题色 | `src/styles/globals.css`（4 行） |
-| 首页所有文案 | `src/locales/en.json` 的 `home` 命名空间 |
-| 导航栏文字 | `src/locales/en.json` 的 `nav` 对象 |
-| 列表页标题 | `src/locales/en.json` 的 `overview` 对象 |
-| 页脚 | `src/locales/en.json` 的 `footer` 对象 |
-| 文章内容 | `src/content/wiki/<locale>/<category>/*.mdx` |
-| favicon | `public/favicon*` + `public/apple-touch-icon*` + `public/android-chrome-*` |
-| Hero 图 | `public/images/hero.webp` |
-| PWA | `public/manifest.json` |
-| 广告 key | Cloudflare 环境变量 `PUBLIC_AD_*` |
+| 改什么                             | 改哪个文件                                                                 |
+| ---------------------------------- | -------------------------------------------------------------------------- |
+| 游戏名/域名/社交链接               | `src/config/site.ts`                                                       |
+| 导航分类（bosses/guides/codes...） | `src/config/navigation.ts`                                                 |
+| 支持的语言列表                     | `src/i18n/routing.ts` + `src/i18n/ui.ts`                                   |
+| 主题色                             | `src/styles/globals.css`（4 行）                                           |
+| 首页所有文案                       | `src/locales/en.json` 的 `home` 命名空间                                   |
+| 导航栏文字                         | `src/locales/en.json` 的 `nav` 对象                                        |
+| 列表页标题                         | `src/locales/en.json` 的 `overview` 对象                                   |
+| 页脚                               | `src/locales/en.json` 的 `footer` 对象                                     |
+| 文章内容                           | `src/content/wiki/<locale>/<category>/*.mdx`                               |
+| favicon                            | `public/favicon*` + `public/apple-touch-icon*` + `public/android-chrome-*` |
+| Hero 图                            | `public/images/hero.webp`                                                  |
+| PWA                                | `public/manifest.json`                                                     |
+| 广告 key                           | Cloudflare 环境变量 `PUBLIC_AD_*`                                          |
 
 ---
 

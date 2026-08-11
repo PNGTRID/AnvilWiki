@@ -8,13 +8,16 @@ interface Props {
 }
 const { highlights } = Astro.props;
 ---
+
 <ol class="space-y-2">
-  {highlights.map((h) => (
-    <li class="flex items-start gap-3 rounded-md border bg-card p-3">
-      <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-nav text-xs font-bold text-white">
-        {h.label}
-      </span>
-      <p class="pt-0.5 text-sm text-muted-foreground">{h.detail}</p>
-    </li>
-  ))}
+  {
+    highlights.map((h) => (
+      <li class="flex items-start gap-3 rounded-md border bg-card p-3">
+        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-nav text-xs font-bold text-white">
+          {h.label}
+        </span>
+        <p class="pt-0.5 text-sm text-muted-foreground">{h.detail}</p>
+      </li>
+    ))
+  }
 </ol>

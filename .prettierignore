@@ -1,0 +1,12 @@
+# Design docs with embedded code blocks that confuse the markdown parser
+docs/PRD.md
+
+# Build output
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Lockfiles (auto-generated)
+pnpm-lock.yaml

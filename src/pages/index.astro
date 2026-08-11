@@ -15,10 +15,11 @@ import { getUi } from '~/i18n/ui';
 
 const locale = defaultLocale;
 const ui = getUi(locale);
-const home = (ui.home as Record<string, any>);
+const home = ui.home as Record<string, any>;
 const jsonLd = [
   websiteJsonLd(locale),
   ...(home.faq?.items?.length ? [faqPageJsonLd(home.faq.items)] : []),
 ];
 ---
+
 <HomePage locale={locale} jsonLd={jsonLd} />

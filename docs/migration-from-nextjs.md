@@ -6,21 +6,21 @@
 
 ## 迁移路径对照表
 
-| Next.js 模板 | AnvilWiki | 迁移动作 |
-|---|---|---|
-| `src/app/globals.css` | `src/styles/globals.css` | 直接复制主题色 4 行 |
-| `src/app/[locale]/page.tsx` | `src/pages/[locale]/index.astro` + `HomePage.astro` | 数据保留，渲染层重写 |
-| `src/app/[locale]/[...slug]/page.tsx` | `src/pages/[...slug].astro` + `[locale]/[...slug].astro` | 逻辑平移到 Astro |
-| `src/app/sitemap.ts` | `@astrojs/sitemap`（自动） | 删手写代码，用集成 |
-| `src/app/robots.ts` | `src/pages/robots.txt.ts` | 简单平移 |
-| `src/i18n/routing.ts` | `src/i18n/routing.ts` | **几乎一致**，删 `localePrefix` 字段 |
-| `src/i18n/request.ts` | `src/i18n/ui.ts` | deepMerge 逻辑平移 |
-| `src/config/navigation.ts` | `src/config/navigation.ts` | **完全一致** |
-| `src/locales/en.json` | `src/locales/en.json` | **完全一致**（home 命名空间结构相同） |
-| `content/<locale>/<type>/*.mdx` | `src/content/wiki/<locale>/<type>/*.mdx` | 移到 wiki/ 下 |
-| `export const metadata = {...}` | YAML frontmatter `---\n...\n---` | **必须转换** |
-| `src/middleware.ts` | 不需要 | Astro 的 i18n 路由内置 |
-| `netlify.toml` | 不需要 | Cloudflare Pages 零配置 |
+| Next.js 模板                          | AnvilWiki                                                | 迁移动作                              |
+| ------------------------------------- | -------------------------------------------------------- | ------------------------------------- |
+| `src/app/globals.css`                 | `src/styles/globals.css`                                 | 直接复制主题色 4 行                   |
+| `src/app/[locale]/page.tsx`           | `src/pages/[locale]/index.astro` + `HomePage.astro`      | 数据保留，渲染层重写                  |
+| `src/app/[locale]/[...slug]/page.tsx` | `src/pages/[...slug].astro` + `[locale]/[...slug].astro` | 逻辑平移到 Astro                      |
+| `src/app/sitemap.ts`                  | `@astrojs/sitemap`（自动）                               | 删手写代码，用集成                    |
+| `src/app/robots.ts`                   | `src/pages/robots.txt.ts`                                | 简单平移                              |
+| `src/i18n/routing.ts`                 | `src/i18n/routing.ts`                                    | **几乎一致**，删 `localePrefix` 字段  |
+| `src/i18n/request.ts`                 | `src/i18n/ui.ts`                                         | deepMerge 逻辑平移                    |
+| `src/config/navigation.ts`            | `src/config/navigation.ts`                               | **完全一致**                          |
+| `src/locales/en.json`                 | `src/locales/en.json`                                    | **完全一致**（home 命名空间结构相同） |
+| `content/<locale>/<type>/*.mdx`       | `src/content/wiki/<locale>/<type>/*.mdx`                 | 移到 wiki/ 下                         |
+| `export const metadata = {...}`       | YAML frontmatter `---\n...\n---`                         | **必须转换**                          |
+| `src/middleware.ts`                   | 不需要                                                   | Astro 的 i18n 路由内置                |
+| `netlify.toml`                        | 不需要                                                   | Cloudflare Pages 零配置               |
 
 ---
 
@@ -29,23 +29,25 @@
 ### 1. 文章元数据格式
 
 **Next.js**（JS export，无校验）：
+
 ```mdx
 export const metadata = {
-  title: "Gelum Boss Guide",
-  description: "...",
-  category: "bosses",
-  date: "2026-08-11",
-}
+  title: 'Gelum Boss Guide',
+  description: '...',
+  category: 'bosses',
+  date: '2026-08-11',
+};
 
 ## 正文
 ```
 
 **AnvilWiki**（YAML frontmatter + Zod 校验）：
+
 ```mdx
 ---
-title: "Gelum Boss Guide"
-description: "..."
-category: "bosses"
+title: 'Gelum Boss Guide'
+description: '...'
+category: 'bosses'
 date: 2026-08-11
 ---
 
@@ -87,6 +89,7 @@ pnpm dev  # 确认 demo 能跑
 ### Step 2 — 复制配置层
 
 按 [换皮工作流 Part 1-3](./skinning.md#阶段-1基础换皮) 把你现有的游戏配置搬过来：
+
 - 主题色（`globals.css` 4 行直接复制）
 - `site.ts`（对应你 Next.js 的站点信息）
 - `navigation.ts`（结构一致，icon 加 `lucide:` 前缀）

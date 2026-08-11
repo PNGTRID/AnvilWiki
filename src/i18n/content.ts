@@ -83,10 +83,7 @@ export async function getEntryWithFallback(
  * List all articles in a category for a locale. Does NOT fall back to English.
  * An empty result means "this locale has no translated articles in this category".
  */
-export async function getEntriesByCategory(
-  category: string,
-  locale: Locale,
-): Promise<WikiEntry[]> {
+export async function getEntriesByCategory(category: string, locale: Locale): Promise<WikiEntry[]> {
   const all = await getCollection('wiki');
   return all
     .filter((e) => {
@@ -99,9 +96,7 @@ export async function getEntriesByCategory(
 /**
  * List all articles in a category across ALL locales (for sitemap generation).
  */
-export async function getAllEntriesByCategory(
-  category: string,
-): Promise<WikiEntry[]> {
+export async function getAllEntriesByCategory(category: string): Promise<WikiEntry[]> {
   const all = await getCollection('wiki');
   return all
     .filter((e) => parseEntryId(e.id)?.category === category)
@@ -112,10 +107,7 @@ export async function getAllEntriesByCategory(
  * All locales that have at least one article for a given (category, slug).
  * Used to generate hreflang alternates.
  */
-export async function localesForEntry(
-  category: string,
-  slug: string,
-): Promise<Locale[]> {
+export async function localesForEntry(category: string, slug: string): Promise<Locale[]> {
   const all = await getCollection('wiki');
   const found = new Set<Locale>();
   for (const entry of all) {
@@ -132,10 +124,7 @@ export async function localesForEntry(
 /**
  * Recent articles for a locale (for homepage "Recent Updates").
  */
-export async function getRecentEntries(
-  locale: Locale,
-  limit = 6,
-): Promise<WikiEntry[]> {
+export async function getRecentEntries(locale: Locale, limit = 6): Promise<WikiEntry[]> {
   const all = await getCollection('wiki');
   return all
     .filter((e) => parseEntryId(e.id)?.locale === locale)

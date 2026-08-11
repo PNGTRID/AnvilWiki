@@ -15,16 +15,21 @@ const tierColors: Record<string, string> = {
   C: 'bg-zinc-500/15 text-zinc-600 dark:text-zinc-400',
 };
 ---
+
 <div class="space-y-2">
-  {highlights.map((h) => (
-    <div class="flex items-center gap-3 rounded-md border bg-card p-3">
-      <span class:list={[
-        'flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-sm font-bold',
-        tierColors[h.label] ?? 'bg-muted text-muted-foreground',
-      ]}>
-        {h.label}
-      </span>
-      <p class="text-sm text-muted-foreground">{h.detail}</p>
-    </div>
-  ))}
+  {
+    highlights.map((h) => (
+      <div class="flex items-center gap-3 rounded-md border bg-card p-3">
+        <span
+          class:list={[
+            'flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-sm font-bold',
+            tierColors[h.label] ?? 'bg-muted text-muted-foreground',
+          ]}
+        >
+          {h.label}
+        </span>
+        <p class="text-sm text-muted-foreground">{h.detail}</p>
+      </div>
+    ))
+  }
 </div>

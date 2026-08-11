@@ -1,0 +1,34 @@
+---
+/**
+ * InContentAd — a page-internal ad slot (e.g. between article sections).
+ *
+ * Renders a 300×250 (mobile-friendly) or 728×90 (desktop) banner.
+ * Gated by env vars — empty key = no ad rendered.
+ *
+ * Unlike StickyBanner, this is not sticky; it sits inline with content.
+ */
+import AdBanner from './AdBanner.astro';
+
+interface Props {
+  /** Which slot to render. */
+  type?: 'banner-300x250' | 'banner-728x90' | 'banner-468x60';
+  /** Optional label above the ad (for disclosure). */
+  label?: string;
+}
+const { type = 'banner-300x250', label = 'Advertisement' } = Astro.props;
+
+// Map slot type → env var name.
+const envVarMap: Record<string, string> = {
+  'banner-300x250': 'PUBLIC_AD_BANNER_300X250',
+  'banner-728x90': 'PUBLIC_AD_BANNER_728X90',
+  'banner-468x60': 'PUBLIC_AD_BANNER_468X60',
+};
+const envVar = envVarMap[type];
+const adKey = (import.meta.env as Record<string, string | undefined>)[envVar];
+---
+{adKey && (
+  <div class="my-8 flex flex-col items-center">
+    <span class="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+    <AdBanner type={type} />
+  </div>
+)}

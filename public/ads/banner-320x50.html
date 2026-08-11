@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <!--
   Adsterra banner slot — 320×50 (Sticky mobile, primary revenue).
   Each ad slot is a standalone HTML file to isolate window.atOptions.
@@ -9,18 +9,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>body { margin: 0; padding: 0; overflow: hidden; }</style>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
   </head>
   <body>
     <script type="text/javascript">
       atOptions = {
-        'key': 'YOUR_AD_KEY',
-        'format': 'iframe',
-        'height': 50,
-        'width': 320,
-        'params': {}
+        key: 'YOUR_AD_KEY',
+        format: 'iframe',
+        height: 50,
+        width: 320,
+        params: {},
       };
     </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/YOUR_AD_KEY/invoke.js"></script>
+    <script
+      type="text/javascript"
+      src="//www.highperformanceformat.com/YOUR_AD_KEY/invoke.js"
+    ></script>
   </body>
 </html>

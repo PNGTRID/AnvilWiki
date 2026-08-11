@@ -12,112 +12,160 @@ const { page } = Astro.props;
 const game = site.game.name;
 const year = new Date().getFullYear();
 ---
-{page === 'about' && (
-  <>
-    <p>
-      {site.name} is a fan-made community wiki dedicated to {game}, a {site.game.genre} on {site.game.platform} developed by {site.game.developer}. Our mission is to provide accurate, up-to-date guides, tips, and reference material to help players get the most out of the game.
-    </p>
-    <h2>What We Cover</h2>
-    <ul>
-      <li>Boss strategies and attack patterns</li>
-      <li>Item locations, stats, and crafting recipes</li>
-      <li>Active redeemable codes (updated daily)</li>
-      <li>Tier lists and build recommendations</li>
-      <li>Progression guides for new and returning players</li>
-    </ul>
-    <h2>Community-Driven</h2>
-    <p>
-      This wiki is maintained by volunteers. If you spot an error or have content to contribute, join our Discord and let us know. All content is freely accessible — no account required.
-    </p>
-    <h2>Contact</h2>
-    <p>
-      Reach us via our <a href={site.social.discord} target="_blank" rel="noopener noreferrer">Discord server</a> or <a href={site.social.official} target="_blank" rel="noopener noreferrer">the game's official channels</a>.
-    </p>
-  </>
-)}
 
-{page === 'privacy-policy' && (
-  <>
-    <p>
-      This privacy policy describes how {site.name} ("we", "us", or "our") handles information when you visit this website.
-    </p>
-    <h2>Information We Collect</h2>
-    <p>
-      {site.name} is a static website. We do not require you to create an account or submit personal information. We do not directly collect or store personal data.
-    </p>
-    <h2>Third-Party Services</h2>
-    <p>
-      We use third-party services that may collect information as described in their respective privacy policies:
-    </p>
-    <ul>
-      <li><strong>Advertising partners</strong> (e.g. Adsterra, Google AdSense) — may use cookies to serve relevant ads. You can opt out of personalized advertising via your browser settings.</li>
-      <li><strong>Analytics</strong> (e.g. Google Analytics) — may collect anonymized usage data such as page views and approximate location.</li>
-      <li><strong>Cloudflare</strong> — our hosting provider, which may process basic request data for security and performance.</li>
-    </ul>
-    <h2>Cookies</h2>
-    <p>
-      Some third-party services set cookies. You can control cookies through your browser settings. Disabling cookies may affect ad personalization but will not prevent you from accessing site content.
-    </p>
-    <h2>Children's Privacy</h2>
-    <p>
-      {site.name} is not directed at children under 13, and we do not knowingly collect information from children.
-    </p>
-    <h2>Changes to This Policy</h2>
-    <p>
-      We may update this policy from time to time. Changes will be posted on this page.
-    </p>
-  </>
-)}
+{
+  page === 'about' && (
+    <>
+      <p>
+        {site.name} is a fan-made community wiki dedicated to {game}, a {site.game.genre} on{' '}
+        {site.game.platform} developed by {site.game.developer}. Our mission is to provide accurate,
+        up-to-date guides, tips, and reference material to help players get the most out of the
+        game.
+      </p>
+      <h2>What We Cover</h2>
+      <ul>
+        <li>Boss strategies and attack patterns</li>
+        <li>Item locations, stats, and crafting recipes</li>
+        <li>Active redeemable codes (updated daily)</li>
+        <li>Tier lists and build recommendations</li>
+        <li>Progression guides for new and returning players</li>
+      </ul>
+      <h2>Community-Driven</h2>
+      <p>
+        This wiki is maintained by volunteers. If you spot an error or have content to contribute,
+        join our Discord and let us know. All content is freely accessible — no account required.
+      </p>
+      <h2>Contact</h2>
+      <p>
+        Reach us via our{' '}
+        <a href={site.social.discord} target="_blank" rel="noopener noreferrer">
+          Discord server
+        </a>{' '}
+        or{' '}
+        <a href={site.social.official} target="_blank" rel="noopener noreferrer">
+          the game's official channels
+        </a>
+        .
+      </p>
+    </>
+  )
+}
 
-{page === 'terms-of-service' && (
-  <>
-    <p>
-      By accessing {site.name}, you agree to the following terms of service.
-    </p>
-    <h2>Use of Content</h2>
-    <p>
-      All guides, articles, and reference material on this site are provided for personal, non-commercial use. You may not copy, republish, or redistribute our content without attribution and a link back to the original page.
-    </p>
-    <h2>Accuracy</h2>
-    <p>
-      We strive for accuracy but make no warranties regarding the completeness or correctness of any content. {game} is frequently updated, and information may become outdated. Always verify critical information in-game.
-    </p>
-    <h2>Third-Party Links</h2>
-    <p>
-      This site links to external websites (official game channels, video tutorials, etc.) that we do not control. We are not responsible for the content or practices of third-party sites.
-    </p>
-    <h2>Trademarks</h2>
-    <p>
-      {game} and all related trademarks, logos, and assets are the property of {site.game.developer}. {site.name} is an independent fan project and is not affiliated with or endorsed by {site.game.developer}.
-    </p>
-    <h2>Limitation of Liability</h2>
-    <p>
-      Use of this site is at your own risk. We are not liable for any damages arising from your use of the site or reliance on its content.
-    </p>
-    <h2>Changes to These Terms</h2>
-    <p>
-      We may revise these terms at any time. Continued use of the site after changes constitutes acceptance of the updated terms.
-    </p>
-  </>
-)}
+{
+  page === 'privacy-policy' && (
+    <>
+      <p>
+        This privacy policy describes how {site.name} ("we", "us", or "our") handles information
+        when you visit this website.
+      </p>
+      <h2>Information We Collect</h2>
+      <p>
+        {site.name} is a static website. We do not require you to create an account or submit
+        personal information. We do not directly collect or store personal data.
+      </p>
+      <h2>Third-Party Services</h2>
+      <p>
+        We use third-party services that may collect information as described in their respective
+        privacy policies:
+      </p>
+      <ul>
+        <li>
+          <strong>Advertising partners</strong> (e.g. Adsterra, Google AdSense) — may use cookies to
+          serve relevant ads. You can opt out of personalized advertising via your browser settings.
+        </li>
+        <li>
+          <strong>Analytics</strong> (e.g. Google Analytics) — may collect anonymized usage data
+          such as page views and approximate location.
+        </li>
+        <li>
+          <strong>Cloudflare</strong> — our hosting provider, which may process basic request data
+          for security and performance.
+        </li>
+      </ul>
+      <h2>Cookies</h2>
+      <p>
+        Some third-party services set cookies. You can control cookies through your browser
+        settings. Disabling cookies may affect ad personalization but will not prevent you from
+        accessing site content.
+      </p>
+      <h2>Children's Privacy</h2>
+      <p>
+        {site.name} is not directed at children under 13, and we do not knowingly collect
+        information from children.
+      </p>
+      <h2>Changes to This Policy</h2>
+      <p>We may update this policy from time to time. Changes will be posted on this page.</p>
+    </>
+  )
+}
 
-{page === 'copyright' && (
-  <>
-    <h2>Copyright Notice</h2>
-    <p>
-      © {year} {site.name}. All original articles, guides, and written content on this site are the intellectual property of {site.name} and its contributors.
-    </p>
-    <h2>Game Assets</h2>
-    <p>
-      {game}, including its name, logo, characters, artwork, and other related assets, is the property of {site.game.developer}. All {game} content is used on this wiki under fair use for the purpose of providing informational guides to players. {site.name} claims no ownership of any {game} intellectual property.
-    </p>
-    <h2>DMCA / Takedown</h2>
-    <p>
-      If you believe any content on this site infringes your copyright, please contact us via our <a href={site.social.discord} target="_blank" rel="noopener noreferrer">Discord server</a> with a detailed description of the allegedly infringing material. We will review and respond to valid requests promptly.
-    </p>
-    <h2>Fan-Made Notice</h2>
-    <p>
-      {site.legalNotice}
-    </p>
-  </>
-)}
+{
+  page === 'terms-of-service' && (
+    <>
+      <p>By accessing {site.name}, you agree to the following terms of service.</p>
+      <h2>Use of Content</h2>
+      <p>
+        All guides, articles, and reference material on this site are provided for personal,
+        non-commercial use. You may not copy, republish, or redistribute our content without
+        attribution and a link back to the original page.
+      </p>
+      <h2>Accuracy</h2>
+      <p>
+        We strive for accuracy but make no warranties regarding the completeness or correctness of
+        any content. {game} is frequently updated, and information may become outdated. Always
+        verify critical information in-game.
+      </p>
+      <h2>Third-Party Links</h2>
+      <p>
+        This site links to external websites (official game channels, video tutorials, etc.) that we
+        do not control. We are not responsible for the content or practices of third-party sites.
+      </p>
+      <h2>Trademarks</h2>
+      <p>
+        {game} and all related trademarks, logos, and assets are the property of{' '}
+        {site.game.developer}. {site.name} is an independent fan project and is not affiliated with
+        or endorsed by {site.game.developer}.
+      </p>
+      <h2>Limitation of Liability</h2>
+      <p>
+        Use of this site is at your own risk. We are not liable for any damages arising from your
+        use of the site or reliance on its content.
+      </p>
+      <h2>Changes to These Terms</h2>
+      <p>
+        We may revise these terms at any time. Continued use of the site after changes constitutes
+        acceptance of the updated terms.
+      </p>
+    </>
+  )
+}
+
+{
+  page === 'copyright' && (
+    <>
+      <h2>Copyright Notice</h2>
+      <p>
+        © {year} {site.name}. All original articles, guides, and written content on this site are
+        the intellectual property of {site.name} and its contributors.
+      </p>
+      <h2>Game Assets</h2>
+      <p>
+        {game}, including its name, logo, characters, artwork, and other related assets, is the
+        property of {site.game.developer}. All {game} content is used on this wiki under fair use
+        for the purpose of providing informational guides to players. {site.name} claims no
+        ownership of any {game} intellectual property.
+      </p>
+      <h2>DMCA / Takedown</h2>
+      <p>
+        If you believe any content on this site infringes your copyright, please contact us via our{' '}
+        <a href={site.social.discord} target="_blank" rel="noopener noreferrer">
+          Discord server
+        </a>{' '}
+        with a detailed description of the allegedly infringing material. We will review and respond
+        to valid requests promptly.
+      </p>
+      <h2>Fan-Made Notice</h2>
+      <p>{site.legalNotice}</p>
+    </>
+  )
+}

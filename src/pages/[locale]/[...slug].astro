@@ -45,9 +45,7 @@ export async function getStaticPaths() {
       if (!parsed || parsed.locale !== defaultLocale) continue;
       const slugStr = `${parsed.category}/${parsed.slug}`;
       // Avoid duplicate params (if same slug exists in both locales).
-      const exists = paths.some(
-        (p) => p.params.locale === locale && p.params.slug === slugStr,
-      );
+      const exists = paths.some((p) => p.params.locale === locale && p.params.slug === slugStr);
       if (!exists) {
         paths.push({ params: { locale, slug: slugStr } });
       }
@@ -91,5 +89,6 @@ if (view === 'not-found') {
   return new Response('Not Found', { status: 404 });
 }
 ---
+
 {view === 'list' && <ListPage locale={locale} category={category} />}
 {view === 'article' && resolved && <ArticlePage locale={locale} resolved={resolved} />}

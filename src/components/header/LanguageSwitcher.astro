@@ -13,23 +13,28 @@ interface Props {
 }
 const { locale, pathFor } = Astro.props;
 ---
+
 <details class="relative">
-  <summary class="inline-flex cursor-pointer list-none items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium text-foreground transition hover:bg-muted">
+  <summary
+    class="inline-flex cursor-pointer list-none items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium text-foreground transition hover:bg-muted"
+  >
     <Icon name="lucide:globe" class="h-4 w-4" />
     <span>{LOCALE_LABELS[locale]}</span>
     <Icon name="lucide:chevron-down" class="h-3 w-3" />
   </summary>
   <div class="absolute right-0 z-50 mt-2 w-40 overflow-hidden rounded-md border bg-card shadow-lg">
-    {locales.map((loc) => (
-      <a
-        href={pathFor(loc)}
-        class:list={[
-          'block px-3 py-2 text-sm transition hover:bg-muted',
-          loc === locale && 'font-semibold text-nav',
-        ]}
-      >
-        {LOCALE_LABELS[loc]}
-      </a>
-    ))}
+    {
+      locales.map((loc) => (
+        <a
+          href={pathFor(loc)}
+          class:list={[
+            'block px-3 py-2 text-sm transition hover:bg-muted',
+            loc === locale && 'font-semibold text-nav',
+          ]}
+        >
+          {LOCALE_LABELS[loc]}
+        </a>
+      ))
+    }
   </div>
 </details>

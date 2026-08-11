@@ -15,6 +15,8 @@
 import { Icon } from 'astro-icon/components';
 import { render } from 'astro:content';
 import LocaleLayout from '~/components/layout/LocaleLayout.astro';
+import InContentAd from '~/components/ads/InContentAd.astro';
+import WikiSidebar from '~/components/sidebar/WikiSidebar.astro';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { siteUrl } from '~/config/site';
 import { type Locale } from '~/i18n/routing';
@@ -38,7 +40,7 @@ const navItem = NAVIGATION_CONFIG.find((n) => n.key === entry.data.category);
 const parsed = parseEntryId(entry.id);
 const slug = parsed?.slug ?? '';
 const category = entry.data.category;
-const categoryLabel = overview?.overviewTitle ?? (nav[category] ?? category);
+const categoryLabel = overview?.overviewTitle ?? nav[category] ?? category;
 
 const coverUrl = entry.data.image
   ? entry.data.image.startsWith('http')
@@ -70,6 +72,7 @@ const jsonLd = [
   }),
 ];
 ---
+
 <LocaleLayout
   locale={locale}
   title={pageTitle(entry.data.title)}
@@ -78,7 +81,8 @@ const jsonLd = [
   article={true}
   jsonLd={jsonLd}
 >
-  <article class="mx-auto max-w-3xl">
+  <div class="flex gap-8">
+    <article class="mx-auto min-w-0 max-w-3xl flex-1">
     {/* Breadcrumb */}
     <nav class="text-sm text-muted-foreground" aria-label="breadcrumb">
       <a href="/" class="hover:text-nav">{nav.home}</a>
@@ -99,55 +103,70 @@ const jsonLd = [
           <Icon name="lucide:calendar" class="h-3.5 w-3.5" />
           {entry.data.date.toLocaleDateString(locale)}
         </span>
-        {entry.data.lastModified && (
-          <span class="inline-flex items-center gap-1">
-            <Icon name="lucide:refresh-cw" class="h-3.5 w-3.5" />
-            {shared.lastUpdated}: {entry.data.lastModified.toLocaleDateString(locale)}
-          </span>
-        )}
-        {isFallback && servedLocale !== locale && (
-          <span class="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5">
-            <Icon name="lucide:alert-circle" class="h-3 w-3" />
-            English fallback
-          </span>
-        )}
+        {
+          entry.data.lastModified && (
+            <span class="inline-flex items-center gap-1">
+              <Icon name="lucide:refresh-cw" class="h-3.5 w-3.5" />
+              {shared.lastUpdated}: {entry.data.lastModified.toLocaleDateString(locale)}
+            </span>
+          )
+        }
+        {
+          isFallback && servedLocale !== locale && (
+            <span class="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5">
+              <Icon name="lucide:alert-circle" class="h-3 w-3" />
+              English fallback
+            </span>
+          )
+        }
       </div>
     </header>
 
     {/* Body */}
-    <div class="prose prose-lg mt-8 max-w-none dark:prose-invert prose-headings:scroll-mt-20 prose-a:text-nav">
+    <div
+      class="prose prose-lg mt-8 max-w-none dark:prose-invert prose-headings:scroll-mt-20 prose-a:text-nav"
+    >
       <Content />
     </div>
 
     {/* Tags */}
-    {entry.data.tags.length > 0 && (
-      <div class="mt-8 flex flex-wrap gap-2">
-        {entry.data.tags.map((tag: string) => (
-          <span class="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
-            <Icon name="lucide:hash" class="h-3 w-3" />
-            {tag}
-          </span>
-        ))}
-      </div>
-    )}
+    {
+      entry.data.tags.length > 0 && (
+        <div class="mt-8 flex flex-wrap gap-2">
+          {entry.data.tags.map((tag: string) => (
+            <span class="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
+              <Icon name="lucide:hash" class="h-3 w-3" />
+              {tag}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    {/* In-content ad before related articles */}
+    <InContentAd type="banner-728x90" />
 
     {/* Related */}
-    {related.length > 0 && (
-      <section class="mt-12 border-t border-border pt-8">
-        <h2 class="text-xl font-bold">{shared.relatedArticles}</h2>
-        <div class="mt-4 grid gap-3 sm:grid-cols-3">
-          {related.map((rel: WikiEntry) => {
-            const relSlug = parseEntryId(rel.id)?.slug ?? '';
-            const relCat = rel.data.category;
-            return (
-              <a href={detailPath(relCat, relSlug, locale)} class="card p-4">
-                <p class="text-xs uppercase tracking-wider text-muted-foreground">{relCat}</p>
-                <h3 class="mt-1 text-sm font-semibold leading-snug">{rel.data.title}</h3>
-              </a>
-            );
-          })}
-        </div>
-      </section>
-    )}
+    {
+      related.length > 0 && (
+        <section class="mt-12 border-t border-border pt-8">
+          <h2 class="text-xl font-bold">{shared.relatedArticles}</h2>
+          <div class="mt-4 grid gap-3 sm:grid-cols-3">
+            {related.map((rel: WikiEntry) => {
+              const relSlug = parseEntryId(rel.id)?.slug ?? '';
+              const relCat = rel.data.category;
+              return (
+                <a href={detailPath(relCat, relSlug, locale)} class="card p-4">
+                  <p class="text-xs uppercase tracking-wider text-muted-foreground">{relCat}</p>
+                  <h3 class="mt-1 text-sm font-semibold leading-snug">{rel.data.title}</h3>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      )
+    }
   </article>
+    <WikiSidebar locale={locale} currentPath={Astro.url.pathname} />
+  </div>
 </LocaleLayout>

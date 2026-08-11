@@ -1,0 +1,13 @@
+# Cloudflare Pages configuration for local preview with Wrangler.
+#
+# Usage:
+#   pnpm build
+#   npx wrangler pages dev dist
+#
+# This file is optional — Cloudflare Pages auto-detects Astro when you
+# connect your GitHub repo via the dashboard. Use this only for local
+# preview or `wrangler pages deploy`.
+
+name = "anvilwiki"
+compatibility_date = "2026-08-11"
+pages_build_output_dir = "dist"

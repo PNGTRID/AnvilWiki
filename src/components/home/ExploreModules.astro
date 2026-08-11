@@ -32,25 +32,28 @@ interface Props {
 }
 const { modules, locale } = Astro.props;
 ---
-<div class="grid gap-6 md:grid-cols-2">
-  {modules.map((m) => (
-    <section class="card overflow-hidden p-5">
-      <div class="mb-3 flex items-baseline justify-between gap-2">
-        <h3 class="text-lg font-bold leading-snug">{m.name}</h3>
-        <a
-          href={localizePath(m.href, locale)}
-          class="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-nav hover:underline"
-        >
-          View
-          <Icon name="lucide:arrow-right" class="h-3 w-3" />
-        </a>
-      </div>
-      <p class="mb-4 text-sm text-muted-foreground">{m.description}</p>
 
-      {m.displayType === 'code-cards' && <CodeCards highlights={m.highlights} />}
-      {m.displayType === 'step-by-step' && <StepByStep highlights={m.highlights} />}
-      {m.displayType === 'tier-grid' && <TierGrid highlights={m.highlights} />}
-      {m.displayType === 'card-list' && <CardList highlights={m.highlights} />}
-    </section>
-  ))}
+<div class="grid gap-6 md:grid-cols-2">
+  {
+    modules.map((m) => (
+      <section class="card overflow-hidden p-5">
+        <div class="mb-3 flex items-baseline justify-between gap-2">
+          <h3 class="text-lg font-bold leading-snug">{m.name}</h3>
+          <a
+            href={localizePath(m.href, locale)}
+            class="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-nav hover:underline"
+          >
+            View
+            <Icon name="lucide:arrow-right" class="h-3 w-3" />
+          </a>
+        </div>
+        <p class="mb-4 text-sm text-muted-foreground">{m.description}</p>
+
+        {m.displayType === 'code-cards' && <CodeCards highlights={m.highlights} />}
+        {m.displayType === 'step-by-step' && <StepByStep highlights={m.highlights} />}
+        {m.displayType === 'tier-grid' && <TierGrid highlights={m.highlights} />}
+        {m.displayType === 'card-list' && <CardList highlights={m.highlights} />}
+      </section>
+    ))
+  }
 </div>

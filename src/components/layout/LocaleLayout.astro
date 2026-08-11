@@ -8,6 +8,7 @@
 import BaseLayout from './BaseLayout.astro';
 import SiteHeader from '~/components/header/SiteHeader.astro';
 import SiteFooter from '~/components/footer/SiteFooter.astro';
+import StickyBanner from '~/components/ads/StickyBanner.astro';
 import { type Locale } from '~/i18n/routing';
 
 interface Props {
@@ -22,8 +23,10 @@ interface Props {
 const { locale, ...rest } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
+
 <BaseLayout locale={locale} {...rest}>
   <SiteHeader locale={locale} currentPath={currentPath} />
+  <StickyBanner />
   <main class="mx-auto min-h-[calc(100vh-3.5rem)] max-w-7xl px-4 py-8">
     <slot />
   </main>

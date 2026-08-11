@@ -9,11 +9,14 @@ import AdBanner from './AdBanner.astro';
 const ad160x600 = import.meta.env.PUBLIC_AD_SIDEBAR_160X600;
 const ad160x300 = import.meta.env.PUBLIC_AD_SIDEBAR_160X300;
 ---
-{(ad160x600 || ad160x300) && (
-  <aside class="hidden w-[160px] shrink-0 lg:block">
-    <div class="sticky top-20 space-y-4">
-      {ad160x600 && <AdBanner type="sidebar-160x600" />}
-      {ad160x300 && <AdBanner type="sidebar-160x300" />}
-    </div>
-  </aside>
-)}
+
+{
+  (ad160x600 || ad160x300) && (
+    <aside class="hidden w-[160px] shrink-0 lg:block">
+      <div class="sticky top-20 space-y-4">
+        {ad160x600 && <AdBanner type="sidebar-160x600" />}
+        {ad160x300 && <AdBanner type="sidebar-160x300" />}
+      </div>
+    </aside>
+  )
+}

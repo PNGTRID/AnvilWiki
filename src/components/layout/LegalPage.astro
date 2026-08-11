@@ -18,13 +18,14 @@ interface Props {
 }
 const { locale, title, description = `${title} for ${site.name}.`, lastUpdated } = Astro.props;
 ---
+
 <LocaleLayout locale={locale} title={title} description={description}>
   <article class="mx-auto max-w-3xl">
     <h1 class="text-3xl font-extrabold tracking-tight md:text-4xl">{title}</h1>
-    {lastUpdated && (
-      <p class="mt-2 text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
-    )}
-    <div class="prose prose-lg mt-8 max-w-none dark:prose-invert prose-headings:scroll-mt-20 prose-a:text-nav">
+    {lastUpdated && <p class="mt-2 text-sm text-muted-foreground">Last updated: {lastUpdated}</p>}
+    <div
+      class="prose prose-lg mt-8 max-w-none dark:prose-invert prose-headings:scroll-mt-20 prose-a:text-nav"
+    >
       <slot />
     </div>
   </article>

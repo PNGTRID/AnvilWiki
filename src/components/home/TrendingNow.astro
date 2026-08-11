@@ -1,0 +1,39 @@
+---
+/**
+ * TrendingNow — horizontally scrollable list of trending articles.
+ *
+ * Renders the `home.popular` quickLinks as a swipeable card row on mobile
+ * and a static grid on desktop. Pure CSS scroll-snap — no JS.
+ */
+import { Icon } from 'astro-icon/components';
+import { type Locale } from '~/i18n/routing';
+
+interface Props {
+  locale: Locale;
+  eyebrow?: string;
+  title?: string;
+  quickLinks?: string[];
+}
+const { locale, eyebrow = 'Trending', title = 'Trending Now', quickLinks = [] } = Astro.props;
+---
+{quickLinks.length > 0 && (
+  <section class="mx-auto max-w-7xl px-4 py-8">
+    <div class="flex items-baseline justify-between">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wider text-nav">{eyebrow}</p>
+        <h2 class="mt-1 text-2xl font-bold">{title}</h2>
+      </div>
+    </div>
+    <div class="mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      {quickLinks.map((link: string) => (
+        <a
+          href="#"
+          class="card w-56 shrink-0 snap-start p-4"
+        >
+          <Icon name="lucide:trending-up" class="h-5 w-5 text-nav" />
+          <p class="mt-2 text-sm font-medium leading-snug">{link}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+)}

@@ -13,9 +13,7 @@ import type { Locale } from '~/i18n/routing';
 
 export function getStaticPaths() {
   // Only generate paths for non-default locales — default is at /.
-  return [
-    { params: { locale: 'ja' } },
-  ].filter((p) => p.params.locale !== defaultLocale);
+  return [{ params: { locale: 'ja' } }].filter((p) => p.params.locale !== defaultLocale);
 }
 
 const { locale } = Astro.params;
@@ -29,4 +27,5 @@ const jsonLd = [
   ...(home.faq?.items?.length ? [faqPageJsonLd(home.faq.items)] : []),
 ];
 ---
+
 <HomePage locale={locale} jsonLd={jsonLd} />

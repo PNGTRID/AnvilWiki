@@ -66,7 +66,7 @@ export const site: SiteConfig = {
 };
 
 /** Absolute site URL (no trailing slash). Falls back to the Astro `site` config. */
-export const siteUrl: string = (
-  process.env.SITE_URL ||
-  `https://${site.domain}`
-).replace(/\/$/, '');
+export const siteUrl: string = (process.env.SITE_URL || `https://${site.domain}`).replace(
+  /\/$/,
+  '',
+);
