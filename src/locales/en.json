@@ -54,7 +54,12 @@
       "eyebrow": "Fan-Made Community Wiki",
       "title": "Anvil Quest Wiki",
       "description": "Your complete guide to Anvil Quest. Boss strategies, active codes, item locations, tier lists, and everything you need to master the forge.",
-      "stats": ["28 Bosses Covered", "150+ Items Documented", "Daily Code Updates", "4 Languages"],
+      "stats": [
+        "28 Bosses Covered",
+        "150+ Items Documented",
+        "Daily Code Updates",
+        "4 Languages"
+      ],
       "primaryCta": "Play Anvil Quest",
       "secondaryCta": "Browse Guides",
       "tertiaryCta": "Latest Codes",
@@ -93,7 +98,24 @@
     "popular": {
       "eyebrow": "Trending Now",
       "title": "Most Read This Week",
-      "quickLinks": ["Gelum Boss Guide", "Best Weapons Tier List", "Code Redemption Guide"]
+      "quickLinks": [
+        {
+          "label": "Gelum Boss Guide",
+          "href": "/bosses/gelum"
+        },
+        {
+          "label": "Best Weapons Tier List",
+          "href": "/guides/weapon-tier-list"
+        },
+        {
+          "label": "Beginner Guide",
+          "href": "/guides/beginner-guide"
+        },
+        {
+          "label": "All Active Codes",
+          "href": "/codes"
+        }
+      ]
     },
     "aboutGame": {
       "title": "What is Anvil Quest?",
@@ -102,11 +124,26 @@
         "The game launched in January 2026 and quickly grew to over 12 million visits thanks to its deep crafting system, regular content updates, and a thriving competitive speedrun community."
       ],
       "stats": [
-        { "label": "Developer", "value": "Forge Studios" },
-        { "label": "Platform", "value": "Roblox" },
-        { "label": "Genre", "value": "Fantasy RPG" },
-        { "label": "Visits", "value": "12.6M+" },
-        { "label": "Active Players", "value": "45K daily" }
+        {
+          "label": "Developer",
+          "value": "Forge Studios"
+        },
+        {
+          "label": "Platform",
+          "value": "Roblox"
+        },
+        {
+          "label": "Genre",
+          "value": "Fantasy RPG"
+        },
+        {
+          "label": "Visits",
+          "value": "12.6M+"
+        },
+        {
+          "label": "Active Players",
+          "value": "45K daily"
+        }
       ],
       "cta": "Explore All Guides"
     },
@@ -121,9 +158,21 @@
           "href": "/codes",
           "displayType": "code-cards",
           "highlights": [
-            { "label": "WELCOME2026", "detail": "500 coins + starter sword", "badge": "Active" },
-            { "label": "FORGE", "detail": "1 rare gem", "badge": "Active" },
-            { "label": "12MVISITS", "detail": "Exclusive cosmetic", "badge": "Expires soon" }
+            {
+              "label": "WELCOME2026",
+              "detail": "500 coins + starter sword",
+              "badge": "Active"
+            },
+            {
+              "label": "FORGE",
+              "detail": "1 rare gem",
+              "badge": "Active"
+            },
+            {
+              "label": "12MVISITS",
+              "detail": "Exclusive cosmetic",
+              "badge": "Expires soon"
+            }
           ]
         },
         {
@@ -133,9 +182,18 @@
           "href": "/bosses",
           "displayType": "card-list",
           "highlights": [
-            { "label": "Gelum", "detail": "Frost warden, early-game gatekeeper" },
-            { "label": "Pyra", "detail": "Fire titan, mid-game DPS check" },
-            { "label": "Voidking", "detail": "Final boss, requires full prep" }
+            {
+              "label": "Gelum",
+              "detail": "Frost warden, early-game gatekeeper"
+            },
+            {
+              "label": "Pyra",
+              "detail": "Fire titan, mid-game DPS check"
+            },
+            {
+              "label": "Voidking",
+              "detail": "Final boss, requires full prep"
+            }
           ]
         },
         {
@@ -145,10 +203,22 @@
           "href": "/guides",
           "displayType": "step-by-step",
           "highlights": [
-            { "label": "1", "detail": "Pick a starting class" },
-            { "label": "2", "detail": "Clear the tutorial forge" },
-            { "label": "3", "detail": "Unlock the Shattered Isles" },
-            { "label": "4", "detail": "Defeat your first world boss" }
+            {
+              "label": "1",
+              "detail": "Pick a starting class"
+            },
+            {
+              "label": "2",
+              "detail": "Clear the tutorial forge"
+            },
+            {
+              "label": "3",
+              "detail": "Unlock the Shattered Isles"
+            },
+            {
+              "label": "4",
+              "detail": "Defeat your first world boss"
+            }
           ]
         },
         {
@@ -158,10 +228,22 @@
           "href": "/guides/weapon-tier-list",
           "displayType": "tier-grid",
           "highlights": [
-            { "label": "S", "detail": "Voidforge Blade, Stormcaller" },
-            { "label": "A", "detail": "Emberclaw, Frostpike" },
-            { "label": "B", "detail": "Ironwood Bow, Mace of Dawn" },
-            { "label": "C", "detail": "Starter weapons" }
+            {
+              "label": "S",
+              "detail": "Voidforge Blade, Stormcaller"
+            },
+            {
+              "label": "A",
+              "detail": "Emberclaw, Frostpike"
+            },
+            {
+              "label": "B",
+              "detail": "Ironwood Bow, Mace of Dawn"
+            },
+            {
+              "label": "C",
+              "detail": "Starter weapons"
+            }
           ]
         },
         {
@@ -171,9 +253,18 @@
           "href": "/items",
           "displayType": "card-list",
           "highlights": [
-            { "label": "Materials", "detail": "Ore, wood, gems, essences" },
-            { "label": "Consumables", "detail": "Potions, scrolls, food" },
-            { "label": "Equipment", "detail": "Weapons, armor, accessories" }
+            {
+              "label": "Materials",
+              "detail": "Ore, wood, gems, essences"
+            },
+            {
+              "label": "Consumables",
+              "detail": "Potions, scrolls, food"
+            },
+            {
+              "label": "Equipment",
+              "detail": "Weapons, armor, accessories"
+            }
           ]
         },
         {
@@ -183,10 +274,22 @@
           "href": "/guides/crafting",
           "displayType": "step-by-step",
           "highlights": [
-            { "label": "1", "detail": "Gather base materials" },
-            { "label": "2", "detail": "Reach required forge tier" },
-            { "label": "3", "detail": "Combine at the anvil" },
-            { "label": "4", "detail": "Optional: enchant the result" }
+            {
+              "label": "1",
+              "detail": "Gather base materials"
+            },
+            {
+              "label": "2",
+              "detail": "Reach required forge tier"
+            },
+            {
+              "label": "3",
+              "detail": "Combine at the anvil"
+            },
+            {
+              "label": "4",
+              "detail": "Optional: enchant the result"
+            }
           ]
         },
         {
@@ -196,10 +299,22 @@
           "href": "/guides/class-builds",
           "displayType": "card-list",
           "highlights": [
-            { "label": "Warrior", "detail": "Tank/bruiser, high HP" },
-            { "label": "Mage", "detail": "Ranged burst, fragile" },
-            { "label": "Rogue", "detail": "Crit/DPS, high mobility" },
-            { "label": "Cleric", "detail": "Support/healing" }
+            {
+              "label": "Warrior",
+              "detail": "Tank/bruiser, high HP"
+            },
+            {
+              "label": "Mage",
+              "detail": "Ranged burst, fragile"
+            },
+            {
+              "label": "Rogue",
+              "detail": "Crit/DPS, high mobility"
+            },
+            {
+              "label": "Cleric",
+              "detail": "Support/healing"
+            }
           ]
         },
         {
@@ -209,9 +324,18 @@
           "href": "/guides/speedrun",
           "displayType": "tier-grid",
           "highlights": [
-            { "label": "S", "detail": "Any% route (under 25 min)" },
-            { "label": "A", "detail": "100% route (under 90 min)" },
-            { "label": "B", "detail": "Boss rush mode" }
+            {
+              "label": "S",
+              "detail": "Any% route (under 25 min)"
+            },
+            {
+              "label": "A",
+              "detail": "100% route (under 90 min)"
+            },
+            {
+              "label": "B",
+              "detail": "Boss rush mode"
+            }
           ]
         }
       ]

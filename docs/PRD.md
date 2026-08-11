@@ -1351,13 +1351,13 @@ describe('sitemap', () => {
 | # | 待验证项 | 验证里程碑 | 状态 |
 |---|---|---|---|
 | 1 | i18n as-needed 路由策略 | MVP-1 | ✅ 已确认（`prefixDefaultLocale: false`） |
-| 2 | 文章语言 fallback | MVP-1 | ⏳ 待实现验证 |
-| 3 | seoscout MDX 格式适配 | v1.1 | ⏳ 待实现验证 |
+| 2 | 文章语言 fallback | MVP-1 | ✅ 已验证（`/ja/bosses/pyra` 无日文版时回退英文，构建实测通过） |
+| 3 | seoscout MDX 格式适配 | v0.1 | ✅ 已实现（`scripts/convert-from-seoscout.ts` 转换脚本） |
 | 4 | shadcn/ui 在 Astro 下的体验 | — | ❌ 决策不用（采用纯 Astro 原生组件，见 ADR-002） |
-| 5 | 多语言 sitemap/hreflang 自动生成 | MVP-3 | ⏳ 待实现验证 |
-| 6 | 侧边栏动态导航 | MVP-2 | ⏳ 待实现验证 |
-| 7 | 主题色方案落地 | MVP-4 | ⏳ 待实现验证 |
-| 8 | 性能基准实测 | v1.0 | ⏳ 待实测 |
+| 5 | 多语言 sitemap/hreflang 自动生成 | MVP-3 | ✅ 已验证（`@astrojs/sitemap` 自动生成 26 URL + en/ja hreflang alternate） |
+| 6 | 侧边栏动态导航 | MVP-2 | ✅ 已实现（`WikiSidebar` 组件 + `getDynamicNavigation()` 扫描 MDX 生成分组） |
+| 7 | 主题色方案落地 | MVP-4 | ✅ 已验证（`--nav-theme` / `--nav-theme-light` 4 行换皮 + 暗色模式 + 主题切换器） |
+| 8 | 性能基准实测 | v1.0 | ⏳ 待实测（需部署后跑 Lighthouse） |
 | 9 | 迁移成本核算 | v1.0 | ⏳ 待总结 |
 
 ---
@@ -1366,7 +1366,7 @@ describe('sitemap', () => {
 
 ### 15.1 仓库策略
 
-- **仓库地址**：`github.com/<待定>/anvilwiki`
+- **仓库地址**：`github.com/PNGTRID/AnvilWiki`
 - **协议**：MIT（最宽松，允许商用）
 - **主分支**：`main`（受保护，PR 合并）
 - **发版**：Semantic Versioning（v1.0.0 / v1.1.0 / v1.1.1）

@@ -2,19 +2,33 @@
 /**
  * TrendingNow — horizontally scrollable list of trending articles.
  *
- * Renders the `home.popular` quickLinks as a swipeable card row on mobile
+ * Renders the `home.popular.quickLinks` as a swipeable card row on mobile
  * and a static grid on desktop. Pure CSS scroll-snap — no JS.
+ *
+ * quickLinks items may be either:
+ *   - a string (rendered as plain text, no link)
+ *   - { label: string, href: string } (rendered as a link)
  */
 import { Icon } from 'astro-icon/components';
 import { type Locale } from '~/i18n/routing';
+import { localizePath } from '~/lib/url';
+
+type QuickLink = string | { label: string; href: string };
 
 interface Props {
   locale: Locale;
   eyebrow?: string;
   title?: string;
-  quickLinks?: string[];
+  quickLinks?: QuickLink[];
 }
 const { locale, eyebrow = 'Trending', title = 'Trending Now', quickLinks = [] } = Astro.props;
+
+function getHref(link: QuickLink): string | null {
+  return typeof link === 'string' ? null : localizePath(link.href, locale);
+}
+function getLabel(link: QuickLink): string {
+  return typeof link === 'string' ? link : link.label;
+}
 ---
 {quickLinks.length > 0 && (
   <section class="mx-auto max-w-7xl px-4 py-8">
@@ -25,15 +39,17 @@ const { locale, eyebrow = 'Trending', title = 'Trending Now', quickLinks = [] } 
       </div>
     </div>
     <div class="mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-      {quickLinks.map((link: string) => (
-        <a
-          href="#"
-          class="card w-56 shrink-0 snap-start p-4"
-        >
-          <Icon name="lucide:trending-up" class="h-5 w-5 text-nav" />
-          <p class="mt-2 text-sm font-medium leading-snug">{link}</p>
-        </a>
-      ))}
+      {quickLinks.map((link: QuickLink) => {
+        const href = getHref(link);
+        const label = getLabel(link);
+        const Tag = href ? 'a' : 'div';
+        return (
+          <Tag href={href} class="card w-56 shrink-0 snap-start p-4">
+            <Icon name="lucide:trending-up" class="h-5 w-5 text-nav" />
+            <p class="mt-2 text-sm font-medium leading-snug">{label}</p>
+          </Tag>
+        );
+      })}
     </div>
   </section>
 )}
