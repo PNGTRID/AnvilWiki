@@ -1,0 +1,38 @@
+---
+/**
+ * AdBanner — renders a single ad slot via iframe isolation.
+ *
+ * Each ad format is a standalone HTML file in public/ads/*.html, each with
+ * its own window.atOptions. This prevents multi-ad collision (PRD §10).
+ *
+ * The ad key is read from PUBLIC_AD_* env vars. When the key is empty,
+ * the component renders nothing (return null) — beginners can deploy
+ * with no ads configured and the site works fine.
+ */
+interface Props {
+  /** Ad slot identifier, matches a file in public/ads/<type>.html. */
+  type: 'banner-320x50' | 'banner-300x250' | 'banner-728x90' | 'banner-468x60' | 'sidebar-160x600' | 'sidebar-160x300';
+  /** Load eagerly (above-the-fold ads) or lazily. */
+  eager?: boolean;
+  /** Extra classes for the wrapper. */
+  class?: string;
+}
+const { type, eager = false, class: className = '' } = Astro.props;
+
+// Extract dimensions from the type string.
+const match = type.match(/(\d+)x(\d+)/);
+const width = match ? parseInt(match[1], 10) : 300;
+const height = match ? parseInt(match[2], 10) : 50;
+---
+<div class:list={['flex items-center justify-center', className]}>
+  <iframe
+    src={`/ads/${type}.html`}
+    width={width}
+    height={height}
+    scrolling="no"
+    loading={eager ? 'eager' : 'lazy'}
+    style="border:none; margin:0; padding:0;"
+    title={`advertisement ${type}`}
+    aria-hidden="true"
+  ></iframe>
+</div>

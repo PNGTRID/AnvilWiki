@@ -1,0 +1,56 @@
+---
+/**
+ * ExploreModules — renders the 8 homepage content modules.
+ *
+ * Each module specifies a `displayType` that controls how its `highlights`
+ * are rendered. We dispatch to the corresponding sub-component.
+ *
+ * Supported displayTypes (per PRD §6.5):
+ *   - code-cards   → CodeCards (redeemable codes with badge)
+ *   - step-by-step → StepByStep (numbered progression steps)
+ *   - tier-grid    → TierGrid (S/A/B/C ranked items)
+ *   - card-list    → CardList (simple labeled cards)
+ */
+import { Icon } from 'astro-icon/components';
+import CodeCards from './modules/CodeCards.astro';
+import StepByStep from './modules/StepByStep.astro';
+import TierGrid from './modules/TierGrid.astro';
+import CardList from './modules/CardList.astro';
+import { type Locale } from '~/i18n/routing';
+import { localizePath } from '~/lib/url';
+
+interface Props {
+  modules: Array<{
+    order: number;
+    name: string;
+    description: string;
+    href: string;
+    displayType: string;
+    highlights: Array<{ label: string; detail: string; badge?: string }>;
+  }>;
+  locale: Locale;
+}
+const { modules, locale } = Astro.props;
+---
+<div class="grid gap-6 md:grid-cols-2">
+  {modules.map((m) => (
+    <section class="card overflow-hidden p-5">
+      <div class="mb-3 flex items-baseline justify-between gap-2">
+        <h3 class="text-lg font-bold leading-snug">{m.name}</h3>
+        <a
+          href={localizePath(m.href, locale)}
+          class="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-nav hover:underline"
+        >
+          View
+          <Icon name="lucide:arrow-right" class="h-3 w-3" />
+        </a>
+      </div>
+      <p class="mb-4 text-sm text-muted-foreground">{m.description}</p>
+
+      {m.displayType === 'code-cards' && <CodeCards highlights={m.highlights} />}
+      {m.displayType === 'step-by-step' && <StepByStep highlights={m.highlights} />}
+      {m.displayType === 'tier-grid' && <TierGrid highlights={m.highlights} />}
+      {m.displayType === 'card-list' && <CardList highlights={m.highlights} />}
+    </section>
+  ))}
+</div>

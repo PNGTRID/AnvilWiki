@@ -1,0 +1,97 @@
+---
+/**
+ * List page — shows all articles in a category for a locale.
+ *
+ * Behavior (PRD §9.3): does NOT fall back to English. If the locale has
+ * no articles in this category, the empty state is shown.
+ */
+import { Icon } from 'astro-icon/components';
+import LocaleLayout from '~/components/layout/LocaleLayout.astro';
+import { NAVIGATION_CONFIG } from '~/config/navigation';
+import { type Locale } from '~/i18n/routing';
+import { getUi } from '~/i18n/ui';
+import { getEntriesByCategory, parseEntryId } from '~/lib/content';
+import { itemListJsonLd, pageTitle } from '~/lib/seo';
+import { detailPath } from '~/lib/url';
+
+interface Props {
+  locale: Locale;
+  category: string;
+}
+const { locale, category } = Astro.props;
+const ui = getUi(locale);
+const nav = ui.nav as Record<string, string>;
+const shared = ui.shared as Record<string, string>;
+const overview = (ui.overview as Record<string, { overviewTitle: string; overviewDescription: string }>)[category];
+const navItem = NAVIGATION_CONFIG.find((n) => n.key === category);
+
+const title = overview?.overviewTitle ?? (nav[category] ?? category);
+const description = overview?.overviewDescription ?? `${title} guides and articles.`;
+
+const entries = await getEntriesByCategory(category, locale);
+
+const jsonLd = [
+  itemListJsonLd({
+    category,
+    categoryLabel: title,
+    locale,
+    items: entries.map((e) => {
+      const slug = parseEntryId(e.id)?.slug ?? '';
+      return { title: e.data.title, slug };
+    }),
+  }),
+];
+---
+<LocaleLayout
+  locale={locale}
+  title={pageTitle(title)}
+  description={description}
+  jsonLd={jsonLd}
+>
+  <div class="space-y-6">
+    <header>
+      <nav class="text-sm text-muted-foreground" aria-label="breadcrumb">
+        <a href="/" class="hover:text-nav">{nav.home}</a>
+        <span class="mx-1">/</span>
+        <span class="text-foreground">{title}</span>
+      </nav>
+      <div class="mt-2 flex items-center gap-3">
+        {navItem && <Icon name={navItem.icon} class="h-7 w-7 text-nav" />}
+        <h1 class="text-3xl font-extrabold tracking-tight">{title}</h1>
+      </div>
+      <p class="mt-2 max-w-2xl text-muted-foreground">{description}</p>
+    </header>
+
+    {entries.length === 0 ? (
+      <div class="rounded-lg border border-dashed bg-card p-12 text-center">
+        <Icon name="lucide:inbox" class="mx-auto h-10 w-10 text-muted-foreground" />
+        <p class="mt-3 text-muted-foreground">{shared.noArticles}</p>
+      </div>
+    ) : (
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {entries.map((entry) => {
+          const slug = parseEntryId(entry.id)?.slug ?? '';
+          return (
+            <a href={detailPath(category, slug, locale)} class="card p-5">
+              {entry.data.image && (
+                <img
+                  src={entry.data.image}
+                  alt=""
+                  class="mb-3 aspect-video w-full rounded-md object-cover"
+                  loading="lazy"
+                />
+              )}
+              <h2 class="font-semibold leading-snug">{entry.data.title}</h2>
+              <p class="mt-1 text-sm text-muted-foreground line-clamp-2">{entry.data.description}</p>
+              <p class="mt-3 text-xs text-muted-foreground">
+                {entry.data.lastModified
+                  ? `${shared.lastUpdated}: ${entry.data.lastModified.toLocaleDateString(locale)}`
+                  : `${shared.publishedOn}: ${entry.data.date.toLocaleDateString(locale)}`}
+              </p>
+            </a>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</LocaleLayout>

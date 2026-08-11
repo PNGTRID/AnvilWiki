@@ -1,0 +1,45 @@
+---
+/**
+ * StickyBanner — the 320×50 sticky mobile banner.
+ *
+ * Per the course's monetization data, this single ad slot accounts for ~50%
+ * of total revenue. It sticks below the header and includes a dismiss button
+ * (persisted in localStorage) so users can close it.
+ *
+ * The ad key (PUBLIC_AD_MOBILE_320X50) gates rendering: empty = no ad.
+ */
+import { Icon } from 'astro-icon/components';
+import AdBanner from './AdBanner.astro';
+
+const adKey = import.meta.env.PUBLIC_AD_MOBILE_320X50;
+---
+{adKey && (
+  <div id="sticky-banner" class="sticky top-14 z-30 border-b border-border bg-background/95 py-2 backdrop-blur">
+    <div class="relative mx-auto max-w-4xl px-4">
+      <AdBanner type="banner-320x50" eager class="mx-auto" />
+      <button
+        id="dismiss-sticky"
+        type="button"
+        aria-label="Close ad"
+        class="absolute -right-1 -top-1 rounded-full border bg-background p-1 text-muted-foreground transition hover:bg-muted"
+      >
+        <Icon name="lucide:x" class="h-3 w-3" />
+      </button>
+    </div>
+  </div>
+)}
+<script is:inline>
+  (() => {
+    const banner = document.getElementById('sticky-banner');
+    const btn = document.getElementById('dismiss-sticky');
+    if (!banner || !btn) return;
+    if (localStorage.getItem('sticky-dismissed') === '1') {
+      banner.remove();
+      return;
+    }
+    btn.addEventListener('click', () => {
+      localStorage.setItem('sticky-dismissed', '1');
+      banner.remove();
+    });
+  })();
+</script>

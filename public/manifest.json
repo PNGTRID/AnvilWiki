@@ -1,0 +1,21 @@
+{
+  "name": "Anvil Quest Wiki",
+  "short_name": "AQ Wiki",
+  "description": "Complete Anvil Quest wiki with boss guides, codes, and tier lists.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f97316",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

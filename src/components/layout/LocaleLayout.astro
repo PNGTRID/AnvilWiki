@@ -1,0 +1,31 @@
+---
+/**
+ * LocaleLayout — the public shell for all [locale]/* pages.
+ *
+ * Wraps BaseLayout with the site header and footer.
+ * Pages under src/pages/[locale]/ pass their content via the default slot.
+ */
+import BaseLayout from './BaseLayout.astro';
+import SiteHeader from '~/components/header/SiteHeader.astro';
+import SiteFooter from '~/components/footer/SiteFooter.astro';
+import { type Locale } from '~/i18n/routing';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  alternates?: Array<{ hreflang: string; href: string }>;
+  image?: string;
+  jsonLd?: Record<string, unknown>[];
+  article?: boolean;
+}
+const { locale, ...rest } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout locale={locale} {...rest}>
+  <SiteHeader locale={locale} currentPath={currentPath} />
+  <main class="mx-auto min-h-[calc(100vh-3.5rem)] max-w-7xl px-4 py-8">
+    <slot />
+  </main>
+  <SiteFooter locale={locale} />
+</BaseLayout>

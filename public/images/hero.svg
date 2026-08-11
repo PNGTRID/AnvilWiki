@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#c2410c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <text x="600" y="315" font-family="system-ui, sans-serif" font-size="72" font-weight="bold" fill="#fff" text-anchor="middle" dominant-baseline="middle">Anvil Quest Wiki</text>
+  <text x="600" y="400" font-family="system-ui, sans-serif" font-size="28" fill="#ffedd5" text-anchor="middle" dominant-baseline="middle">Replace this image at public/images/hero.webp</text>
+</svg>

@@ -1,0 +1,31 @@
+---
+/**
+ * LegalPage layout — wraps legal pages (About/Privacy/Terms/Copyright).
+ *
+ * Per PRD, legal page body text is hardcoded English (not translated) but
+ * the surrounding chrome (nav, footer, theme) respects the current locale.
+ */
+import LocaleLayout from './LocaleLayout.astro';
+import { type Locale, defaultLocale } from '~/i18n/routing';
+import { site } from '~/config/site';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description?: string;
+  /** ISO date string for "last updated". */
+  lastUpdated?: string;
+}
+const { locale, title, description = `${title} for ${site.name}.`, lastUpdated } = Astro.props;
+---
+<LocaleLayout locale={locale} title={title} description={description}>
+  <article class="mx-auto max-w-3xl">
+    <h1 class="text-3xl font-extrabold tracking-tight md:text-4xl">{title}</h1>
+    {lastUpdated && (
+      <p class="mt-2 text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
+    )}
+    <div class="prose prose-lg mt-8 max-w-none dark:prose-invert prose-headings:scroll-mt-20 prose-a:text-nav">
+      <slot />
+    </div>
+  </article>
+</LocaleLayout>

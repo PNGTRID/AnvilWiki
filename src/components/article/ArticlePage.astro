@@ -1,0 +1,153 @@
+---
+/**
+ * Article detail page.
+ *
+ * Behavior (PRD §9.3): single article falls back to English if locale version
+ * missing — direct URL access never 404s.
+ *
+ * Renders:
+ *   - H1 from entry.data.title (the MDX body must NOT contain an H1)
+ *   - breadcrumb
+ *   - rendered MDX body
+ *   - related articles (by shared tags)
+ *   - Article + BreadcrumbList JSON-LD
+ */
+import { Icon } from 'astro-icon/components';
+import { render } from 'astro:content';
+import LocaleLayout from '~/components/layout/LocaleLayout.astro';
+import { NAVIGATION_CONFIG } from '~/config/navigation';
+import { siteUrl } from '~/config/site';
+import { type Locale } from '~/i18n/routing';
+import { getUi } from '~/i18n/ui';
+import { getRelatedEntries, parseEntryId, type WikiEntry, type ResolvedEntry } from '~/lib/content';
+import { articleJsonLd, breadcrumbJsonLd, pageTitle } from '~/lib/seo';
+import { listPath, detailPath } from '~/lib/url';
+
+interface Props {
+  locale: Locale;
+  resolved: ResolvedEntry;
+}
+const { locale, resolved } = Astro.props;
+const { entry, servedLocale, isFallback } = resolved;
+const ui = getUi(locale);
+const nav = ui.nav as Record<string, string>;
+const shared = ui.shared as Record<string, string>;
+const overview = (ui.overview as Record<string, { overviewTitle: string }>)[entry.data.category];
+const navItem = NAVIGATION_CONFIG.find((n) => n.key === entry.data.category);
+
+const parsed = parseEntryId(entry.id);
+const slug = parsed?.slug ?? '';
+const category = entry.data.category;
+const categoryLabel = overview?.overviewTitle ?? (nav[category] ?? category);
+
+const coverUrl = entry.data.image
+  ? entry.data.image.startsWith('http')
+    ? entry.data.image
+    : `${siteUrl}${entry.data.image}`
+  : `${siteUrl}/images/hero.webp`;
+
+const related = await getRelatedEntries(entry, locale, 3);
+
+const { Content } = await render(entry);
+
+const jsonLd = [
+  articleJsonLd({
+    title: entry.data.title,
+    description: entry.data.description,
+    image: coverUrl,
+    datePublished: entry.data.date,
+    dateModified: entry.data.lastModified,
+    category,
+    slug,
+    locale,
+  }),
+  breadcrumbJsonLd({
+    category,
+    categoryLabel,
+    title: entry.data.title,
+    slug,
+    locale,
+  }),
+];
+---
+<LocaleLayout
+  locale={locale}
+  title={pageTitle(entry.data.title)}
+  description={entry.data.description}
+  image={coverUrl}
+  article={true}
+  jsonLd={jsonLd}
+>
+  <article class="mx-auto max-w-3xl">
+    {/* Breadcrumb */}
+    <nav class="text-sm text-muted-foreground" aria-label="breadcrumb">
+      <a href="/" class="hover:text-nav">{nav.home}</a>
+      <span class="mx-1">/</span>
+      <a href={listPath(category, locale)} class="hover:text-nav">{categoryLabel}</a>
+    </nav>
+
+    {/* Header */}
+    <header class="mt-3">
+      <div class="flex items-center gap-2">
+        {navItem && <Icon name={navItem.icon} class="h-5 w-5 text-nav" />}
+        <span class="text-sm font-medium uppercase tracking-wider text-nav">{categoryLabel}</span>
+      </div>
+      <h1 class="mt-2 text-3xl font-extrabold tracking-tight md:text-4xl">{entry.data.title}</h1>
+      <p class="mt-3 text-muted-foreground">{entry.data.description}</p>
+      <div class="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
+        <span class="inline-flex items-center gap-1">
+          <Icon name="lucide:calendar" class="h-3.5 w-3.5" />
+          {entry.data.date.toLocaleDateString(locale)}
+        </span>
+        {entry.data.lastModified && (
+          <span class="inline-flex items-center gap-1">
+            <Icon name="lucide:refresh-cw" class="h-3.5 w-3.5" />
+            {shared.lastUpdated}: {entry.data.lastModified.toLocaleDateString(locale)}
+          </span>
+        )}
+        {isFallback && servedLocale !== locale && (
+          <span class="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5">
+            <Icon name="lucide:alert-circle" class="h-3 w-3" />
+            English fallback
+          </span>
+        )}
+      </div>
+    </header>
+
+    {/* Body */}
+    <div class="prose prose-lg mt-8 max-w-none dark:prose-invert prose-headings:scroll-mt-20 prose-a:text-nav">
+      <Content />
+    </div>
+
+    {/* Tags */}
+    {entry.data.tags.length > 0 && (
+      <div class="mt-8 flex flex-wrap gap-2">
+        {entry.data.tags.map((tag: string) => (
+          <span class="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
+            <Icon name="lucide:hash" class="h-3 w-3" />
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+
+    {/* Related */}
+    {related.length > 0 && (
+      <section class="mt-12 border-t border-border pt-8">
+        <h2 class="text-xl font-bold">{shared.relatedArticles}</h2>
+        <div class="mt-4 grid gap-3 sm:grid-cols-3">
+          {related.map((rel: WikiEntry) => {
+            const relSlug = parseEntryId(rel.id)?.slug ?? '';
+            const relCat = rel.data.category;
+            return (
+              <a href={detailPath(relCat, relSlug, locale)} class="card p-4">
+                <p class="text-xs uppercase tracking-wider text-muted-foreground">{relCat}</p>
+                <h3 class="mt-1 text-sm font-semibold leading-snug">{rel.data.title}</h3>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )}
+  </article>
+</LocaleLayout>

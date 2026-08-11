@@ -1,0 +1,24 @@
+---
+/**
+ * Root index — handles the default-locale (English) homepage.
+ *
+ * With `prefixDefaultLocale: false`, the root URL `/` maps here directly
+ * (not to /en/). We render the English homepage inline rather than redirecting,
+ * because a redirect adds a round-trip and hurts LCP.
+ *
+ * Non-default locales use /ja/ etc., handled by src/pages/[locale]/index.astro.
+ */
+import HomePage from '~/components/home/HomePage.astro';
+import { defaultLocale } from '~/i18n/routing';
+import { websiteJsonLd, faqPageJsonLd } from '~/lib/seo';
+import { getUi } from '~/i18n/ui';
+
+const locale = defaultLocale;
+const ui = getUi(locale);
+const home = (ui.home as Record<string, any>);
+const jsonLd = [
+  websiteJsonLd(locale),
+  ...(home.faq?.items?.length ? [faqPageJsonLd(home.faq.items)] : []),
+];
+---
+<HomePage locale={locale} jsonLd={jsonLd} />

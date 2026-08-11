@@ -1,0 +1,269 @@
+{
+  "site": {
+    "name": "Anvil Quest Wiki",
+    "shortName": "AQ Wiki",
+    "description": "Complete Anvil Quest wiki with boss guides, tier lists, codes, item locations, and beginner tips. Updated daily by the community.",
+    "tagline": "Your forge for everything Anvil Quest",
+    "legalNotice": "Anvil Quest Wiki is a fan-made community site. Not affiliated with or endorsed by the game developer."
+  },
+  "nav": {
+    "home": "Home",
+    "bosses": "Bosses",
+    "guides": "Guides",
+    "items": "Items",
+    "codes": "Codes",
+    "toggleTheme": "Toggle theme",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "shared": {
+    "readMore": "Read more",
+    "lastUpdated": "Last updated",
+    "publishedOn": "Published",
+    "noArticles": "No articles yet. Check back soon!",
+    "relatedArticles": "Related Articles",
+    "onThisPage": "On this page",
+    "backToCategory": "Back to",
+    "browseAll": "Browse all",
+    "viewAll": "View all"
+  },
+  "overview": {
+    "bosses": {
+      "overviewTitle": "All Bosses",
+      "overviewDescription": "Complete strategy guides for every boss in Anvil Quest, including attack patterns, weaknesses, and recommended loadouts."
+    },
+    "guides": {
+      "overviewTitle": "All Guides",
+      "overviewDescription": "In-depth tutorials covering progression, crafting, combat mechanics, and advanced strategies for Anvil Quest."
+    },
+    "items": {
+      "overviewTitle": "All Items",
+      "overviewDescription": "Comprehensive item database with locations, stats, rarity tiers, and crafting recipes."
+    },
+    "codes": {
+      "overviewTitle": "All Codes",
+      "overviewDescription": "Active Anvil Quest codes for free coins, gems, and exclusive items. Verified daily."
+    }
+  },
+  "home": {
+    "meta": {
+      "title": "Anvil Quest Wiki - Complete Boss Guides, Codes & Tier Lists",
+      "description": "The most complete Anvil Quest wiki. Boss strategies, active codes, item locations, tier lists, and beginner guides. Updated daily by the community."
+    },
+    "hero": {
+      "eyebrow": "Fan-Made Community Wiki",
+      "title": "Anvil Quest Wiki",
+      "description": "Your complete guide to Anvil Quest. Boss strategies, active codes, item locations, tier lists, and everything you need to master the forge.",
+      "stats": [
+        "28 Bosses Covered",
+        "150+ Items Documented",
+        "Daily Code Updates",
+        "4 Languages"
+      ],
+      "primaryCta": "Play Anvil Quest",
+      "secondaryCta": "Browse Guides",
+      "tertiaryCta": "Latest Codes",
+      "videoId": "dQw4w9WgXcQ"
+    },
+    "updates": {
+      "title": "Recent Updates",
+      "browse": "Browse all guides"
+    },
+    "start": {
+      "eyebrow": "Start Here",
+      "title": "Your Anvil Quest Journey",
+      "cards": [
+        {
+          "number": "1",
+          "title": "Beginner Guide",
+          "description": "New to Anvil Quest? Start here with the essential mechanics, controls, and your first hour walkthrough."
+        },
+        {
+          "number": "2",
+          "title": "Fastest Leveling",
+          "description": "Optimize your XP gains with the most efficient quest routes and farming spots in the early game."
+        },
+        {
+          "number": "3",
+          "title": "Best Starting Class",
+          "description": "Compare the four starting classes and pick the one that matches your playstyle."
+        },
+        {
+          "number": "4",
+          "title": "All Active Codes",
+          "description": "Redeem the latest codes for free coins, gems, and exclusive cosmetic items."
+        }
+      ]
+    },
+    "popular": {
+      "eyebrow": "Trending Now",
+      "title": "Most Read This Week",
+      "quickLinks": ["Gelum Boss Guide", "Best Weapons Tier List", "Code Redemption Guide"]
+    },
+    "aboutGame": {
+      "title": "What is Anvil Quest?",
+      "paragraphs": [
+        "Anvil Quest is a fantasy RPG on Roblox developed by Forge Studios. Players take on the role of a blacksmith-apprentice-turned-hero, forging weapons, recruiting companions, and battling through progressively harder boss encounters across the Shattered Isles.",
+        "The game launched in January 2026 and quickly grew to over 12 million visits thanks to its deep crafting system, regular content updates, and a thriving competitive speedrun community."
+      ],
+      "stats": [
+        { "label": "Developer", "value": "Forge Studios" },
+        { "label": "Platform", "value": "Roblox" },
+        { "label": "Genre", "value": "Fantasy RPG" },
+        { "label": "Visits", "value": "12.6M+" },
+        { "label": "Active Players", "value": "45K daily" }
+      ],
+      "cta": "Explore All Guides"
+    },
+    "explore": {
+      "title": "Explore the Wiki",
+      "description": "Everything you need, organized by category. Pick a topic and dive in.",
+      "modules": [
+        {
+          "order": 1,
+          "name": "Anvil Quest Codes",
+          "description": "Active codes for free coins, gems, and exclusive items. Updated daily.",
+          "href": "/codes",
+          "displayType": "code-cards",
+          "highlights": [
+            { "label": "WELCOME2026", "detail": "500 coins + starter sword", "badge": "Active" },
+            { "label": "FORGE", "detail": "1 rare gem", "badge": "Active" },
+            { "label": "12MVISITS", "detail": "Exclusive cosmetic", "badge": "Expires soon" }
+          ]
+        },
+        {
+          "order": 2,
+          "name": "Boss Strategies",
+          "description": "Complete guides for every boss with attack patterns and weaknesses.",
+          "href": "/bosses",
+          "displayType": "card-list",
+          "highlights": [
+            { "label": "Gelum", "detail": "Frost warden, early-game gatekeeper" },
+            { "label": "Pyra", "detail": "Fire titan, mid-game DPS check" },
+            { "label": "Voidking", "detail": "Final boss, requires full prep" }
+          ]
+        },
+        {
+          "order": 3,
+          "name": "Progression Guides",
+          "description": "Leveling routes, class builds, and endgame preparation.",
+          "href": "/guides",
+          "displayType": "step-by-step",
+          "highlights": [
+            { "label": "1", "detail": "Pick a starting class" },
+            { "label": "2", "detail": "Clear the tutorial forge" },
+            { "label": "3", "detail": "Unlock the Shattered Isles" },
+            { "label": "4", "detail": "Defeat your first world boss" }
+          ]
+        },
+        {
+          "order": 4,
+          "name": "Weapon Tier List",
+          "description": "Ranking every weapon from S to C based on DPS, utility, and synergy.",
+          "href": "/guides/weapon-tier-list",
+          "displayType": "tier-grid",
+          "highlights": [
+            { "label": "S", "detail": "Voidforge Blade, Stormcaller" },
+            { "label": "A", "detail": "Emberclaw, Frostpike" },
+            { "label": "B", "detail": "Ironwood Bow, Mace of Dawn" },
+            { "label": "C", "detail": "Starter weapons" }
+          ]
+        },
+        {
+          "order": 5,
+          "name": "Item Database",
+          "description": "Locations, stats, and crafting recipes for all 150+ items.",
+          "href": "/items",
+          "displayType": "card-list",
+          "highlights": [
+            { "label": "Materials", "detail": "Ore, wood, gems, essences" },
+            { "label": "Consumables", "detail": "Potions, scrolls, food" },
+            { "label": "Equipment", "detail": "Weapons, armor, accessories" }
+          ]
+        },
+        {
+          "order": 6,
+          "name": "Crafting Recipes",
+          "description": "Every recipe in the game, sorted by forge tier.",
+          "href": "/guides/crafting",
+          "displayType": "step-by-step",
+          "highlights": [
+            { "label": "1", "detail": "Gather base materials" },
+            { "label": "2", "detail": "Reach required forge tier" },
+            { "label": "3", "detail": "Combine at the anvil" },
+            { "label": "4", "detail": "Optional: enchant the result" }
+          ]
+        },
+        {
+          "order": 7,
+          "name": "Class Builds",
+          "description": "Optimal stat spreads and skill trees for each of the four classes.",
+          "href": "/guides/class-builds",
+          "displayType": "card-list",
+          "highlights": [
+            { "label": "Warrior", "detail": "Tank/bruiser, high HP" },
+            { "label": "Mage", "detail": "Ranged burst, fragile" },
+            { "label": "Rogue", "detail": "Crit/DPS, high mobility" },
+            { "label": "Cleric", "detail": "Support/healing" }
+          ]
+        },
+        {
+          "order": 8,
+          "name": "Speedrun Strategies",
+          "description": "World-record routes, skip tricks, and optimal boss order.",
+          "href": "/guides/speedrun",
+          "displayType": "tier-grid",
+          "highlights": [
+            { "label": "S", "detail": "Any% route (under 25 min)" },
+            { "label": "A", "detail": "100% route (under 90 min)" },
+            { "label": "B", "detail": "Boss rush mode" }
+          ]
+        }
+      ]
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "description": "Quick answers to the most common questions about Anvil Quest.",
+      "items": [
+        {
+          "question": "What is Anvil Quest?",
+          "answer": "Anvil Quest is a fantasy RPG on Roblox where you play as a blacksmith apprentice forging weapons and battling bosses across the Shattered Isles. It launched in January 2026 and has over 12 million visits."
+        },
+        {
+          "question": "Which class should beginners pick in Anvil Quest?",
+          "answer": "Warrior is the most beginner-friendly class thanks to high HP and simple mechanics. Once you understand the game, Rogue offers the highest damage output for experienced players."
+        },
+        {
+          "question": "How do I redeem codes in Anvil Quest?",
+          "answer": "Open the game, click the settings gear in the top-right, paste your code into the 'Redeem Code' field, and hit confirm. Codes are case-sensitive."
+        },
+        {
+          "question": "Is Anvil Quest free to play?",
+          "answer": "Yes, Anvil Quest is completely free on Roblox. There are optional cosmetic microtransactions, but they do not affect gameplay balance."
+        },
+        {
+          "question": "How often does Anvil Quest update?",
+          "answer": "Forge Studios releases major content updates roughly every two weeks, with smaller hotfixes in between. New bosses and codes are typically added with each major patch."
+        }
+      ]
+    },
+    "finalCta": {
+      "title": "Ready to Master the Forge?",
+      "description": "Bookmark this wiki and check back daily for new codes, boss guides, and tier list updates.",
+      "primary": "Play Anvil Quest",
+      "secondary": "Join Our Discord"
+    }
+  },
+  "footer": {
+    "playGame": "Play Anvil Quest",
+    "officialDiscord": "Official Discord",
+    "officialYoutube": "Official YouTube",
+    "officialTwitter": "Official Twitter",
+    "officialReddit": "Official Reddit",
+    "about": "About",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "copyright": "Copyright",
+    "copyrightText": "© 2026 Anvil Quest Wiki. Fan-made, not affiliated with Forge Studios."
+  }
+}

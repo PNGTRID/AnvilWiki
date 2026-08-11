@@ -1,0 +1,95 @@
+---
+/**
+ * Unified route for non-default-locale pages: /[locale]/[...slug]
+ *
+ * Handles:
+ *   - /[locale]/[category]            → list page (slug.length === 1)
+ *   - /[locale]/[category]/[slug]     → article detail (slug.length > 1)
+ *
+ * English (default locale, no prefix) is handled by src/pages/[...slug].astro.
+ */
+import ListPage from '~/components/article/ListPage.astro';
+import ArticlePage from '~/components/article/ArticlePage.astro';
+import { CONTENT_TYPES } from '~/config/navigation';
+import { isLocale, defaultLocale, type Locale } from '~/i18n/routing';
+import { getEntryWithFallback, parseEntryId, type ResolvedEntry } from '~/lib/content';
+
+export async function getStaticPaths() {
+  const { getCollection } = await import('astro:content');
+  const all = await getCollection('wiki');
+
+  const paths: Array<{
+    params: { locale: string; slug: string };
+  }> = [];
+
+  // Only non-default locales here.
+  const nonDefaultLocales: Locale[] = ['ja'].filter((l) => l !== defaultLocale) as Locale[];
+
+  for (const locale of nonDefaultLocales) {
+    // List page paths: one per category per locale.
+    for (const ct of CONTENT_TYPES) {
+      paths.push({ params: { locale, slug: ct } });
+    }
+
+    // Article paths from this locale's own MDX.
+    for (const entry of all) {
+      const parsed = parseEntryId(entry.id);
+      if (!parsed || parsed.locale !== locale) continue;
+      paths.push({ params: { locale, slug: `${parsed.category}/${parsed.slug}` } });
+    }
+
+    // Also generate paths for English articles so fallback works at request
+    // time (e.g. /ja/bosses/pyra where ja version doesn't exist).
+    for (const entry of all) {
+      const parsed = parseEntryId(entry.id);
+      if (!parsed || parsed.locale !== defaultLocale) continue;
+      const slugStr = `${parsed.category}/${parsed.slug}`;
+      // Avoid duplicate params (if same slug exists in both locales).
+      const exists = paths.some(
+        (p) => p.params.locale === locale && p.params.slug === slugStr,
+      );
+      if (!exists) {
+        paths.push({ params: { locale, slug: slugStr } });
+      }
+    }
+  }
+
+  return paths;
+}
+
+interface Props {
+  locale: string;
+  slug: string;
+}
+
+const localeParam = Astro.params.locale;
+const slug = Astro.params.slug;
+if (!isLocale(localeParam) || localeParam === defaultLocale || !slug) {
+  return new Response('Not Found', { status: 404 });
+}
+const locale: Locale = localeParam;
+const parts = slug.split('/').filter(Boolean);
+
+// Decide what to render based on slug length.
+let view: 'list' | 'article' | 'not-found' = 'not-found';
+let category = '';
+let resolved: ResolvedEntry | null = null;
+
+if (parts.length === 1) {
+  category = parts[0];
+  view = CONTENT_TYPES.includes(category) ? 'list' : 'not-found';
+} else {
+  category = parts[0];
+  const articleSlug = parts.slice(1).join('/');
+  if (CONTENT_TYPES.includes(category)) {
+    resolved = await getEntryWithFallback(category, articleSlug, locale);
+    view = resolved ? 'article' : 'not-found';
+  }
+}
+
+if (view === 'not-found') {
+  return new Response('Not Found', { status: 404 });
+}
+---
+{view === 'list' && <ListPage locale={locale} category={category} />}
+{view === 'article' && resolved && <ArticlePage locale={locale} resolved={resolved} />}

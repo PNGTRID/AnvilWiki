@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!--
+  Adsterra ad slot — 468×60.
+  Isolated HTML file to prevent window.atOptions collision across slots.
+  Replace YOUR_AD_KEY with the actual key, or inject via the PUBLIC_AD_BANNER_468X60 env var.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>body { margin: 0; padding: 0; overflow: hidden; }</style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      atOptions = {
+        'key': 'YOUR_AD_KEY',
+        'format': 'iframe',
+        'height': 60,
+        'width': 468,
+        'params': {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/YOUR_AD_KEY/invoke.js"></script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+---
+/**
+ * Tier-grid displayType — S/A/B/C ranked items.
+ * Used for tier lists on the homepage.
+ */
+interface Props {
+  highlights: Array<{ label: string; detail: string }>;
+}
+const { highlights } = Astro.props;
+
+const tierColors: Record<string, string> = {
+  S: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+  A: 'bg-purple-500/15 text-purple-700 dark:text-purple-400',
+  B: 'bg-blue-500/15 text-blue-700 dark:text-blue-400',
+  C: 'bg-zinc-500/15 text-zinc-600 dark:text-zinc-400',
+};
+---
+<div class="space-y-2">
+  {highlights.map((h) => (
+    <div class="flex items-center gap-3 rounded-md border bg-card p-3">
+      <span class:list={[
+        'flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-sm font-bold',
+        tierColors[h.label] ?? 'bg-muted text-muted-foreground',
+      ]}>
+        {h.label}
+      </span>
+      <p class="text-sm text-muted-foreground">{h.detail}</p>
+    </div>
+  ))}
+</div>

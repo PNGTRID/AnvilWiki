@@ -1,0 +1,99 @@
+---
+/**
+ * BaseLayout — the root <html> + <head> shell shared by every page.
+ *
+ * Responsibilities:
+ *   - <html lang> and theme class (no FOUC via inline script)
+ *   - global <head>: charset, viewport, title template, description, og/twitter defaults
+ *   - Organization JSON-LD (every page)
+ *   - global styles
+ *
+ * Pages should wrap themselves in LocaleLayout (which wraps this), not call this directly.
+ */
+import '~/styles/globals.css';
+import { site, siteUrl } from '~/config/site';
+import { organizationJsonLd } from '~/lib/seo';
+import JsonLd from '~/components/seo/JsonLd.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  locale: string;
+  /** Per-page alternates for hreflang. */
+  alternates?: Array<{ hreflang: string; href: string }>;
+  /** og:image override (absolute URL). Defaults to hero.webp. */
+  image?: string;
+  /** Optional extra JSON-LD objects to inject (WebSite, Article, etc.). */
+  jsonLd?: Record<string, unknown>[];
+  /** Set to true on article pages for og:type=article. */
+  article?: boolean;
+}
+
+const {
+  title,
+  description,
+  locale,
+  alternates = [],
+  image = `${siteUrl}/images/hero.webp`,
+  jsonLd = [],
+  article = false,
+} = Astro.props;
+
+const fullTitle = title.includes(site.name) ? title : `${title} — ${site.name}`;
+const orgJsonLd = organizationJsonLd();
+---
+<!doctype html>
+<html lang={locale} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, siteUrl).href} />
+
+    {/* hreflang alternates */}
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}${Astro.url.pathname.replace(/^\/(en|ja)/, '')}`} />
+
+    {/* Open Graph */}
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:url" content={new URL(Astro.url.pathname, siteUrl).href} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content={locale} />
+
+    {/* Twitter */}
+    <meta name="twitter:card" content={article ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    {/* Theme color (browser chrome) */}
+    <meta name="theme-color" content="hsl(var(--nav-theme))" />
+
+    {/* JSON-LD: Organization (global) + any page-specific */}
+    <JsonLd data={orgJsonLd} />
+    {jsonLd.map((d) => <JsonLd data={d} />)}
+
+    {/* No-FOUC theme init — runs before first paint. */}
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (stored === 'dark' || (!stored && prefersDark)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-background text-foreground antialiased">
+    <slot />
+  </body>
+</html>

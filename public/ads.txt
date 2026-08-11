@@ -1,0 +1,3 @@
+# ads.txt — authorized digital sellers.
+# Replace with your actual Adsterra / AdSense publisher ID when monetizing.
+# Learn more: https://iabtechlab.com/ads-txt/

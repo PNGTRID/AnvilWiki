@@ -1,0 +1,27 @@
+---
+/**
+ * Theme toggle — switches between light and dark.
+ * Pure vanilla JS (5 lines). No framework runtime.
+ * The .dark class is toggled on <html>; globals.css handles the variable swap.
+ */
+import { Icon } from 'astro-icon/components';
+---
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="Toggle theme"
+  class="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground transition hover:bg-muted"
+>
+  <Icon name="lucide:sun" class="h-5 w-5 dark:hidden" />
+  <Icon name="lucide:moon" class="hidden h-5 w-5 dark:block" />
+</button>
+<script is:inline>
+  (() => {
+    const btn = document.getElementById('theme-toggle');
+    btn?.addEventListener('click', () => {
+      const html = document.documentElement;
+      const isDark = html.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+  })();
+</script>

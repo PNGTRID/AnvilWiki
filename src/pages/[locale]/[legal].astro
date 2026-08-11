@@ -1,0 +1,45 @@
+---
+/**
+ * Non-default-locale legal pages: /[locale]/about, /[locale]/privacy-policy, etc.
+ * Body stays in English (per PRD), but chrome respects locale.
+ */
+import LegalPage from '~/components/layout/LegalPage.astro';
+import LegalContent from '~/components/layout/LegalContent.astro';
+import { isLocale, defaultLocale, type Locale } from '~/i18n/routing';
+
+export function getStaticPaths() {
+  // Astro compiles getStaticPaths into its own module scope — external
+  // top-level consts are NOT visible here. Inline everything.
+  const legalPages = ['about', 'privacy-policy', 'terms-of-service', 'copyright'];
+  const nonDefault = (['ja'] as Locale[]).filter((l) => l !== defaultLocale);
+  return nonDefault.flatMap((locale) =>
+    legalPages.map((page) => ({
+      params: { locale, legal: page },
+    })),
+  );
+}
+
+const LEGAL_PAGES = ['about', 'privacy-policy', 'terms-of-service', 'copyright'];
+const LEGAL_TITLES: Record<string, string> = {
+  about: 'About',
+  'privacy-policy': 'Privacy Policy',
+  'terms-of-service': 'Terms of Service',
+  copyright: 'Copyright',
+};
+
+const { locale: localeParam, legal } = Astro.props as { locale: string; legal: string };
+if (!isLocale(localeParam) || localeParam === defaultLocale) {
+  return new Response('Not Found', { status: 404 });
+}
+const locale: Locale = localeParam;
+
+const titles: Record<string, string> = LEGAL_TITLES;
+
+if (!LEGAL_PAGES.includes(legal)) {
+  return new Response('Not Found', { status: 404 });
+}
+const pageKey = legal as 'about' | 'privacy-policy' | 'terms-of-service' | 'copyright';
+---
+<LegalPage locale={locale} title={titles[pageKey]} lastUpdated="2026-08-11">
+  <LegalContent page={pageKey} />
+</LegalPage>

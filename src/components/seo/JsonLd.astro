@@ -1,0 +1,11 @@
+---
+/**
+ * Generic JSON-LD injector. Pass any schema.org object as `data`.
+ * Renders a single <script type="application/ld+json"> with the data stringified.
+ */
+interface Props {
+  data: Record<string, unknown> | Record<string, unknown>[];
+}
+const { data } = Astro.props;
+---
+<script type="application/ld+json" set:html={JSON.stringify(data)} is:inline />

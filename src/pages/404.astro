@@ -1,0 +1,28 @@
+---
+/**
+ * Global 404 page.
+ * Rendered with default locale (English) since 404s have no locale context.
+ */
+import BaseLayout from '~/components/layout/BaseLayout.astro';
+import { Icon } from 'astro-icon/components';
+import { site } from '~/config/site';
+import { defaultLocale } from '~/i18n/routing';
+---
+<BaseLayout
+  locale={defaultLocale}
+  title="404 - Page Not Found"
+  description="The page you are looking for does not exist."
+>
+  <div class="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-4 text-center">
+    <Icon name="lucide:compass" class="h-16 w-16 text-nav" />
+    <h1 class="mt-6 text-6xl font-extrabold">404</h1>
+    <p class="mt-2 text-lg font-semibold">Page Not Found</p>
+    <p class="mt-1 text-sm text-muted-foreground">
+      The page you are looking for might have been removed or is temporarily unavailable.
+    </p>
+    <a href="/" class="btn-primary mt-6">
+      <Icon name="lucide:home" class="mr-2 h-4 w-4" />
+      Back to {site.shortName}
+    </a>
+  </div>
+</BaseLayout>

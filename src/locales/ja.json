@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "bosses": "ボス",
+    "guides": "ガイド",
+    "items": "アイテム",
+    "codes": "コード"
+  },
+  "shared": {
+    "readMore": "続きを読む",
+    "lastUpdated": "最終更新",
+    "noArticles": "記事はまだありません。お楽しみに！",
+    "relatedArticles": "関連記事"
+  },
+  "overview": {
+    "bosses": {
+      "overviewTitle": "全ボス一覧",
+      "overviewDescription": "Anvil Questの全ボス攻略ガイド。攻撃パターン、弱点、推奨装備を完全網羅。"
+    },
+    "guides": {
+      "overviewTitle": "全ガイド一覧",
+      "overviewDescription": "進行系、クラフト、戦闘メカニクス、上級戦略まで徹底解説。"
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "ファン制作コミュニティWiki",
+      "title": "Anvil Quest Wiki",
+      "description": "Anvil Questの完全攻略サイト。ボス攻略、コード、アイテム、 tier list など必要な情報がすべて揃っています。"
+    },
+    "faq": {
+      "title": "よくある質問",
+      "description": "Anvil Questに関するよくある質問への回答です。",
+      "items": [
+        {
+          "question": "Anvil Questとは何ですか？",
+          "answer": "Anvil QuestはRobloxで遊べるファンタジーRPGです。鍛冶屋の見習いとして武器を鍛え、Shattered Islesのボスと戦います。"
+        }
+      ]
+    }
+  }
+}
