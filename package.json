@@ -5,7 +5,7 @@
   "description": "Open-source game wiki site template. Astro + Cloudflare Pages. Free, fast, beginner-friendly.",
   "license": "MIT",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "packageManager": "pnpm@11.1.1",
   "scripts": {
