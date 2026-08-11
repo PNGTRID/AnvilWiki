@@ -12,14 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node + pnpm (via corepack)
+      # pnpm/action-setup installs pnpm WITHOUT running it, so it works
+      # even before Node is configured (uses the runner's default Node 24).
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.1
+          run_install: false
+
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
-
-      # corepack reads packageManager field and installs the exact pnpm version.
-      - run: corepack enable
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
