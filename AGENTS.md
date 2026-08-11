@@ -4,7 +4,7 @@ Workspace instructions for ZCode agents working on AnvilWiki.
 
 ## Repository Purpose
 
-AnvilWiki is an **open-source (MIT) game wiki site template** built with **Astro 5 + Cloudflare Pages**. It is the Cloudflare-native, performance-optimized alternative to the Next.js-based `vvultimatum_sbs` template from the "诗意游戏站小白课" course (whose `@cloudflare/next-on-pages` adapter is deprecated).
+AnvilWiki is an **open-source (MIT) game wiki site template** built with **Astro 5 + Cloudflare Pages**. It exists because the common Next.js-based game wiki templates rely on `@cloudflare/next-on-pages`, which Cloudflare has deprecated — forcing a downgrade to Netlify (100GB/month bandwidth cap). AnvilWiki solves this with a static-first Astro setup that deploys to Cloudflare with zero adapters and enjoys free unlimited bandwidth.
 
 Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimited bandwidth) in ~30 minutes, with strong SEO, i18n, and ad-monetization built in.
 
@@ -67,13 +67,6 @@ This is the core design principle inherited from the course template. **Respect 
 ## Ads: iframe Isolation (do not refactor)
 
 Each ad slot is a standalone HTML file in `public/ads/*.html` (each has its own `window.atOptions`), embedded via `<iframe>`. This prevents multi-ad `atOptions` collision. **Do not** replace with a global ad loader. See PRD §10.
-
-## Reference: Course Materials (external, read-only)
-
-Source design inspirations live outside this repo, at:
-`/Users/yuanruiqin/wiki/06_学习与资源资产/系统学习记录/学习/课程与培训/诗意游戏站小白课/`
-
-Key files there: `课程教材/第五课_网站模板设计与快速上站.md` (original Next.js spec), `执行手册/通用-建站SOP.md` (full SOP incl. ads), `参考资料/Astro+Cloudflare部署方案_理论待验证.md` (9-item verification checklist — PRD §14.3 tracks status).
 
 ## Commands (intended, once code exists)
 

@@ -1,6 +1,6 @@
 # 从 Next.js 模板迁移指南
 
-> 如果你已经在用老师诗意听涛的 `vvultimatum_sbs`（Next.js）模板，想迁移到 AnvilWiki（Astro），本指南帮你平移。
+> 如果你已经在用一个 Next.js 的游戏 wiki 模板，想迁移到 AnvilWiki（Astro），本指南帮你平移。
 
 ---
 

@@ -77,12 +77,6 @@ pnpm dev
 | [Cloudflare Pages](https://pages.cloudflare.com) | 免费部署 + 无限带宽 |
 | [pnpm](https://pnpm.io) | 包管理 |
 
-### 致谢
-
-AnvilWiki 的核心设计（三层架构、JSON 驱动首页、SEO 工程化、换皮方法论、广告隔离方案）直接参考自 **「诗意游戏站小白课」**（讲师：诗意听涛）及其开源模板 [`vvultimatum_sbs`](https://github.com/libin257/vvultimatum_sbs)。在此致谢。
-
-AnvilWiki 是对老师方案的 **Cloudflare 原生 + 性能优化** 版补充，而非替代——已熟悉 Next.js 的用户可继续使用老师模板，想用 Cloudflare Pages 的用户欢迎试用 AnvilWiki。
-
 ---
 
 ## 📖 English Documentation
