@@ -1,0 +1,40 @@
+---
+/**
+ * Optimized cover image for article cards (PRD §14.2 v1.5).
+ *
+ * Wraps Astro `<Image>` from astro:assets so covers are auto-encoded to WebP
+ * and emitted with a responsive srcset. Pass the `ImageMetadata` coming from
+ * `entry.data.image` (the content schema's `image()` loader).
+ *
+ * Sizes hint matches the ListPage grid: 1 col mobile → 2 col sm → 3 col lg
+ * inside a max-w-7xl container. Browsers pick the best variant per viewport.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt?: string;
+  class?: string;
+  sizes?: string;
+}
+const {
+  src,
+  alt = '',
+  class: className = 'mb-3 aspect-video w-full rounded-md object-cover',
+  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
+} = Astro.props;
+---
+
+<Image
+  src={src}
+  alt={alt}
+  width={400}
+  height={225}
+  widths={[200, 400, 800]}
+  sizes={sizes}
+  format="webp"
+  loading="lazy"
+  decoding="async"
+  class={className}
+/>

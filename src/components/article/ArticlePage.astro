@@ -43,9 +43,7 @@ const category = entry.data.category;
 const categoryLabel = overview?.overviewTitle ?? nav[category] ?? category;
 
 const coverUrl = entry.data.image
-  ? entry.data.image.startsWith('http')
-    ? entry.data.image
-    : `${siteUrl}${entry.data.image}`
+  ? `${siteUrl}${entry.data.image.src}`
   : `${siteUrl}/images/hero.webp`;
 
 const related = await getRelatedEntries(entry, locale, 3);

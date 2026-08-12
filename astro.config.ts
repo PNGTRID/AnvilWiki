@@ -11,6 +11,10 @@ export default defineConfig({
   site: process.env.SITE_URL || 'https://anvilwiki.pages.dev',
   output: 'static',
   trailingSlash: 'never',
+  image: {
+    // Emit explicit width/height on responsive <Image> output to prevent CLS.
+    responsiveStyles: true,
+  },
   i18n: {
     // Spread to convert readonly tuple to mutable array (Astro's Locales type).
     locales: [...locales],
