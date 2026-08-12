@@ -11,6 +11,14 @@
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-F38020?logo=cloudflare&logoColor=white)](https://pages.cloudflare.com)
 [![Live Demo](https://img.shields.io/badge/Demo-anvilwiki.pages.dev-brightgreen)](https://anvilwiki.pages.dev/)
 
+### Lighthouse 4×100
+
+> 实测于 [anvilwiki.pages.dev](https://anvilwiki.pages.dev/)（2026-08-12，Lighthouse mobile）
+
+| Performance | Accessibility | Best Practices | SEO |
+|:-:|:-:|:-:|:-:|
+| ![100](https://img.shields.io/badge/score-100-brightgreen?style=for-the-badge) | ![100](https://img.shields.io/badge/score-100-brightgreen?style=for-the-badge) | ![100](https://img.shields.io/badge/score-100-brightgreen?style=for-the-badge) | ![100](https://img.shields.io/badge/score-100-brightgreen?style=for-the-badge) |
+
 ---
 
 ## 📖 中文文档
