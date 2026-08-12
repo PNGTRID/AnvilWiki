@@ -6,17 +6,21 @@
  * touching this component.
  *
  * Sections (top to bottom):
- *   1. Hero        — title, description, stats, CTAs
- *   2. Recent Updates + StartHere (two columns)
- *   3. AboutGame   — game intro + stat cards
- *   4. Explore     — 8 content modules with 4 displayTypes
- *   5. FAQ         — native <details> accordion
- *   6. FinalCta    — bottom call-to-action
+ *   1. Hero          — title, description, CTAs (strong visual anchor)
+ *   2. QuickStart    — 4 large icon cards (Codes / Bosses / Guides / Tier)
+ *   3. Recent Updates + Trending links (two columns)
+ *   4. Explore       — 4 content modules with displayTypes
+ *   5. FinalCta      — bottom call-to-action
+ *
+ * v0.2 refactor: trimmed from 8 sections to 5. Removed AboutGame (info
+ * duplicated Hero stats), FAQ (moved to /faq), standalone TrendingNow
+ * (merged into Recent Updates). Explore modules trimmed 8→4. Page length
+ * compressed from ~7 screens to ~4.
  */
 import { Icon } from 'astro-icon/components';
 import LocaleLayout from '~/components/layout/LocaleLayout.astro';
 import VideoSection from '~/components/home/VideoSection.astro';
-import TrendingNow from '~/components/home/TrendingNow.astro';
+import QuickStart from '~/components/home/QuickStart.astro';
 import ExploreModules from '~/components/home/ExploreModules.astro';
 import { site } from '~/config/site';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
@@ -28,8 +32,10 @@ import { localizePath, listPath, detailPath } from '~/lib/url';
 interface Props {
   locale: Locale;
   jsonLd?: Record<string, unknown>[];
+  /** hreflang alternates (built by the route page). */
+  alternates?: Array<{ hreflang: string; href: string }>;
 }
-const { locale, jsonLd = [] } = Astro.props;
+const { locale, jsonLd = [], alternates = [] } = Astro.props;
 const ui = getUi(locale);
 const home = ui.home as any;
 const shared = ui.shared as Record<string, string>;
@@ -41,30 +47,45 @@ const hero = home.hero ?? {};
 const updates = home.updates ?? { title: 'Recent Updates' };
 const start = home.start ?? { cards: [] };
 const popular = home.popular ?? { title: 'Trending Now', quickLinks: [] };
-const aboutGame = home.aboutGame ?? {};
 const explore = home.explore ?? { modules: [] };
-const faq = home.faq ?? { items: [] };
 const finalCta = home.finalCta ?? {};
+
+// QuickLink may be a string or { label, href } — normalize for the sidebar list.
+type QuickLink = string | { label: string; href: string };
+const trendingLinks: QuickLink[] = Array.isArray(popular.quickLinks) ? popular.quickLinks : [];
+function trendingHref(link: QuickLink): string | null {
+  return typeof link === 'string' ? null : localizePath(link.href, locale);
+}
+function trendingLabel(link: QuickLink): string {
+  return typeof link === 'string' ? link : link.label;
+}
 ---
 
-<LocaleLayout locale={locale} title={meta.title} description={meta.description} jsonLd={jsonLd}>
-  {/* Hero */}
-  <section class="relative overflow-hidden border-b border-border">
-    <div class="mx-auto max-w-7xl px-4 py-16 md:py-24">
+<LocaleLayout
+  locale={locale}
+  title={meta.title}
+  description={meta.description}
+  alternates={alternates}
+  jsonLd={jsonLd}
+>
+  {/* ─────────────────────────────── Hero ─────────────────────────────── */}
+  <section class="relative flex min-h-[80vh] items-center overflow-hidden border-b border-border">
+    {/* Faint game-name watermark — pure CSS, no image asset required. */}
+    <span
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none text-center text-[22vw] font-black leading-none text-foreground/[0.03]"
+    >
+      {site.game.name}
+    </span>
+
+    <div class="relative mx-auto max-w-7xl px-4 py-20">
       <p class="text-sm font-semibold uppercase tracking-wider text-nav">{hero.eyebrow}</p>
-      <h1 class="mt-3 text-4xl font-extrabold tracking-tight md:text-6xl">{hero.title}</h1>
-      <p class="mt-4 max-w-2xl text-lg text-muted-foreground">{hero.description}</p>
-      {
-        hero.stats && (
-          <dl class="mt-8 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
-            {hero.stats.map((stat: string) => (
-              <div class="rounded-lg border bg-card p-3 text-center">
-                <dd class="text-xs font-semibold text-foreground sm:text-sm">{stat}</dd>
-              </div>
-            ))}
-          </dl>
-        )
-      }
+      <h1
+        class="mt-3 max-w-3xl bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-5xl font-black tracking-tight text-transparent md:text-7xl"
+      >
+        {hero.title}
+      </h1>
+      <p class="mt-5 max-w-xl text-base text-muted-foreground md:text-lg">{hero.description}</p>
       <div class="mt-8 flex flex-wrap gap-3">
         {
           hero.primaryCta && (
@@ -86,24 +107,25 @@ const finalCta = home.finalCta ?? {};
             </a>
           )
         }
-        {
-          hero.tertiaryCta && (
-            <a href={listPath('codes', locale)} class="btn-outline">
-              <Icon name="lucide:gift" class="mr-2 h-4 w-4" />
-              {hero.tertiaryCta}
-            </a>
-          )
-        }
       </div>
     </div>
   </section>
 
-  {/* Video (immediately after Hero) */}
-  <VideoSection videoId={hero.videoId} title={`${site.game.name} trailer`} />
+  {/* Trailer — only renders when a videoId is configured. */}
+  {hero.videoId && <VideoSection videoId={hero.videoId} title={`${site.game.name} trailer`} />}
 
-  {/* Recent Updates + Start Here */}
-  <section class="mx-auto max-w-7xl px-4 py-12">
+  {/* ───────────────────────────── Quick Start ────────────────────────── */}
+  <QuickStart
+    locale={locale}
+    eyebrow={start.eyebrow}
+    title={start.title}
+    cards={start.cards}
+  />
+
+  {/* ───────────────────── Recent Updates + Trending ───────────────────── */}
+  <section class="section border-t border-border">
     <div class="grid gap-8 lg:grid-cols-3">
+      {/* Recent updates — 2/3 width on desktop. */}
       <div class="lg:col-span-2">
         <div class="flex items-baseline justify-between">
           <h2 class="text-2xl font-bold">{updates.title}</h2>
@@ -136,115 +158,60 @@ const finalCta = home.finalCta ?? {};
         </div>
       </div>
 
-      {/* Start Here cards */}
-      {
-        start.cards?.length > 0 && (
-          <div>
-            <p class="text-sm font-semibold uppercase tracking-wider text-nav">{start.eyebrow}</p>
-            <h2 class="mt-1 text-2xl font-bold">{start.title}</h2>
-            <ul class="mt-4 space-y-2">
-              {start.cards.map((card: any) => (
-                <li class="flex items-start gap-3 rounded-md border bg-card p-3">
-                  <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-nav text-xs font-bold text-white">
-                    {card.number}
-                  </span>
-                  <div>
-                    <p class="text-sm font-semibold">{card.title}</p>
-                    <p class="mt-0.5 text-xs text-muted-foreground">{card.description}</p>
-                  </div>
+      {/* Trending — 1/3 width sidebar list. */}
+      {trendingLinks.length > 0 && (
+        <aside>
+          <p class="text-sm font-semibold uppercase tracking-wider text-nav">{popular.eyebrow}</p>
+          <h2 class="mt-1 text-2xl font-bold">{popular.title}</h2>
+          <ul class="mt-4 space-y-2">
+            {trendingLinks.map((link: QuickLink) => {
+              const href = trendingHref(link);
+              const label = trendingLabel(link);
+              return (
+                <li>
+                  {href ? (
+                    <a
+                      href={href}
+                      class="flex items-center gap-2 rounded-md border bg-card p-3 text-sm font-medium transition hover:border-nav/50"
+                    >
+                      <Icon name="lucide:trending-up" class="h-4 w-4 shrink-0 text-nav" />
+                      <span class="leading-snug">{label}</span>
+                    </a>
+                  ) : (
+                    <div class="flex items-center gap-2 rounded-md border bg-card p-3 text-sm font-medium">
+                      <Icon name="lucide:trending-up" class="h-4 w-4 shrink-0 text-nav" />
+                      <span class="leading-snug">{label}</span>
+                    </div>
+                  )}
                 </li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
+              );
+            })}
+          </ul>
+        </aside>
+      )}
     </div>
   </section>
 
-  {/* Trending Now */}
-  <TrendingNow
-    locale={locale}
-    eyebrow={popular.eyebrow}
-    title={popular.title}
-    quickLinks={popular.quickLinks}
-  />
-
-  {/* About Game */}
-  {
-    aboutGame.title && (
-      <section class="mx-auto max-w-7xl px-4 py-12">
-        <div class="grid gap-8 md:grid-cols-2">
-          <div>
-            <h2 class="text-2xl font-bold">{aboutGame.title}</h2>
-            {(aboutGame.paragraphs ?? []).map((p: string) => (
-              <p class="mt-3 text-muted-foreground">{p}</p>
-            ))}
-            {aboutGame.cta && (
-              <a href={listPath('guides', locale)} class="btn-outline mt-4">
-                {aboutGame.cta}
-                <Icon name="lucide:arrow-right" class="ml-2 h-4 w-4" />
-              </a>
-            )}
-          </div>
-          {aboutGame.stats?.length > 0 && (
-            <dl class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {aboutGame.stats.map((s: { label: string; value: string }) => (
-                <div class="rounded-lg border bg-card p-4 text-center">
-                  <dt class="text-xs uppercase tracking-wider text-muted-foreground">{s.label}</dt>
-                  <dd class="mt-1 text-lg font-bold text-nav">{s.value}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-        </div>
-      </section>
-    )
-  }
-
-  {/* Explore — 8 modules with displayTypes */}
+  {/* ──────────────────────────── Explore Modules ─────────────────────── */}
   {
     explore.modules?.length > 0 && (
-      <section class="mx-auto max-w-7xl px-4 py-12">
+      <section class="section border-t border-border">
         <h2 class="text-2xl font-bold">{explore.title}</h2>
         <p class="mt-1 text-sm text-muted-foreground">{explore.description}</p>
-        <div class="mt-6">
+        <div class="mt-8">
           <ExploreModules modules={explore.modules} locale={locale} />
         </div>
       </section>
     )
   }
 
-  {/* FAQ */}
-  {
-    faq.items?.length > 0 && (
-      <section class="mx-auto max-w-3xl px-4 py-12">
-        <h2 class="text-2xl font-bold">{faq.title}</h2>
-        <p class="mt-1 text-sm text-muted-foreground">{faq.description}</p>
-        <div class="mt-6 space-y-2" data-faq-group>
-          {faq.items.map((item: any) => (
-            <details class="group rounded-md border bg-card">
-              <summary
-                class="flex cursor-pointer list-none items-center justify-between p-4 font-medium"
-                aria-expanded="false"
-              >
-                {item.question}
-                <Icon name="lucide:chevron-down" class="h-4 w-4 transition group-open:rotate-180" />
-              </summary>
-              <div class="px-4 pb-4 text-sm text-muted-foreground">{item.answer}</div>
-            </details>
-          ))}
-        </div>
-      </section>
-    )
-  }
-
-  {/* Final CTA */}
+  {/* ─────────────────────────────── Final CTA ────────────────────────── */}
   {
     finalCta.title && (
-      <section class="mx-auto max-w-7xl px-4 py-12">
-        <div class="rounded-xl border bg-card p-8 text-center">
-          <h2 class="text-2xl font-bold">{finalCta.title}</h2>
-          <p class="mt-2 text-muted-foreground">{finalCta.description}</p>
+      <section class="section border-t border-border">
+        <div class="rounded-xl border bg-card p-8 text-center md:p-12">
+          <h2 class="text-2xl font-bold md:text-3xl">{finalCta.title}</h2>
+          <p class="mx-auto mt-2 max-w-xl text-muted-foreground">{finalCta.description}</p>
           <div class="mt-6 flex justify-center gap-3">
             <a
               href={site.social.official}
@@ -270,11 +237,3 @@ const finalCta = home.finalCta ?? {};
     )
   }
 </LocaleLayout>
-<script is:inline>
-  // Sync aria-expanded on FAQ summaries when details toggle.
-  document.querySelectorAll('[data-faq-group] details').forEach((d) => {
-    const sync = () => d.querySelector('summary')?.setAttribute('aria-expanded', d.open ? 'true' : 'false');
-    sync();
-    d.addEventListener('toggle', sync);
-  });
-</script>

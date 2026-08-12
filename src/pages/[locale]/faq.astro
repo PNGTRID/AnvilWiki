@@ -1,0 +1,44 @@
+---
+/**
+ * FAQ page (non-default locales, e.g. /ja/faq).
+ *
+ * Mirrors src/pages/faq.astro but generates a path per non-default locale.
+ * Default locale is handled by src/pages/faq.astro because
+ * `prefixDefaultLocale: false`.
+ */
+import LocaleLayout from '~/components/layout/LocaleLayout.astro';
+import FaqSection from '~/components/home/FaqSection.astro';
+import { isLocale, defaultLocale, locales, type Locale } from '~/i18n/routing';
+import { getUi } from '~/i18n/ui';
+import { faqPageJsonLd, simpleBreadcrumbJsonLd } from '~/lib/seo';
+import { localizePath, languageAlternates } from '~/lib/url';
+
+export function getStaticPaths() {
+  // Only non-default locales — default is at /faq.
+  return [{ params: { locale: 'ja' } }].filter((p) => p.params.locale !== defaultLocale);
+}
+
+const { locale: localeParam } = Astro.params;
+if (!isLocale(localeParam) || localeParam === defaultLocale) {
+  return Astro.redirect('/faq');
+}
+const locale: Locale = localeParam;
+const ui = getUi(locale);
+const faq = (ui.home as any)?.faq ?? { title: 'FAQ', items: [] };
+const faqPath = localizePath('/faq', locale);
+const alternates = languageAlternates((loc) => localizePath('/faq', loc), locales);
+const jsonLd = [
+  ...(faq.items?.length > 0 ? [faqPageJsonLd(faq.items)] : []),
+  simpleBreadcrumbJsonLd({ pageLabel: faq.title, path: faqPath, locale }),
+];
+---
+
+<LocaleLayout
+  locale={locale}
+  title={faq.title}
+  description={faq.description}
+  alternates={alternates}
+  jsonLd={jsonLd}
+>
+  <FaqSection title={faq.title} description={faq.description} items={faq.items} />
+</LocaleLayout>

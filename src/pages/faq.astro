@@ -1,0 +1,34 @@
+---
+/**
+ * FAQ page (default locale, /faq).
+ *
+ * Moved off the homepage in the v0.2 refactor to reduce homepage length.
+ * Carries the FAQPage JSON-LD schema (previously injected on the homepage).
+ */
+import LocaleLayout from '~/components/layout/LocaleLayout.astro';
+import FaqSection from '~/components/home/FaqSection.astro';
+import { defaultLocale, locales } from '~/i18n/routing';
+import { getUi } from '~/i18n/ui';
+import { faqPageJsonLd, simpleBreadcrumbJsonLd } from '~/lib/seo';
+import { localizePath, languageAlternates } from '~/lib/url';
+
+const locale = defaultLocale;
+const ui = getUi(locale);
+const faq = (ui.home as any)?.faq ?? { title: 'FAQ', items: [] };
+const faqPath = localizePath('/faq', locale);
+const alternates = languageAlternates((loc) => localizePath('/faq', loc), locales);
+const jsonLd = [
+  ...(faq.items?.length > 0 ? [faqPageJsonLd(faq.items)] : []),
+  simpleBreadcrumbJsonLd({ pageLabel: faq.title, path: faqPath, locale }),
+];
+---
+
+<LocaleLayout
+  locale={locale}
+  title={faq.title}
+  description={faq.description}
+  alternates={alternates}
+  jsonLd={jsonLd}
+>
+  <FaqSection title={faq.title} description={faq.description} items={faq.items} />
+</LocaleLayout>
