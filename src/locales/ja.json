@@ -1,4 +1,11 @@
 {
+  "site": {
+    "name": "Anvil Quest Wiki",
+    "shortName": "AQ Wiki",
+    "description": "Anvil Questの完全攻略Wiki。ボス攻略、tier list、コード、アイテムの場所、初心者向けのヒントを毎日更新。",
+    "tagline": "Anvil Questのすべてを鍛え上げる場所",
+    "legalNotice": "Anvil Quest Wikiはファン制作のコミュニティサイトです。ゲーム開発者とは一切関係ありません。"
+  },
   "nav": {
     "home": "ホーム",
     "bosses": "ボス",
@@ -18,8 +25,13 @@
   "shared": {
     "readMore": "続きを読む",
     "lastUpdated": "最終更新",
+    "publishedOn": "公開日",
     "noArticles": "記事はまだありません。お楽しみに！",
-    "relatedArticles": "関連記事"
+    "relatedArticles": "関連記事",
+    "onThisPage": "目次",
+    "backToCategory": "戻る",
+    "browseAll": "すべて見る",
+    "viewAll": "すべて表示"
   },
   "overview": {
     "bosses": {
@@ -29,13 +41,189 @@
     "guides": {
       "overviewTitle": "全ガイド一覧",
       "overviewDescription": "進行系、クラフト、戦闘メカニクス、上級戦略まで徹底解説。"
+    },
+    "items": {
+      "overviewTitle": "全アイテム一覧",
+      "overviewDescription": "アイテムデータベース。入手場所、ステータス、レアリティ、クラフトレシピを掲載。"
+    },
+    "codes": {
+      "overviewTitle": "全コード一覧",
+      "overviewDescription": "Anvil Questの有効なコード一覧。コイン、ジェム、限定アイテムが入手可能。毎日検証済み。"
     }
   },
   "home": {
+    "meta": {
+      "title": "Anvil Quest Wiki - ボス攻略・コード・tier list",
+      "description": "Anvil Questの最も完全なWiki。ボス攻略、有効なコード、アイテムの場所、tier list、初心者ガイドを毎日更新。"
+    },
     "hero": {
       "eyebrow": "ファン制作コミュニティWiki",
       "title": "Anvil Quest Wiki",
-      "description": "Anvil Questの完全攻略サイト。ボス攻略、コード、アイテム、 tier list など必要な情報がすべて揃っています。"
+      "description": "Anvil Questの完全攻略サイト。ボス攻略、有効なコード、アイテムの場所、tier list、鍛冶を極めるために必要なすべてが揃っています。",
+      "primaryCta": "Anvil Questをプレイ",
+      "secondaryCta": "ガイドを見る",
+      "videoId": ""
+    },
+    "updates": {
+      "title": "最新更新",
+      "browse": "全ガイドを見る"
+    },
+    "start": {
+      "eyebrow": "ここから始める",
+      "title": "Anvil Questの旅",
+      "cards": [
+        {
+          "number": "1",
+          "title": "初心者ガイド",
+          "description": "Anvil Quest初めての方はここから。基本操作、メカニクス、最初の1時間の進め方を解説。",
+          "icon": "lucide:book-open",
+          "href": "/guides/beginner-guide"
+        },
+        {
+          "number": "2",
+          "title": "有効なコード",
+          "description": "最新のコードを入力して、無料コイン、ジェム、限定アイテムを入手。",
+          "icon": "lucide:gift",
+          "href": "/codes"
+        },
+        {
+          "number": "3",
+          "title": "ボス攻略",
+          "description": "全ボスの攻略ガイド。攻撃パターン、弱点、推奨装備を完全網羅。",
+          "icon": "lucide:swords",
+          "href": "/bosses"
+        },
+        {
+          "number": "4",
+          "title": "武器tier list",
+          "description": "DPS、有用性、シナジーに基づく全武器のS～Cランク付け。",
+          "icon": "lucide:list-ordered",
+          "href": "/guides/weapon-tier-list"
+        }
+      ]
+    },
+    "popular": {
+      "eyebrow": "トレンド",
+      "title": "今週の人気記事",
+      "quickLinks": [
+        {
+          "label": "Gelumボス攻略",
+          "href": "/bosses/gelum"
+        },
+        {
+          "label": "武器tier list",
+          "href": "/guides/weapon-tier-list"
+        },
+        {
+          "label": "初心者ガイド",
+          "href": "/guides/beginner-guide"
+        },
+        {
+          "label": "有効なコード一覧",
+          "href": "/codes"
+        }
+      ]
+    },
+    "explore": {
+      "title": "Wikiを探検",
+      "description": "必要な情報がすべてカテゴリー別に整理されています。興味のあるトピックを選んで深入りしよう。",
+      "modules": [
+        {
+          "order": 1,
+          "name": "Anvil Questコード",
+          "description": "有効なコードで無料コイン、ジェム、限定アイテムを入手。毎日更新。",
+          "href": "/codes",
+          "displayType": "code-cards",
+          "highlights": [
+            {
+              "label": "WELCOME2026",
+              "detail": "コイン500 + 初心者用の剣",
+              "badge": "有効"
+            },
+            {
+              "label": "FORGE",
+              "detail": "レアジェム1個",
+              "badge": "有効"
+            },
+            {
+              "label": "12MVISITS",
+              "detail": "限定コスメ",
+              "badge": "近日期限切れ"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "name": "ボス攻略",
+          "description": "全ボスの攻略ガイド。攻撃パターンと弱点を完全解説。",
+          "href": "/bosses",
+          "displayType": "card-list",
+          "highlights": [
+            {
+              "label": "Gelum",
+              "detail": "フロスト・ワーデン、序盤の門番"
+            },
+            {
+              "label": "Pyra",
+              "detail": "ファイアタイタン、中盤のDPSチェック"
+            },
+            {
+              "label": "Voidking",
+              "detail": "ラスボス、完全な準備が必要"
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "name": "進行ガイド",
+          "description": "レベリングルート、クラスビルド、エンドゲーム準備。",
+          "href": "/guides",
+          "displayType": "step-by-step",
+          "highlights": [
+            {
+              "label": "1",
+              "detail": "初期クラスを選ぶ"
+            },
+            {
+              "label": "2",
+              "detail": "チュートリアルの鍛冶場をクリア"
+            },
+            {
+              "label": "3",
+              "detail": "Shattered Islesを解放"
+            },
+            {
+              "label": "4",
+              "detail": "最初のワールドボスを倒す"
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "name": "武器tier list",
+          "description": "DPS、有用性、シナジーに基づく全武器のS～Cランク付け。",
+          "href": "/guides/weapon-tier-list",
+          "displayType": "tier-grid",
+          "highlights": [
+            {
+              "label": "S",
+              "detail": "Voidforge Blade、Stormcaller"
+            },
+            {
+              "label": "A",
+              "detail": "Emberclaw、Frostpike"
+            },
+            {
+              "label": "B",
+              "detail": "Ironwood Bow、Mace of Dawn"
+            },
+            {
+              "label": "C",
+              "detail": "初期武器"
+            }
+          ]
+        }
+      ]
     },
     "faq": {
       "title": "よくある質問",
@@ -43,9 +231,44 @@
       "items": [
         {
           "question": "Anvil Questとは何ですか？",
-          "answer": "Anvil QuestはRobloxで遊べるファンタジーRPGです。鍛冶屋の見習いとして武器を鍛え、Shattered Islesのボスと戦います。"
+          "answer": "Anvil QuestはRobloxで遊べるファンタジーRPGです。鍛冶屋の見習いとして武器を鍛え、Shattered Islesのボスと戦います。2026年1月にリリースされ、1200万回以上のアクセスを記録しています。"
+        },
+        {
+          "question": "初心者はどのクラスを選ぶべきですか？",
+          "answer": "ウォリアーが最も初心者向けです。HPが高く、シンプルなメカニクスで扱いやすいです。ゲームに慣れたら、ローグは上級者向けの最高火力クラスです。"
+        },
+        {
+          "question": "Anvil Questでコードを入力するには？",
+          "answer": "ゲームを開き、右上の歯車アイコンをクリック、「コード入力」欄にコードを貼り付けて確認を押します。コードは大文字小文字を区別します。"
+        },
+        {
+          "question": "Anvil Questは無料ですか？",
+          "answer": "はい、Anvil QuestはRobloxで完全無料で遊べます。オプションのコスメ課金はありますが、ゲームバランスには影響しません。"
+        },
+        {
+          "question": "Anvil Questはどのくらいの頻度で更新されますか？",
+          "answer": "Forge Studiosは約2週間に1回の大型アップデートを配信し、間に小規模な修正パッチを挟みます。新しいボスとコードは通常、大型アップデートごとに追加されます。"
         }
       ]
+    },
+    "finalCta": {
+      "title": "鍛冶を極める準備はできましたか？",
+      "description": "このWikiをブックマークして、新しいコード、ボス攻略、tier listの更新を毎日チェックしましょう。",
+      "primary": "Anvil Questをプレイ",
+      "secondary": "Discordに参加"
     }
+  },
+  "footer": {
+    "playGame": "Anvil Questをプレイ",
+    "officialDiscord": "公式Discord",
+    "officialYoutube": "公式YouTube",
+    "officialTwitter": "公式Twitter",
+    "officialReddit": "公式Reddit",
+    "about": "概要",
+    "faq": "よくある質問",
+    "privacyPolicy": "プライバシーポリシー",
+    "termsOfService": "利用規約",
+    "copyright": "著作権",
+    "copyrightText": "© 2026 Anvil Quest Wiki. ファン制作、Forge Studiosとは関係ありません。"
   }
 }
