@@ -11,6 +11,7 @@ import { getUi } from '~/i18n/ui';
 import { localizePath } from '~/lib/url';
 import ThemeToggle from './ThemeToggle.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import SearchButton from './SearchButton.astro';
 
 interface Props {
   locale: Locale;
@@ -60,6 +61,7 @@ const samePagePathFor = (loc: Locale) => {
 
     {/* Right actions */}
     <div class="ml-auto flex items-center gap-1">
+      <SearchButton locale={locale} />
       <ThemeToggle />
       <LanguageSwitcher locale={locale} pathFor={samePagePathFor} />
 

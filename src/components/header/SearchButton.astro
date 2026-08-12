@@ -1,0 +1,151 @@
+---
+/**
+ * Search button + modal — Pagefind offline search (PRD §14.2 v1.2).
+ *
+ * Behavior:
+ *   - Header button opens a <dialog> modal (native, zero framework runtime).
+ *   - pagefind-ui.js is lazy-loaded on first open (not in initial bundle).
+ *   - Keyboard: Ctrl/Cmd+K opens from anywhere; Escape closes (native <dialog>).
+ *
+ * Pagefind index is generated at build time by `postbuild` script
+ * (`pagefind --site dist`). Articles are indexed via `data-pagefind-body`
+ * on ArticlePage's prose container.
+ *
+ * All UI text comes from JSON (Hard Rule 1): `search.{placeholder, noResults, open}`
+ * and `nav.search` for the button aria-label.
+ */
+import { Icon } from 'astro-icon/components';
+import { type Locale } from '~/i18n/routing';
+import { getUi } from '~/i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const ui = getUi(locale);
+const search = ui.search as Record<string, string>;
+const nav = ui.nav as Record<string, string>;
+const btnLabel = nav.search ?? 'Search';
+const noResults = search.noResults ?? 'No matches found';
+const placeholder = search.placeholder ?? 'Search...';
+---
+
+<button
+  id="search-trigger"
+  type="button"
+  aria-label={btnLabel}
+  title={btnLabel}
+  class="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground transition hover:bg-muted"
+>
+  <Icon name="lucide:search" class="h-5 w-5" />
+</button>
+
+<dialog
+  id="search-modal"
+  class=":w-full,:max-w-2xl,:rounded-lg,:border,:bg-background,:p-0"
+  aria-label={btnLabel}
+>
+  <div class="flex flex-col overflow-hidden rounded-lg border border-border bg-background shadow-xl">
+    <div id="search-modal-inner" data-pagefind-ui data-no-results={noResults} data-placeholder={placeholder}></div>
+    <div class="flex items-center justify-between border-t border-border px-3 py-2 text-xs text-muted-foreground">
+      <span class="inline-flex items-center gap-1">
+        <kbd class="rounded border bg-muted px-1.5 py-0.5 font-sans">Esc</kbd>
+        {nav.close ?? 'Close'}
+      </span>
+      <span class="inline-flex items-center gap-1">
+        <Icon name="lucide:search" class="h-3 w-3" />
+        Pagefind
+      </span>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  /* Pagefind UI theming — map CSS vars so it follows --nav-theme. */
+  :global(.pagefind-ui) {
+    --pagefind-ui-primary: hsl(var(--nav-theme));
+    --pagefind-ui-text: hsl(var(--foreground));
+    --pagefind-ui-background: hsl(var(--background));
+    --pagefind-ui-border: hsl(var(--border));
+    --pagefind-ui-tag: hsl(var(--muted));
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 6px;
+    --pagefind-ui-font: inherit;
+  }
+  :global(.pagefind-ui__search-input) {
+    background: transparent;
+  }
+  /* Modal sizing — native <dialog> needs explicit width via ::backdrop too. */
+  #search-modal {
+    width: min(640px, 90vw);
+    max-width: 90vw;
+    padding: 0;
+    margin: 12vh auto auto;
+  }
+  #search-modal::backdrop {
+    background: hsl(0 0% 0% / 0.5);
+    backdrop-filter: blur(2px);
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const trigger = document.getElementById('search-trigger');
+    const modal = document.getElementById('search-modal');
+    if (!trigger || !modal) return;
+
+    let pagefindLoaded = false;
+
+    const openModal = async () => {
+      if (typeof modal.showModal === 'function') {
+        modal.showModal();
+      } else {
+        modal.setAttribute('open', '');
+      }
+      // Lazy-load pagefind-ui on first open.
+      if (!pagefindLoaded) {
+        pagefindLoaded = true;
+        try {
+          // @ts-ignore — runtime import from built /pagefind/ output
+          const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+          const target = document.getElementById('search-modal-inner');
+          const noResults = target?.getAttribute('data-no-results') ?? 'No matches found';
+          const placeholder = target?.getAttribute('data-placeholder') ?? 'Search';
+          if (target && typeof PagefindUI === 'function') {
+            new PagefindUI({
+              element: '#' + target.id,
+              showSubResults: true,
+              showImages: false,
+              translations: {
+                placeholder,
+                zero_results: noResults,
+              },
+            });
+            // Autofocus the input once rendered.
+            setTimeout(() => {
+              target.querySelector('input')?.focus();
+            }, 50);
+          }
+        } catch (err) {
+          console.warn('[search] Pagefind not available — run `pnpm build` first.', err);
+        }
+      } else {
+        // Already loaded — just focus the input.
+        setTimeout(() => {
+          modal.querySelector('input')?.focus();
+        }, 50);
+      }
+    };
+
+    trigger.addEventListener('click', openModal);
+
+    // Ctrl/Cmd+K to open from anywhere on the page.
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        openModal();
+      }
+      // Escape closes via native <dialog> — no extra handler needed.
+    });
+  })();
+</script>

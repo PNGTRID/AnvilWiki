@@ -14,7 +14,13 @@
     "codes": "Codes",
     "toggleTheme": "Toggle theme",
     "menu": "Menu",
-    "close": "Close"
+    "close": "Close",
+    "search": "Search"
+  },
+  "search": {
+    "placeholder": "Search the wiki...",
+    "noResults": "No matches found",
+    "open": "Open search"
   },
   "shared": {
     "readMore": "Read more",
@@ -54,15 +60,8 @@
       "eyebrow": "Fan-Made Community Wiki",
       "title": "Anvil Quest Wiki",
       "description": "Your complete guide to Anvil Quest. Boss strategies, active codes, item locations, tier lists, and everything you need to master the forge.",
-      "stats": [
-        "28 Bosses Covered",
-        "150+ Items Documented",
-        "Daily Code Updates",
-        "4 Languages"
-      ],
       "primaryCta": "Play Anvil Quest",
       "secondaryCta": "Browse Guides",
-      "tertiaryCta": "Latest Codes",
       "videoId": ""
     },
     "updates": {
@@ -76,22 +75,30 @@
         {
           "number": "1",
           "title": "Beginner Guide",
-          "description": "New to Anvil Quest? Start here with the essential mechanics, controls, and your first hour walkthrough."
+          "description": "New to Anvil Quest? Start here with the essential mechanics, controls, and your first hour walkthrough.",
+          "icon": "lucide:book-open",
+          "href": "/guides/beginner-guide"
         },
         {
           "number": "2",
-          "title": "Fastest Leveling",
-          "description": "Optimize your XP gains with the most efficient quest routes and farming spots in the early game."
+          "title": "Active Codes",
+          "description": "Redeem the latest codes for free coins, gems, and exclusive cosmetic items.",
+          "icon": "lucide:gift",
+          "href": "/codes"
         },
         {
           "number": "3",
-          "title": "Best Starting Class",
-          "description": "Compare the four starting classes and pick the one that matches your playstyle."
+          "title": "Boss Strategies",
+          "description": "Complete guides for every boss with attack patterns, weaknesses, and recommended loadouts.",
+          "icon": "lucide:swords",
+          "href": "/bosses"
         },
         {
           "number": "4",
-          "title": "All Active Codes",
-          "description": "Redeem the latest codes for free coins, gems, and exclusive cosmetic items."
+          "title": "Weapon Tier List",
+          "description": "Ranking every weapon from S to C based on DPS, utility, and synergy.",
+          "icon": "lucide:list-ordered",
+          "href": "/guides/weapon-tier-list"
         }
       ]
     },
@@ -116,36 +123,6 @@
           "href": "/codes"
         }
       ]
-    },
-    "aboutGame": {
-      "title": "What is Anvil Quest?",
-      "paragraphs": [
-        "Anvil Quest is a fantasy RPG on Roblox developed by Forge Studios. Players take on the role of a blacksmith-apprentice-turned-hero, forging weapons, recruiting companions, and battling through progressively harder boss encounters across the Shattered Isles.",
-        "The game launched in January 2026 and quickly grew to over 12 million visits thanks to its deep crafting system, regular content updates, and a thriving competitive speedrun community."
-      ],
-      "stats": [
-        {
-          "label": "Developer",
-          "value": "Forge Studios"
-        },
-        {
-          "label": "Platform",
-          "value": "Roblox"
-        },
-        {
-          "label": "Genre",
-          "value": "Fantasy RPG"
-        },
-        {
-          "label": "Visits",
-          "value": "12.6M+"
-        },
-        {
-          "label": "Active Players",
-          "value": "45K daily"
-        }
-      ],
-      "cta": "Explore All Guides"
     },
     "explore": {
       "title": "Explore the Wiki",
@@ -245,98 +222,6 @@
               "detail": "Starter weapons"
             }
           ]
-        },
-        {
-          "order": 5,
-          "name": "Item Database",
-          "description": "Locations, stats, and crafting recipes for all 150+ items.",
-          "href": "/items",
-          "displayType": "card-list",
-          "highlights": [
-            {
-              "label": "Materials",
-              "detail": "Ore, wood, gems, essences"
-            },
-            {
-              "label": "Consumables",
-              "detail": "Potions, scrolls, food"
-            },
-            {
-              "label": "Equipment",
-              "detail": "Weapons, armor, accessories"
-            }
-          ]
-        },
-        {
-          "order": 6,
-          "name": "Crafting Recipes",
-          "description": "Every recipe in the game, sorted by forge tier.",
-          "href": "/guides/crafting",
-          "displayType": "step-by-step",
-          "highlights": [
-            {
-              "label": "1",
-              "detail": "Gather base materials"
-            },
-            {
-              "label": "2",
-              "detail": "Reach required forge tier"
-            },
-            {
-              "label": "3",
-              "detail": "Combine at the anvil"
-            },
-            {
-              "label": "4",
-              "detail": "Optional: enchant the result"
-            }
-          ]
-        },
-        {
-          "order": 7,
-          "name": "Class Builds",
-          "description": "Optimal stat spreads and skill trees for each of the four classes.",
-          "href": "/guides/class-builds",
-          "displayType": "card-list",
-          "highlights": [
-            {
-              "label": "Warrior",
-              "detail": "Tank/bruiser, high HP"
-            },
-            {
-              "label": "Mage",
-              "detail": "Ranged burst, fragile"
-            },
-            {
-              "label": "Rogue",
-              "detail": "Crit/DPS, high mobility"
-            },
-            {
-              "label": "Cleric",
-              "detail": "Support/healing"
-            }
-          ]
-        },
-        {
-          "order": 8,
-          "name": "Speedrun Strategies",
-          "description": "World-record routes, skip tricks, and optimal boss order.",
-          "href": "/guides/speedrun",
-          "displayType": "tier-grid",
-          "highlights": [
-            {
-              "label": "S",
-              "detail": "Any% route (under 25 min)"
-            },
-            {
-              "label": "A",
-              "detail": "100% route (under 90 min)"
-            },
-            {
-              "label": "B",
-              "detail": "Boss rush mode"
-            }
-          ]
         }
       ]
     },
@@ -371,6 +256,24 @@
       "description": "Bookmark this wiki and check back daily for new codes, boss guides, and tier list updates.",
       "primary": "Play Anvil Quest",
       "secondary": "Join Our Discord"
+    },
+    "_archived": {
+      "_comment": "Sections removed from the homepage during the v0.2 layout refactor. Kept here so data is not lost; not rendered by HomePage.astro.",
+      "aboutGame": {
+        "title": "What is Anvil Quest?",
+        "paragraphs": [
+          "Anvil Quest is a fantasy RPG on Roblox developed by Forge Studios. Players take on the role of a blacksmith-apprentice-turned-hero, forging weapons, recruiting companions, and battling through progressively harder boss encounters across the Shattered Isles.",
+          "The game launched in January 2026 and quickly grew to over 12 million visits thanks to its deep crafting system, regular content updates, and a thriving competitive speedrun community."
+        ],
+        "stats": [
+          { "label": "Developer", "value": "Forge Studios" },
+          { "label": "Platform", "value": "Roblox" },
+          { "label": "Genre", "value": "Fantasy RPG" },
+          { "label": "Visits", "value": "12.6M+" },
+          { "label": "Active Players", "value": "45K daily" }
+        ],
+        "cta": "Explore All Guides"
+      }
     }
   },
   "footer": {
@@ -380,6 +283,7 @@
     "officialTwitter": "Official Twitter",
     "officialReddit": "Official Reddit",
     "about": "About",
+    "faq": "FAQ",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "copyright": "Copyright",
