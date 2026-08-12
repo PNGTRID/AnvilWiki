@@ -24,7 +24,7 @@ AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某
 
 - ⚡ **极快**：Astro 零 JS 优先，Lighthouse Performance 通常 95+
 - 🌐 **Cloudflare 原生**：纯静态输出，零适配器，免费无限带宽
-- 🎨 **JSON 驱动首页**：8 个模块，换游戏只改 JSON 不改组件
+- 🎨 **JSON 驱动首页**：模块化布局，换游戏只改 JSON 不改组件
 - 🌍 **多语言开箱即用**：英文无前缀（SEO 最优），其他语言带前缀，缺失内容自动 fallback 英文
 - 🔍 **SEO 工程化**：sitemap / JSON-LD / hreflang / robots 全部代码自动生成
 - 🎯 **广告就绪**：内置 Adsterra iframe 隔离方案，填 key 即生效
@@ -114,6 +114,8 @@ pnpm dev
 # Visit http://localhost:4321
 
 # 4. Edit config layer (site.ts / navigation.ts / globals.css) + replace content layer (src/content/ / locales/)
+#    Or run the interactive skinning CLI to automate Part 1-3:
+pnpm skin
 
 # 5. Deploy to Cloudflare Pages
 #    cloudflare.com → Pages → Create a project → Connect to Git → select repo
