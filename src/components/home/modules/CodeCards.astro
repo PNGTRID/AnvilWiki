@@ -14,7 +14,7 @@ const { highlights } = Astro.props;
     highlights.map((h) => (
       <div class="flex items-center justify-between rounded-md border bg-card p-3">
         <div class="min-w-0 flex-1">
-          <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs font-semibold text-nav">
+          <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs font-semibold text-foreground">
             {h.label}
           </code>
           <p class="mt-1 text-xs text-muted-foreground">{h.detail}</p>

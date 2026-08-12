@@ -52,7 +52,7 @@ const { modules, locale } = Astro.props;
           {m.displayType === 'card-list' && <CardList highlights={m.highlights} />}
         </div>
 
-        <p class="mt-4 inline-flex items-center gap-1 text-xs font-medium text-nav">
+        <p class="mt-4 inline-flex items-center gap-1 text-xs font-medium text-foreground hover:text-nav">
           <span class="border-b border-transparent transition group-hover:border-nav">View all</span>
           <Icon
             name="lucide:arrow-right"

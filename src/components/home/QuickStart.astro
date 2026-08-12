@@ -32,7 +32,7 @@ const { locale, eyebrow = 'Start Here', title = 'Quick Start', cards = [] } = As
 ---
 {cards.length > 0 && (
   <section class="section border-t border-border">
-    <p class="text-sm font-semibold uppercase tracking-wider text-nav">{eyebrow}</p>
+    <p class="text-sm font-semibold uppercase tracking-wider text-foreground">{eyebrow}</p>
     <h2 class="mt-1 text-2xl font-bold tracking-tight md:text-3xl">{title}</h2>
     <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 md:mt-8">
       {cards.map((card: StartCard) => (
@@ -50,7 +50,7 @@ const { locale, eyebrow = 'Start Here', title = 'Quick Start', cards = [] } = As
           </div>
           <h3 class="mt-4 font-semibold leading-snug">{card.title}</h3>
           <p class="mt-1 line-clamp-2 text-sm text-muted-foreground">{card.description}</p>
-          <span class="mt-3 inline-flex items-center gap-1 text-xs font-medium text-nav">
+          <span class="mt-3 inline-flex items-center gap-1 text-xs font-medium text-foreground hover:text-nav">
             <span class="border-b border-transparent transition group-hover:border-nav">Open</span>
             <Icon
               name="lucide:arrow-right"
