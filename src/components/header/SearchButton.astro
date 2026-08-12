@@ -248,6 +248,10 @@ const placeholder = search.placeholder ?? 'Search...';
     color: hsl(var(--muted-foreground)) !important;
     padding: 8px 12px !important;
     margin: 0 0 4px 0 !important;
+    /* Truncate absurdly long queries so they don't break layout */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 
   /* Each result row */
