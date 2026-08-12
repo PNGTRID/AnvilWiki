@@ -93,6 +93,11 @@ const placeholder = search.placeholder ?? 'Search...';
       0 8px 24px -8px hsl(0 0% 0% / 0.15);
     overflow: hidden;
   }
+  /* When the dialog is open, lock body scroll so wheel events inside the
+     results list don't scroll the page behind the modal. */
+  :global(body:has(#search-modal[open])) {
+    overflow: hidden;
+  }
   #search-modal::backdrop {
     background: hsl(0 0% 0% / 0.45);
     backdrop-filter: blur(4px);
@@ -455,10 +460,42 @@ const placeholder = search.placeholder ?? 'Search...';
 
     // Click outside the inner shell closes the modal (native dialog backdrop click).
     modal.addEventListener('click', (e) => {
-      // If the click target is the <dialog> itself (not a child), it's a backdrop click.
       if (e.target === modal) {
         modal.close();
       }
     });
+
+    // Lock body scroll while the dialog is open (backup for the CSS
+    // :has() rule, for older browsers). Also prevent wheel events from
+    // scrolling the background page when the results list reaches its
+    // scroll boundary.
+    const setBodyLock = (lock) => {
+      document.body.style.overflow = lock ? 'hidden' : '';
+    };
+    modal.addEventListener('toggle', (e) => {
+      setBodyLock(e.newState === 'open');
+    });
+    // showModal/close don't always fire 'toggle' in every browser, so
+    // also hook the open/close calls directly.
+    const origShow = modal.showModal?.bind(modal);
+    const origClose = modal.close?.bind(modal);
+    if (origShow) modal.showModal = () => { origShow(); setBodyLock(true); };
+    if (origClose) modal.close = (rv) => { origClose(rv); setBodyLock(false); };
+
+    // Prevent scroll-through: when wheeling inside the results area and
+    // hitting the top/bottom boundary, stop the event so the background
+    // page doesn't start scrolling.
+    modal.addEventListener('wheel', (e) => {
+      const scroller = modal.querySelector('.pagefind-ui__results-area');
+      if (!scroller) return;
+      const { scrollTop, scrollHeight, clientHeight } = scroller;
+      const atTop = scrollTop === 0;
+      const atBottom = scrollTop + clientHeight >= scrollHeight;
+      const goingUp = e.deltaY < 0;
+      const goingDown = e.deltaY > 0;
+      if ((atTop && goingUp) || (atBottom && goingDown)) {
+        e.preventDefault();
+      }
+    }, { passive: false });
   })();
 </script>
