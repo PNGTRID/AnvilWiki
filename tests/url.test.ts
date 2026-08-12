@@ -29,8 +29,8 @@ describe('url helpers', () => {
     it('returns / for default locale', () => {
       expect(homeUrl('en')).toBe('/');
     });
-    it('returns /ja/ for non-default locale', () => {
-      expect(homeUrl('ja')).toBe('/ja/');
+    it('returns /ja for non-default locale', () => {
+      expect(homeUrl('ja')).toBe('/ja');
     });
   });
 
