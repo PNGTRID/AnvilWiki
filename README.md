@@ -11,13 +11,24 @@
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-F38020?logo=cloudflare&logoColor=white)](https://pages.cloudflare.com)
 [![Live Demo](https://img.shields.io/badge/Demo-anvilwiki.pages.dev-brightgreen)](https://anvilwiki.pages.dev/)
 
-### Lighthouse 4×100
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="https://img.shields.io/badge/Performance-100-058627?style=for-the-badge&logo=lighthouse&logoColor=white" alt="Performance" />
+    </td>
+    <td align="center" width="25%">
+      <img src="https://img.shields.io/badge/Accessibility-100-058627?style=for-the-badge&logo=lighthouse&logoColor=white" alt="Accessibility" />
+    </td>
+    <td align="center" width="25%">
+      <img src="https://img.shields.io/badge/Best_Practices-100-058627?style=for-the-badge&logo=lighthouse&logoColor=white" alt="Best Practices" />
+    </td>
+    <td align="center" width="25%">
+      <img src="https://img.shields.io/badge/SEO-100-058627?style=for-the-badge&logo=lighthouse&logoColor=white" alt="SEO" />
+    </td>
+  </tr>
+</table>
 
-> 实测于 [anvilwiki.pages.dev](https://anvilwiki.pages.dev/)（2026-08-12，Lighthouse mobile）
-
-| Performance | Accessibility | Best Practices | SEO |
-|:-:|:-:|:-:|:-:|
-| ![100](https://img.shields.io/badge/score-100-brightgreen?style=for-the-badge) | ![100](https://img.shields.io/badge/score-100-brightgreen?style=for-the-badge) | ![100](https://img.shields.io/badge/score-100-brightgreen?style=for-the-badge) | ![100](https://img.shields.io/badge/score-100-brightgreen?style=for-the-badge) |
+> Lighthouse 4×100 — 实测于 [anvilwiki.pages.dev](https://anvilwiki.pages.dev/)（2026-08-12）
 
 ---
 
