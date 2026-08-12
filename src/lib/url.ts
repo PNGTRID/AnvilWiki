@@ -12,6 +12,9 @@ import { siteUrl } from '~/config/site';
 export function localizePath(path: string, locale: Locale): string {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   if (locale === defaultLocale) return cleanPath;
+  // For the root path "/", avoid producing "/<locale>/" (trailing slash).
+  // The site uses trailingSlash: 'never', so "/ja/" would 404.
+  if (cleanPath === '/') return `/${locale}`;
   return `/${locale}${cleanPath}`;
 }
 

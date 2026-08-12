@@ -81,6 +81,11 @@
   .card {
     @apply rounded-lg border bg-card text-card-foreground transition hover:border-nav/50 hover:shadow-md;
   }
+
+  /* Unified section vertical rhythm — use on all homepage sections. */
+  .section {
+    @apply mx-auto max-w-7xl px-4 py-12 md:py-16;
+  }
 }
 
 /* Theme initialization script — runs before paint to avoid FOUC. */
