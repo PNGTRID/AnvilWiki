@@ -9,6 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Astro](https://img.shields.io/badge/Astro-5.x-FF5D01?logo=astro&logoColor=white)](https://astro.build)
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-F38020?logo=cloudflare&logoColor=white)](https://pages.cloudflare.com)
+[![Live Demo](https://img.shields.io/badge/Demo-anvilwiki.pages.dev-brightgreen)](https://anvilwiki.pages.dev/)
 
 ---
 
@@ -22,7 +23,7 @@ AnvilWiki 是一个**游戏 wiki 站点模板**——用来快速搭建围绕某
 
 ### 核心特性
 
-- ⚡ **极快**：Astro 零 JS 优先，Lighthouse Performance 通常 95+
+- ⚡ **极快**：Astro 零 JS 优先，Lighthouse 全 100（Performance / Accessibility / Best Practices / SEO）
 - 🌐 **Cloudflare 原生**：纯静态输出，零适配器，免费无限带宽
 - 🎨 **JSON 驱动首页**：模块化布局，换游戏只改 JSON 不改组件
 - 🌍 **多语言开箱即用**：英文无前缀（SEO 最优），其他语言带前缀，缺失内容自动 fallback 英文
@@ -89,7 +90,7 @@ Built on **Astro + Cloudflare Pages**: pure static output, zero adapters, free u
 
 ### Key Features
 
-- ⚡ **Blazing fast**: Astro zero-JS by default, Lighthouse Performance typically 95+
+- ⚡ **Blazing fast**: Astro zero-JS by default, Lighthouse 4×100 (Performance / Accessibility / Best Practices / SEO)
 - 🌐 **Cloudflare native**: Pure static output, zero adapters, free unlimited bandwidth
 - 🎨 **JSON-driven homepage**: 8 modules, swap games by editing JSON only
 - 🌍 **i18n out of the box**: Default locale (English) has no prefix (SEO optimal), others prefixed, missing content falls back to English
@@ -130,9 +131,8 @@ See [`docs/deployment.md`](docs/deployment.md) for detailed guide.
 
 ---
 
-> **Status**: ✅ MVP complete — 27 pages build clean, typecheck passes (0 errors), Cloudflare-ready
+> **Status**: ✅ Live demo at **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** — Lighthouse 4×100, CI green, fully deployed.
 >
-> **Demo**: Not deployed yet — run locally with `pnpm dev` after clone.
-> Deploy your own to Cloudflare Pages in 5 minutes (see [docs/deployment.md](docs/deployment.md)).
+> **Features shipped**: Pagefind offline search · Astro Image (WebP/srcset) · Skinning CLI (`pnpm skin`) · Full i18n (en/ja) · SEO (hreflang, JSON-LD, sitemap) · Security headers
 >
-> 状态：✅ MVP 完成 — 27 页全部构建通过，typecheck 0 错误，可部署到 Cloudflare
+> 状态：✅ **[anvilwiki.pages.dev](https://anvilwiki.pages.dev/)** 已上线 — Lighthouse 全 100，CI 全绿。
