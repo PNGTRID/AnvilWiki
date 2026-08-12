@@ -220,10 +220,13 @@ const finalCta = home.finalCta ?? {};
       <section class="mx-auto max-w-3xl px-4 py-12">
         <h2 class="text-2xl font-bold">{faq.title}</h2>
         <p class="mt-1 text-sm text-muted-foreground">{faq.description}</p>
-        <div class="mt-6 space-y-2">
+        <div class="mt-6 space-y-2" data-faq-group>
           {faq.items.map((item: any) => (
             <details class="group rounded-md border bg-card">
-              <summary class="flex cursor-pointer list-none items-center justify-between p-4 font-medium">
+              <summary
+                class="flex cursor-pointer list-none items-center justify-between p-4 font-medium"
+                aria-expanded="false"
+              >
                 {item.question}
                 <Icon name="lucide:chevron-down" class="h-4 w-4 transition group-open:rotate-180" />
               </summary>
@@ -267,3 +270,11 @@ const finalCta = home.finalCta ?? {};
     )
   }
 </LocaleLayout>
+<script is:inline>
+  // Sync aria-expanded on FAQ summaries when details toggle.
+  document.querySelectorAll('[data-faq-group] details').forEach((d) => {
+    const sync = () => d.querySelector('summary')?.setAttribute('aria-expanded', d.open ? 'true' : 'false');
+    sync();
+    d.addEventListener('toggle', sync);
+  });
+</script>

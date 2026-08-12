@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Image `decoding="async"` + explicit `width`/`height` to prevent CLS (ListPage covers, VideoSection thumbnails)
+- FAQ accessibility: `aria-expanded` sync on toggle + `data-faq-group` container
+- WikiSidebar now visible on tablet (md breakpoint, was lg-only)
+- Migration cost breakdown in `docs/migration-from-nextjs.md` (2-hour estimate per site)
+
+### Changed
+- PRD status updated: "设计中 · 待 review" → "已实现"
+- PRD §14.2: v1.1 (seoscout converter) marked as done
+- Demo `home.hero.videoId` cleared (was placeholder)
+
+## [0.2.0] — 2026-08-12
+
+### Added
 - `scripts/check-sitemap.ts` — verifies every sitemap URL returns 200
 - `scripts/new-post.ts` — interactive MDX article scaffold
 - `scripts/convert-from-seoscout.ts` — converts seoscout MDX format to YAML frontmatter
@@ -39,5 +52,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: PRD (1600+ lines), deployment, skinning (4-phase 7-part), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/PNGTRID/AnvilWiki/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/PNGTRID/AnvilWiki/releases/tag/v0.1.0

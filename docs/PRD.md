@@ -1,8 +1,8 @@
 # AnvilWiki 产品需求文档（PRD）
 
-> **版本**：v0.1（初稿）
-> **日期**：2026-08-11
-> **状态**：设计中 · 待 review
+> **版本**：v0.2
+> **日期**：2026-08-12
+> **状态**：已实现（MVP 完成，27 页构建通过，CI 全绿）
 > **维护者**：AnvilWiki 开源项目
 > **协议**：MIT
 
@@ -1335,14 +1335,14 @@ describe('sitemap', () => {
 
 ### 14.2 v1.0 后的迭代方向
 
-| 版本 | 功能 | 优先级 |
-|---|---|---|
-| v1.1 | seoscout 格式自动转换脚本 + 文档 | 高 |
-| v1.2 | 搜索功能（Pagefind 离线搜索，零运行时） | 中 |
-| v1.3 | 更多 displayType（video-grid/timeline/comparison-table） | 中 |
-| v1.4 | 评论系统（Giscus/Utterances，可选） | 低 |
-| v1.5 | 图片优化（Astro Image，自动 WebP/AVIF + 响应式） | 中 |
-| v2.0 | 可视化换皮 CLI（`pnpm skin <game-name>` 引导式换皮） | 高 |
+| 版本 | 功能 | 优先级 | 状态 |
+|---|---|---|---|
+| ~~v1.1~~ | ~~seoscout 格式自动转换脚本 + 文档~~ | ~~高~~ | ✅ 已实现（`scripts/convert-from-seoscout.ts` + `pnpm convert-seoscout`） |
+| v1.2 | 搜索功能（Pagefind 离线搜索，零运行时） | 中 | ⏳ |
+| v1.3 | 更多 displayType（video-grid/timeline/comparison-table） | 中 | ⏳ |
+| v1.4 | 评论系统（Giscus/Utterances，可选） | 低 | ⏳ |
+| v1.5 | 图片优化（Astro Image，自动 WebP/AVIF + 响应式 srcset） | 中 | ⏳ |
+| v2.0 | 可视化换皮 CLI（`pnpm skin <game-name>` 引导式换皮） | 高 | ⏳ |
 
 ### 14.3 「待验证清单」回填计划
 
@@ -1573,7 +1573,8 @@ PUBLIC_GA_ID=
 | 日期 | 版本 | 说明 |
 |---|---|---|
 | 2026-08-11 | v0.1 | PRD 初稿；技术事实已通过 Astro 官方文档核实 |
+| 2026-08-12 | v0.2 | MVP 全部实现（MVP-0 至 MVP-5 + P0-P3）；更新待验证清单状态 |
 
 ---
 
-> **下一步**：等待 user review 本 PRD。Review 通过后，按 [第 14 章 开发路线图](#第-14-章-开发路线图) 启动 MVP-0 开发。
+> **下一步**：部署 demo 站 + Lighthouse 性能基准实测（PRD §14.3 #8）。后续按 [§14.2 迭代方向](#142-v10-后的迭代方向) 推进 v1.1+ 功能。

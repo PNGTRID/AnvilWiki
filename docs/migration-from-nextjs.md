@@ -122,6 +122,36 @@ pnpm dev    # 逐页访问确认正常
 
 ---
 
+## 迁移成本核算
+
+以下是基于实际迁移经验估算的工时，供参考（单个站点，已有内容数据）：
+
+| 迁移阶段 | 工作内容 | 估算工时 |
+|---|---|---|
+| **1. 主题色 + favicon** | 复制 `globals.css` 4 行主题色；favicon 不变（放 `public/`） | 5 分钟 |
+| **2. 站点信息** | 把旧模板的 `site info` 搬到 `src/config/site.ts` | 10 分钟 |
+| **3. 导航分类** | `navigation.ts` 结构一致，icon 加 `lucide:` 前缀 | 10 分钟 |
+| **4. 首页文案** | `en.json` 的 `home` 命名空间结构相同，大部分可直接复制；4 种 displayType 的 highlights 需检查 | 20-30 分钟 |
+| **5. 文章格式转换** | `export const metadata` → YAML frontmatter（可用 `pnpm convert-seoscout` 批量转）；文件移到 `src/content/wiki/<locale>/` | 15 分钟（50 篇内） |
+| **6. 语言配置** | `routing.ts` locales 数组复制；`ui.ts` import + 注册 | 10 分钟 |
+| **7. 删除不再需要的文件** | `middleware.ts` / `netlify.toml` / `next.config` / `next-on-pages` 等 Next.js 专属文件 | 5 分钟 |
+| **8. 构建验证** | `pnpm build` + `pnpm check-sitemap` 修复格式错误 | 15-30 分钟 |
+| **9. 部署** | Cloudflare Pages 连仓库（比 Netlify 更快） | 10 分钟 |
+| **总计** | | **1.5-2.5 小时** |
+
+### 迁移 vs 重做的选择
+
+| 场景 | 建议 | 理由 |
+|---|---|---|
+| 站点流量 < 100GB/月、跑得好 | 不迁移 | 迁移成本 2 小时 > 节省的带宽费 |
+| 做新站 | 直接用 AnvilWiki | 0 迁移成本，从 Day 1 享受 Cloudflare 无限带宽 |
+| 站点爆量（>100GB/月） | 迁移 | 一次 2 小时投入，永久省带宽费 |
+| 有大量 React 交互组件 | 评估后再定 | 需把交互重写为纯 Astro 或引入 React island |
+
+> 核心结论：迁移是**机械性工作**（复制数据 + 转格式），不涉及逻辑重写。单个站点 2 小时内可完成。
+
+---
+
 ## 下一步
 
 - [换皮工作流](./skinning.md)

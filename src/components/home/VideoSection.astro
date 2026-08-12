@@ -35,6 +35,7 @@ const { videoId, title = 'Watch trailer' } = Astro.props;
           alt={title}
           class="h-full w-full object-cover opacity-80 transition group-hover:opacity-100"
           loading="lazy"
+          decoding="async"
           width="480"
           height="360"
         />

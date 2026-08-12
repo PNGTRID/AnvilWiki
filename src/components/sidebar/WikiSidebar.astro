@@ -29,7 +29,7 @@ const ui = getUi(locale);
 const nav = ui.nav as Record<string, string>;
 const groups = await getDynamicNavigation(locale, nav);
 ---
-<aside class="hidden w-64 shrink-0 lg:block">
+<aside class="hidden w-56 shrink-0 md:block xl:w-64">
   <div class="sticky top-20 max-h-[calc(100vh-6rem)] space-y-6 overflow-y-auto pr-2">
     {/* Wiki navigation */}
     <nav aria-label="Wiki navigation">
