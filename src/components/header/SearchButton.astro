@@ -148,9 +148,13 @@ const placeholder = search.placeholder ?? 'Search...';
     min-height: 0;
   }
 
-  /* Search form — the input header bar */
+  /* Search form — the input header bar.
+     Pagefind nests the results drawer INSIDE the <form>, so the form
+     must wrap (flex-wrap) and the drawer must take full width to drop
+     to the next row. Otherwise results render squeezed beside the input. */
   :global(#search-modal .pagefind-ui__form) {
     display: flex !important;
+    flex-wrap: wrap !important;
     align-items: center !important;
     gap: 10px !important;
     padding: 0 20px !important;
@@ -165,6 +169,15 @@ const placeholder = search.placeholder ?? 'Search...';
     height: 18px !important;
     flex-shrink: 0 !important;
     color: hsl(var(--muted-foreground)) !important;
+  }
+
+  /* Drawer holds all results — full width, drops below the input row */
+  :global(#search-modal .pagefind-ui__drawer) {
+    display: block !important;
+    width: 100% !important;
+    flex-basis: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   /* Input — large, borderless, header-style */
@@ -206,10 +219,7 @@ const placeholder = search.placeholder ?? 'Search...';
     background: hsl(var(--muted)) !important;
   }
 
-  /* Drawer / results container */
-  :global(#search-modal .pagefind-ui__drawer) {
-    display: contents !important;
-  }
+  /* Results container */
   :global(#search-modal .pagefind-ui__results-area) {
     overflow-y: auto !important;
     padding: 6px !important;
