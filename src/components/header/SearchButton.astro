@@ -1,18 +1,20 @@
 ---
 /**
- * Search button + modal — Pagefind offline search (PRD §14.2 v1.2).
+ * Search command palette — Pagefind offline search (PRD §14.2 v1.2).
+ *
+ * Design: a focused command-palette modal (Cmd+K pattern), not a generic
+ * search box. Visual language matches the shadcn-style token system:
+ *   - backdrop: dim + blur (focus the modal)
+ *   - surface:  --card with soft shadow, rounded-xl
+ *   - input:    large, borderless, sits in a header row with the search icon
+ *   - results:  tight list, hover-highlight row, theme-colored marks
  *
  * Behavior:
- *   - Header button opens a <dialog> modal (native, zero framework runtime).
- *   - pagefind-ui.js is lazy-loaded on first open (not in initial bundle).
- *   - Keyboard: Ctrl/Cmd+K opens from anywhere; Escape closes (native <dialog>).
+ *   - Header button + Ctrl/Cmd+K opens the <dialog> (native, zero runtime).
+ *   - pagefind-ui.js lazy-loads on first open (not in initial bundle).
+ *   - Escape closes (native <dialog>).
  *
- * Pagefind index is generated at build time by `postbuild` script
- * (`pagefind --site dist`). Articles are indexed via `data-pagefind-body`
- * on ArticlePage's prose container.
- *
- * All UI text comes from JSON (Hard Rule 1): `search.{placeholder, noResults, open}`
- * and `nav.search` for the button aria-label.
+ * All UI text from JSON (Hard Rule 1): search.{placeholder, noResults} + nav.search.
  */
 import { Icon } from 'astro-icon/components';
 import { type Locale } from '~/i18n/routing';
@@ -30,6 +32,7 @@ const noResults = search.noResults ?? 'No matches found';
 const placeholder = search.placeholder ?? 'Search...';
 ---
 
+{/* Trigger button */}
 <button
   id="search-trigger"
   type="button"
@@ -40,51 +43,341 @@ const placeholder = search.placeholder ?? 'Search...';
   <Icon name="lucide:search" class="h-5 w-5" />
 </button>
 
-<dialog
-  id="search-modal"
-  class=":w-full,:max-w-2xl,:rounded-lg,:border,:bg-background,:p-0"
-  aria-label={btnLabel}
->
-  <div class="flex flex-col overflow-hidden rounded-lg border border-border bg-background shadow-xl">
-    <div id="search-modal-inner" data-pagefind-ui data-no-results={noResults} data-placeholder={placeholder}></div>
-    <div class="flex items-center justify-between border-t border-border px-3 py-2 text-xs text-muted-foreground">
-      <span class="inline-flex items-center gap-1">
-        <kbd class="rounded border bg-muted px-1.5 py-0.5 font-sans">Esc</kbd>
-        {nav.close ?? 'Close'}
+{/* Command palette modal */}
+<dialog id="search-modal" aria-label={btnLabel}>
+  <div class="search-shell">
+    {/* Pagefind mounts its UI inside this container */}
+    <div
+      id="search-modal-inner"
+      data-pagefind-ui
+      data-no-results={noResults}
+      data-placeholder={placeholder}
+    ></div>
+
+    {/* Footer hint bar — keyboard shortcuts + branding */}
+    <footer class="search-footer">
+      <div class="search-footer-hints">
+        <span class="hint">
+          <kbd>Esc</kbd>
+          {nav.close ?? 'Close'}
+        </span>
+        <span class="hint-divider">·</span>
+        <span class="hint">
+          <kbd>↵</kbd>
+          {nav.search ?? 'Search'}
+        </span>
+      </div>
+      <span class="search-footer-brand">
+        <Icon name="lucide:zap" class="h-3 w-3" />
+        Powered by Pagefind
       </span>
-      <span class="inline-flex items-center gap-1">
-        <Icon name="lucide:search" class="h-3 w-3" />
-        Pagefind
-      </span>
-    </div>
+    </footer>
   </div>
 </dialog>
 
 <style>
-  /* Pagefind UI theming — map CSS vars so it follows --nav-theme. */
-  :global(.pagefind-ui) {
-    --pagefind-ui-primary: hsl(var(--nav-theme));
-    --pagefind-ui-text: hsl(var(--foreground));
-    --pagefind-ui-background: hsl(var(--background));
-    --pagefind-ui-border: hsl(var(--border));
-    --pagefind-ui-tag: hsl(var(--muted));
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 6px;
-    --pagefind-ui-font: inherit;
-  }
-  :global(.pagefind-ui__search-input) {
-    background: transparent;
-  }
-  /* Modal sizing — native <dialog> needs explicit width via ::backdrop too. */
+  /* ------------------------------------------------------------------ */
+  /* 1. Modal shell — the native <dialog>                               */
+  /* ------------------------------------------------------------------ */
   #search-modal {
-    width: min(640px, 90vw);
-    max-width: 90vw;
+    width: min(640px, 92vw);
+    max-width: 92vw;
     padding: 0;
-    margin: 12vh auto auto;
+    margin: 10vh auto auto;
+    border: none;
+    border-radius: 16px;
+    background: transparent;
+    box-shadow:
+      0 0 0 1px hsl(var(--border)),
+      0 24px 48px -12px hsl(0 0% 0% / 0.25),
+      0 8px 24px -8px hsl(0 0% 0% / 0.15);
+    overflow: hidden;
   }
   #search-modal::backdrop {
-    background: hsl(0 0% 0% / 0.5);
-    backdrop-filter: blur(2px);
+    background: hsl(0 0% 0% / 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .search-shell {
+    display: flex;
+    flex-direction: column;
+    max-height: 75vh;
+    background: hsl(var(--card));
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 2. Pagefind UI — FULL style takeover                               */
+  /* pagefind-ui.css ships Svelte-scoped rules with a hash suffix that   */
+  /* changes after Astro's build, so its scoped styles silently no-op.  */
+  /* We treat pagefind-ui as unstyled markup and define every rule here.*/
+  /* ------------------------------------------------------------------ */
+
+  /* Root container */
+  :global(#search-modal-inner .pagefind-ui) {
+    --pagefind-ui-primary: hsl(var(--nav-theme));
+    --pagefind-ui-text: hsl(var(--foreground));
+    --pagefind-ui-background: hsl(var(--card));
+    --pagefind-ui-border: hsl(var(--border));
+    --pagefind-ui-scale: 0.75;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: hsl(var(--card)) !important;
+    color: hsl(var(--foreground)) !important;
+    border: none !important;
+    border-radius: 0 !important;
+    font-family: inherit !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+  }
+  /* The Svelte reset wrapper — neutralize its reset but keep it as a flex child */
+  :global(#search-modal-inner .pagefind-ui--reset) {
+    /* Do NOT use `all: unset` — that breaks flex layout. Just let it inherit. */
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Search form — the input header bar */
+  :global(#search-modal .pagefind-ui__form) {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 0 20px !important;
+    margin: 0 !important;
+    border: none !important;
+    border-bottom: 1px solid hsl(var(--border)) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+  :global(#search-modal .pagefind-ui__form svg) {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  /* Input — large, borderless, header-style */
+  :global(#search-modal .pagefind-ui__search-input) {
+    flex: 1 !important;
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 18px 4px !important;
+    margin: 0 !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    line-height: 1.4 !important;
+    color: hsl(var(--foreground)) !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-appearance: none !important;
+  }
+  :global(#search-modal .pagefind-ui__search-input::placeholder) {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  /* Clear button */
+  :global(#search-modal .pagefind-ui__search-clear) {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 6px 10px !important;
+    margin: 0 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: hsl(var(--muted-foreground)) !important;
+    cursor: pointer !important;
+    transition: all 0.15s !important;
+  }
+  :global(#search-modal .pagefind-ui__search-clear:hover) {
+    color: hsl(var(--foreground)) !important;
+    background: hsl(var(--muted)) !important;
+  }
+
+  /* Drawer / results container */
+  :global(#search-modal .pagefind-ui__drawer) {
+    display: contents !important;
+  }
+  :global(#search-modal .pagefind-ui__results-area) {
+    overflow-y: auto !important;
+    padding: 6px !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  :global(#search-modal .pagefind-ui__results-area::-webkit-scrollbar) {
+    width: 6px;
+  }
+  :global(#search-modal .pagefind-ui__results-area::-webkit-scrollbar-thumb) {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  :global(#search-modal .pagefind-ui__results) {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* "N results" message */
+  :global(#search-modal .pagefind-ui__message) {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: hsl(var(--muted-foreground)) !important;
+    padding: 8px 12px !important;
+    margin: 0 0 4px 0 !important;
+  }
+
+  /* Each result row */
+  :global(#search-modal .pagefind-ui__result) {
+    display: block !important;
+    list-style: none !important;
+    padding: 10px 12px !important;
+    margin: 0 0 2px 0 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    transition: background 0.12s ease !important;
+  }
+  :global(#search-modal .pagefind-ui__result:hover) {
+    background: hsl(var(--muted)) !important;
+  }
+
+  :global(#search-modal .pagefind-ui__result-inner) {
+    display: block !important;
+    margin: 0 !important;
+  }
+
+  :global(#search-modal .pagefind-ui__result-thumb),
+  :global(#search-modal .pagefind-ui__result-image) {
+    display: none !important;
+  }
+
+  /* Result title */
+  :global(#search-modal .pagefind-ui__result-title) {
+    display: block !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+  }
+  :global(#search-modal .pagefind-ui__result-title .pagefind-ui__result-link) {
+    color: hsl(var(--foreground)) !important;
+    text-decoration: none !important;
+    transition: color 0.12s !important;
+  }
+  :global(#search-modal .pagefind-ui__result:hover .pagefind-ui__result-link) {
+    color: hsl(var(--nav-theme)) !important;
+  }
+
+  /* Excerpt */
+  :global(#search-modal .pagefind-ui__result-excerpt) {
+    display: block !important;
+    margin: 3px 0 0 0 !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  /* Highlight mark */
+  :global(#search-modal mark) {
+    background: hsl(var(--nav-theme) / 0.14) !important;
+    color: hsl(var(--nav-theme)) !important;
+    border-radius: 3px !important;
+    padding: 1px 3px !important;
+    font-weight: 600 !important;
+  }
+
+  /* Nested sub-results */
+  :global(#search-modal .pagefind-ui__result-nested) {
+    margin: 6px 0 0 0 !important;
+    padding: 4px 0 4px 12px !important;
+    border-left: 2px solid hsl(var(--border)) !important;
+  }
+  :global(#search-modal .pagefind-ui__result-nested .pagefind-ui__result-title) {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+  }
+  :global(#search-modal .pagefind-ui__result-nested .pagefind-ui__result-excerpt) {
+    font-size: 12px !important;
+  }
+  :global(#search-modal .pagefind-ui__result-tags) {
+    margin-top: 6px !important;
+    font-size: 11px !important;
+    color: hsl(var(--muted-foreground)) !important;
+  }
+  :global(#search-modal .pagefind-ui__result-tag) {
+    color: hsl(var(--nav-theme)) !important;
+    font-weight: 500 !important;
+  }
+
+  /* Loading skeleton */
+  :global(#search-modal .pagefind-ui__loading) {
+    border-radius: 4px !important;
+    opacity: 0.4 !important;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 3. Footer                                                          */
+  /* ------------------------------------------------------------------ */
+  .search-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-top: 1px solid hsl(var(--border));
+    background: hsl(var(--muted) / 0.35);
+    font-size: 12px;
+    color: hsl(var(--muted-foreground));
+    flex-shrink: 0;
+  }
+  .search-footer-hints {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .hint kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border: 1px solid hsl(var(--border));
+    border-radius: 4px;
+    background: hsl(var(--background));
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    line-height: 1;
+  }
+  .hint-divider {
+    opacity: 0.4;
+  }
+  .search-footer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.6;
+    font-size: 11px;
   }
 </style>
 
@@ -102,12 +395,9 @@ const placeholder = search.placeholder ?? 'Search...';
       } else {
         modal.setAttribute('open', '');
       }
-      // Lazy-load pagefind-ui on first open.
       if (!pagefindLoaded) {
         pagefindLoaded = true;
         try {
-          // pagefind-ui.js is an IIFE that sets window.PagefindUI (NOT an ES
-          // module export), so we import for its side effect then read window.
           await import('/pagefind/pagefind-ui.js');
           const PFUI = window.PagefindUI;
           const target = document.getElementById('search-modal-inner');
@@ -118,15 +408,15 @@ const placeholder = search.placeholder ?? 'Search...';
               element: '#' + target.id,
               showSubResults: true,
               showImages: false,
+              showEmptyFilters: false,
               translations: {
                 placeholder,
                 zero_results: noResults,
               },
             });
-            // Autofocus the input once rendered.
             setTimeout(() => {
               target.querySelector('input')?.focus();
-            }, 50);
+            }, 60);
           } else {
             console.warn('[search] PagefindUI not found on window after loading pagefind-ui.js');
           }
@@ -134,7 +424,6 @@ const placeholder = search.placeholder ?? 'Search...';
           console.warn('[search] Pagefind failed to load — run `pnpm build` first.', err);
         }
       } else {
-        // Already loaded — just focus the input.
         setTimeout(() => {
           modal.querySelector('input')?.focus();
         }, 50);
@@ -143,13 +432,19 @@ const placeholder = search.placeholder ?? 'Search...';
 
     trigger.addEventListener('click', openModal);
 
-    // Ctrl/Cmd+K to open from anywhere on the page.
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         openModal();
       }
-      // Escape closes via native <dialog> — no extra handler needed.
+    });
+
+    // Click outside the inner shell closes the modal (native dialog backdrop click).
+    modal.addEventListener('click', (e) => {
+      // If the click target is the <dialog> itself (not a child), it's a backdrop click.
+      if (e.target === modal) {
+        modal.close();
+      }
     });
   })();
 </script>
