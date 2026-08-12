@@ -106,13 +106,15 @@ const placeholder = search.placeholder ?? 'Search...';
       if (!pagefindLoaded) {
         pagefindLoaded = true;
         try {
-          // @ts-ignore — runtime import from built /pagefind/ output
-          const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+          // pagefind-ui.js is an IIFE that sets window.PagefindUI (NOT an ES
+          // module export), so we import for its side effect then read window.
+          await import('/pagefind/pagefind-ui.js');
+          const PFUI = window.PagefindUI;
           const target = document.getElementById('search-modal-inner');
           const noResults = target?.getAttribute('data-no-results') ?? 'No matches found';
           const placeholder = target?.getAttribute('data-placeholder') ?? 'Search';
-          if (target && typeof PagefindUI === 'function') {
-            new PagefindUI({
+          if (target && typeof PFUI === 'function') {
+            new PFUI({
               element: '#' + target.id,
               showSubResults: true,
               showImages: false,
@@ -125,9 +127,11 @@ const placeholder = search.placeholder ?? 'Search...';
             setTimeout(() => {
               target.querySelector('input')?.focus();
             }, 50);
+          } else {
+            console.warn('[search] PagefindUI not found on window after loading pagefind-ui.js');
           }
         } catch (err) {
-          console.warn('[search] Pagefind not available — run `pnpm build` first.', err);
+          console.warn('[search] Pagefind failed to load — run `pnpm build` first.', err);
         }
       } else {
         // Already loaded — just focus the input.
