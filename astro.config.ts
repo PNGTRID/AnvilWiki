@@ -15,6 +15,12 @@ export default defineConfig({
     // Emit explicit width/height on responsive <Image> output to prevent CLS.
     responsiveStyles: true,
   },
+  // Prefetch all internal links on hover — faster page transitions, no
+  // View Transitions runtime needed. Adds a small IntersectionObserver script.
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   i18n: {
     // Spread to convert readonly tuple to mutable array (Astro's Locales type).
     locales: [...locales],

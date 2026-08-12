@@ -6,10 +6,9 @@
  * `prefixDefaultLocale: false` means `/` is the English homepage.
  */
 import HomePage from '~/components/home/HomePage.astro';
-import { isLocale, defaultLocale } from '~/i18n/routing';
-import { websiteJsonLd, faqPageJsonLd } from '~/lib/seo';
-import { getUi } from '~/i18n/ui';
-import type { Locale } from '~/i18n/routing';
+import { isLocale, defaultLocale, locales, type Locale } from '~/i18n/routing';
+import { websiteJsonLd } from '~/lib/seo';
+import { homeUrl, languageAlternates } from '~/lib/url';
 
 export function getStaticPaths() {
   // Only generate paths for non-default locales — default is at /.
@@ -20,12 +19,9 @@ const { locale } = Astro.params;
 if (!isLocale(locale) || locale === defaultLocale) {
   return Astro.redirect('/');
 }
-const ui = getUi(locale);
-const home = ui.home as Record<string, any>;
-const jsonLd = [
-  websiteJsonLd(locale as Locale),
-  ...(home.faq?.items?.length ? [faqPageJsonLd(home.faq.items)] : []),
-];
+const jsonLd = [websiteJsonLd(locale as Locale)];
+// hreflang alternates: Home → / (en) or /<locale> for each locale.
+const alternates = languageAlternates((loc) => homeUrl(loc), locales);
 ---
 
-<HomePage locale={locale} jsonLd={jsonLd} />
+<HomePage locale={locale} jsonLd={jsonLd} alternates={alternates} />

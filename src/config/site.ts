@@ -38,6 +38,13 @@ export interface SiteConfig {
     /** ISO release date (optional). */
     releaseDate?: string;
   };
+  /**
+   * Dimensions of the default OG/Twitter share image (public/images/hero.webp).
+   * Emitted as og:image:width / og:image:height so social crawlers can render
+   * the share card without downloading the image first.
+   */
+  ogImageWidth: number;
+  ogImageHeight: number;
 }
 
 export const site: SiteConfig = {
@@ -63,6 +70,9 @@ export const site: SiteConfig = {
     genre: 'Fantasy RPG',
     releaseDate: '2026-01-15',
   },
+  // hero.webp is 1200×630 (the recommended OG share aspect ratio).
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
 };
 
 /** Absolute site URL (no trailing slash). Falls back to the Astro `site` config. */

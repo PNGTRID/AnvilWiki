@@ -12,14 +12,16 @@ import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { type Locale } from '~/i18n/routing';
 import { getUi } from '~/i18n/ui';
 import { getEntriesByCategory, parseEntryId } from '~/lib/content';
-import { itemListJsonLd, pageTitle } from '~/lib/seo';
-import { detailPath } from '~/lib/url';
+import { itemListJsonLd, pageTitle, simpleBreadcrumbJsonLd } from '~/lib/seo';
+import { detailPath, listPath } from '~/lib/url';
 
 interface Props {
   locale: Locale;
   category: string;
+  /** hreflang alternates (built by the route page). */
+  alternates?: Array<{ hreflang: string; href: string }>;
 }
-const { locale, category } = Astro.props;
+const { locale, category, alternates = [] } = Astro.props;
 const ui = getUi(locale);
 const nav = ui.nav as Record<string, string>;
 const shared = ui.shared as Record<string, string>;
@@ -43,10 +45,21 @@ const jsonLd = [
       return { title: e.data.title, slug };
     }),
   }),
+  simpleBreadcrumbJsonLd({
+    pageLabel: title,
+    path: listPath(category, locale),
+    locale,
+  }),
 ];
 ---
 
-<LocaleLayout locale={locale} title={pageTitle(title)} description={description} jsonLd={jsonLd}>
+<LocaleLayout
+  locale={locale}
+  title={pageTitle(title)}
+  description={description}
+  alternates={alternates}
+  jsonLd={jsonLd}
+>
   <div class="space-y-6">
     <header>
       <nav class="text-sm text-muted-foreground" aria-label="breadcrumb">

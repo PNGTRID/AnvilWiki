@@ -28,8 +28,10 @@ import { listPath, detailPath } from '~/lib/url';
 interface Props {
   locale: Locale;
   resolved: ResolvedEntry;
+  /** hreflang alternates (built by the route page). */
+  alternates?: Array<{ hreflang: string; href: string }>;
 }
-const { locale, resolved } = Astro.props;
+const { locale, resolved, alternates = [] } = Astro.props;
 const { entry, servedLocale, isFallback } = resolved;
 const ui = getUi(locale);
 const nav = ui.nav as Record<string, string>;
@@ -76,6 +78,7 @@ const jsonLd = [
   title={pageTitle(entry.data.title)}
   description={entry.data.description}
   image={coverUrl}
+  alternates={alternates}
   article={true}
   jsonLd={jsonLd}
 >

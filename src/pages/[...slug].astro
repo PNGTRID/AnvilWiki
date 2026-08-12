@@ -11,8 +11,9 @@
 import ListPage from '~/components/article/ListPage.astro';
 import ArticlePage from '~/components/article/ArticlePage.astro';
 import { CONTENT_TYPES } from '~/config/navigation';
-import { defaultLocale, type Locale } from '~/i18n/routing';
+import { defaultLocale, locales, type Locale } from '~/i18n/routing';
 import { getEntryWithFallback, parseEntryId, type ResolvedEntry } from '~/lib/content';
+import { detailPath, languageAlternates, listPath } from '~/lib/url';
 
 export async function getStaticPaths() {
   const { getCollection } = await import('astro:content');
@@ -64,7 +65,17 @@ if (parts.length === 1) {
 if (view === 'not-found') {
   return new Response('Not Found', { status: 404 });
 }
+
+// Build hreflang alternates for this page.
+// List page: /<category> for default locale, /<locale>/<category> otherwise.
+// Article page: /<category>/<slug> (default) or /<locale>/<category>/<slug>.
+const alternates =
+  view === 'list'
+    ? languageAlternates((loc) => listPath(category, loc), locales)
+    : languageAlternates((loc) => detailPath(category, articleSlug, loc), locales);
 ---
 
-{view === 'list' && <ListPage locale={locale} category={category} />}
-{view === 'article' && resolved && <ArticlePage locale={locale} resolved={resolved} />}
+{view === 'list' && <ListPage locale={locale} category={category} alternates={alternates} />}
+{view === 'article' && resolved && (
+  <ArticlePage locale={locale} resolved={resolved} alternates={alternates} />
+)}

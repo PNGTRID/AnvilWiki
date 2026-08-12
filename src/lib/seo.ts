@@ -113,6 +113,40 @@ export function breadcrumbJsonLd(opts: {
   };
 }
 
+/**
+ * BreadcrumbList JSON-LD (2-level variant) for non-article pages
+ * (list pages, FAQ, etc.). Home → pageLabel.
+ *
+ * Use breadcrumbJsonLd() for article pages (Home → Category → Article).
+ */
+export function simpleBreadcrumbJsonLd(opts: {
+  /** Display name of the current page (e.g. category label or "FAQ"). */
+  pageLabel: string;
+  /** Absolute-or-relative path of the current page for a given locale. */
+  path: string;
+  locale: Locale;
+}) {
+  const { pageLabel, path, locale } = opts;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: `${siteUrl}${locale === defaultLocale ? '' : `/${locale}`}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: pageLabel,
+        item: `${siteUrl}${path}`,
+      },
+    ],
+  };
+}
+
 /** ItemList JSON-LD — injected on list pages. */
 export function itemListJsonLd(opts: {
   category: string;
