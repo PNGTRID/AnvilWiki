@@ -1,0 +1,9 @@
+# Cloudflare Pages headers — https://developers.cloudflare.com/pages/configuration/headers/
+#
+# Security + Lighthouse Best Practices headers applied to all responses.
+
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
