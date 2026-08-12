@@ -1,0 +1,53 @@
+---
+/**
+ * FaqSection — renders the FAQ accordion from locale JSON `home.faq`.
+ *
+ * Reused on the dedicated /faq page (and could be dropped back onto the
+ * homepage in the future if desired). Pure CSS <details> accordion with a
+ * tiny inline script to sync aria-expanded.
+ */
+import { Icon } from 'astro-icon/components';
+
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  items: FaqItem[];
+}
+const { title, description, items = [] } = Astro.props;
+---
+
+<section class="section">
+  <h1 class="text-3xl font-extrabold tracking-tight md:text-4xl">{title}</h1>
+  {description && <p class="mt-2 text-muted-foreground">{description}</p>}
+  <div class="mt-8 space-y-2" data-faq-group>
+    {
+      items.map((item: FaqItem) => (
+        <details class="group rounded-md border bg-card">
+          <summary
+            class="flex cursor-pointer list-none items-center justify-between p-4 font-medium"
+            aria-expanded="false"
+          >
+            {item.question}
+            <Icon name="lucide:chevron-down" class="h-4 w-4 transition group-open:rotate-180" />
+          </summary>
+          <div class="px-4 pb-4 text-sm text-muted-foreground">{item.answer}</div>
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<script is:inline>
+  // Sync aria-expanded on FAQ summaries when details toggle.
+  document.querySelectorAll('[data-faq-group] details').forEach((d) => {
+    const sync = () =>
+      d.querySelector('summary')?.setAttribute('aria-expanded', d.open ? 'true' : 'false');
+    sync();
+    d.addEventListener('toggle', sync);
+  });
+</script>

@@ -1,6 +1,6 @@
 ---
 /**
- * ExploreModules — renders the 8 homepage content modules.
+ * ExploreModules — renders the homepage content modules.
  *
  * Each module specifies a `displayType` that controls how its `highlights`
  * are rendered. We dispatch to the corresponding sub-component.
@@ -10,6 +10,11 @@
  *   - step-by-step → StepByStep (numbered progression steps)
  *   - tier-grid    → TierGrid (S/A/B/C ranked items)
  *   - card-list    → CardList (simple labeled cards)
+ *
+ * v0.2: each module card is now a single clickable <a> (block-level) with
+ * hover border feedback, replacing the cramped "View" link that sat on the
+ * same line as the title. The whole tile navigates; an arrow in the footer
+ * signals affordance.
  */
 import { Icon } from 'astro-icon/components';
 import CodeCards from './modules/CodeCards.astro';
@@ -36,24 +41,25 @@ const { modules, locale } = Astro.props;
 <div class="grid gap-6 md:grid-cols-2">
   {
     modules.map((m) => (
-      <section class="card overflow-hidden p-5">
-        <div class="mb-3 flex items-baseline justify-between gap-2">
-          <h3 class="text-lg font-bold leading-snug">{m.name}</h3>
-          <a
-            href={localizePath(m.href, locale)}
-            class="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-nav hover:underline"
-          >
-            View
-            <Icon name="lucide:arrow-right" class="h-3 w-3" />
-          </a>
-        </div>
-        <p class="mb-4 text-sm text-muted-foreground">{m.description}</p>
+      <a href={localizePath(m.href, locale)} class="card group block overflow-hidden p-5">
+        <h3 class="text-lg font-bold leading-snug">{m.name}</h3>
+        <p class="mt-1 text-sm text-muted-foreground">{m.description}</p>
 
-        {m.displayType === 'code-cards' && <CodeCards highlights={m.highlights} />}
-        {m.displayType === 'step-by-step' && <StepByStep highlights={m.highlights} />}
-        {m.displayType === 'tier-grid' && <TierGrid highlights={m.highlights} />}
-        {m.displayType === 'card-list' && <CardList highlights={m.highlights} />}
-      </section>
+        <div class="mt-4">
+          {m.displayType === 'code-cards' && <CodeCards highlights={m.highlights} />}
+          {m.displayType === 'step-by-step' && <StepByStep highlights={m.highlights} />}
+          {m.displayType === 'tier-grid' && <TierGrid highlights={m.highlights} />}
+          {m.displayType === 'card-list' && <CardList highlights={m.highlights} />}
+        </div>
+
+        <p class="mt-4 inline-flex items-center gap-1 text-xs font-medium text-nav">
+          <span class="border-b border-transparent transition group-hover:border-nav">View all</span>
+          <Icon
+            name="lucide:arrow-right"
+            class="h-3 w-3 transition group-hover:translate-x-0.5"
+          />
+        </p>
+      </a>
     ))
   }
 </div>

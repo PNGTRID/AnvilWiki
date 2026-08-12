@@ -25,5 +25,8 @@ pnpm-debug.log*
 !.vscode/extensions.json
 .idea/
 
+# ZCode agent workspace
+.zcode/
+
 # Cloudflare
 .wrangler/

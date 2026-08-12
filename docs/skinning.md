@@ -21,7 +21,7 @@
 ```
 requirements/
 ├── 00基础信息.md       # 游戏名、平台、官方链接、主题色、社群链接
-├── 00首页模块.md       # 首页 8 个模块的文案和数据
+├── 00首页模块.md       # 首页模块的文案和数据（v0.2：6 区块 / 4 explore 模块）
 ├── 关键词.json         # 关键词分类（决定导航分类）
 ├── articles/           # AI 生成的 MDX 文章
 │   └── en/
@@ -186,9 +186,9 @@ file public/images/hero.*
 - home.meta.description（含游戏名，150-160 字符）
 - home.hero.title（{{游戏名}} Wiki）
 - home.hero.description（含游戏名 + 核心卖点）
-- home.hero.primaryCta / secondaryCta / tertiaryCta
-- home.hero.stats（4 条游戏特色数据）
+- home.hero.primaryCta / secondaryCta（v0.2：仅 2 个 CTA，tertiaryCta 已移除）
 - home.hero.videoId（YouTube 视频 ID，留空则首页不显示视频区块）
+- home.start.cards[].icon / href（v0.2 新增：QuickStart 卡片的图标与链接）
 - home.finalCta.title / description / primary / secondary
 
 ⚠️ 域名不要硬编码在组件里——所有绝对 URL 走 SITE_URL 环境变量。
@@ -197,7 +197,7 @@ file public/images/hero.*
 ## 禁止修改
 - src/components/ 下的组件
 - src/pages/ 下的路由
-- src/locales/en.json 的 nav / overview / home.explore / home.faq / home.start / home.aboutGame / home.popular / home.updates
+- src/locales/en.json 的 nav / overview / home.explore / home.faq / home.start / home.popular / home.updates
 
 ## 验证方法
 ```bash
@@ -316,45 +316,47 @@ pnpm dev
 
 ### Part 4：首页模块
 
-**目标**：把首页 8 个模块的文案和数据全部换成新游戏。
+**目标**：把首页模块的文案和数据全部换成新游戏（v0.2 结构：6 区块 / 4 explore 模块）。
 
 ````text
 # Part 4：首页模块
 
-参考：requirements/00首页模块.md（首页 8 模块完整数据）
+参考：requirements/00首页模块.md（首页模块完整数据）
 更新 src/locales/en.json 的 home 命名空间下以下 section：
 
-1. home.start（新手教程卡片，4 张）
+1. home.start（QuickStart 快速入口卡片，4 张 — v0.2 升级为图标大卡片）
    - eyebrow / title
-   - cards[]: 每张含 number / title / description
+   - cards[]: 每张含 number / title / description / icon / href
+     · icon: lucide 图标名（如 "lucide:book-open"）
+     · href: 点击跳转链接（如 "/guides/beginner-guide"）
    - 卡片 1 固定为"新手入门"类
    - 卡片 2-4 从升级/刷资源/角色选择/兑换码/进阶机制/Boss 中选 3 个
 
-2. home.popular（热门文章区）
-   - eyebrow / title / quickLinks[]
+2. home.popular（热门文章区 — v0.2 起作为 RecentUpdates 右栏渲染）
+   - eyebrow / title / quickLinks[]（每项 { label, href }）
 
-3. home.aboutGame（游戏介绍区）
-   - title: "What is {{游戏名}}?"
-   - paragraphs[]: 2 段游戏介绍
-   - stats[]: Developer/Platform/Genre/Visits 等
-   - cta: "Explore All Guides"
-
-4. home.explore.modules（8 个内容模块，核心）
+3. home.explore.modules（4 个内容模块，核心 — v0.2 从 8 砍到 4）
    每个模块：
-   - order: 1-8
+   - order: 1-4
    - name: "{{游戏名}} + 功能词"（SEO，必须含游戏名）
    - description: 模块说明
    - href: "/分类slug"
    - displayType: code-cards / step-by-step / tier-grid / card-list（四选一）
    - highlights[]: 每项含 label + detail（+ 可选 badge）
+   - 推荐 4 模块：Codes / Bosses / Progression / Tier List（覆盖 4 种 displayType）
 
-5. home.faq（FAQ 手风琴，5 条左右）
+4. home.faq（FAQ — v0.2 起由独立 /faq 页渲染，不在首页显示）
    - title / description
    - items[]: question + answer
    - ⚠️ FAQ 问答中必须包含游戏名
 
-6. home.updates（最近更新区标题）
+5. home.updates（最近更新区标题）
    - title / browse
+
+ℹ️ v0.2 变化：
+- home.aboutGame 已移入 home._archived（不渲染；游戏介绍放 /about 页）
+- home.hero.stats / tertiaryCta 已删除
+- home.start.cards 每项新增 icon + href 字段
 
 ⚠️ 硬性要求：
 - 模块级标题（home.explore.modules[].name）必须含游戏名（SEO）
@@ -401,7 +403,7 @@ print('使用的 displayType:', types)
 assert len(types) <= 4, '最多 4 种 displayType'
 "
 
-# 启动 dev server，访问首页看 8 模块渲染
+# 启动 dev server，访问首页看模块渲染（v0.2：5 个 section）
 pnpm dev
 ```
 ````
