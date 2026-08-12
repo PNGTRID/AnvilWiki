@@ -129,6 +129,7 @@ const placeholder = search.placeholder ?? 'Search...';
     --pagefind-ui-scale: 0.75;
     display: flex !important;
     flex-direction: column !important;
+    flex: 1 !important;
     min-height: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -154,20 +155,22 @@ const placeholder = search.placeholder ?? 'Search...';
   }
 
   /* Search form — the input header bar.
-     Pagefind nests the results drawer INSIDE the <form>, so the form
-     must wrap (flex-wrap) and the drawer must take full width to drop
-     to the next row. Otherwise results render squeezed beside the input. */
+     Pagefind nests the results drawer INSIDE the <form>. We use
+     flex-wrap:wrap so input+button stay on row 1 and the drawer (width:100%)
+     drops to row 2. The form itself is flex:1 of the pagefind-ui column. */
   :global(#search-modal .pagefind-ui__form) {
     display: flex !important;
     flex-wrap: wrap !important;
     align-items: center !important;
     gap: 10px !important;
+    flex: 1 !important;
+    min-height: 0 !important;
     padding: 0 20px !important;
     margin: 0 !important;
     border: none !important;
     border-bottom: 1px solid hsl(var(--border)) !important;
-    border-radius: 0 !important;
     background: transparent !important;
+    align-content: start !important;
   }
   :global(#search-modal .pagefind-ui__form svg) {
     width: 18px !important;
@@ -176,13 +179,21 @@ const placeholder = search.placeholder ?? 'Search...';
     color: hsl(var(--muted-foreground)) !important;
   }
 
-  /* Drawer holds all results — full width, drops below the input row */
+  /* Input row border separator is on the form itself (above). */
+
+  /* Drawer holds all results — width:100% forces it to wrap to a new row
+     below the input. flex-basis:100% + min-height:0 + overflow:hidden
+     constrains the scrollable results-area inside. */
   :global(#search-modal .pagefind-ui__drawer) {
     display: block !important;
     width: 100% !important;
     flex-basis: 100% !important;
+    min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
+    overflow: hidden !important;
+    /* Take remaining form height after the input row */
+    flex-grow: 1 !important;
   }
 
   /* Input — large, borderless, header-style */
@@ -224,9 +235,16 @@ const placeholder = search.placeholder ?? 'Search...';
     background: hsl(var(--muted)) !important;
   }
 
-  /* Results container */
+  /* Results container — the only scrollable element.
+     We bypass the flex chain (pagefind-ui → form → drawer → results-area)
+     because Pagefind nests the drawer INSIDE the form, and flex-wrap:wrap
+     does not propagate height constraints to wrapped rows. Instead, bind
+     the max-height directly to the viewport so this element always scrolls
+     regardless of ancestor flex contexts. */
   :global(#search-modal .pagefind-ui__results-area) {
     overflow-y: auto !important;
+    /* 75vh (search-shell) − ~58px input − ~40px footer − ~12px padding */
+    max-height: calc(75vh - 120px) !important;
     padding: 6px !important;
     flex: 1 !important;
     min-height: 0 !important;
