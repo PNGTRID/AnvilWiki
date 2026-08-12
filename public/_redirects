@@ -1,0 +1,18 @@
+# Cloudflare Pages redirects — https://developers.cloudflare.com/pages/configuration/redirects/
+#
+# The site uses Astro's trailingSlash: 'never'. Pages built from
+# dist/<dir>/index.html are served at /<dir> (no trailing slash). If a
+# visitor manually types /bosses/ or an external link points to /bosses/,
+# Cloudflare returns 404 because there is no dist/bosses//index.html.
+#
+# These rules 301-redirect any non-root path with a trailing slash to the
+# clean URL. Root / is intentionally excluded (it is the canonical form).
+
+# Single-segment: /bosses/ → /bosses,  /faq/ → /faq,  /ja/ → /ja
+/:segment/  /:segment  301
+
+# Two-segment: /bosses/gelum/ → /bosses/gelum,  /ja/bosses/ → /ja/bosses
+/:segment/:path/  /:segment/:path  301
+
+# Three-segment: /ja/bosses/gelum/ → /ja/bosses/gelum
+/:segment/:path/:id/  /:segment/:path/:id  301
