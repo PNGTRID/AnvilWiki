@@ -117,7 +117,7 @@ AnvilWiki 面向「游戏 wiki 站点」这一特定场景，在框架、部署�
 | Cloudflare 兼容 | 原生（纯静态，零适配器） | 纯静态输出，直接托管 `dist/`，无需任何 adapter。 |
 | 内容管理 | Content Collections | 类型安全 + Zod schema 校验，构建时发现字段错误。 |
 | 多语言 | Astro i18n as-needed | `prefixDefaultLocale: false` 实现默认语言（英文）无前缀。 |
-| 首页模块 | JSON 驱动 8 模块 | 文案与组件解耦，换游戏只改 JSON，组件零改动。 |
+| 首页模块 | JSON 驱动（v0.2：6 区块 / 4 explore 模块） | 文案与组件解耦，换游戏只改 JSON，组件零改动。 |
 | SEO 工程化 | 完整（sitemap/JSON-LD/hreflang/robots） | sitemap / JSON-LD（Organization/WebSite/Article/BreadcrumbList/ItemList/FAQPage）/ hreflang / robots 全部代码自动生成。 |
 | 广告系统 | Adsterra iframe 隔离 | 每个广告位独立 html，避免 atOptions 串号；环境变量驱动，新手填 key 即生效。 |
 | 换皮流程 | 4 阶段 7 Part 提示词 | 换游戏只改配置层 + 替换内容层，框架层不动。 |
@@ -318,8 +318,9 @@ anvilwiki/
 │   ├── pages/                    # ⭐ 框架层：路由
 │   │   ├── index.astro           # 根路径 → redirect 到默认语言首页
 │   │   ├── [locale]/             # 语言前缀路由（英文无前缀由 prefixDefaultLocale:false 实现）
-│   │   │   ├── index.astro       # 首页（JSON 驱动 8 模块）
+│   │   │   ├── index.astro       # 首页（JSON 驱动，v0.2：6 区块 / 4 explore 模块）
 │   │   │   ├── [...slug].astro   # ⭐ 统一路由：slug.length=1→列表页，>1→详情页
+│   │   │   ├── faq.astro         # 独立 FAQ 页（v0.2 从首页移出）
 │   │   │   ├── privacy-policy.astro
 │   │   │   ├── terms-of-service.astro
 │   │   │   ├── copyright.astro
@@ -340,16 +341,13 @@ anvilwiki/
 │   │   │   └── SiteFooter.astro  # 社交链接 + 法律链接
 │   │   ├── sidebar/
 │   │   │   └── WikiSidebar.astro # ⭐ 动态导航（getDynamicNavigation 等价物）
-│   │   ├── home/                 # 首页 8 模块组件
-│   │   │   ├── Hero.astro
-│   │   │   ├── VideoSection.astro
-│   │   │   ├── RecentUpdates.astro
-│   │   │   ├── StartHere.astro
-│   │   │   ├── TrendingNow.astro
-│   │   │   ├── AboutGame.astro
-│   │   │   ├── ExploreModules.astro  # ⭐ 8 模块容器，按 displayType 分发
-│   │   │   ├── FaqSection.astro      # 原生 <details> 手风琴
-│   │   │   ├── FinalCta.astro
+│   │   ├── home/                 # 首页组件（v0.2：6 区块）
+│   │   │   ├── HomePage.astro        # ⭐ 首页主体（逐 section 渲染 home JSON）
+│   │   │   ├── VideoSection.astro    # YouTube 嵌入（仅 hero.videoId 非空时）
+│   │   │   ├── QuickStart.astro      # ⭐ v0.2 新增：4 个大图标快速入口卡片
+│   │   │   ├── TrendingNow.astro     # 横向滚动热门（v0.2 起首页不再调用，保留备用）
+│   │   │   ├── ExploreModules.astro  # ⭐ 4 模块容器，整卡可点击，按 displayType 分发
+│   │   │   ├── FaqSection.astro      # 原生 <details> 手风琴（v0.2 起由 /faq 独立页调用）
 │   │   │   └── modules/
 │   │   │       ├── CodeCards.astro   # displayType: code-cards
 │   │   │       ├── StepByStep.astro  # displayType: step-by-step
@@ -524,7 +522,7 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
 
 ### 6.5 首页 JSON schema（`src/locales/en.json` 的 `home` 命名空间）
 
-**首页 JSON 结构**（覆盖 hero / updates / start / popular / aboutGame / explore / faq / finalCta 八大区块）：
+**首页 JSON 结构**（v0.2 重构后，覆盖 hero / updates / start / popular / explore / finalCta 六大区块；FAQ 保留在 JSON 但由 `/faq` 独立页渲染）：
 
 ```json
 {
@@ -550,25 +548,22 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
       "eyebrow": "...",
       "title": "Anvil Quest Wiki",
       "description": "...",
-      "stats": ["..."],
       "primaryCta": "...",
       "secondaryCta": "...",
-      "tertiaryCta": "..."
+      "videoId": ""
     },
     "updates": { "title": "...", "browse": "..." },
     "start": {
       "eyebrow": "Start Here",
       "title": "Your Anvil Quest Journey",
       "cards": [
-        { "number": "1", "title": "...", "description": "..." }
+        { "number": "1", "title": "...", "description": "...", "icon": "lucide:book-open", "href": "/guides/beginner-guide" }
       ]
     },
-    "popular": { "eyebrow": "...", "title": "...", "quickLinks": ["..."] },
-    "aboutGame": {
-      "title": "What is Anvil Quest?",
-      "paragraphs": ["...", "..."],
-      "stats": [{ "label": "Developer", "value": "..." }],
-      "cta": "Explore All Guides"
+    "popular": {
+      "eyebrow": "Trending Now",
+      "title": "Most Read This Week",
+      "quickLinks": [{ "label": "...", "href": "/bosses/gelum" }]
     },
     "explore": {
       "title": "...",
@@ -589,12 +584,18 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
       "description": "...",
       "items": [{ "question": "What is Anvil Quest?", "answer": "..." }]
     },
-    "finalCta": { "title": "...", "description": "...", "primary": "...", "secondary": "..." }
+    "finalCta": { "title": "...", "description": "...", "primary": "...", "secondary": "..." },
+    "_archived": {
+      "_comment": "v0.2 重构移出首页的区块，保留数据以便回滚。HomePage.astro 不渲染。",
+      "aboutGame": { "...": "见 git 历史 / _archived 命名空间" }
+    }
   },
   "footer": {
     "playGame": "Play Anvil Quest",
     "officialDiscord": "Official Discord",
     "officialYoutube": "Official YouTube",
+    "about": "About",
+    "faq": "FAQ",
     "copyright": "© 2026 Anvil Quest Wiki. Fan-made, not affiliated with..."
   },
   "overview": {
@@ -609,6 +610,14 @@ export const CONTENT_TYPES = NAVIGATION_CONFIG.map(n => n.key);
   }
 }
 ```
+
+**v0.2 schema 变化**：
+- `hero.stats`、`hero.tertiaryCta` 已删除（首屏做减法）。
+- `start.cards[]` 新增 `icon`（lucide 图标名）和 `href`（链接）字段，支撑 QuickStart 大卡片。
+- `aboutGame` 整块移入 `home._archived`（不渲染，保留数据）。
+- `explore.modules` 建议固定 4 项（Codes / Bosses / Progression / Tier List）。
+- `footer` 新增 `faq` 键。
+- `faq` 数据保留在 `home.faq`，但由独立 `/faq` 页渲染（`FaqSection.astro`）。
 
 **4 种 displayType**（首页 explore 模块的渲染类型）：
 - `code-cards`：兑换码卡片（label + detail + badge）
@@ -637,26 +646,35 @@ export const defaultLocale: Locale = 'en';
 
 **数据源**：`src/locales/<locale>.json` 的 `home` 命名空间。
 **渲染**：`src/pages/[locale]/index.astro` 读 JSON，逐 section 渲染。
-**交互**：FAQ 用原生 `<details>`（零 JS），移动端菜单用 `<details>`。
+**交互**：移动端菜单用原生 `<details>`。FAQ 已移至独立 `/faq` 页（见 §7.4）。
 
-**首页结构（从上到下）**：
+**首页结构（从上到下，v0.2 重构后）**：
 ```
 1. SiteHeader（导航栏）
-2. Hero（标题 + 描述 + stats + CTA 按钮 + 视频预览）
-3. VideoSection（YouTube 嵌入，紧跟 Hero）  ← 视频必须在 Hero 正下方（SEO + 用户停留时长）
-4. RecentUpdates + StartHere（两栏：最近更新 + 新手教程卡片）
-5. TrendingNow（横向滚动热门文章）
-6. AboutGame（游戏介绍 + 数据卡片）
-7. ExploreModules（8 个内容模块，按 displayType 渲染）
-8. FaqSection（原生 <details> 手风琴）
-9. FinalCta（底部 CTA）
-10. SiteFooter
+2. Hero（满屏视觉锚点：超大标题 + 1 行描述 + 2 CTA）
+   └─ 背景水印（游戏名，纯 CSS）；stats 卡片已移除（避免抢首屏焦点）
+3. VideoSection（YouTube 嵌入；仅当 hero.videoId 非空时渲染）
+4. QuickStart（4 个大图标卡片：新手指南 / 最新 Codes / Boss 攻略 / Tier List）
+   └─ 紧跟 Hero，对标竞品"quick actions"模式
+5. RecentUpdates + Trending（两栏：左 2/3 最近更新卡片网格 + 右 1/3 热门链接列表）
+6. ExploreModules（4 个核心模块，2×2 网格，整卡可点击）
+7. FinalCta（底部 CTA）
+8. SiteFooter（含 FAQ 链接）
 ```
+
+**v0.2 重构说明**（相比 v0.1）：
+- 首页从 8 区块压缩到 5 区块，页面长度从 ~7 屏压到 ~4 屏。
+- **删除** AboutGame（stats 与 Hero 信息重复；文案移至 `/about` 页）。
+- **删除** 首页 FAQ（移至独立 `/faq` 页，FAQPage JSON-LD 随之迁移）。
+- **合并** TrendingNow 独立 section → RecentUpdates 右栏（节省 1 屏）。
+- **砍减** Explore 模块 8→4（Codes / Bosses / Progression / Tier List；其余在导航已有入口）。
+- **强化** Hero：H1 升至 `text-7xl font-black`，加渐变描边；占满 80vh 建立视觉锚点。
+- **新增** QuickStart section：4 个图标卡片，对标成功游戏 wiki 的"快速入口"模式。
 
 **关键决策**：
 - 所有文案来自 JSON，组件不含游戏特定字符串。
 - 模块级标题含主题名（SEO），子项不强制。
-- `home.explore.modules` 数组固定 8 项，超出删除。
+- `home.explore.modules` 数组建议 4 项（核心高频入口），超出可放列表页。
 
 ### 7.2 列表页（ListPage）
 
@@ -747,7 +765,13 @@ export const defaultLocale: Locale = 'en';
 - **JSON-LD**：
   - `Organization`（在 BaseLayout，全站都有）：name/url/logo/image。
   - `WebSite`（首页注入）：name + url + potentialAction（搜索 action，可选）。
-  - `FAQPage`（可选，从 `home.faq.items` 构造，可能获得 SERP FAQ 折叠）。
+
+> v0.2 变化：`FAQPage` JSON-LD 已从首页移至 `/faq` 独立页（与 FAQ 内容一起迁移）。
+
+#### FAQ 页（`/faq`，v0.2 新增）
+- **title**：`home.faq.title`。
+- **JSON-LD**：`FAQPage`（从 `home.faq.items` 构造）。
+  > ⚠️ **2026-05-07 起 Google 已废弃 FAQ 富媒体结果**（SERP 折叠不再产生）。但 `FAQPage` schema 仍建议保留——AI Overviews 与其他 AI 爬虫会解析它来理解问答结构。详见 [§8.7 Schema 状态](#87-结构化数据-schema-状态2026)。
 
 #### 列表页
 - **title**：`${overviewTitle} — ${site.name}` 或 fallback `${ContentType 大写} — ${site.name}`。
@@ -827,6 +851,90 @@ export async function GET() {
 社交平台抓 OG 图要求**绝对路径**。所有 og:image / twitter:image 必须形如 `https://domain.com/images/hero.webp`。
 
 由 `SITE_URL` 环境变量拼接，**禁止硬编码域名**。
+
+### 8.6 网站布局与架构 SEO 原则（2026）
+
+> 本节基于 2026 年 Google 算法趋势（核心更新、AI Overviews、E-E-A-T）整理的布局原则。AnvilWiki 的三层架构天然满足其中多数要求；本节明确「应当刻意保持」与「需要主动落实」的点。
+
+#### 8.6.1 主题聚簇（Content Clustering）
+2026 算法偏好「聚簇优于孤立页面」——相关内容分组能信号主题深度与领域所有权，孤立页面缺乏上下文支撑而难排名。
+
+**AnvilWiki 的天然优势**：`src/content/wiki/<locale>/<contentType>/` 的目录结构本身就是主题聚簇。每个 `contentType`（bosses / items / guides …）= 一个聚簇。
+
+**需要主动落实**：
+- 每个 `contentType` 的列表页（`ListPage`）扮演 **hub page**，应链接到该分类下的所有文章。
+- 文章之间通过「相关文章」内部链接串联，**避免孤儿页面**（无任何内部链接指向的文章）。
+- 权重应从首页 → 列表页 → 文章页逐层流动；重要文章应从相关文章获得更多内部链接。
+
+#### 8.6.2 BLUF 布局（Bottom-Line-Up-Front）
+2026 年 AI Overviews 与 Featured Snippets 抓取偏好「结论前置」的页面结构。
+
+**对 wiki 文章的指导**：
+- 文章开头先用 1–2 句**直接回答**用户最可能的查询（例如 boss 页开头直接给「弱点、推荐配装、掉落」摘要）。
+- 用清晰的 H2/H3 标题切分**可扫描的区块**，每节先给结论再展开细节。
+- `description` frontmatter 应是该篇直接答案的精炼版（也用于 SERP snippet）。
+
+#### 8.6.3 Core Web Vitals 2026 阈值
+Google 官方「Good」阈值（[来源](https://developers.google.com/search/docs/appearance/core-web-vitals)）：
+
+| 指标 | 全称 | Good 阈值 | 与布局的关系 |
+|---|---|---|---|
+| **LCP** | Largest Contentful Paint | ≤ **2.5s** | 首屏主内容（hero 图/标题块）须快速加载 |
+| **INP** | Interaction to Next Paint | ≤ **200ms** | 减少主线程阻塞脚本（主题切换、菜单等） |
+| **CLS** | Cumulative Layout Shift | ≤ **0.1** | **最与布局相关** |
+
+**CLS 的布局实现要点**（本模板必须遵守）：
+- 所有 `<img>` / `<video>` / 广告 iframe 必须设置显式 `width`/`height` 或 CSS `aspect-ratio`。
+- 广告位（§10）必须**预留固定空间**，避免晚加载的广告把内容向下推——这正是本模板用独立 iframe + 固定尺寸的原因之一。
+- 字体加载避免 FOIT/FOUT 引起的布局跳动（用 `font-display: swap` + 预设 fallback 字体尺寸）。
+- 不要在已有内容上方动态注入 DOM 元素（如晚加载的 banner）。
+
+#### 8.6.4 Entity SEO（实体化组织）
+2026 年 Google 围绕**清晰实体**（人、地、概念、物品）而非关键词字符串来理解相关性。Entity-rich 内容更易被 AI Overviews 引用。
+
+**对 wiki 的指导**：
+- 每篇文章聚焦一个明确实体（一个 boss、一件物品、一个机制）。
+- `Article` + `BreadcrumbList` JSON-LD（§8.2）让 AI 爬虫可解析实体关系。
+- 文章间用锚文本描述实体关系（例如「Gelum 的弱点见 [Gelum]」而非「点击这里」）。
+
+#### 8.6.5 内容质量 > 数量
+2026 年 3 月核心更新后，「内容修剪与合并」成为主流策略。
+
+- **修剪薄弱页**：低质量/过短的文章应扩充或删除。
+- **删除离题页**：偏离站点核心专业的内容会被降权（站点声誉滥用打击）。
+- **完整 > 篇幅**：Google 官方明确「无最小长度标准」，页面应**完整**满足用户意图而非堆字数。
+
+#### 8.6.6 E-E-A-T 信号（Experience / Expertise / Authoritativeness / Trustworthiness）
+> 注：Google 官方说明 E-E-A-T **不是直接排名因子**，但它是质量评估系统的核心信号，尤其对 YMYL 类站点。
+
+- **具名作者**优于匿名发布——wiki 类站点可在 `site.ts` 配置站点作者/团队信息。
+- **第一手经验**内容 > AI 批量生产——游戏 wiki 的攻略应体现真实游玩经验。
+- **About 页**（法律页之一）是建立 Trust 的关键载体，应说明站点运营者与内容来源。
+
+### 8.7 结构化数据 Schema 状态（2026）
+
+> Schema 类型有效性随 Google 政策变化。本节记录 2026 年各 Schema 的 SERP 富媒体结果状态，以及 AnvilWiki 的实施优先级。
+
+| Schema 类型 | 2026 SERP 富媒体状态 | AnvilWiki 是否实施 | 说明 |
+|---|---|---|---|
+| `Article` | ✅ 有效 | ✅ 文章页 | 强化专业度信号；AI Overviews 会解析 |
+| `BreadcrumbList` | ✅ 有效 | ✅ 文章页 | 传达站点层级结构给搜索引擎与 AI |
+| `Organization` | ✅ 有效 | ✅ 全站（BaseLayout） | 品牌实体识别、知识面板 |
+| `WebSite` + `SearchAction` | ✅ 有效 | ✅ 首页 | 站内搜索框功能 |
+| `ItemList` | ✅ 有效 | ✅ 列表页 | 分类下文章的结构化列表 |
+| `FAQPage` | ⚠️ 富媒体**已废弃**（2026-05-07） | ✅ `/faq` 保留 | SERP 折叠不再产生，但 AI 爬虫仍解析；保留对 AI Overviews 有价值 |
+| `HowTo` | ⚠️ 基本失效 | ❌ 不实施 | 多数场景不再产生富媒体结果 |
+
+**实施优先级**（按 ROI 排序）：
+1. `Article` — 每篇攻略/词条页必备
+2. `BreadcrumbList` — 站点层级（首页 → 分类 → 词条）
+3. `Organization` + `WebSite` — 品牌实体与站内搜索
+4. `ItemList` — 列表页结构化
+5. `FAQPage` — 保留但 SEO 期望降级（不依赖它获取搜索外观）
+
+**参考来源**：
+- [Google Search 文档更新日志](https://developers.google.com/search/updates)
+- [FAQ Rich Results 废弃说明（2026-05）](https://www.getpassionfruit.com/blog/what-changed-with-google-drops-faq-rich-results-and-what-to-do-now)
 
 ---
 
@@ -1051,7 +1159,7 @@ AnvilWiki 采用「4 阶段 7 Part」换皮方法论，提示词遵循「目标+
                     Part 2 元数据与 SEO（法律页/全局 meta/CTA/Footer）
                     Part 3 多语言与导航（语言列表/清空旧内容/导航配置）
 
-阶段 2：首页内容 ──→ Part 4 首页模块（8 模块 JSON + Hero/FAQ/CTA）
+阶段 2：首页内容 ──→ Part 4 首页模块（v0.2：6 区块 JSON + Hero/QuickStart/Explore/CTA）
 
 阶段 3：内容与导航 ─→ Part 5 文章与导航（MDX 接入/分类配置/overview 文案）
 
@@ -1307,7 +1415,7 @@ describe('sitemap', () => {
 | Lighthouse Performance | ≥ 95 | PageSpeed Insights / Lighthouse CI |
 | LCP（Largest Contentful Paint） | < 2.5s | Lighthouse |
 | CLS（Cumulative Layout Shift） | < 0.1 | Lighthouse |
-| FID/INP（Interaction） | < 100ms | Lighthouse |
+| INP（Interaction to Next Paint） | ≤ 200ms | Lighthouse（2026 Google 官方 Good 阈值；FID 已被 INP 取代） |
 | 首屏 JS 体积（gzipped） | < 30KB | webpack-bundle-analyzer / Astro bundle stats |
 | 首屏 HTML 体积（gzipped） | < 50KB | curl + gzip |
 | 构建时间（100 篇文章） | < 60s | CI 日志 |
@@ -1324,7 +1432,7 @@ describe('sitemap', () => {
 |---|---|---|---|
 | **MVP-0**：骨架 | Astro 项目初始化 + Content Collection 配置 + 单篇示例 MDX + 首页/列表页/详情页三页跑通 + Cloudflare Pages 部署成功 | 访问 `*.pages.dev` 能看到三页，Lighthouse Performance ≥ 95 | 1-2 天 |
 | **MVP-1**：多语言 | as-needed 前缀（`prefixDefaultLocale: false`）+ 文章 fallback + 语言切换器 + UI 文案 deepMerge | 加 `ja` 语言，访问 `/ja/bosses/gelum`（无 ja 版）回退英文 | 1 天 |
-| **MVP-2**：首页 8 模块 | JSON 驱动 + 4 种 displayType（code-cards/step-by-step/tier-grid/card-list）+ Hero/FAQ/CTA/Footer/Video/RecentUpdates/Trending/AboutGame | 换 en.json 数据，首页无组件改动即生效 | 1-2 天 |
+| **MVP-2**：首页模块 | JSON 驱动 + 4 种 displayType（code-cards/step-by-step/tier-grid/card-list）+ Hero/QuickStart/Explore/CTA/Footer/Video/RecentUpdates+Trending（v0.2 结构） | 换 en.json 数据，首页无组件改动即生效 | 1-2 天 |
 | **MVP-3**：SEO | sitemap 动态 + JSON-LD 全套（Organization/WebSite/Article/Breadcrumb/ItemList/FAQPage）+ hreflang + robots | Google Rich Results Test 全通过 | 1 天 |
 | **MVP-4**：主题换肤 | CSS 变量双变量（`--nav-theme` + `--nav-theme-light`）+ 暗色模式 + 主题切换器 | 改 globals.css 4 行整站变色 | 0.5 天 |
 | **MVP-5**：广告系统 | Adsterra iframe 隔离（6 种广告位）+ Sticky 320×50 + 环境变量驱动 + 关闭按钮 | 移动端 + 桌面端广告正常显示不串号 | 1 天 |
@@ -1338,11 +1446,11 @@ describe('sitemap', () => {
 | 版本 | 功能 | 优先级 | 状态 |
 |---|---|---|---|
 | ~~v1.1~~ | ~~seoscout 格式自动转换脚本 + 文档~~ | ~~高~~ | ✅ 已实现（`scripts/convert-from-seoscout.ts` + `pnpm convert-seoscout`） |
-| v1.2 | 搜索功能（Pagefind 离线搜索，零运行时） | 中 | ⏳ |
+| v1.2 | 搜索功能（Pagefind 离线搜索，零运行时） | 中 | ✅ 已实现（`postbuild` 钩子 + `SearchButton.astro` `<dialog>` 模态，懒加载 pagefind-ui，Ctrl/Cmd+K 唤起，`data-pagefind-body` 精确索引文章正文） |
 | v1.3 | 更多 displayType（video-grid/timeline/comparison-table） | 中 | ⏳ |
 | v1.4 | 评论系统（Giscus/Utterances，可选） | 低 | ⏳ |
-| v1.5 | 图片优化（Astro Image，自动 WebP/AVIF + 响应式 srcset） | 中 | ⏳ |
-| v2.0 | 可视化换皮 CLI（`pnpm skin <game-name>` 引导式换皮） | 高 | ⏳ |
+| v1.5 | 图片优化（Astro Image，自动 WebP/AVIF + 响应式 srcset） | 中 | ✅ 已实现（content schema `image()` loader + `ArticleCover.astro` + `image.responsiveStyles`，封面图自动 WebP/srcset，`content.config.ts` 迁至 `src/`） |
+| v2.0 | 可视化换皮 CLI（`pnpm skin <game-name>` 引导式换皮） | 高 | ✅ 已实现（`scripts/skin.ts` Part 1-3 自动化：hex→HSL 主题色、site/navigation/routing/ui/locales/manifest 重写，`--dry-run` / `--no-clear-content` flag） |
 
 ### 14.3 「待验证清单」回填计划
 
@@ -1574,6 +1682,7 @@ PUBLIC_GA_ID=
 |---|---|---|
 | 2026-08-11 | v0.1 | PRD 初稿；技术事实已通过 Astro 官方文档核实 |
 | 2026-08-12 | v0.2 | MVP 全部实现（MVP-0 至 MVP-5 + P0-P3）；更新待验证清单状态 |
+| 2026-08-12 | v0.3 | SEO 章节更新：补充 2026 Google 网站布局/架构原则（§8.6）、Schema 状态（§8.7）、FAQ rich results 废弃说明、INP 阈值修正为 ≤ 200ms |
 
 ---
 
