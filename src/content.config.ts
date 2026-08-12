@@ -11,19 +11,26 @@ import { z } from 'astro/zod';
  *
  * Frontmatter is validated at build time by the Zod schema below. A missing or
  * malformed field fails the build immediately.
+ *
+ * `image` uses the `image()` helper so covers are processed by Astro Image
+ * (auto WebP/AVIF + responsive srcset). Frontmatter value is a path relative
+ * to the MDX file, e.g. `image: '../../../assets/covers/gelum-cover.svg'`.
+ * At build time `entry.data.image` is `ImageMetadata | undefined`. For an
+ * absolute og:image URL, read `.src` and prefix with `siteUrl`.
  */
 const wiki = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/wiki' }),
-  schema: z.object({
-    title: z.string().max(80),
-    description: z.string().min(40).max(165),
-    category: z.string(),
-    date: z.coerce.date(),
-    lastModified: z.coerce.date().optional(),
-    image: z.string().optional(),
-    tags: z.array(z.string()).default([]),
-    noindex: z.boolean().default(false),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string().max(80),
+      description: z.string().min(40).max(165),
+      category: z.string(),
+      date: z.coerce.date(),
+      lastModified: z.coerce.date().optional(),
+      image: image().optional(),
+      tags: z.array(z.string()).default([]),
+      noindex: z.boolean().default(false),
+    }),
 });
 
 export const collections = { wiki };
