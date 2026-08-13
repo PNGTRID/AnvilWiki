@@ -1,7 +1,7 @@
 # AnvilWiki 产品需求文档（PRD）
 
-> **版本**：v1.0
-> **日期**：2026-08-12
+> **版本**：v1.0.1
+> **日期**：2026-08-13
 > **状态**：已发布（demo 站 anvilwiki.pages.dev 上线，Lighthouse 全 100，CI 全绿）
 > **维护者**：AnvilWiki 开源项目
 > **协议**：MIT
@@ -139,7 +139,7 @@ AnvilWiki 面向「游戏 wiki 站点」这一特定场景，在框架、部署�
 | **sitemap** | `@astrojs/sitemap` | latest | 自动生成 sitemap.xml，支持 i18n alternate。 |
 | **SEO** | 自建 JSON-LD 组件 + meta 工具函数 | — | Organization/WebSite/Article/BreadcrumbList/ItemList。 |
 | **包管理** | pnpm | 9.x | 快、省磁盘、Cloudflare Pages 原生支持。 |
-| **Node** | Node 20 LTS | — | Cloudflare Pages 默认支持，稳定。 |
+| **Node** | Node 22 LTS | — | 与 `.nvmrc`、`package.json` 和 Cloudflare Pages v3 构建环境保持一致。 |
 | **部署** | Cloudflare Pages | — | 无限带宽 + 全球 CDN + 免费 SSL + Git 自动部署。 |
 | **协议** | MIT | — | 最宽松，允许商用。 |
 
@@ -270,10 +270,10 @@ anvilwiki/
 ├── tsconfig.json                 # TypeScript 严格模式
 ├── package.json
 ├── pnpm-lock.yaml
-├── wrangler.toml                 # Cloudflare Pages 配置（可选，用于 wrangler 本地预览）
+├── wrangler.toml.example         # Wrangler 配置即代码示例（默认不自动启用）
 ├── .env.example                  # 环境变量模板（广告 key 等）
 ├── .gitignore
-├── .nvmrc                        # Node 20 LTS
+├── .nvmrc                        # Node 22 LTS
 ├── README.md                     # ⭐ 项目门面（中英双语，新手指南）
 ├── LICENSE                       # MIT
 ├── CONTRIBUTING.md               # 贡献指南
@@ -1285,13 +1285,19 @@ Cloudflare Pages（连接 GitHub 仓库）
 **构建命令**：`pnpm build`
 **输出目录**：`dist`
 **环境变量**：见 [附录 A](#附录-a-环境变量清单)。
-**Node 版本**：`NODE_VERSION = 20`（Cloudflare Pages 默认支持）。
+**Node 版本**：`NODE_VERSION = 22`（与仓库 `.nvmrc` 保持一致）。
 
-**`wrangler.toml`（可选，用于本地预览）**：
+**Wrangler 配置策略**：默认使用 Cloudflare Pages 控制台管理构建设置与环境变量，仓库不提交会被自动检测的 `wrangler.toml`，只提供 `wrangler.toml.example`。如果高级用户明确采用配置即代码，应先运行 `npx wrangler pages download config <PROJECT_NAME>` 获取现有项目配置，完整审核后再提交，并把该文件视为 Pages 项目配置的真相源。
+
+示例结构：
 ```toml
-name = "anvilwiki"
-compatibility_date = "2026-08-11"
+name = "your-pages-project"
+compatibility_date = "2026-08-13"
 pages_build_output_dir = "dist"
+
+[vars]
+SITE_URL = "https://your-domain.wiki"
+PUBLIC_GA_ID = ""
 ```
 
 ### 12.4 新手部署流程（5 步）
@@ -1327,6 +1333,12 @@ pages_build_output_dir = "dist"
 
 **关键**：`SITE_URL` 必须在 production 配为最终域名（如 `https://anvilquestwiki.wiki`），影响 sitemap / og:image / robots 的绝对路径生成。
 
+Astro 为纯静态构建：`SITE_URL`、`PUBLIC_GA_ID`、`PUBLIC_GSC_VERIFICATION` 与广告 key 都只在 `pnpm build` 时读取并写入 `dist/`。修改变量后必须触发新构建，不能期待控制台改动自动重写旧部署。
+
+如果仓库出现带 `pages_build_output_dir` 的 `wrangler.toml` / `wrangler.json(c)`，Cloudflare 会把它视为 Pages 配置的真相源。不得同时依赖控制台和不完整的 Wrangler 文件。默认模板使用控制台模式；配置即代码模式必须从现有项目下载并审核完整配置。
+
+`scripts/verify-build-env.mjs` 在 `postbuild` 阶段检查：Cloudflare Pages 构建必须存在 `SITE_URL`；首页 canonical、og:url、og:image 必须匹配；可选 Google 变量存在时，对应脚本/meta 必须已经进入 `dist/index.html`。校验失败即阻止部署。
+
 ---
 
 ## 第 13 章 测试与质量保障
@@ -1338,6 +1350,7 @@ pages_build_output_dir = "dist"
 | **类型检查** | `astro check` + TypeScript strict | Content Collection schema、组件 props、工具函数 | ✅ 每个 PR |
 | **Lint** | ESLint + Prettier + `eslint-plugin-astro` | 代码风格、常见错误 | ✅ 每个 PR |
 | **构建检查** | `pnpm build` | 构建是否成功（含 Content schema 校验） | ✅ 每个 PR |
+| **构建变量检查** | `scripts/verify-build-env.mjs` | Cloudflare 必填变量、canonical/OG、GA/GSC 标签是否进入最终 HTML | ✅ `postbuild` |
 | **单元测试** | Vitest | `lib/` 工具函数（URL 构造、JSON-LD 生成、deepMerge、fallback 逻辑） | ✅ 每个 PR |
 | **端到端** | Playwright（可选） | 关键用户路径（首页/列表/详情/语言切换/404） | ⚠️ 可选，nightly |
 | **链接检查** | `scripts/check-sitemap.ts` | sitemap 所有 URL 返回 200 | ✅ 部署后 |
@@ -1357,7 +1370,7 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
@@ -1572,6 +1585,7 @@ PUBLIC_GOOGLE_ADSENSE_ID=
 
 # 分析（可选）
 PUBLIC_GA_ID=
+PUBLIC_GSC_VERIFICATION=
 ```
 
 ---
@@ -1627,8 +1641,9 @@ PUBLIC_GA_ID=
 ```
 □ Cloudflare Pages 项目已创建，连 GitHub 仓库
 □ 构建命令 pnpm build，输出目录 dist
-□ NODE_VERSION = 20 已配
+□ NODE_VERSION = 22 已配（或 `.nvmrc` 已被构建环境识别）
 □ 环境变量已填（至少 SITE_URL）
+□ 仓库未误提交不完整的 wrangler.toml / wrangler.json(c)
 □ 自定义域名已绑定，SSL 已生效
 □ 部署成功，访问域名看到正确内容
 ```
@@ -1641,6 +1656,7 @@ PUBLIC_GA_ID=
 □ 语言切换器工作正常
 □ 暗色/亮色切换正常
 □ 无旧 demo 游戏（Anvil Quest）残留（grep "Anvil Quest" 应为 0，除非故意保留 demo）
+□ 构建日志出现 [build-env] 校验成功；若配置 GA，线上 HTML 含对应 G- ID
 □ Google Search Console 已添加资源，提交 sitemap
 ```
 
@@ -1688,6 +1704,7 @@ PUBLIC_GA_ID=
 | 2026-08-12 | v0.2 | MVP 全部实现（MVP-0 至 MVP-5 + P0-P3）；更新待验证清单状态 |
 | 2026-08-12 | v0.3 | SEO 章节更新：补充 2026 Google 网站布局/架构原则（§8.6）、Schema 状态（§8.7）、FAQ rich results 废弃说明、INP 阈值修正为 ≤ 200ms |
 | 2026-08-12 | v1.0 | demo 站 `anvilwiki.pages.dev` 上线；Lighthouse 全 100；v1.2 Pagefind 搜索 + v1.5 Astro Image + v2.0 换皮 CLI 全部实现；完整日语翻译；SEO 修复（hreflang / og:image / prefetch / breadcrumb / security headers） |
+| 2026-08-13 | v1.0.1 | Cloudflare Pages 环境变量经验回填：默认改为控制台配置；Wrangler 文件降级为示例；补充 build-time 说明、双通道变量读取与最终 HTML 自动校验。 |
 
 ---
 

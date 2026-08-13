@@ -12,11 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - FAQ accessibility: `aria-expanded` sync on toggle + `data-faq-group` container
 - WikiSidebar now visible on tablet (md breakpoint, was lg-only)
 - Migration cost breakdown in `docs/migration-from-nextjs.md` (2-hour estimate per site)
+- Post-build verification for Cloudflare `SITE_URL`, Google Analytics, Search Console, and generated canonical/OG metadata
+- `wrangler.toml.example` for users who intentionally opt into Wrangler configuration-as-code
 
 ### Changed
 - PRD status updated: "设计中 · 待 review" → "已实现"
 - PRD §14.2: v1.1 (seoscout converter) marked as done
 - Demo `home.hero.videoId` cleared (was placeholder)
+- Cloudflare Pages deployment now uses dashboard configuration by default; the auto-detected `wrangler.toml` was removed
+- Build-time environment reads now support both Cloudflare `process.env` and Astro local `.env` values
 
 ## [0.2.0] — 2026-08-12
 

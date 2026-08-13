@@ -1,0 +1,22 @@
+# EXAMPLE ONLY — this filename is intentionally not auto-detected by Cloudflare.
+#
+# The recommended AnvilWiki setup keeps build settings and environment variables
+# in the Cloudflare Pages dashboard. Copy this file to `wrangler.toml` only when
+# you intentionally choose Wrangler configuration-as-code. Once committed under
+# that name, treat it as the source of truth and keep it aligned with production.
+#
+# Start from an existing Pages project with:
+#   npx wrangler pages download config <PROJECT_NAME>
+#
+# Never commit secrets. Use Cloudflare's secret management for them.
+
+name = "your-pages-project"
+compatibility_date = "2026-08-13"
+pages_build_output_dir = "dist"
+
+# Public, non-secret build values can be declared here in config-as-code mode.
+# Replace the placeholders before copying this file to `wrangler.toml`.
+[vars]
+SITE_URL = "https://your-domain.wiki"
+PUBLIC_GA_ID = ""
+PUBLIC_GSC_VERIFICATION = ""

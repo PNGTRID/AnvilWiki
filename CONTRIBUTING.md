@@ -4,7 +4,7 @@ Thanks for your interest in improving AnvilWiki! This guide covers the basics.
 
 ## Prerequisites
 
-- Node.js 20+ (check `.nvmrc`)
+- Node.js 22+ (check `.nvmrc`)
 - pnpm 11+ (`npm install -g pnpm` or use [corepack](https://nodejs.org/api/corepack.html))
 - Git
 

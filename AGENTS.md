@@ -29,7 +29,7 @@ Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimi
 | Sitemap     | `@astrojs/sitemap`                              | Auto-generates hreflang alternates from the i18n config.                                                                                                                                            |
 | Deploy      | Cloudflare Pages                                | `pnpm build` → `dist/`                                                                                                                                                                              |
 | Pkg manager | pnpm 11                                         | **`allowBuilds:` in `pnpm-workspace.yaml`** (NOT `onlyBuiltDependencies` — that's pnpm 10, dead in v11). esbuild + sharp need build approval or `astro build` fails during its pre-build dep check. |
-| Node        | 20 LTS                                          |                                                                                                                                                                                                     |
+| Node        | 22 LTS                                          |                                                                                                                                                                                                     |
 
 ## Architecture: Three-Layer Separation (critical)
 
@@ -55,8 +55,16 @@ This is the core design principle inherited from the course template. **Respect 
 6. **Article frontmatter starts at H2** — never write H1 in MDX body; `ArticlePage` renders `title` as H1.
 7. **og:image / twitter:image must be absolute URLs** — use `${SITE_URL}/...`, never relative.
 8. **Ad keys via env vars** — ad components `return null` when key empty. Never hardcode ad keys.
-9. **`SITE_URL` env var for domain** — never hardcode `*.wiki` domain in code.
+9. **`SITE_URL` env var for domain** — never hardcode `*.wiki` domain in code. The value must include `https://` and have no trailing slash.
 10. **No emoji in UI** — use lucide icons (`astro-icon` or inline SVG).
+
+## Cloudflare Pages Build Variables
+
+Astro statically bakes `SITE_URL`, `PUBLIC_GA_ID`, `PUBLIC_GSC_VERIFICATION`, and ad keys into `dist/` during `pnpm build`. Dashboard changes never rewrite an existing deployment; trigger a new build after every environment-variable change.
+
+The template intentionally ships `wrangler.toml.example`, not an active `wrangler.toml`. Dashboard configuration is the beginner-safe default. If a real `wrangler.toml` with `pages_build_output_dir` is committed, Cloudflare treats it as the project configuration source of truth. Do not mix dashboard configuration and an incomplete Wrangler file. Use `npx wrangler pages download config <PROJECT_NAME>` before adopting configuration-as-code, review it, and never commit secrets.
+
+`scripts/verify-build-env.mjs` runs after every build. On Cloudflare Pages it fails when `SITE_URL` is missing; when optional Google variables are set, it also verifies that their tags and the expected canonical/OG URLs exist in `dist/index.html`.
 
 ## i18n Behavior (subtle, easy to get wrong)
 

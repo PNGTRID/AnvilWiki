@@ -73,6 +73,8 @@ pnpm dev
 #    自动识别 Astro，构建命令 pnpm build，输出目录 dist
 ```
 
+> Cloudflare 环境变量是**构建时变量**。本模板默认以 Pages 控制台为配置来源；修改 `SITE_URL`、`PUBLIC_GA_ID` 等变量后必须触发新构建。不要把 `wrangler.toml.example` 改名后直接提交，除非你明确选择 Wrangler 配置即代码模式并会维护完整生产配置。
+
 详细部署指南见 [`docs/deployment.md`](docs/deployment.md)。
 
 ### 文档导航
@@ -141,6 +143,8 @@ pnpm skin
 #    cloudflare.com → Pages → Create a project → Connect to Git → select repo
 #    Auto-detects Astro, build command pnpm build, output dir dist
 ```
+
+> Cloudflare environment variables are consumed at **build time**. This template uses the Pages dashboard as the default source of truth; trigger a new build after changing `SITE_URL`, `PUBLIC_GA_ID`, or similar values. Do not rename and commit `wrangler.toml.example` unless you intentionally adopt Wrangler configuration-as-code and maintain the complete production configuration there.
 
 See [`docs/deployment.md`](docs/deployment.md) for detailed guide.
 

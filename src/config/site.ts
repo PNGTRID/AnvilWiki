@@ -75,8 +75,21 @@ export const site: SiteConfig = {
   ogImageHeight: 630,
 };
 
-/** Absolute site URL (no trailing slash). Falls back to the Astro `site` config. */
-export const siteUrl: string = (process.env.SITE_URL || `https://${site.domain}`).replace(
-  /\/$/,
-  '',
-);
+/**
+ * Build-time integrations.
+ *
+ * Cloudflare Pages exposes dashboard/Wrangler build variables through
+ * `process.env`; Astro exposes local `.env` files through `import.meta.env`.
+ * Supporting both keeps production builds and local previews consistent.
+ */
+export const siteUrl: string = (
+  process.env.SITE_URL ||
+  import.meta.env.SITE_URL ||
+  `https://${site.domain}`
+).replace(/\/$/, '');
+
+export const googleAnalyticsId: string =
+  process.env.PUBLIC_GA_ID || import.meta.env.PUBLIC_GA_ID || '';
+
+export const googleSiteVerification: string =
+  process.env.PUBLIC_GSC_VERIFICATION || import.meta.env.PUBLIC_GSC_VERIFICATION || '';

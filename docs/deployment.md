@@ -10,7 +10,7 @@
 
 - 一个 [GitHub](https://github.com) 账号（免费）
 - 一个 [Cloudflare](https://cloudflare.com) 账号（免费）
-- 本地已安装 Node.js 20+ 和 pnpm
+- 本地已安装 Node.js 22+ 和 pnpm
 - 已经 fork 了 AnvilWiki 仓库并改好了配置层（见 [skinning.md](./skinning.md)）
 
 > 还没 fork？看 [快速开始](../README.md#5-分钟快速开始)。
@@ -61,11 +61,13 @@ Cloudflare 会自动检测 Astro，但请确认以下设置：
 
 | 变量名                    | 值                            | 说明                                   |
 | ------------------------- | ----------------------------- | -------------------------------------- |
-| `NODE_VERSION`            | `20`                          | 确保 Node 版本                         |
+| `NODE_VERSION`            | `22`                          | 与仓库 `.nvmrc` 保持一致               |
 | `SITE_URL`                | `https://<project>.pages.dev` | **先用临时域名**，绑定自定义域名后再改 |
 | `PUBLIC_AD_MOBILE_320X50` | （你的 Adsterra key）         | 可选，留空则不显示广告                 |
 
 > ⚠️ **`SITE_URL` 很重要**——它影响 sitemap、og:image、robots.txt 里所有绝对 URL 的生成。先用 `https://<project>.pages.dev`，绑定域名后改回真实域名并重新部署。
+
+> AnvilWiki 默认以 **Pages 控制台**为配置来源。仓库只有 `wrangler.toml.example`，不会被 Cloudflare 自动采用。不要直接把它改名并提交；一旦仓库出现带 `pages_build_output_dir` 的 `wrangler.toml`，Cloudflare 会把该文件视为项目配置的真相源，控制台与文件不一致时很容易出现“明明配置了，构建却读不到”的情况。
 
 ### Step 4 — 部署
 
@@ -120,9 +122,9 @@ DNS 生效后，回到 Cloudflare Pages → **Settings** → **Environment varia
 SITE_URL=https://anvilquestwiki.wiki
 ```
 
-然后触发一次重新部署（push 一个空 commit，或在 dashboard 点 **Retry deployment**）。
+然后触发一次新构建（push 一个空 commit，或在 dashboard 点 **Retry deployment**）。
 
-> ⚠️ 这一步必做——否则 sitemap 里的 URL 还是 `*.pages.dev`，影响 SEO。
+> ⚠️ 这一步必做——这些变量只在 `pnpm build` 时被烘焙进静态 HTML，修改控制台不会改写已部署的 `dist/`。否则 sitemap、canonical、og:image 仍可能指向旧的 `*.pages.dev` 域名。
 
 ### Step 4 — HTTPS 自动生效
 
@@ -156,6 +158,16 @@ wrangler pages deploy dist --project-name=<你的项目名>
 
 首次会问你是否创建项目，选 yes。之后每次部署就一行命令。
 
+### 如果要采用 Wrangler 配置即代码
+
+控制台模式和 Wrangler 模式二选一，推荐新手继续使用控制台。需要把 Pages 配置纳入 Git 时，不要手写一个不完整的 `wrangler.toml`，而是先从现有项目下载：
+
+```bash
+npx wrangler pages download config <你的项目名>
+```
+
+确认下载内容与 Production / Preview 设置一致后再提交。此后把该文件当作项目配置的真相源；非敏感公开变量可放在 `[vars]`，密钥仍应通过 Cloudflare 的密钥管理配置，绝不能提交到 Git。仓库中的 [`wrangler.toml.example`](../wrangler.toml.example) 只用于解释结构，不会被自动检测。
+
 ---
 
 ## 方式三：导出静态文件到其他平台
@@ -180,7 +192,7 @@ AnvilWiki 是纯静态站点（`dist/`），可以部署到任何静态托管：
 | 变量                        | 必填 | 说明                                                   |
 | --------------------------- | ---- | ------------------------------------------------------ |
 | `SITE_URL`                  | ✅   | 站点绝对 URL（无尾斜杠），影响 sitemap/og:image/robots |
-| `NODE_VERSION`              | ✅   | 固定 `20`                                              |
+| `NODE_VERSION`              | ✅   | 固定 `22`，与 `.nvmrc` 一致                            |
 | `PUBLIC_AD_MOBILE_320X50`   | 可选 | Adsterra 320×50 Sticky 广告 key                        |
 | `PUBLIC_AD_SIDEBAR_160X600` | 可选 | 侧边栏竖幅 key                                         |
 | `PUBLIC_AD_SIDEBAR_160X300` | 可选 | 侧边栏半高 key                                         |
@@ -190,8 +202,19 @@ AnvilWiki 是纯静态站点（`dist/`），可以部署到任何静态托管：
 | `PUBLIC_AD_NATIVE_BANNER`   | 可选 | Native banner key                                      |
 | `PUBLIC_GOOGLE_ADSENSE_ID`  | 可选 | AdSense 自动广告 ID                                    |
 | `PUBLIC_GA_ID`              | 可选 | Google Analytics ID                                    |
+| `PUBLIC_GSC_VERIFICATION`   | 可选 | Google Search Console HTML 验证 token                  |
 
 完整清单见 [`.env.example`](../.env.example)。所有广告变量**留空时对应广告位不渲染**——新手可以先不配广告把站上线，后续再加。
+
+### 构建时变量与自动校验
+
+AnvilWiki 是静态站，环境变量不会在浏览器请求时动态读取，而是在构建时写入 `dist/`。每次修改变量后都必须产生一次新构建，并在构建日志末尾确认出现：
+
+```text
+[build-env] Verified generated HTML for https://你的域名.
+```
+
+如果设置了 `PUBLIC_GA_ID` 或 `PUBLIC_GSC_VERIFICATION`，日志还会分别确认 Google tag 与验证 meta。Cloudflare 构建中缺少必填的 `SITE_URL`，或变量已设置但产物缺少对应标签时，`postbuild` 会直接失败，避免把错误 HTML 发布出去。
 
 ---
 
@@ -223,6 +246,17 @@ curl -I https://<你的域名>/bosses/gelum/
 # 6. 法律页可访问
 curl -I https://<你的域名>/about/
 curl -I https://<你的域名>/privacy-policy/
+
+# 7. 最终 HTML 已烘焙正确域名和 Google tag（如已配置）
+curl -sL https://<你的域名>/ | grep -E 'canonical|og:url|G-[A-Z0-9]+'
+```
+
+PowerShell 用户建议把 `curl.exe` 的多行输出先合并再检查；数组的 `.Contains()` 判断的是“是否存在完全相同的一整行”，不能用来查子串：
+
+```powershell
+$html = (curl.exe -sS -L "https://<你的域名>/") -join "`n"
+$html -match 'rel="canonical" href="https://<你的域名>/"'
+$html -match 'googletagmanager.com/gtag/js\?id=G-'
 ```
 
 ### SEO 验证
@@ -248,7 +282,7 @@ curl -I https://<你的域名>/privacy-policy/
 
 ### Q: 构建失败，报 `Cannot find module 'astro:content'`
 
-A: Cloudflare Pages 的 Node 版本可能不对。确认环境变量 `NODE_VERSION=20` 已配。
+A: Cloudflare Pages 的 Node 版本可能不对。确认环境变量 `NODE_VERSION=22` 已配，或确认仓库根目录的 `.nvmrc` 仍为 `22`。
 
 ### Q: 构建失败，报 `ERR_PNPM_IGNORED_BUILDS`
 
@@ -277,6 +311,17 @@ A: og:image 必须是**绝对路径**。确认：
 ### Q: sitemap 里的 URL 还是 `*.pages.dev` 而不是自定义域名
 
 A: `SITE_URL` 环境变量没更新或没重新部署。改完后必须触发一次新部署。
+
+### Q: 控制台已经配置 SITE_URL / PUBLIC_GA_ID，但构建日志说找不到
+
+A: 依次检查：
+
+1. 变量是否配置在 **Production** 环境，以及当前部署分支是否真的是 Production branch。
+2. 仓库根目录是否存在真正的 `wrangler.toml` / `wrangler.json(c)`。如果存在且包含 `pages_build_output_dir`，它就是 Pages 项目配置的真相源；补齐文件配置，或删除它并继续使用控制台模式。
+3. 查看最新部署的构建日志，而不是只看控制台保存状态。日志末尾应有 `[build-env]` 校验结果。
+4. 变量修改后是否触发了新构建。旧部署的 HTML 不会被自动改写。
+
+Google Analytics 配置正确后，还可以在 GA 的“设置 Google 代码”页面点 **重新测试**，最终应显示“在您的网站上检测到了 Google 代码”。
 
 ### Q: 日文页面显示英文 fallback
 

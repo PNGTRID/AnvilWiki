@@ -11,7 +11,12 @@
  * Pages should wrap themselves in LocaleLayout (which wraps this), not call this directly.
  */
 import '~/styles/globals.css';
-import { site, siteUrl } from '~/config/site';
+import {
+  googleAnalyticsId,
+  googleSiteVerification,
+  site,
+  siteUrl,
+} from '~/config/site';
 import { organizationJsonLd } from '~/lib/seo';
 import JsonLd from '~/components/seo/JsonLd.astro';
 
@@ -43,8 +48,8 @@ const fullTitle = title.includes(site.name) ? title : `${title} — ${site.name}
 const orgJsonLd = organizationJsonLd();
 
 // Optional analytics / verification (env-var gated — empty = not injected).
-const gaId = import.meta.env.PUBLIC_GA_ID as string | undefined;
-const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION as string | undefined;
+const gaId = googleAnalyticsId;
+const gscVerification = googleSiteVerification;
 ---
 
 <!doctype html>

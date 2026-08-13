@@ -3,12 +3,21 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
 import icon from 'astro-icon';
+import { loadEnv } from 'vite';
 
 import { locales, defaultLocale } from './src/i18n/routing';
 
+// Astro config runs before Vite exposes import.meta.env. Read local .env files
+// explicitly, while preferring variables injected by Cloudflare Pages.
+const env = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
+const siteUrl = (process.env.SITE_URL || env.SITE_URL || 'https://anvilwiki.pages.dev').replace(
+  /\/$/,
+  '',
+);
+
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.SITE_URL || 'https://anvilwiki.pages.dev',
+  site: siteUrl,
   output: 'static',
   trailingSlash: 'never',
   image: {
