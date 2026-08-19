@@ -1,18 +1,19 @@
 {
   "$schema": "../../docs/home.schema.json",
   "site": {
-    "name": "Anvil Quest Wiki",
-    "shortName": "AQ Wiki",
-    "description": "Complete Anvil Quest wiki with boss guides, tier lists, codes, item locations, and beginner tips. Updated daily by the community.",
-    "tagline": "Your forge for everything Anvil Quest",
-    "legalNotice": "Anvil Quest Wiki is a fan-made community site. Not affiliated with or endorsed by the game developer."
+    "name": "Aniimo Wiki",
+    "shortName": "Aniimo Wiki",
+    "description": "Complete Aniimo wiki with codes, tier lists, Aniilog creature database, evolution guides, and walkthroughs. Updated daily by the community.",
+    "tagline": "Your home for everything Aniimo",
+    "legalNotice": "Aniimo Wiki is a fan-made community site. Not affiliated with or endorsed by Pawprint Studio or Kingsglory."
   },
   "nav": {
     "home": "Home",
-    "bosses": "Bosses",
-    "guides": "Guides",
-    "items": "Items",
     "codes": "Codes",
+    "tier-list": "Tier List",
+    "creatures": "Creatures",
+    "guides": "Guides",
+    "news": "News",
     "toggleTheme": "Toggle theme",
     "menu": "Menu",
     "close": "Close",
@@ -59,33 +60,37 @@
     "relatedVideos": "Related videos"
   },
   "overview": {
-    "bosses": {
-      "overviewTitle": "All Bosses",
-      "overviewDescription": "Complete strategy guides for every boss in Anvil Quest, including attack patterns, weaknesses, and recommended loadouts."
+    "codes": {
+      "overviewTitle": "All Codes",
+      "overviewDescription": "Active Aniimo codes, redemption guides, pre-registration rewards, and edition bonuses. Verified daily."
+    },
+    "tier-list": {
+      "overviewTitle": "Tier Lists",
+      "overviewDescription": "Aniimo tier lists ranking the best Aniimos for every role, element matchups, and team recommendations."
+    },
+    "creatures": {
+      "overviewTitle": "Creatures & Aniilog",
+      "overviewDescription": "The complete Aniimo creature database: all 90 Aniimos, stats, elements, evolutions, regional and Sparkling forms."
     },
     "guides": {
       "overviewTitle": "All Guides",
-      "overviewDescription": "In-depth tutorials covering progression, crafting, combat mechanics, and advanced strategies for Anvil Quest."
+      "overviewDescription": "In-depth Aniimo tutorials covering Twine mechanics, Egg Heist PvP, Homeland farming, leveling, and team building."
     },
-    "items": {
-      "overviewTitle": "All Items",
-      "overviewDescription": "Comprehensive item database with locations, stats, rarity tiers, and crafting recipes."
-    },
-    "codes": {
-      "overviewTitle": "All Codes",
-      "overviewDescription": "Active Anvil Quest codes for free coins, gems, and exclusive items. Verified daily."
+    "news": {
+      "overviewTitle": "News & Releases",
+      "overviewDescription": "Aniimo release dates, platform info, editions, Game Pass news, and patch notes."
     }
   },
   "home": {
     "meta": {
-      "title": "Anvil Quest Wiki - Complete Boss Guides, Codes & Tier Lists",
-      "description": "The most complete Anvil Quest wiki. Boss strategies, active codes, item locations, tier lists, and beginner guides. Updated daily by the community."
+      "title": "Aniimo Wiki - Codes, Tier Lists & Aniilog Creature Database",
+      "description": "The most complete Aniimo wiki. Active codes, tier lists, all 90 creatures, evolution guides, and walkthroughs. Updated daily by the community."
     },
     "hero": {
       "badge": "Fan-Made Community Wiki",
-      "title": "Anvil Quest Wiki",
-      "description": "Your complete guide to Anvil Quest. Boss strategies, active codes, item locations, tier lists, and everything you need to master the forge.",
-      "ctaPrimary": "Play Anvil Quest",
+      "title": "Aniimo Wiki",
+      "description": "Your complete guide to Aniimo. Active codes, tier lists, the full Aniilog database, and everything you need to master Idyll.",
+      "ctaPrimary": "Play Aniimo",
       "ctaSecondary": "Browse Guides",
       "videoId": ""
     },
@@ -95,35 +100,35 @@
     },
     "start": {
       "badge": "Start Here",
-      "title": "Your Anvil Quest Journey",
+      "title": "Your Aniimo Journey",
       "cards": [
         {
           "number": "1",
           "title": "Beginner Guide",
-          "description": "New to Anvil Quest? Start here with the essential mechanics, controls, and your first hour walkthrough.",
-          "icon": "lucide:book-open",
+          "description": "New to Aniimo? Start here with the essential mechanics, Twine basics, and your first hour in Idyll.",
+          "icon": "lucide:compass",
           "href": "/guides/beginner-guide"
         },
         {
           "number": "2",
-          "title": "Active Codes",
-          "description": "Redeem the latest codes for free coins, gems, and exclusive cosmetic items.",
+          "title": "Aniimo Codes",
+          "description": "Redeem the latest codes for free Glimmer, Aniipods, and exclusive rewards.",
           "icon": "lucide:gift",
-          "href": "/codes"
+          "href": "/codes/aniimo-codes"
         },
         {
           "number": "3",
-          "title": "Boss Strategies",
-          "description": "Complete guides for every boss with attack patterns, weaknesses, and recommended loadouts.",
-          "icon": "lucide:swords",
-          "href": "/bosses"
+          "title": "Aniimo Tier List",
+          "description": "Every Aniimo ranked from S to C tier for DPS, Healer, Support, and BREAK roles.",
+          "icon": "lucide:trophy",
+          "href": "/tier-list/aniimo-tier-list"
         },
         {
           "number": "4",
-          "title": "Weapon Tier List",
-          "description": "Ranking every weapon from S to C based on DPS, utility, and synergy.",
-          "icon": "lucide:list-ordered",
-          "href": "/guides/weapon-tier-list"
+          "title": "Aniilog Database",
+          "description": "All 90 Aniimo creatures with stats, elements, forms, and evolution lines.",
+          "icon": "lucide:paw-print",
+          "href": "/creatures/all-aniimos-list"
         }
       ]
     },
@@ -132,20 +137,20 @@
       "title": "Most Read This Week",
       "quickLinks": [
         {
-          "label": "Emberfang Boss Guide",
-          "href": "/bosses/emberfang"
+          "label": "Aniimo Codes (September 2026)",
+          "href": "/codes/aniimo-codes"
         },
         {
-          "label": "Best Weapons Tier List",
-          "href": "/guides/weapon-tier-list"
+          "label": "Aniimo Tier List",
+          "href": "/tier-list/aniimo-tier-list"
         },
         {
           "label": "Beginner Guide",
           "href": "/guides/beginner-guide"
         },
         {
-          "label": "All Active Codes",
-          "href": "/codes"
+          "label": "All Aniimos List",
+          "href": "/creatures/all-aniimos-list"
         }
       ]
     },
@@ -155,151 +160,100 @@
       "modules": [
         {
           "order": 1,
-          "name": "Anvil Quest Codes",
-          "description": "Active codes for free coins, gems, and exclusive items. Updated daily.",
+          "name": "Aniimo Codes & Rewards",
+          "description": "Every working Aniimo redemption code, pre-registration milestone reward, and edition bonus. Updated daily after launch.",
           "href": "/codes",
           "displayType": "badge-list",
           "highlights": [
             {
-              "label": "WELCOME2026",
-              "detail": "500 coins + starter sword",
+              "label": "Pre-Registration",
+              "detail": "5M milestone unlocked for all players",
               "badge": "Active"
             },
             {
-              "label": "FORGE",
-              "detail": "1 rare gem",
-              "badge": "Active"
+              "label": "Launch Codes",
+              "detail": "Expected day one — check back September 16",
+              "badge": "Coming soon"
             },
             {
-              "label": "12MVISITS",
-              "detail": "Exclusive cosmetic",
-              "badge": "Expires soon"
+              "label": "Daily Logins",
+              "detail": "Free Glimmer and Aniipods",
+              "badge": "Daily"
             }
           ]
         },
         {
           "order": 2,
-          "name": "Boss Strategies",
-          "description": "Complete guides for every boss with attack patterns and weaknesses.",
-          "href": "/bosses",
+          "name": "Aniimo Creatures & Aniilog",
+          "description": "The complete Aniimo creature database: all 90 Aniimos, stats, elements, regional forms, Sparkling variants, and evolution lines.",
+          "href": "/creatures",
           "displayType": "labeled-cards",
           "highlights": [
             {
-              "label": "Emberfang",
-              "detail": "Frost warden, early-game gatekeeper"
+              "label": "Fire",
+              "detail": "Emberpup, Scorchhowl, Inferlupa"
             },
             {
-              "label": "Stormcaller",
-              "detail": "Fire titan, mid-game DPS check"
+              "label": "Water",
+              "detail": "Skippy, Glacy, Sherro"
             },
             {
-              "label": "Voidking",
-              "detail": "Final boss, requires full prep"
+              "label": "Dark",
+              "detail": "Celestis, Stellarys, Ignitis"
+            },
+            {
+              "label": "Wind",
+              "detail": "Nimbi, Turbo, Cornet"
             }
           ]
         },
         {
           "order": 3,
-          "name": "Progression Guides",
-          "description": "Leveling routes, class builds, and endgame preparation.",
-          "href": "/guides",
-          "displayType": "steps",
+          "name": "Aniimo Tier List",
+          "description": "Community-ranked tier list covering DPS, Healer, Support, BREAK, and REGEN roles for PvP, bosses, and exploration.",
+          "href": "/tier-list",
+          "displayType": "ranked-grid",
           "highlights": [
             {
-              "label": "1",
-              "detail": "Pick a starting class"
+              "label": "S",
+              "detail": "Stellarys, Shrubclaw, Glynsera"
             },
             {
-              "label": "2",
-              "detail": "Clear the tutorial forge"
+              "label": "A",
+              "detail": "Ignitis, Cornet, Gracewing"
             },
             {
-              "label": "3",
-              "detail": "Unlock the Shattered Isles"
+              "label": "B",
+              "detail": "Fenmane, Erlath, Somniwing"
             },
             {
-              "label": "4",
-              "detail": "Defeat your first world boss"
+              "label": "C",
+              "detail": "Early Lumin-stage Aniimos"
             }
           ]
         },
         {
           "order": 4,
-          "name": "Weapon Tier List",
-          "description": "Ranking every weapon from S to C based on DPS, utility, and synergy.",
-          "href": "/guides/weapon-tier-list",
-          "displayType": "ranked-grid",
+          "name": "Aniimo Guides & Walkthroughs",
+          "description": "In-depth Aniimo guides: Twine mechanics, Egg Heist PvP strategy, Homeland farming, leveling routes, and team building.",
+          "href": "/guides",
+          "displayType": "steps",
           "highlights": [
             {
-              "label": "S",
-              "detail": "Voidforge Blade, Stormcaller"
+              "label": "1",
+              "detail": "Pick your starter and learn Twine"
             },
             {
-              "label": "A",
-              "detail": "Emberclaw, Frostpike"
+              "label": "2",
+              "detail": "Build a balanced three-role team"
             },
             {
-              "label": "B",
-              "detail": "Ironwood Bow, Mace of Dawn"
+              "label": "3",
+              "detail": "Unlock the Homeland and automate farming"
             },
             {
-              "label": "C",
-              "detail": "Starter weapons"
-            }
-          ]
-        },
-        {
-          "order": 5,
-          "name": "Update History",
-          "description": "Major patches and events, newest first.",
-          "href": "/updates",
-          "displayType": "timeline",
-          "highlights": [
-            {
-              "label": "v2.5",
-              "detail": "New raid: Shadowforge released",
-              "badge": "Latest"
-            },
-            {
-              "label": "v2.4",
-              "detail": "Rebalanced all S-tier weapons"
-            },
-            {
-              "label": "v2.3",
-              "detail": "Added 3 new bosses"
-            },
-            {
-              "label": "v2.2",
-              "detail": "Launched season pass system"
-            }
-          ]
-        },
-        {
-          "order": 6,
-          "name": "Video Guides",
-          "description": "Watch the best Anvil Quest walkthroughs and boss fights.",
-          "href": "/guides/video-walkthroughs",
-          "displayType": "video-grid",
-          "highlights": [
-            {
-              "title": "Beginner Walkthrough",
-              "youtubeId": "dQw4w9WgXcQ",
-              "duration": "12:34"
-            },
-            {
-              "title": "All Bosses Ranked",
-              "youtubeId": "aaaaaaaaaaa",
-              "duration": "18:42"
-            },
-            {
-              "title": "Speedrun Guide",
-              "youtubeId": "bbbbbbbbbbb",
-              "duration": "25:10"
-            },
-            {
-              "title": "Hidden Secrets",
-              "youtubeId": "ccccccccccc",
-              "duration": "9:15"
+              "label": "4",
+              "detail": "Dominate Egg Heist and boss raids"
             }
           ]
         }
@@ -307,39 +261,43 @@
     },
     "faq": {
       "title": "Frequently Asked Questions",
-      "description": "Quick answers to the most common questions about Anvil Quest.",
+      "description": "Quick answers to the most common questions about Aniimo.",
       "items": [
         {
-          "question": "What is Anvil Quest?",
-          "answer": "Anvil Quest is a fantasy RPG on Roblox where you play as a blacksmith apprentice forging weapons and battling bosses across the Shattered Isles. It launched in January 2026 and has over 12 million visits."
+          "question": "What is the Aniimo release date?",
+          "answer": "Aniimo launches September 16, 2026 on PS5, Xbox Series X|S, PC (Steam, Epic, Microsoft Store), iOS, and Android — simultaneously, with no early access."
         },
         {
-          "question": "Which class should beginners pick in Anvil Quest?",
-          "answer": "Warrior is the most beginner-friendly class thanks to high HP and simple mechanics. Once you understand the game, Rogue offers the highest damage output for experienced players."
+          "question": "Is Aniimo free to play?",
+          "answer": "Yes. Aniimo is a free-to-play creature-catching open-world RPG. Optional Advanced ($9.99) and Collector's ($19.99) editions add cosmetics and companion items."
         },
         {
-          "question": "How do I redeem codes in Anvil Quest?",
-          "answer": "Open the game, click the settings gear in the top-right, paste your code into the 'Redeem Code' field, and hit confirm. Codes are case-sensitive."
+          "question": "How many creatures are in Aniimo?",
+          "answer": "The official Aniilog features 90 Aniimo creatures across 10 elements, plus regional forms and ultra-rare Sparkling variants."
         },
         {
-          "question": "Is Anvil Quest free to play?",
-          "answer": "Yes, Anvil Quest is completely free on Roblox. There are optional cosmetic microtransactions, but they do not affect gameplay balance."
+          "question": "What is Twining in Aniimo?",
+          "answer": "Twine is Aniimo's signature mechanic — you merge with a captured Aniimo to use its abilities for combat, puzzle-solving, and traversal like gliding, diving, and burrowing."
         },
         {
-          "question": "How often does Anvil Quest update?",
-          "answer": "Forge Studios releases major content updates roughly every two weeks, with smaller hotfixes in between. New bosses and codes are typically added with each major patch."
+          "question": "Are there Aniimo codes at launch?",
+          "answer": "Aniimo redemption codes are expected from day one. Pre-registration passed 5 million players, unlocking milestone rewards. Bookmark our codes page for daily updates."
+        },
+        {
+          "question": "Is Aniimo on Xbox Game Pass?",
+          "answer": "Yes, Aniimo was confirmed as a day-one Xbox Game Pass title, although specific subscriber bonuses have not been announced."
         }
       ]
     },
     "closingCta": {
-      "title": "Ready to Master the Forge?",
-      "description": "Bookmark this wiki and check back daily for new codes, boss guides, and tier list updates.",
-      "primary": "Play Anvil Quest",
-      "secondary": "Join Our Discord"
+      "title": "Ready to Master Idyll?",
+      "description": "Bookmark this wiki and check back daily for new codes, tier list updates, and launch coverage.",
+      "primary": "Play Aniimo",
+      "secondary": "Browse Codes"
     }
   },
   "footer": {
-    "playGame": "Play Anvil Quest",
+    "playGame": "Play Aniimo",
     "officialDiscord": "Official Discord",
     "officialYoutube": "Official YouTube",
     "officialTwitter": "Official Twitter",
@@ -349,6 +307,6 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "copyright": "Copyright",
-    "copyrightText": "© 2026 Anvil Quest Wiki. Fan-made, not affiliated with Forge Studios."
+    "copyrightText": "© 2026 Aniimo Wiki. Fan-made, not affiliated with Pawprint Studio or Kingsglory."
   }
 }

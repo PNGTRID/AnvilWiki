@@ -29,10 +29,11 @@ export interface NavigationItem {
 }
 
 export const NAVIGATION_CONFIG: NavigationItem[] = [
-  { key: 'bosses', path: '/bosses', icon: 'lucide:swords', isContentType: true, order: 1 },
-  { key: 'guides', path: '/guides', icon: 'lucide:book-open', isContentType: true, order: 2 },
-  { key: 'items', path: '/items', icon: 'lucide:package', isContentType: true, order: 3 },
-  { key: 'codes', path: '/codes', icon: 'lucide:gift', isContentType: true, order: 4 },
+  { key: 'codes', path: '/codes', icon: 'lucide:gift', isContentType: true, order: 1 },
+  { key: 'tier-list', path: '/tier-list', icon: 'lucide:trophy', isContentType: true, order: 2 },
+  { key: 'creatures', path: '/creatures', icon: 'lucide:paw-print', isContentType: true, order: 3 },
+  { key: 'guides', path: '/guides', icon: 'lucide:book-open', isContentType: true, order: 4 },
+  { key: 'news', path: '/news', icon: 'lucide:newspaper', isContentType: true, order: 5 },
 ];
 
 /** Derived list of content type slugs (e.g. ['bosses', 'guides', 'items', 'codes']). */

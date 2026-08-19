@@ -56,32 +56,32 @@ export interface SiteConfig {
 }
 
 export const site: SiteConfig = {
-  name: 'Anvil Quest Wiki',
-  shortName: 'AQ Wiki',
+  name: 'Aniimo Wiki',
+  shortName: 'Aniimo Wiki',
   description:
-    'Complete Anvil Quest wiki with boss guides, tier lists, codes, item locations, and beginner tips. Updated daily by the community.',
-  domain: 'anvilwiki.pages.dev',
-  tagline: 'Your forge for everything Anvil Quest',
+    'Complete Aniimo wiki with codes, tier lists, Aniilog creature database, evolution guides, and walkthroughs. Updated daily by the community.',
+  domain: 'aniimowiki.pages.dev',
+  tagline: 'Your home for everything Aniimo',
   legalNotice:
-    'Anvil Quest Wiki is a fan-made community site. Not affiliated with or endorsed by the game developer.',
+    'Aniimo Wiki is a fan-made community site. Not affiliated with or endorsed by Pawprint Studio or Kingsglory.',
   social: {
-    official: 'https://example.com/anvil-quest',
-    discord: 'https://discord.gg/example',
-    youtube: 'https://youtube.com/@example',
-    twitter: 'https://twitter.com/example',
-    reddit: 'https://reddit.com/r/anvilquest',
+    official: 'https://www.aniimo.com/',
+    discord: undefined,
+    youtube: undefined,
+    twitter: 'https://x.com/aniimogame',
+    reddit: 'https://www.reddit.com/r/AniimoGame/',
   },
-  // 👉 APPLY TEMPLATE: point these at the game's real canonical pages.
+  // Canonical pages about the game (Organization JSON-LD sameAs).
   sameAs: [
-    'https://example.com/anvil-quest',
-    'https://en.wikipedia.org/wiki/Anvil_Quest',
+    'https://www.aniimo.com/',
+    'https://store.steampowered.com/app/4126040/Aniimo/',
   ],
   game: {
-    name: 'Anvil Quest',
-    platform: 'Roblox',
-    developer: 'Forge Studios',
-    genre: 'Fantasy RPG',
-    releaseDate: '2026-01-15',
+    name: 'Aniimo',
+    platform: 'PS5, Xbox Series X|S, PC, iOS, Android',
+    developer: 'Pawprint Studio',
+    genre: 'Creature-Collecting Open-World Action RPG',
+    releaseDate: '2026-09-16',
   },
   // hero.webp is 1200×630 (the recommended OG share aspect ratio).
   ogImageWidth: 1200,

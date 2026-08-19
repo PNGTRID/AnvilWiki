@@ -7,6 +7,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 import { locales, defaultLocale } from './src/i18n/routing';
+import { site as siteConfig } from './src/config/site';
 
 /**
  * Build a map of page path → lastmod ISO date, read from MDX frontmatter
@@ -61,7 +62,7 @@ const lastmodMap = buildLastmodMap();
 
 // https://astro.build/config
 export default defineConfig({
-  site: process.env.SITE_URL || 'https://anvilwiki.pages.dev',
+  site: process.env.SITE_URL || `https://${siteConfig.domain}`,
   output: 'static',
   trailingSlash: 'never',
   image: {
@@ -89,6 +90,9 @@ export default defineConfig({
         defaultLocale,
         locales: Object.fromEntries(locales.map((l) => [l, l])),
       },
+      // Exclude the locale-router landing pages from the sitemap — they are
+      // redirect-only splash pages, not content.
+      filter: (page) => !/(^|\/)(zh\/)?landing\/?$/.test(new URL(page).pathname),
       // Inject <lastmod> from article frontmatter (see buildLastmodMap).
       serialize(item) {
         try {
