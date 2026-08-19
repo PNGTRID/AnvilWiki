@@ -14,6 +14,7 @@ import '~/styles/globals.css';
 import { site, siteUrl } from '~/config/site';
 import { organizationJsonLd } from '~/lib/seo';
 import JsonLd from '~/components/seo/JsonLd.astro';
+import AdsterraSticky from '~/components/ads/AdsterraSticky.astro';
 import CookieConsent from './CookieConsent.astro';
 import { getUi } from '~/i18n/ui';
 
@@ -188,5 +189,7 @@ const consentLabels = {
         }}
       />
     )}
+    {/* Adsterra mobile sticky banner — rendered only when a key is configured. */}
+    <AdsterraSticky />
   </body>
 </html>

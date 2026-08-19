@@ -1,0 +1,29 @@
+---
+/**
+ * AdsterraRect — 300×250 medium rectangle at the end of article content.
+ *
+ * Inline (not sticky), centered, all devices. Same iframe isolation as
+ * AdsterraSticky. Disabled automatically when the key is empty.
+ */
+import { ads } from '~/config/ads';
+
+const key = ads.rect300x250;
+const show = !!key;
+---
+
+{
+  show && (
+    <div class="my-8 flex flex-col items-center not-prose">
+      <span class="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">Advertisement</span>
+      <iframe
+        src={`/ads/banner.html?key=${key}&w=300&h=250`}
+        width="300"
+        height="250"
+        title="Advertisement"
+        loading="lazy"
+        scrolling="no"
+        style="border:0; display:block; max-width:100%;"
+      />
+    </div>
+  )
+}

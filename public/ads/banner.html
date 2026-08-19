@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ad</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Generic Adsterra banner host. Loaded inside an <iframe> from the ad
+      components with query params: ?key=<adsterra-key>&w=<width>&h=<height>.
+      Keys live only in src/config/ads.ts; this file stays key-free.
+    -->
+    <script>
+      (() => {
+        const p = new URLSearchParams(location.search);
+        const key = p.get('key') || '';
+        const w = parseInt(p.get('w') || '0', 10);
+        const h = parseInt(p.get('h') || '0', 10);
+        // Defensive validation: hex key + sane banner dimensions only.
+        if (!/^[a-f0-9]{16,48}$/i.test(key) || !w || !h) return;
+        document.write(
+          "<script type='text/javascript'>atOptions = {'key':'" +
+            key +
+            "','format':'iframe','height':" +
+            h +
+            ",'width':" +
+            w +
+            ",'params':{}};<\/script>" +
+            "<script type='text/javascript' src='//www.highperformanceformat.com/" +
+            key +
+            "/invoke.js'><\/script>",
+        );
+      })();
+    </script>
+  </body>
+</html>

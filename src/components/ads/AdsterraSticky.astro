@@ -1,0 +1,59 @@
+---
+/**
+ * AdsterraSticky — 320×50 sticky banner pinned to the bottom on MOBILE.
+ *
+ * Per the SOP this is the primary revenue slot: game-wiki traffic is
+ * overwhelmingly mobile, and a sticky strip lifts exposure from ~3s to 30s+.
+ * Includes a dismiss button (persisted in localStorage).
+ *
+ * The ad script is iframe-isolated in /ads/banner.html so it cannot slow
+ * down or break the main page (Lighthouse / SEO safe).
+ * Disabled automatically when the key in src/config/ads.ts is empty.
+ */
+import { ads } from '~/config/ads';
+
+const key = ads.sticky320x50;
+const show = !!key;
+---
+
+{
+  show && (
+    <div id="adsterra-sticky" class="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 py-1 backdrop-blur md:hidden">
+      <div class="relative mx-auto flex w-fit items-center justify-center">
+        <iframe
+          src={`/ads/banner.html?key=${key}&w=320&h=50`}
+          width="320"
+          height="50"
+          title="Advertisement"
+          loading="lazy"
+          scrolling="no"
+          style="border:0; display:block;"
+        />
+        <button
+          id="dismiss-adsterra-sticky"
+          type="button"
+          aria-label="Close ad"
+          class="absolute -right-6 -top-1 rounded-full border border-border bg-background p-1 text-muted-foreground transition hover:bg-muted"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+<script is:inline>
+  (() => {
+    const banner = document.getElementById('adsterra-sticky');
+    const btn = document.getElementById('dismiss-adsterra-sticky');
+    if (!banner || !btn) return;
+    if (localStorage.getItem('adsterra-sticky-dismissed') === '1') {
+      banner.remove();
+      return;
+    }
+    btn.addEventListener('click', () => {
+      localStorage.setItem('adsterra-sticky-dismissed', '1');
+      banner.remove();
+    });
+  })();
+</script>

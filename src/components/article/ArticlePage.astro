@@ -16,6 +16,7 @@ import { Icon } from 'astro-icon/components';
 import { render } from 'astro:content';
 import LocaleLayout from '~/components/layout/LocaleLayout.astro';
 import InContentAd from '~/components/ads/InContentAd.astro';
+import AdsterraRect from '~/components/ads/AdsterraRect.astro';
 import Comments from '~/components/article/Comments.astro';
 import TableOfContents from '~/components/article/TableOfContents.astro';
 import ShareButton from '~/components/article/ShareButton.astro';
@@ -324,6 +325,9 @@ const jsonLd = [
       </div>
       <p class="hidden text-sm font-medium text-nav" data-helpful-thanks>{shared.feedbackThanks}</p>
     </div>
+
+    {/* Adsterra 300×250 rectangle — end of article, rendered only when configured. */}
+    <AdsterraRect />
   </article>
     {/* Desktop TOC — sticky, between article and sidebar */}
     <div class="hidden w-56 shrink-0 lg:block xl:w-64">
