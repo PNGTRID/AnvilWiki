@@ -188,7 +188,8 @@ export const COMMUNITY_SITES: {
       'A trilingual Roblox player wiki for Jujutsu Shenanigans — character routes, Black Flash, maps, codes, and patch notes.',
     descriptionZh:
       'Jujutsu Shenanigans 的中英日三语 Roblox 玩家 wiki——角色路线、Black Flash、地图、兑换码与版本更新。',
-  },];
+  },
+];
 
 const en: LandingContent = {
   htmlLang: 'en',
