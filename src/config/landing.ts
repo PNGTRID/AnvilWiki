@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '1.16.1';
+export const PROJECT_VERSION = '2.0.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -188,8 +188,7 @@ export const COMMUNITY_SITES: {
       'A trilingual Roblox player wiki for Jujutsu Shenanigans — character routes, Black Flash, maps, codes, and patch notes.',
     descriptionZh:
       'Jujutsu Shenanigans 的中英日三语 Roblox 玩家 wiki——角色路线、Black Flash、地图、兑换码与版本更新。',
-  },
-];
+  },];
 
 const en: LandingContent = {
   htmlLang: 'en',
@@ -197,7 +196,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} shipped — expert-panel audit: 30+ fixes hardening the fork setup path, CJK tag URLs, FAQ rich results, and ad-slot layout stability.`,
+    text: `v${PROJECT_VERSION} is live — the content operating system: PR-gated content pipeline (keyword list → gates → draft PR), anvilwiki-ops 1.0 (multi-site + AI referral tracking), pnpm gen-covers og:image generation, and an affiliate suggestion slot. Zero breaking changes for forks.`,
     href: RELEASES,
   },
   hero: {
@@ -411,12 +410,12 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki Docs',
     hubSubtitle:
-      'Two separate hands-on manuals, written for complete beginners: the Learning Manual (8 chapters) walks you from game selection to a live, indexed, monetized wiki; the Development Manual (7 chapters) covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
+      'Two separate hands-on manuals, written for complete beginners: the Learning Manual (11 chapters) walks you from game selection to a live, indexed, monetized wiki — then shows you how to templatize it, batch-produce inner pages to scale, and win rankings and AI citations with SEO; the Development Manual (7 chapters) covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
     manuals: {
       learn: {
         label: 'Learning Manual',
         description:
-          '8 chapters, zero experience required: pick the right game, install the tools, launch your site, write 10 pages with AI on day one, get on Google, turn on ads, run a 30-minute weekly ops loop.',
+          '11 chapters, zero experience required: pick the right game, install the tools, launch your site, write 10 pages with AI on day one, get on Google, turn on ads, run a 30-minute weekly ops loop — then turn your first site into a template, batch-create dozens of traffic-entrance pages, and climb from indexed to ranking and AI-cited.',
       },
       dev: {
         label: 'Development Manual',
@@ -485,7 +484,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 发布 —— 专家团审计修复批:30+ 项修复,加固 fork 初始化主路径、CJK 标签链接、FAQ 富结果合规与广告位布局稳定性。`,
+    text: `v${PROJECT_VERSION} 发布 —— 内容经营操作系统:PR 门控内容管道(关键词清单 → 八道门禁 → 草稿 PR)、anvilwiki-ops 1.0(多站管理 + AI 引用追踪)、pnpm gen-covers 封面自动生成、Affiliate 建议位。fork 零迁移成本。`,
     href: RELEASES,
   },
   hero: {
@@ -694,12 +693,12 @@ pnpm install && pnpm dev`,
   handbook: {
     hubTitle: 'AnvilWiki 文档中心',
     hubSubtitle:
-      '两本相互独立的实操手册,按完全零基础标准编写:学习手册 8 章带你从选游戏走到上线、收录、变现;开发手册 7 章覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
+      '两本相互独立的实操手册,按完全零基础标准编写:学习手册 11 章带你从选游戏走到上线、收录、变现,再教你把站打磨成模板、批量铺内页放大、把排名和 AI 引用做上去;开发手册 7 章覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
     manuals: {
       learn: {
         label: '学习手册',
         description:
-          '8 章,零经验起步:选对游戏、装好工具、建起自己的站、首日用 AI 产出 10 页、被 Google 收录、接上广告、每周 30 分钟运营节奏。',
+          '11 章,零经验起步:选对游戏、装好工具、建起自己的站、首日用 AI 产出 10 页、被 Google 收录、接上广告、每周 30 分钟运营节奏,把第一个站打磨成模板、批量做出几十个流量入口,最后从被收录走到有排名、被 AI 引用。',
       },
       dev: {
         label: '开发手册',
