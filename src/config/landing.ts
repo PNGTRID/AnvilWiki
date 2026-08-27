@@ -233,6 +233,18 @@ export const COMMUNITY_SITES: {
     descriptionZh:
       'Jujutsu Shenanigans 的中英日三语 Roblox 玩家 wiki——角色路线、Black Flash、地图、兑换码与版本更新。',
   },
+  {
+    name: 'Mortal Shell II Wiki',
+    url: 'https://mortalshell2.space/',
+    game: 'Mortal Shell II',
+    image: '/images/showcase/sites/mortal-shell-ii.png',
+    imageAltEn: 'Screenshot of the Mortal Shell II Wiki homepage',
+    imageAltZh: 'Mortal Shell II Wiki 首页截图',
+    descriptionEn:
+      'A fan-made Mortal Shell II wiki with independent guides for Shells, weapons, bosses, locations, items, and the Open Beta.',
+    descriptionZh:
+      '独立的《Mortal Shell II》玩家 wiki，涵盖 Shell、武器、Boss、地点、物品与 Open Beta 的资料和攻略。',
+  },
 ];
 
 const en: LandingContent = {
