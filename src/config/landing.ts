@@ -245,6 +245,17 @@ export const COMMUNITY_SITES: {
     descriptionZh:
       '独立的《Mortal Shell II》玩家 wiki，涵盖 Shell、武器、Boss、地点、物品与 Open Beta 的资料和攻略。',
   },
+  {
+    name: 'Sephiria Builds',
+    url: 'https://sephiriabuilds.xyz/',
+    game: 'Sephiria',
+    image: '/images/showcase/sites/sephiria.jpg',
+    imageAltEn: 'Screenshot of the Sephiria Builds homepage',
+    imageAltZh: 'Sephiria Builds 首页截图',
+    descriptionEn:
+      'A build database for the action roguelite Sephiria — patch-stamped weapon tier lists and evidence-graded build guides.',
+    descriptionZh: '动作肉鸽 Sephiria 的 build 数据库——带版本戳的武器强度榜与证据分级的 build 攻略。',
+  },
 ];
 
 const en: LandingContent = {
