@@ -666,8 +666,10 @@ function removeLandingPage(): number {
     if (!fs.existsSync(abs)) continue;
     const stat = fs.statSync(abs);
     if (stat.isDirectory()) {
-      if (!DRY_RUN) fs.rmSync(abs, { recursive: true, force: true });
+      // Count entries before deletion: reading the directory after rmSync()
+      // throws ENOENT in non-dry-run mode.
       removed += fs.readdirSync(abs).length;
+      if (!DRY_RUN) fs.rmSync(abs, { recursive: true, force: true });
     } else {
       if (!DRY_RUN) fs.unlinkSync(abs);
       removed++;
