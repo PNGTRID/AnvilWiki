@@ -263,6 +263,30 @@ export const COMMUNITY_SITES: {
       'A build database for the action roguelite Sephiria — patch-stamped weapon tier lists and evidence-graded build guides.',
     descriptionZh: '动作肉鸽 Sephiria 的 build 数据库——带版本戳的武器强度榜与证据分级的 build 攻略。',
   },
+  {
+    name: 'Saturation Diving Wiki',
+    url: 'https://saturation-diving.wiki/',
+    game: 'Saturation Diving',
+    image: '/images/showcase/sites/saturation-diving.png',
+    imageAltEn: 'Screenshot of the Saturation Diving Wiki homepage',
+    imageAltZh: 'Saturation Diving Wiki 首页截图',
+    descriptionEn:
+      'An independent Roblox wiki for Saturation Diving — verified guides, locations, gear, monsters, achievements, and code status.',
+    descriptionZh:
+      'Roblox《Saturation Diving》的独立玩家 wiki——经核查的攻略、地点、装备、怪物、成就与兑换码状态。',
+  },
+  {
+    name: 'CDT Strategy Lab',
+    url: 'https://cheating-during-testing-tools.wiki/',
+    game: 'Cheating During Testing',
+    image: '/images/showcase/sites/cdt-strategy-lab.png',
+    imageAltEn: 'Screenshot of the CDT Strategy Lab homepage',
+    imageAltZh: 'CDT Strategy Lab 首页截图',
+    descriptionEn:
+      'An independent Roblox game companion for Cheating During Testing — safe-window practice, credits planning, guides, and verified update notes.',
+    descriptionZh:
+      'Roblox《Cheating During Testing》的独立游戏助手——安全窗口练习、学分规划、攻略与已核验的版本说明。',
+  },
 ];
 
 const en: LandingContent = {
