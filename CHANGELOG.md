@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] — 2026-09-02
+
+**视频源工作流批（`anvil-new-article` Step 0，生态技能第三次吸收：7deer_skills）。**
+
 ### Added
 
 - **`anvil-new-article` 视频源工作流(Step 0)**:素材是 YouTube 视频时,抓字幕(用户粘贴 / `yt-dlp` / `youtube-transcript-api` 三通道,按依赖从少到多)→ 结构化提取(核心话题→Step 1 判型 / kebab-case slug / title / description / summary 直答 / 5-8 组 `faq:` / 问题式 H2 大纲 / tags 复用词汇表)→ MDX 草稿。两条红线:视频作者口播数值/兑换码一律视为未验证素材,成品必须 `draft: true` 人工核实后转正;他人视频字幕只做事实参考、正文必须完全重写(演绎内容的 DMCA/重复内容风险),嵌入原视频为合规做法;缩略图 maxres→hq 仅作 `gen-covers` 视觉参考。致谢 [kennyzir/7deer_skills](https://github.com/kennyzir/7deer_skills/tree/main/youtube-content-gen)(MIT)youtube-content-gen——管线形状与提取字段设计的参考,已按本模板内容层契约重写(非代码生成);致谢五处同步:技能文内 + README 中英 Credits 段 + docs/README 致谢节 + landing.ts footer en/zh。
@@ -795,7 +799,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.3...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.0...HEAD
+[2.7.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.3...v2.7.0
 [2.6.3]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.2...v2.6.3
 [2.6.2]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.0...v2.6.1

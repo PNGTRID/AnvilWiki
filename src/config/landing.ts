@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.6.3';
+export const PROJECT_VERSION = '2.7.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} re-run safety — a risk audit's four findings fixed in apply-template: re-runs now delete only the demo's own locale leftovers and warn instead of deleting locales you added; demo image cleanup goes strictly by filename (the whole-directory rm -rf over public/images/articles — where your own article images live — is gone); locale rewrites stop leaking unchosen demo categories into nav and keep labels you already translated; the wrangler [vars] rewrite survives CRLF working trees. Pure rewrites moved to scripts/lib/apply-rewrites.ts with direct vitest coverage (114 tests) and a re-run E2E step.`,
+    text: `v${PROJECT_VERSION} video-to-guide — anvil-new-article gains a Step 0 for YouTube sources: fetch the transcript (paste it, yt-dlp, or youtube-transcript-api), extract a structured brief (category, slug, summary answer, 5-8 FAQ pairs, question-shaped H2s), and draft MDX under two red lines — numbers spoken in the video stay draft:true until you verify them in-game, and other people's videos are fact-reference only with the body fully rewritten (embedding the original video is the compliant move). Pipeline inspired by kennyzir/7deer_skills' youtube-content-gen (MIT).`,
     href: RELEASES,
   },
   hero: {
@@ -732,7 +732,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 重跑安全四连修（当日风险审计 P1-P4 落地）——apply-template 重跑只自动删 demo 自带的语言残留，你自己加的语言警告保留、绝不删除；demo 配图清理全按文件名（对你放内文图的 public/images/articles 的整目录 rm -rf 已废除）；locale 重写不再把未选分类 nav 标签带进 fork、重跑保留你已翻译的标签；wrangler [vars] 重写兼容 CRLF。纯函数下沉 scripts/lib/apply-rewrites.ts 直测（114 tests），E2E 加重跑断言。`,
+    text: `v${PROJECT_VERSION} 视频转攻略——anvil-new-article 新增 Step 0：YouTube 视频抓字幕（粘贴 / yt-dlp / youtube-transcript-api 三通道）→ 结构化提取（分类判型 / slug / summary 直答 / 5-8 组 FAQ / 问题式 H2）→ MDX 草稿。两条红线：视频口播数值一律 draft:true、人工核实后才转正；他人视频只做事实参考、正文必须完全重写（嵌入原视频才是合规做法）。管线设计致谢 kennyzir/7deer_skills(MIT) 的 youtube-content-gen。`,
     href: RELEASES,
   },
   hero: {
