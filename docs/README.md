@@ -104,3 +104,4 @@
 
 - [yan-labs/yan-skills](https://github.com/yan-labs/yan-skills)(MIT)—— [sourcing.md](sourcing.md) 第四节「判决框架」参考其 game-opportunity 技能;[seo.md](seo.md) 外链验证一节引用其实测结论与提交入口库
 - [yantoumu/adsense-site-auditor-skill](https://github.com/yantoumu/adsense-site-auditor-skill) —— `/anvil-adsense-audit` 技能的审计框架(逐项四态判定 + Blocker 分级 + 完整性门)受其启发,清单为模板特化重写
+- [kennyzir/7deer_skills](https://github.com/kennyzir/7deer_skills)(MIT)—— `anvil-new-article` 的视频源工作流(字幕 → 结构化提取 → 页面草稿)参考其 youtube-content-gen 技能,已按本模板内容层契约(MDX + frontmatter)重写
