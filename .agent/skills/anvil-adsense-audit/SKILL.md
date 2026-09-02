@@ -20,7 +20,7 @@ description: AdSense 申请前全站体检——按 Google 官方政策(计划�
 
 | 项 | 证据在哪 |
 |---|---|
-| `public/ads.txt` 占位文件存在 | 通过审核拿到 `ca-pub-` ID 后替换其中的占位说明 |
+| `public/ads.txt` 就绪授权行存在(注释态——未过审保持注释才是正确状态,占位 pub-ID 反而是无效数据行) | 过审后按文件内注释操作:填入你的发布商 ID、删行首 `#` 即生效 |
 | 隐私政策 / 服务条款 / 版权 / 联系 / 关于 5 个法律页**正文内置**（非空壳路由），隐私页已含 Google AdSense 广告 cookie 披露段 | `src/components/layout/LegalContent.astro`；线上 `/privacy-policy/` 应有 "Advertising partners (e.g. Google AdSense)" 段 |
 | 广告组件 env 门控，默认零广告零弹窗 | `PUBLIC_ADSENSE_*` 不填就不渲染——申请期天然干净 |
 | 空分类列表页 noindex 且不进 sitemap | build 后查 `dist/sitemap*.xml` |

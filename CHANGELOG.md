@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **apply-template 重跑删 locale 改内容判定（24h 审计 P2 残留边界）**:demo 文件名（en/ja）的 locale 只有在 `site.name` 仍是 demo 站名时才自动删除；上一轮已被 CLI 重写成用户游戏的 locale 文件（翻译成果）重跑时归入警告保留路径，不再被当 demo 残留静默销毁；损坏 JSON / 缺 `site.name` 一律保留（不可判定时不删）。判定下沉 `scripts/lib/apply-rewrites.ts` 纯函数 `isDemoLocaleContent` 直测（契约测试钉 demo en/ja 实文件标记 + 杂散提及不误判），E2E 重跑步骤新增「rebranded ja.json 存活且未被改写」断言；`docs/apply-template.md` 两类表述更新为三类。
 - **apply-template site.ts 重写转义加固（24h 审计相邻存量）**:`gameName`/`shortName`/`domain`/`platform`/`developer`/`genre`/`releaseDate`/`officialUrl` 八个此前未转义的字段补单引号+反斜杠转义（此前游戏名含撇号如 "Assassin's …" 会写出语法错误的 site.ts，结尾反斜杠会吃掉闭引号）；`rewriteSiteTs` 纯函数下沉 lib（vitest 直测），site.ts/navigation/routing/ui 四处替换改函数回调，杜绝字符串模式替换把用户输入里的 `$&`/`$'`/`$$` 展开进产物；wrangler `[vars]` 的 domain 补 TOML 转义。
+- **文档漂移修复（7 天文档漂移审计两项落地）**:`docs/ads.md` 「申请 AdSense 前的体检」的 demo 审计基线从 v2.5.1 时点同步到 v2.6.0 后状态——9 篇英文文章(仍 <15)、空 `items` 分类已补齐不再是缺口、codes 页改时效性表述(指向 `pnpm refresh-audit`)、机制层 ads.txt 表述从「占位」更正为「就绪行」;`anvil-adsense-audit` 技能「模板已解决的项」表 ads.txt 行对齐就绪注释行现状(过审按文件内注释删 `#` 填 ID 即生效,未过审保持注释才是正确状态)。
 
 ## [2.7.0] — 2026-09-02
 
