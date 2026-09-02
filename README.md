@@ -2,9 +2,11 @@
 
 > 带 AI 内容工作流的游戏 wiki 模板——广告收入 100% 归你。
 > 开源、Cloudflare Pages 原生优化、零成本免费部署上线。
+> fork 后 5 条命令 + 一次点选部署上线;唯一必要开销是一个域名——不会编程也走得完(双手册带路)。
 >
 > The game wiki template with an AI-native content workflow — 100% of your ad revenue.
 > Open source, natively optimized for Cloudflare Pages, free to deploy.
+> Five commands and one dashboard click from fork to live; the only required spend is a domain — no coding needed.
 
 **[📖 中文文档](#-中文文档) · [English Documentation](#-english-documentation)**
 
@@ -12,12 +14,22 @@
 [![Astro](https://img.shields.io/badge/Astro-5.x-FF5D01?logo=astro&logoColor=white)](https://astro.build)
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-F38020?logo=cloudflare&logoColor=white)](https://pages.cloudflare.com)
 [![Release](https://img.shields.io/github/v/release/PNGTRID/AnvilWiki?label=Release&color=brightgreen)](https://github.com/PNGTRID/AnvilWiki/releases)
+[![CI](https://github.com/PNGTRID/AnvilWiki/actions/workflows/ci.yml/badge.svg)](https://github.com/PNGTRID/AnvilWiki/actions/workflows/ci.yml)
 [![Live Demo](https://img.shields.io/badge/Demo-anvilwiki.pages.dev-brightgreen)](https://anvilwiki.pages.dev/)
 [![Docs](https://img.shields.io/badge/Docs-/landing/docs-8b5cf6)](https://anvilwiki.pages.dev/landing/docs)
+[![Works with](https://img.shields.io/badge/Works_with-Claude_Code_%7C_Codex_%7C_Cursor_%7C_ZCode-blueviolet)](.agent/skills/)
 
 [![Demo site homepage](public/images/showcase/demo-home.webp)](https://anvilwiki.pages.dev/)
 
-> Lighthouse 4×100 — 实测于 [anvilwiki.pages.dev](https://anvilwiki.pages.dev/)（2026-08-12）
+<p align="center">
+  <a href="https://anvilwiki.pages.dev/bosses/emberfang/"><img src="public/images/showcase/demo-article.webp" width="32%" alt="Boss stat card"></a>
+  <a href="https://anvilwiki.pages.dev/codes/all-codes/"><img src="public/images/showcase/demo-codes.webp" width="32%" alt="Codes page — tap to copy"></a>
+  <a href="https://anvilwiki.pages.dev/guides/weapon-tier-list/"><img src="public/images/showcase/demo-tier-list.webp" width="32%" alt="Weapon tier list"></a>
+</p>
+
+> Boss 数据卡 · 兑换码一键复制 · 武器强度榜——wiki 级呈现的其中三页,点图直达对应页面。Boss stat cards, tap-to-copy codes, tier lists — three of the wiki-grade page types; click through to the live pages.
+
+> Lighthouse 4×100 — 实测于 [anvilwiki.pages.dev](https://anvilwiki.pages.dev/)（2026-09-03）
 > [![Performance 100](https://img.shields.io/badge/Performance-100-058627?style=flat-square&logo=lighthouse&logoColor=white)](https://anvilwiki.pages.dev/)
 > [![Accessibility 100](https://img.shields.io/badge/Accessibility-100-058627?style=flat-square&logo=lighthouse&logoColor=white)](https://anvilwiki.pages.dev/)
 > [![Best Practices 100](https://img.shields.io/badge/Best_Practices-100-058627?style=flat-square&logo=lighthouse&logoColor=white)](https://anvilwiki.pages.dev/)
@@ -37,30 +49,11 @@
 
 ## 📖 中文文档
 
-### 这是什么？
-
-AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕某款游戏(Roblox、Steam 新游等)的攻略内容站,通过 SEO 获取流量,通过广告变现。**广告收入 100% 归你**:无平台抽成、无收入分成(对比 Fandom 等托管 wiki 的平台分成模式)。
-
-技术栈是 **Astro + Cloudflare Pages**:纯静态输出、零适配器、免费无限带宽、全球 CDN、零 JS 优先(首屏极快)。
-
-**适合谁**:想靠游戏内容做副业、会用浏览器但**不会编程**的人(学习手册就是按这个标准写的),以及想被 AI 工作流加速的内容创作者。
-
-### 核心特性
-
-- 📚 **零基础双手册**:学习手册(6 阶段 29 课+3 附录)+ 开发手册(9 课),中英双语,从选游戏到赚到钱,每步 SOP + 可复制 AI 提示词([站内阅读](https://anvilwiki.pages.dev/zh/landing/docs))
-- 🤖 **AI 对话即产页**:内容技能随仓库分发(`.agent/skills/`),对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出自动通过构建质检;批量产页走 **PR 门控管道**——AI 写、八道质量门禁验、你审完才合并([docs/content-pipeline.md](docs/content-pipeline.md))
-- 🧭 **一套工具管 N 个站**:`anvilwiki-ops`(npx 免安装 + MCP)让 AI 替你拉 GSC/Cloudflare 数据、给优化清单,并追踪 ChatGPT/Perplexity 等 **AI 引用来路**([docs/multi-site.md](docs/multi-site.md))
-- 🧰 **产能三件套**:`pnpm template-audit` 检查「这个站还能不能干净复制成下一个」、`pnpm bulk-new-posts` 从关键词清单批量铺内页草稿、`pnpm gen-covers` 自动生成 1200×675 封面(中日文标题自动配字体)
-- 💰 **变现三件套**:AdSense 广告位 ×3 + 联盟链接组件 + 文末建议位,全部默认关闭、env/config 驱动,收入 100% 归你([docs/ads.md](docs/ads.md))
-- 🔍 **SEO 工程化**:sitemap(含 lastmod)/ JSON-LD 全套 / hreflang / Quick Answer 摘要块 / llms.txt(AI 搜索),全部自动生成
-- ⚡ **Lighthouse 4×100 开箱即得**:Astro 零 JS 优先,开了广告也不掉分
-- 🆓 **零成本**:Cloudflare Pages 免费无限带宽 + 全球 CDN + SSL,永远没有服务器账单
-- 🌍 **多语言开箱即用**:英文无前缀(SEO 最优),缺失内容自动回退英文,直链永不 404
-- 🎮 **wiki 级呈现**:Boss 数据卡、兑换码一键复制、TOC 滚动高亮、画廊灯箱、Giscus 评论(默认关)
-
 ### 5 分钟快速开始
 
-**开始前需要**:[Node.js 22+](https://nodejs.org) 和 pnpm(没装 pnpm?终端跑 `npm install -g pnpm`;或跟着[学习手册第 2 章](https://anvilwiki.pages.dev/zh/landing/docs/install-tools)把 6 样工具一次装齐)。
+**跑完这一节你会得到**:一个跑在 Cloudflare 免费版上、属于你自己的 wiki 站(先以 demo 内容上线,换成你的游戏、清掉 demo,随时可以做)。
+
+**开始前需要**:[Node.js 22+](https://nodejs.org) 和 pnpm(没装 pnpm?终端跑 `npm install -g pnpm`;或跟着[学习手册「装好 6 样工具」一课](https://anvilwiki.pages.dev/zh/landing/docs/install-tools)把 6 样工具一次装齐)。
 
 ```bash
 # 1. Fork 本仓库(仓库右上角 Fork 按钮),然后克隆你的 fork(换成你的 GitHub 用户名)
@@ -87,7 +80,28 @@ git push           # 第 5 步 Cloudflare 连的是 GitHub 远端仓库,不推�
 
 **不想碰终端?有一条零命令路径**:fork 后打开你仓库的 **Actions** 页签 → 左侧选 **Initialize AnvilWiki** → **Run workflow**(填你的域名)→ 合并它开好的 PR → 直接做上面的第 5 步。游戏名、主题色等之后随时可以让 AI 助手帮你改。
 
-**完全新手?别从这里开始**——先去[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn):第 1 章帮你选游戏,第 2 章把终端、Node、Git、AI 助手怎么装、每步会看到什么全部写清,第 3 章才建站。手册源码在 [`docs/handbook/`](docs/handbook/),fork 后依然保留(但站内文档中心页面会自动移除,属正常)。
+**完全新手?别从这里开始**——先去[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn):「选品找词」一个阶段帮你把游戏选对,「装好 6 样工具」把终端、Node、Git、AI 助手怎么装、每步会看到什么全部写清,然后「把站跑起来」才动手建站。手册源码在 [`docs/handbook/`](docs/handbook/),fork 后依然保留(但站内文档中心页面会自动移除,属正常)。
+
+### 这是什么？
+
+AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕某款游戏(Roblox、Steam 新游等)的攻略内容站,通过 SEO 获取流量,通过广告变现。**广告收入 100% 归你**:无平台抽成、无收入分成(对比 Fandom 等托管 wiki 的平台分成模式)。
+
+技术栈是 **Astro + Cloudflare Pages**:纯静态输出、零适配器、免费无限带宽、全球 CDN、零 JS 优先(首屏极快)。
+
+**适合谁**:想靠游戏内容做副业、会用浏览器但**不会编程**的人(学习手册就是按这个标准写的),以及想被 AI 工作流加速的内容创作者。
+
+### 核心特性
+
+- 📚 **零基础双手册**:学习手册(6 阶段 29 课+3 附录)+ 开发手册(9 课),中英双语,从选游戏到赚到钱,每步 SOP + 可复制 AI 提示词([站内阅读](https://anvilwiki.pages.dev/zh/landing/docs))
+- 🤖 **AI 对话即产页**:内容技能随仓库分发(`.agent/skills/`),对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出自动通过构建质检;批量产页走 **PR 门控管道**——AI 写、八道质量门禁验、你审完才合并([docs/content-pipeline.md](docs/content-pipeline.md))
+- 🧭 **一套工具管 N 个站**:`anvilwiki-ops`(npx 免安装 + MCP)让 AI 替你拉 GSC/Cloudflare 数据、给优化清单,并追踪 ChatGPT/Perplexity 等 **AI 引用来路**([docs/multi-site.md](docs/multi-site.md))
+- 🧰 **产能三件套**:`pnpm template-audit` 检查「这个站还能不能干净复制成下一个」、`pnpm bulk-new-posts` 从关键词清单批量铺内页草稿、`pnpm gen-covers` 自动生成 1200×675 封面(中日文标题自动配字体)
+- 💰 **变现三件套**:AdSense 广告位 ×3 + 联盟链接组件 + 文末建议位,全部默认关闭、env/config 驱动,收入 100% 归你([docs/ads.md](docs/ads.md))
+- 🔍 **SEO 工程化**:sitemap(含 lastmod)/ JSON-LD 全套 / hreflang / Quick Answer 摘要块 / llms.txt(AI 搜索),全部自动生成
+- ⚡ **Lighthouse 4×100 开箱即得**:Astro 零 JS 优先,开了广告也不掉分
+- 🆓 **零成本**:Cloudflare Pages 免费无限带宽 + 全球 CDN + SSL,永远没有服务器账单
+- 🌍 **多语言开箱即用**:英文无前缀(SEO 最优),缺失内容自动回退英文,直链永不 404
+- 🎮 **wiki 级呈现**:Boss 数据卡、兑换码一键复制、TOC 滚动高亮、画廊灯箱、Giscus 评论(默认关)
 
 ### 用 AI 直接生成内容(无需脚本)
 
@@ -128,7 +142,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 - **要花多少钱?** 托管 ¥0;唯一必要开销是域名(一年几十块,AdSense 审核需要)。
 - **不会编程能做吗?** 能。学习手册按「完全零基础」标准写,每步都有「你会看到什么」;所有代码活交给 AI 助手。
-- **多久有收入?** 黄金窗口是游戏爆发后 2-8 周,头 1-2 周收入为零是正常的——手册第 8 章讲怎么经营预期。
+- **多久有收入?** 黄金窗口是游戏爆发后 2-8 周,头 1-2 周收入为零是正常的——手册「第一周读数」「每周 30 分钟」两课讲怎么经营预期。
 - **模板更新了,我的站会被覆盖吗?** 不会。三层分离设计,合并上游时你的游戏配置和文章永远保留(见 [docs/staying-up-to-date.md](docs/staying-up-to-date.md))。
 
 ### 用 AnvilWiki 建了站?欢迎提交 Showcase
@@ -166,19 +180,17 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 | I want to… | Go here |
 |---|---|
-| **Build a money-making game site from zero** | 📚 [Learning Manual (11 chapters)](https://anvilwiki.pages.dev/landing/docs/learn) — every step a SOP with copy-paste AI prompts |
+| **Build a money-making game site from zero** | 📚 [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn) — every step a SOP with copy-paste AI prompts |
 | See the whole journey first | 🗺️ [Docs hub](https://anvilwiki.pages.dev/landing/docs) — a 10-job whole-picture checklist |
-| Customize deeply / contribute code | 🔧 [Development Manual (7 chapters)](https://anvilwiki.pages.dev/landing/docs/dev) |
+| Customize deeply / contribute code | 🔧 [Development Manual](https://anvilwiki.pages.dev/landing/docs/dev) |
 | See what it looks like | 🎮 [Live demo](https://anvilwiki.pages.dev/) — a complete wiki for the fictional game "Anvil Quest" |
 | Compare Fandom / Wiki.js / alternatives | ⚖️ [Full comparison](https://anvilwiki.pages.dev/landing/comparison) |
 
-### What is this?
-
-AnvilWiki is an **open-source game wiki site template**: build a content site around a game (Roblox, Steam new releases…), pull traffic via SEO, monetize with ads — **100% of the ad revenue is yours**. Built on Astro + Cloudflare Pages: pure static, zero adapters, free unlimited bandwidth, Lighthouse 4×100 out of the box.
-
 ### Quick Start (5 min)
 
-**Prerequisites**: [Node.js 22+](https://nodejs.org) and pnpm (no pnpm? run `npm install -g pnpm` — or let [Chapter 2 of the Learning Manual](https://anvilwiki.pages.dev/landing/docs/install-tools) walk you through all six tools).
+**What you'll have when this section is done**: your own wiki live on Cloudflare's free tier (it ships with demo content first — rebranding and demo removal come whenever you're ready).
+
+**Prerequisites**: [Node.js 22+](https://nodejs.org) and pnpm (no pnpm? run `npm install -g pnpm` — or let [the "Install the 6 Tools" lesson](https://anvilwiki.pages.dev/landing/docs/install-tools) walk you through all six tools).
 
 ```bash
 # 1. Fork this repo (Fork button, top right), then clone YOUR fork (replace the username)
@@ -205,11 +217,15 @@ git push           # step 5 connects Cloudflare to the REMOTE repo — skip this
 
 **Prefer zero terminal?** There's a no-command path: open your fork's **Actions** tab → **Initialize AnvilWiki** → **Run workflow** (enter your domain) → merge the PR it opens → jump straight to step 5 above. Game name, theme color and more can be changed later with your AI assistant.
 
-**Complete beginner?** Don't start here — start with the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn): Chapter 1 picks your game, Chapter 2 installs every tool with "what you'll see" on each step, Chapter 3 builds the site. The handbook source lives in [`docs/handbook/`](docs/handbook/) and stays in your fork (the in-site docs center pages are auto-removed for forks — that's expected).
+**Complete beginner?** Don't start here — start with the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn): the Pick & Validate stage picks your game, "Install the 6 Tools" walks you through every install with "what you'll see" on each step, and "Run Your Site" is where the site gets built. The handbook source lives in [`docs/handbook/`](docs/handbook/) and stays in your fork (the in-site docs center pages are auto-removed for forks — that's expected).
+
+### What is this?
+
+AnvilWiki is an **open-source game wiki site template**: build a content site around a game (Roblox, Steam new releases…), pull traffic via SEO, monetize with ads — **100% of the ad revenue is yours**. Built on Astro + Cloudflare Pages: pure static, zero adapters, free unlimited bandwidth, Lighthouse 4×100 out of the box.
 
 ### Key Features
 
-- 📚 **Two beginner manuals**: Learning (11 chapters) + Development (7), bilingual, zero to revenue, every step a SOP with 18 copy-paste AI prompts ([read online](https://anvilwiki.pages.dev/landing/docs))
+- 📚 **Two beginner manuals**: Learning (6 stages, 29 lessons + 3 appendices) + Development (9 lessons), bilingual, zero to revenue, every step a SOP with copy-paste AI prompts ([read online](https://anvilwiki.pages.dev/landing/docs))
 - 🤖 **Talk to generate pages**: agent skills ship inside the repo (`.agent/skills/`) — say "write a boss guide from these notes" and get a build-check-passing page; batches go through a **PR-gated pipeline** — AI writes, 8 quality gates verify, you review and merge ([docs/content-pipeline.md](docs/content-pipeline.md))
 - 🧭 **Run N sites from one toolkit**: `anvilwiki-ops` (npx + MCP) lets your AI pull GSC/Cloudflare data, rank SEO actions, and track **AI referrals** from ChatGPT/Perplexity ([docs/multi-site.md](docs/multi-site.md))
 - 🧰 **Production trio**: `pnpm template-audit` scores how cleanly this site can be copied into the next game's, `pnpm bulk-new-posts` scaffolds a batch of inner pages from a keyword list, `pnpm gen-covers` auto-generates 1200×675 covers (CJK titles auto-fonted)
@@ -232,7 +248,7 @@ After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just ta
 | `anvil-refresh` | Freshness audit → prioritized "what to update" list |
 | `anvil-adsense-audit` | AdSense pre-application audit (22-item policy checklist, template-solved items come with evidence) |
 
-The full prompt library (game selection, page generation, batch production, translation, SEO audits, keyword research — 18 templates) lives in the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn); copy-paste ready.
+The full prompt library (game selection, page generation, batch production, translation, SEO audits, keyword research) lives in the [Learning Manual](https://anvilwiki.pages.dev/landing/docs/learn); copy-paste ready.
 
 ### Where are the docs?
 
@@ -251,7 +267,7 @@ The full prompt library (game selection, page generation, batch production, tran
 | Monthly cost | **$0** (Cloudflare Pages free unlimited bandwidth) | Free (at the cost of control) | Vercel free tier is limited |
 | Lighthouse | **4×100 out of the box** | Platform decides | Weeks of tuning |
 | AI page generation | **Skills ship with the repo — talk to generate** | None | Build it yourself |
-| Entry barrier | **11-chapter zero-to-hero manual** | Low but constrained | High |
+| Entry barrier | **Guided zero-to-hero manuals** | Low but constrained | High |
 
 For the full decision guide — a data table of self-hosted wiki engines (Wiki.js, BookStack, MediaWiki, DokuWiki, Docmost) plus an honest "when NOT to pick AnvilWiki" section — see the [complete comparison](https://anvilwiki.pages.dev/landing/comparison).
 
@@ -259,7 +275,7 @@ For the full decision guide — a data table of self-hosted wiki engines (Wiki.j
 
 - **What does it cost?** Hosting $0; the only required spend is a domain (a few dollars a year — AdSense approval needs one).
 - **Can I do this without coding?** Yes. The Learning Manual is written for complete beginners with "what you'll see" on every step; all coding goes to your AI assistant.
-- **How fast will revenue come?** The golden window is 2–8 weeks after a game breaks out; zero income in the first 1–2 weeks is normal — Chapter 8 covers managing expectations.
+- **How fast will revenue come?** The golden window is 2–8 weeks after a game breaks out; zero income in the first 1–2 weeks is normal — the "First-Week Numbers" and "Thirty Minutes Weekly" lessons cover managing expectations.
 - **Will upstream updates overwrite my site?** No. The three-layer separation keeps your game config and articles intact when merging upstream (see [docs/staying-up-to-date.md](docs/staying-up-to-date.md)).
 
 ### Community Showcase
