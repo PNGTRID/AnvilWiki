@@ -2,7 +2,7 @@
 title: "SEO beyond indexing: rankings and AI citations"
 description: "Indexed is just the entry ticket — rankings and AI citations are where traffic lives. A keyword map, a per-page checklist, and the 2026 rule changes worth knowing."
 manual: learn
-order: 20
+order: 24
 stage: "Monetize & Operate"
 icon: lucide:trending-up
 tldr: "Indexed ≠ found: chapter 6 got you into Google, this lesson moves you up the results page. Three moves: ① pick keywords — one page, one query, from real GSC data, never guesswork; ② make it count — keyword in title, question H2, Quick Answer summary, tables, quality cover (Google Images reads it first); ③ build trust — freshness, bylines, internal links. 2026 rules: FAQ rich results are gone, llms.txt does nothing for Google, AI Overviews loves direct answers."

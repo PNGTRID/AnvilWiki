@@ -2,7 +2,7 @@
 title: "Take Your Site Live: Onto the Free Shelf"
 description: "Push the site to GitHub, connect Cloudflare's free shelf for a global URL, handle the beginner trap (which settings win), and buy-and-bind a domain. All free."
 manual: learn
-order: 14
+order: 18
 stage: "Launch & Get Indexed"
 icon: lucide:cloud
 tldr: "Shelving takes three steps: git push sends files to GitHub; Cloudflare Pages connects to the repo in a few clicks and hands you a free URL in two or three minutes; then delete wrangler.toml (settings have two registries — while the file exists, web settings are ignored; beginners delete the file, then use only the web UI). Finally, a full domain-buying side quest — required before AdSense money."

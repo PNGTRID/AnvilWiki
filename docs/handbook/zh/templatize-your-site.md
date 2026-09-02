@@ -2,7 +2,7 @@
 title: "把第一个站打磨成模板:一换皮就复制十个站"
 description: "第一个站跑通后,用 pnpm template-audit 一键检查模板健康度,修掉违规项,再沉淀一份换皮清单;下一个游戏只需复制仓库、跑 apply-template、换内容层三步,30 分钟复制一个新站,代码层一行不改。"
 manual: learn
-order: 18
+order: 22
 stage: "变现与长期经营"
 icon: lucide:copy-check
 tldr: "复制仓库之前先跑 pnpm template-audit:它替你检查代码层有没有混进游戏字符串(❌ 必须修)、配置和内容还绑着旧游戏多少(⚠️ 复制前处理)。修完把「换皮清单」沉淀成文档。之后每复制一个新站:复制仓库 → pnpm apply-template 换配置 → 换内容层 → pnpm build 验证,30 分钟一个,代码层零改动。"

@@ -59,4 +59,4 @@ After I pick, apply the changes and run pnpm build to verify — all green or no
 
 ## Stage two — graduated, and next lesson
 
-Stage two is done: **a running site that is entirely yours**. Picking (stage one) and standing it up (stage two) were the preparation — next stop, the real engine of this business: having AI write 10 build-check-passing guide pages in a day. [Go to Lesson 13 · Let AI Write 10 Guides for You](/landing/docs/first-10-pages)
+Stage two is done: **a running site that is entirely yours**. Picking (stage one) and standing it up (stage two) were the preparation — next stop, the real engine of this business: having AI write 10 build-check-passing guide pages in a day. [Go to Lesson 13 · Your First Page](/landing/docs/first-article)

@@ -2,7 +2,7 @@
 title: "Get Google to Know You: Three Indexing Tasks"
 description: "Register Google Search Console (GSC), submit the sitemap, and request indexing for key pages — 20 minutes on launch day, and Google starts shelving your pages."
 manual: learn
-order: 15
+order: 19
 stage: "Launch & Get Indexed"
 icon: lucide:search
 tldr: "Indexing is where traffic begins: only after Google shelves your pages in its library can you rank, and only rankings bring traffic. Do three things today: register Search Console (GSC — one environment variable proves ownership), submit the auto-generated sitemap, and click Request indexing for your 5 to 10 most important URLs. Bing and the AI engines take care of themselves — no work needed. On day 3 to 7, return to the weekly-ops lesson for your first data review."
