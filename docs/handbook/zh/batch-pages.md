@@ -2,7 +2,7 @@
 title: "批量做内页:一个站变出几十个流量入口"
 description: "首页抢不到几个搜索词,流量主力是几十上百个各对准一个词的内页。三步法:从 GSC 真实搜索词和竞品 wiki 列内页清单 → 用统一提示词模板 → pnpm bulk-new-posts 批量建草稿再让 AI 批量填充。最大的坑:批量不等于灌水。"
 manual: learn
-order: 23
+order: 27
 stage: "变现与长期经营"
 icon: lucide:files
 tldr: "搜索流量的大头在内页不在首页:几十个内页各对准一个搜索词,合起来才是主力。三步法:①从 GSC 真实搜索词+竞品 wiki 结构列清单;②写一份统一的内页生成提示词(固定骨架,不每篇临时想结构);③pnpm bulk-new-posts 批量建草稿,AI 按统一提示词批量填充,check-content+build 全绿验收。铁律:批量≠灌水,素材不足标待补充,禁止编造数据。"
@@ -93,4 +93,4 @@ pnpm bulk-new-posts             # 真实写入。全部是 draft:true 草稿,不
 
 ## 学完之后
 
-批量铺完内页,学习手册还差最后一块拼图:收录只是入场券,排名和 AI 引用才是流量——[去 SEO 进阶](/zh/landing/docs/seo-traffic),把每个内页对准的搜索词真正做满。之后:回每周保鲜那一课把周节奏跑稳;进[开发手册](/zh/landing/docs/architecture)深度定制;或把你的站提 PR 加进 AnvilWiki 官网展示墙(改 `src/config/landing.ts` 的 showcase 数据)——你的真实案例,就是这套模板最好的广告。
+批量铺完内页,学习手册还差最后一块拼图:收录只是入场券,排名和 AI 引用才是流量——[去选词与把一个词做满](/zh/landing/docs/rank-one-keyword),把每个内页对准的搜索词真正做满。之后:回每周保鲜那一课把周节奏跑稳;进[开发手册](/zh/landing/docs/architecture)深度定制;或把你的站提 PR 加进 AnvilWiki 官网展示墙(改 `src/config/landing.ts` 的 showcase 数据)——你的真实案例,就是这套模板最好的广告。

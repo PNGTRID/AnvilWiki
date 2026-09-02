@@ -80,4 +80,4 @@ pnpm check-links
 
 ## 下一步
 
-Google 开始爬你了——但流量变成钱,还差两步:接广告,和每周保鲜。下一课把广告位开起来。[去接广告,开始赚钱](/zh/landing/docs/enable-ads)
+Google 开始爬你了——但流量变成钱,还差两步:接广告,和每周保鲜。下一课把广告位开起来。[去装好两个计数器](/zh/landing/docs/install-counters)

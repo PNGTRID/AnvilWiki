@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.0] — 2026-09-02
+
+**手册教学法重构第四批：阶段 4+5「上线收录与变现经营」（学习手册 29 课完整收官）。**
+
+### Added
+
+- **课 20「装好两个计数器」**（新增）：Cloudflare Web Analytics（必装，`PUBLIC_CF_BEACON_TOKEN`）+ Clarity 热力图（选装，BaseLayout 贴脚本——按模板实情：Clarity 无 env 开关）；读数三件套（GSC/CF/Clarity）概念在此建立。
+- **课 21「第一周读数」**（新增，自 weekly-ops 拆出）：三面板各认一个数+四条及格线表+「只认面板上的数」复盘纪律。
+- **课 23「收款三件事」**（新增，自 enable-ads 拆出并吸收 docs/ads.md 收款节）：W-8BEN 协定税率 30%→10%、PIN 明信片（$10 触发/4 次机会/4 个月期限）、KYC 汉字 vs 电汇拼音细节、电汇+SWIFT、21 日出账与结汇。
+- **课 24「接入 GA4」**（新增，自 enable-ads GA4 节独立）：延迟哲学（问题升级再上）+五步接入+同意横幅门控/报表延迟两坑。
+- **课 26「复制第二个站」**（slug clone-your-site 承接 templatize-your-site）：template-audit 体检+换皮清单提示词+四步复制流程+wrangler.toml 接管 env 大坑。
+- **课 28「选词与把一个词做满」/ 课 29「慢变量：信任与外链」**（旧 seo-traffic 一拆二）：一页一词选词地图+单页自检清单提示词｜信任三慢变量+反 spam 三红线+外链时机哲学（新站期别死磕）+2026 失效清单（FAQ 富结果移除/llms.txt 对 Google 无效）。
+
+### Changed
+
+- **enable-ads 重写**：时机三条件前置，统计节（选型表/CF/GA4 安装）拆往课 20/24，收款节拆往课 23，保留自查+/anvil-adsense-audit/4 变量/收入预期。
+- **weekly-ops 重写**：读数细节拆往课 21，保留 refresh-audit+兑换码更新+月度同步+季度体检；「学完之后」改指 clone-your-site。
+- 学习手册 order 对齐最终架构（18-29），**29 课全部就位**；seo-traffic/templatize-your-site slug 移除，landing.ts SEO 卡与各章链接改向（顺手修复 batch-1 批量替换在 en/batch-pages 留下的断词链接）。
+
+### 剩余批次
+
+开发手册 7 章→9 课（新增「改完怎么自证」、ai-ops 三拆、sync-and-contribute 一拆二）、附录三件、计数收口。
+
 ## [2.10.0] — 2026-09-02
 
 **手册教学法重构第三批：阶段 3「内容生产」（5 课 × 中英）。**
@@ -869,7 +892,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.10.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.11.0...HEAD
+[2.11.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.8.0...v2.9.0
 [2.8.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.1...v2.8.0

@@ -2,7 +2,7 @@
 title: "Batch-Create Inner Pages: Dozens of Traffic Entrances"
 description: "Homepages win little search — dozens of inner pages, each aimed at one query, are the workhorse. Three steps: list queries, one prompt, bulk scaffolding."
 manual: learn
-order: 23
+order: 27
 stage: "Monetize & Operate"
 icon: lucide:files
 tldr: "The bulk of search traffic lives in inner pages, not the homepage: dozens of pages, each targeting one query. Three steps: ① build the list from real GSC queries and rival wikis; ② write ONE unified page-generation prompt — fixed skeleton, never improvised per page; ③ pnpm bulk-new-posts scaffolds the drafts, AI fills them, check-content + build gates the batch. Iron rule: batch ≠ spam; mark thin material 'to be added', never invent data."
@@ -93,4 +93,4 @@ This section is the heart of the chapter — worth rereading:
 
 ## When you're done
 
-With your inner pages batched out, one piece of the Learning Manual remains: indexing is only the entry ticket — rankings and AI citations are where the traffic is. Continue to [the pick-your-game lesson1 · SEO beyond indexing](/landing/docs/seo-traffic) and make every inner page fully earn the query it targets. After that, three roads: back to the weekly-ops lesson to run the weekly rhythm; into the [Development Manual](/landing/docs/architecture) for deep customization; or PR your site onto AnvilWiki's showcase wall (edit the showcase data in `src/config/landing.ts`) — your real site is the best ad for this template.
+With your inner pages batched out, one piece of the Learning Manual remains: indexing is only the entry ticket — rankings and AI citations are where the traffic is. Continue to [Rank One Keyword](/landing/docs/rank-one-keyword) and make every inner page fully earn the query it targets. After that, three roads: back to the weekly-ops lesson to run the weekly rhythm; into the [Development Manual](/landing/docs/architecture) for deep customization; or PR your site onto AnvilWiki's showcase wall (edit the showcase data in `src/config/landing.ts`) — your real site is the best ad for this template.
