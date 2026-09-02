@@ -1,18 +1,19 @@
 ---
-title: "Chapter 2 · Before You Set Off: Install the 6 Tools"
+title: "Before You Set Off: Install the 6 Tools"
 description: "Terminal, GitHub, Node, pnpm, Git, and an AI assistant — installed once, each with a what-you'll-see and a confirmation point. Every later chapter uses them."
 manual: learn
-order: 2
+order: 9
+stage: "Stand It Up"
 icon: lucide:wrench
-tldr: "This chapter is pure software installation: the terminal (the window where you type commands), a GitHub account (the warehouse holding your site files), Node (the engine's foundation), pnpm (the mover), Git (the delivery truck), and an AI assistant (your content-writing partner). Take them one at a time, tick each off as it lands. Thirty minutes total, and you never install them again."
+tldr: "This lesson is pure software installation: the terminal (the window where you type commands), a GitHub account (the warehouse holding your site files), Node (the engine's foundation), pnpm (the mover), Git (the delivery truck), and an AI assistant (your content-writing partner). Take them one at a time, tick each off as it lands. Thirty minutes total, and you never install them again."
 updated: 2026-08-17
 ---
 
-## Where you are, and what this chapter solves
+## Where you are, and what this lesson solves
 
-In Chapter 1 you picked your game. Before building anything, get the tools ready — like setting the pots and bowls on the counter before you start cooking. What you install in this chapter is a **one-time install** that every later chapter uses; skip it, and the first command of the next chapter will stop you cold.
+In the pick-your-game lesson you picked your game. Before building anything, get the tools ready — like setting the pots and bowls on the counter before you start cooking. What you install in this lesson is a **one-time install** that every later chapter uses; skip it, and the first command of the next lesson will stop you cold.
 
-## What you'll have when this chapter is done
+## What you'll have when this lesson is done
 
 - All 6 tools in place, each verified to work
 - An AI assistant you can name and will use every day from now on
@@ -64,7 +65,7 @@ npm install -g pnpm
 
 ### Tool 6: an AI coding assistant (your content-writing partner — every later chapter uses it)
 
-Install **any one** of ZCode / [Claude Code](https://claude.com/claude-code) / [Codex](https://openai.com/codex) / [Cursor](https://cursor.com) (all have free tiers). You won't need it this chapter; in Chapter 4 it becomes the star.
+Install **any one** of ZCode / [Claude Code](https://claude.com/claude-code) / [Codex](https://openai.com/codex) / [Cursor](https://cursor.com) (all have free tiers). You won't need it this lesson; in the page-production lesson it becomes the star.
 
 **Confirm it worked**: the app opens, and you know how to start a new chat.
 
@@ -83,4 +84,4 @@ Install **any one** of ZCode / [Claude Code](https://claude.com/claude-code) / [
 
 ## Next step
 
-The tools are all in place — the next chapter copies the template down and gets a site that belongs to your game running in your browser in 30 minutes. [Go to Chapter 3 · Copy the Template, Get Your Site Running](/landing/docs/launch-your-site)
+The tools are all in place — the next lesson copies the template down and gets a site that belongs to your game running in your browser in 30 minutes. [Go to the run-your-site lesson · Copy the Template, Get Your Site Running](/landing/docs/launch-your-site)

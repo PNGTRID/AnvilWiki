@@ -1,5 +1,5 @@
 ---
-title: "开发 4 · 功能开关总表:广告、评论、统计"
+title: "功能开关总表:广告、评论、统计"
 description: "所有可选功能共用一套开关机制(变量空着=不渲染,保住开箱满分),全部变量的总表和填写位置,以及 wrangler.toml 的进阶玩法(保留它=设置全以它为准)。"
 manual: dev
 order: 4
@@ -45,7 +45,7 @@ if (!client) return null;   // 变量空着 = 这个组件整个消失
 | `PUBLIC_GSC_VERIFICATION` | Google 站长后台验证码 | 不输出验证标签 |
 | `PUBLIC_SPONSOR_URL` / `_IMAGE_URL` | 赞助卡片 | 赞助卡不显示 |
 
-统计三件套(GA4 / Cloudflare Web Analytics / Clarity)的选型对比与逐步接入教程,见[学习手册第 7 章](/zh/landing/docs/enable-ads)「可选:评论和统计」一节;GSC(站长后台)的完整接入教程在[第 6 章](/zh/landing/docs/get-on-google)。
+统计三件套(GA4 / Cloudflare Web Analytics / Clarity)的选型对比与逐步接入教程,见[学习手册「接广告」一课](/zh/landing/docs/enable-ads)「可选:评论和统计」一节;GSC(站长后台)的完整接入教程在[让 Google 认识你](/zh/landing/docs/get-on-google)。
 
 ## 进阶:保留 wrangler.toml(设置记进仓库)
 

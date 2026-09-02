@@ -1,20 +1,21 @@
 ---
-title: "Chapter 4 · Let AI Write 10 Guides for You"
+title: "Let AI Write 10 Guides for You"
 description: "Feed game notes to your AI; four prompts produce guide, codes, tier list, and media pages that pass the build check. Includes the intent table and 7 never-do rules."
 manual: learn
-order: 4
+order: 11
+stage: "Content Engine"
 icon: lucide:bot
 tldr: "You play the game for an hour and take notes, then feed the notes to your AI and say 'write a guide from these points' — it auto-loads the site's format rules and writes pages that pass the pnpm build check. Three disciplines: give full source material, verify each page on its own, mark missing data 'to be added' rather than invented. Day one output: 10 pages — launch the first version at 10 to 15 core pages, then add the rest in weekly batches."
 updated: 2026-08-26
 ---
 
-## Where you are, and what this chapter solves
+## Where you are, and what this lesson solves
 
 Your site shell runs, but the shelves still hold someone else's sample goods. Google only gives rankings to pages that **answer a player's question** — an empty site gets no traffic.
 
-Good news: in this chapter you don't write a single word yourself. You **play the game for an hour, take notes, paste a prompt**; the AI produces standards-compliant pages, and every page passes the build check automatically.
+Good news: in this lesson you don't write a single word yourself. You **play the game for an hour, take notes, paste a prompt**; the AI produces standards-compliant pages, and every page passes the build check automatically.
 
-## What you'll have when this chapter is done
+## What you'll have when this lesson is done
 
 - 8 to 10 real content pages (guides, codes, tier list)
 - A reusable routine: materials → prompt → acceptance
@@ -33,7 +34,7 @@ Good news: in this chapter you don't write a single word yourself. You **play th
 ## Step 1: Open your website folder with the AI assistant
 
 **What to do**: have the AI assistant "enter" your website folder, so the files it writes land in the right places.
-**How to do it**: open the sixth tool you installed in Chapter 2 — the AI assistant — and point it at the `AnvilWiki` folder its own way — **Cursor / ZCode**: click the "Open Folder" button in the UI and pick the folder; **Claude Code / Codex** (terminal-based): type `cd AnvilWiki` in the terminal to enter the folder, then launch the tool (e.g. `claude`). Start a new chat once it's open.
+**How to do it**: open the sixth tool you installed in the tools lesson — the AI assistant — and point it at the `AnvilWiki` folder its own way — **Cursor / ZCode**: click the "Open Folder" button in the UI and pick the folder; **Claude Code / Codex** (terminal-based): type `cd AnvilWiki` in the terminal to enter the folder, then launch the tool (e.g. `claude`). Start a new chat once it's open.
 **You'll see**: the AI assistant's window shows the folder path, ending in `AnvilWiki`.
 **Confirm it worked**: ask it "which folder are you in right now?" — its answer ends in AnvilWiki.
 
@@ -130,16 +131,16 @@ If the AI listed a "to be added" list and you don't have the data yet: keep that
 
 Field-tested conclusion: **too many pages in the first version dilutes quality and drags the whole site's rankings down.** Set the rhythm like this:
 
-- **Launch v1 with 10 to 15 core pages** — codes, tier list, and guides first (exactly the volume this chapter produces);
+- **Launch v1 with 10 to 15 core pages** — codes, tier list, and guides first (exactly the volume this lesson produces);
 - Add more **in weekly batches of 10+** — flip `draft: true` pages to published one verified page at a time; never dump everything at once;
-- When you later scale to dozens of pages via Chapter 10's pipeline, the same rhythm still rules: batch **generation** is fine, batch **release** is not.
+- When you later scale to dozens of pages via the pick-your-game lesson0's pipeline, the same rhythm still rules: batch **generation** is fine, batch **release** is not.
 
 ## 7 things you must never do
 
 1. **Let the AI invent codes, stats, or drop rates.** Better to leave a gap marked [to be added].
 2. **Generate 10 pages at once without verifying each one.** Every page passes the build check on its own.
 3. **Publish unverified content without marking it draft.**
-4. **Invent new categories or new tags.** Categories and tags only reuse the existing set (the one the Chapter 3 CLI built).
+4. **Invent new categories or new tags.** Categories and tags only reuse the existing set (the one the the run-your-site lesson CLI built).
 5. **Ask the AI to change site code to fulfill a copy need.** Copy belongs in config; the code is a load-bearing wall.
 6. **Say "write a good guide" and call it a prompt.** Materials are the first-class citizen of a prompt.
 7. **Hand-edit the build output, or skip git saves.** Every change goes through source files; after writing, have the AI commit for you (one save point per article, easy rollback).
@@ -147,7 +148,7 @@ Field-tested conclusion: **too many pages in the first version dilutes quality a
 ## If you get stuck
 
 - **"The AI says build failed"**: have it paste the last error line and fix it per the error — the prompt already says "fix failures and rerun"; most of the time it repairs itself.
-- **"The AI doesn't know which category to use"**: tell it the Categories you entered in Chapter 3, e.g. `codes, guides, bosses`.
+- **"The AI doesn't know which category to use"**: tell it the Categories you entered in the run-your-site lesson, e.g. `codes, guides, bosses`.
 - **"I can't see the page"**: make sure `pnpm dev` is running; also make sure that article isn't `draft: true` (drafts are visible in dev mode only — a real build never publishes them).
 - **"I want to add Chinese-language articles"**: not yet — get the English site working first; once the site is live and earning, the developer manual's [Add Categories and Languages](/landing/docs/categories-and-locales) chapter has the full set of translation prompts.
 
@@ -160,4 +161,4 @@ Field-tested conclusion: **too many pages in the first version dilutes quality a
 
 ## Next step
 
-All the content lives on your computer — but players and Google still can't see you. Next chapter: move the site onto Cloudflare's free shelf. [Go to Chapter 5 · Take Your Site Live](/landing/docs/put-site-online)
+All the content lives on your computer — but players and Google still can't see you. Next lesson: move the site onto Cloudflare's free shelf. [Go to the go-live lesson · Take Your Site Live](/landing/docs/put-site-online)

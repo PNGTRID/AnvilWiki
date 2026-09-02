@@ -27,6 +27,22 @@ const manualIcons: Record<HandbookManual, string> = {
   dev: 'lucide:wrench',
 };
 const items = chapters.filter((c) => c.data.manual === manual);
+
+/**
+ * Flatten into render rows, inserting a stage header whenever the chapter's
+ * `stage` label changes (chapters without a stage render flat — dev manual).
+ * `items` arrives order-sorted, so consecutive same-stage chapters group up.
+ */
+type Row = { type: 'stage'; label: string } | { type: 'chapter'; chapter: HandbookEntry };
+const rows: Row[] = [];
+let lastStage: string | undefined;
+for (const chapter of items) {
+  if (chapter.data.stage && chapter.data.stage !== lastStage) {
+    lastStage = chapter.data.stage;
+    rows.push({ type: 'stage', label: chapter.data.stage });
+  }
+  rows.push({ type: 'chapter', chapter });
+}
 ---
 
 <section class="section">
@@ -58,30 +74,38 @@ const items = chapters.filter((c) => c.data.manual === manual);
     </header>
 
     <ol class="mt-8 divide-y divide-border rounded-lg border border-border bg-card">
-      {items.map((chapter) => (
-        <li>
-          <a
-            href={handbookPath(locale, parseHandbookId(chapter.id)?.slug ?? '')}
-            class="group flex items-center gap-4 px-4 py-4 transition hover:bg-muted sm:px-5"
+      {rows.map((row) =>
+        row.type === 'stage' ? (
+          <li
+            class="bg-muted/40 px-4 py-2 text-xs font-bold uppercase tracking-wide text-muted-foreground sm:px-5"
           >
-            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-nav/10 text-sm font-bold text-nav">
-              {chapter.data.order}
-            </span>
-            <span class="min-w-0 flex-1">
-              <span class="block font-semibold text-foreground transition group-hover:text-nav">
-                {chapter.data.title}
+            {row.label}
+          </li>
+        ) : (
+          <li>
+            <a
+              href={handbookPath(locale, parseHandbookId(row.chapter.id)?.slug ?? '')}
+              class="group flex items-center gap-4 px-4 py-4 transition hover:bg-muted sm:px-5"
+            >
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-nav/10 text-sm font-bold text-nav">
+                {row.chapter.data.order}
               </span>
-              <span class="mt-0.5 block truncate text-sm text-muted-foreground">
-                {chapter.data.description}
+              <span class="min-w-0 flex-1">
+                <span class="block font-semibold text-foreground transition group-hover:text-nav">
+                  {row.chapter.data.title}
+                </span>
+                <span class="mt-0.5 block truncate text-sm text-muted-foreground">
+                  {row.chapter.data.description}
+                </span>
               </span>
-            </span>
-            <Icon
-              name="lucide:arrow-right"
-              class="h-4 w-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-nav"
-            />
-          </a>
-        </li>
-      ))}
+              <Icon
+                name="lucide:arrow-right"
+                class="h-4 w-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-nav"
+              />
+            </a>
+          </li>
+        )
+      )}
     </ol>
   </div>
 </section>

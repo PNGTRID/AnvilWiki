@@ -1,5 +1,5 @@
 ---
-title: "Dev 2 · Add Categories and Add Languages"
+title: "Add Categories and Add Languages"
 description: "Step-by-step recipes for adding a navigation category (three-place consistency) and adding a language (scaffold plus translation prompts). A lookup manual."
 manual: dev
 order: 2
@@ -8,9 +8,9 @@ tldr: "Adding a category = config, locale JSON, and content directory agree in t
 updated: 2026-08-17
 ---
 
-## Where you are now and what this chapter solves
+## Where you are now and what this lesson solves
 
-Sooner or later after launch you'll want to add a "weapons" category, or ship a Japanese version. This chapter turns each of those two tasks into a fixed recipe — follow it and you can't go wrong. **A lookup manual: jump to the section you need.**
+Sooner or later after launch you'll want to add a "weapons" category, or ship a Japanese version. This lesson turns each of those two tasks into a fixed recipe — follow it and you can't go wrong. **A lookup manual: jump to the section you need.**
 
 ## Request 1: Add a navigation category (e.g. "weapons")
 

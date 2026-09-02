@@ -152,6 +152,13 @@ const handbook = defineCollection({
     manual: z.enum(['learn', 'dev']),
     /** Position within the manual (1-based, unique per manual). */
     order: z.number().int(),
+    /**
+     * Stage label within the manual (学习手册的六个阶段, e.g. "选品找词").
+     * Localized per file; chapters without one render flat (dev manual).
+     * Presentational only — grouping on the manual list page, badge on
+     * the chapter page. Numbering itself always comes from `order`.
+     */
+    stage: z.string().max(40).optional(),
     icon: z.string().default('lucide:book-open'),
     /**
      * 40–60 word direct answer, rendered as the TL;DR card (AI Overviews

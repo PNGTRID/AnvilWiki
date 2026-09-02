@@ -26,6 +26,8 @@ export interface HandbookEntry {
     manual: HandbookManual;
     order: number;
     icon: string;
+    /** Stage label (learn manual's six stages); absent = render flat. */
+    stage?: string;
     tldr?: string;
     updated?: Date;
   };

@@ -1,5 +1,5 @@
 ---
-title: "Dev 4 · The Feature-Toggle Table: Ads, Comments, Analytics"
+title: "The Feature-Toggle Table: Ads, Comments, Analytics"
 description: "All optional features share one toggle mechanism — empty variable = nothing rendered. The full variable table, where they go, and the advanced wrangler.toml route."
 manual: dev
 order: 4
@@ -8,9 +8,9 @@ tldr: "Every optional feature (ads, comments, analytics, sponsor card) follows t
 updated: 2026-08-26
 ---
 
-## Where you are now and what this chapter solves
+## Where you are now and what this lesson solves
 
-You want to switch on ads, wire in comments, install analytics — this chapter is the toggle table and the mechanics. **A lookup manual; open it as needed.**
+You want to switch on ads, wire in comments, install analytics — this lesson is the toggle table and the mechanics. **A lookup manual; open it as needed.**
 
 ## The toggle mechanism: one pattern everywhere
 
@@ -45,7 +45,7 @@ Where to fill them in: pick one — the **Cloudflare dashboard** (Settings → V
 | `PUBLIC_GSC_VERIFICATION` | Google Search Console verification code | No verification tag emitted |
 | `PUBLIC_SPONSOR_URL` / `_IMAGE_URL` | Sponsor card | Sponsor card doesn't show |
 
-For the choosing table and step-by-step setup of the three analytics tools (GA4 / Cloudflare Web Analytics / Clarity), see [Chapter 7 of the Learning Manual](/landing/docs/enable-ads), section "Optional: comments and analytics"; the full GSC walkthrough lives in [Chapter 6](/landing/docs/get-on-google).
+For the choosing table and step-by-step setup of the three analytics tools (GA4 / Cloudflare Web Analytics / Clarity), see [the Turn On Ads lesson of the Learning Manual](/landing/docs/enable-ads), section "Optional: comments and analytics"; the full GSC walkthrough lives in [Get on Google](/landing/docs/get-on-google).
 
 ## Advanced: keep wrangler.toml (settings recorded in the repo)
 

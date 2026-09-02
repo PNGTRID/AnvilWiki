@@ -1,5 +1,5 @@
 ---
-title: "Dev 5 · CI Gates and Security Baselines"
+title: "CI Gates and Security Baselines"
 description: "The three automated pipelines and what each guards (CI's eight gates, weekly freshness reminders, initialize cleanup), plus the built-in security baselines."
 manual: dev
 order: 5
@@ -8,9 +8,9 @@ tldr: "The CI pipeline runs eight gates on every push; one red and the merge is 
 updated: 2026-08-17
 ---
 
-## Where you are now and what this chapter solves
+## Where you are now and what this lesson solves
 
-The repo's Actions page holds a few automated pipelines, some red, some green — this chapter spells out what each of them guards, plus the security baselines the template already ships that you shouldn't break while customizing. **A lookup manual; open it as needed.**
+The repo's Actions page holds a few automated pipelines, some red, some green — this lesson spells out what each of them guards, plus the security baselines the template already ships that you shouldn't break while customizing. **A lookup manual; open it as needed.**
 
 ## The three automated pipelines (.github/workflows/)
 

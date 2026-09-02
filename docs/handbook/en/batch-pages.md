@@ -1,20 +1,21 @@
 ---
-title: "Chapter 10 · Batch-Create Inner Pages: Dozens of Traffic Entrances"
+title: "Batch-Create Inner Pages: Dozens of Traffic Entrances"
 description: "Homepages win little search — dozens of inner pages, each aimed at one query, are the workhorse. Three steps: list queries, one prompt, bulk scaffolding."
 manual: learn
-order: 10
+order: 17
+stage: "Monetize & Operate"
 icon: lucide:files
 tldr: "The bulk of search traffic lives in inner pages, not the homepage: dozens of pages, each targeting one query. Three steps: ① build the list from real GSC queries and rival wikis; ② write ONE unified page-generation prompt — fixed skeleton, never improvised per page; ③ pnpm bulk-new-posts scaffolds the drafts, AI fills them, check-content + build gates the batch. Iron rule: batch ≠ spam; mark thin material 'to be added', never invent data."
 updated: 2026-08-26
 ---
 
-## Where you are, and what this chapter solves
+## Where you are, and what this lesson solves
 
-Chapter 4 taught you to write 10 pages a day — but that flow is "one page at a time", and its capacity ceiling arrives fast. Meanwhile the bulk of search traffic is never the homepage: the homepage targets exactly one query (your site's name), while dozens or hundreds of **inner pages** each target one query — together they are the workhorse.
+the page-production lesson taught you to write 10 pages a day — but that flow is "one page at a time", and its capacity ceiling arrives fast. Meanwhile the bulk of search traffic is never the homepage: the homepage targets exactly one query (your site's name), while dozens or hundreds of **inner pages** each target one query — together they are the workhorse.
 
-A site that only polishes its homepage has opened the shop door but stocked no shelves. This chapter turns "write one page" into "produce one batch": start from a keyword list, lay down inner pages aimed at different queries.
+A site that only polishes its homepage has opened the shop door but stocked no shelves. This lesson turns "write one page" into "produce one batch": start from a keyword list, lay down inner pages aimed at different queries.
 
-## What you'll have when this chapter is done
+## What you'll have when this lesson is done
 
 - An inner-page list mined from real search queries (`new-posts.csv`)
 - Dozens of draft pages aimed at different queries — scaffolded in bulk, generated in bulk, accepted in bulk
@@ -30,12 +31,12 @@ A site that only polishes its homepage has opened the shop door but stocked no s
 
 Don't guess. Four sources, ordered by trustworthiness:
 
-1. **GSC "Performance"** (opened in Chapter 6): queries with impressions but no clicks — a ready-made opportunity list.
+1. **GSC "Performance"** (opened in the indexing lesson): queries with impressions but no clicks — a ready-made opportunity list.
 2. **Rival wikis' page structures**: search wikis of similar games (fandom sites) and see which pages they have — players' needs, already validated by someone else.
 3. **Google autocomplete & related searches**: type the game name, read the dropdown and the page-bottom suggestions.
 4. **The game's official changelogs**: new bosses, events, patches = new queries; ship first.
 
-One query per line, tagged with intent (codes / bosses / guides / tier list — the intent table from Chapter 4). List unclear ones separately and ask — don't guess.
+One query per line, tagged with intent (codes / bosses / guides / tier list — the intent table from the page-production lesson). List unclear ones separately and ask — don't guess.
 
 ## Step 2: Write ONE unified page-generation prompt
 
@@ -67,7 +68,7 @@ When done run pnpm check-content && pnpm build; all green or it isn't done. List
 - For pages whose material is solid, flip `draft: true` off (in small batches), remove the "to be added" marks, rebuild, ship.
 - Spot-check 3 pages: does each independently answer a real question? Is phrasing repeated anywhere? Are all internal links reachable?
 
-**Flipping has a rhythm too**: generating 40 to 60 drafts in one go is fine, but **don't release them all at once** — flip only 10 to 15 core pages for v1 (codes / tier list / guides, the high-value terms), then 10+ per week after that. Field-tested: too many pages in the first version dilutes quality and drags the whole site's rankings (same conclusion as the end of Chapter 4).
+**Flipping has a rhythm too**: generating 40 to 60 drafts in one go is fine, but **don't release them all at once** — flip only 10 to 15 core pages for v1 (codes / tier list / guides, the high-value terms), then 10+ per week after that. Field-tested: too many pages in the first version dilutes quality and drags the whole site's rankings (same conclusion as the end of the page-production lesson).
 
 ## The biggest trap: batch is not spam
 
@@ -92,4 +93,4 @@ This section is the heart of the chapter — worth rereading:
 
 ## When you're done
 
-With your inner pages batched out, one piece of the Learning Manual remains: indexing is only the entry ticket — rankings and AI citations are where the traffic is. Continue to [Chapter 11 · SEO beyond indexing](/landing/docs/seo-traffic) and make every inner page fully earn the query it targets. After that, three roads: back to Chapter 8 to run the weekly rhythm; into the [Development Manual](/landing/docs/architecture) for deep customization; or PR your site onto AnvilWiki's showcase wall (edit the showcase data in `src/config/landing.ts`) — your real site is the best ad for this template.
+With your inner pages batched out, one piece of the Learning Manual remains: indexing is only the entry ticket — rankings and AI citations are where the traffic is. Continue to [the pick-your-game lesson1 · SEO beyond indexing](/landing/docs/seo-traffic) and make every inner page fully earn the query it targets. After that, three roads: back to the weekly-ops lesson to run the weekly rhythm; into the [Development Manual](/landing/docs/architecture) for deep customization; or PR your site onto AnvilWiki's showcase wall (edit the showcase data in `src/config/landing.ts`) — your real site is the best ad for this template.

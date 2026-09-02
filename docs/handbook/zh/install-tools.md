@@ -1,16 +1,17 @@
 ---
-title: "第 2 章 · 出发前:装好 6 样工具"
-description: "终端、GitHub 账号、Node、pnpm、Git、AI 助手——一次装齐,每样带「你会看到什么」和确认点。只装一次,后面所有章节都用。"
+title: "出发前:装好 6 样工具"
+description: "终端、GitHub 账号、Node、pnpm、Git、AI 助手——一次装齐,每样带「你会看到什么」和确认点。只装一次,后面所有课都用。"
 manual: learn
-order: 2
+order: 9
+stage: "把站立起来"
 icon: lucide:wrench
-tldr: "这一章纯装软件:终端(打字指挥电脑的窗口)、GitHub 账号(放网站文件的仓库)、Node(引擎底座)、pnpm(搬运工)、Git(搬运车)、AI 助手(写内容的搭档)。一个一个来,装好一样勾掉一样,全部装完只花 30 分钟,以后永远不用再装。"
+tldr: "这一课纯装软件:终端(打字指挥电脑的窗口)、GitHub 账号(放网站文件的仓库)、Node(引擎底座)、pnpm(搬运工)、Git(搬运车)、AI 助手(写内容的搭档)。一个一个来,装好一样勾掉一样,全部装完只花 30 分钟,以后永远不用再装。"
 updated: 2026-08-17
 ---
 
 ## 你现在在哪,这章解决什么
 
-第 1 章你选好了游戏。动手建站之前,先备齐工具——就像做菜前先把锅碗摆上台面。这一章装的东西**只装一次**,后面每一章都在用;跳过这章,下一章的第一条命令就会卡住。
+选游戏那一课你选好了游戏。动手建站之前,先备齐工具——就像做菜前先把锅碗摆上台面。这一课装的东西**只装一次**,后面每一章都在用;跳过这章,下一课的第一条命令就会卡住。
 
 ## 这章做完你会得到
 
@@ -64,7 +65,7 @@ npm install -g pnpm
 
 ### 装备 6:AI 编程助手(帮你写内容的搭档,后面每章都用)
 
-从 ZCode / [Claude Code](https://claude.com/claude-code) / [Codex](https://openai.com/codex) / [Cursor](https://cursor.com) 里**任选一个**装上(都有免费额度)。这一章还用不到,第 4 章它就是主角。
+从 ZCode / [Claude Code](https://claude.com/claude-code) / [Codex](https://openai.com/codex) / [Cursor](https://cursor.com) 里**任选一个**装上(都有免费额度)。这一课还用不到,产页那一课它就是主角。
 
 **确认做对了**:软件能打开,你知道怎么新建一个对话。
 
@@ -83,4 +84,4 @@ npm install -g pnpm
 
 ## 下一步
 
-工具齐了——下一章把模板复制下来,30 分钟让一个属于你游戏的网站在浏览器里跑起来。[去第 3 章 · 复制模板,跑起你的站](/zh/landing/docs/launch-your-site)
+工具齐了——下一课把模板复制下来,30 分钟让一个属于你游戏的网站在浏览器里跑起来。[去跑站那一课 · 复制模板,跑起你的站](/zh/landing/docs/launch-your-site)

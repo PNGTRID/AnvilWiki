@@ -1,5 +1,5 @@
 ---
-title: "Dev 6 · Keep Up With Official Updates and Give the Good Stuff Back"
+title: "Keep Up With Official Updates and Give the Good Stuff Back"
 description: "Merge upstream safely (conflicts always keep your game config and articles), the SemVer promises, and the path to contributing back and the showcase."
 manual: dev
 order: 6
@@ -8,7 +8,7 @@ tldr: "Three commands bring official updates: set upstream, fetch, merge. Confli
 updated: 2026-08-17
 ---
 
-## Where you are now and what this chapter solves
+## Where you are now and what this lesson solves
 
 The template author keeps releasing new versions: bug fixes, new features. Should your site follow? How do you follow without wiping out your game name, colors, and articles? And in the other direction — you built something good; how do you get it back into the official template? **A lookup manual; open it at upgrade time.**
 
@@ -73,6 +73,6 @@ Three long-term promises: article registration-card fields are **added only, nev
 - ☐ Every config/content conflict kept your own values (diff each one)
 - ☐ New strings listed by check-i18n are either translated or explicitly accepted as English fallback
 
-## Next chapter
+## Next lesson
 
 Upstream syncing keeps you current as the template grows. The final chapter puts an AI on ops duty — [the anvilwiki-ops CLI and MCP](/landing/docs/ai-ops).

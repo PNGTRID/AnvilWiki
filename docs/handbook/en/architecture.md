@@ -1,5 +1,5 @@
 ---
-title: "Dev 1 · Read the Map First: What to Change, What to Leave Alone"
+title: "Read the Map First: What to Change, What to Leave Alone"
 description: "Three layers — code (rarely touched), config (once per game), content (daily). The decision tree locates any change in 30 seconds, plus six Astro 5 gotchas."
 manual: dev
 order: 1
@@ -8,11 +8,11 @@ tldr: "Your site is a three-story building: the first floor is content, new arti
 updated: 2026-08-17
 ---
 
-## Where you are now and what this chapter solves
+## Where you are now and what this lesson solves
 
 Your site is already earning money, and now you want to touch the template itself — add a feature, reshape something, or just find out whether "this thing" can be changed at all. Before you touch anything, spend 10 minutes understanding which layer any change belongs to. Change it in the wrong place and at best you waste the work; at worst you break the site, or lose every edit the next time you upgrade the template.
 
-## What you'll have when this chapter is done
+## What you'll have when this lesson is done
 
 - A decision tree that pins any request to a file within 30 seconds
 - A complete picture of how an article travels from draft to web page

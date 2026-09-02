@@ -29,9 +29,9 @@
 
 | 你想… | 去这里 |
 |---|---|
-| **零基础从零做一个赚钱的游戏站** | 📚 [学习手册(11 章)](https://anvilwiki.pages.dev/zh/landing/docs/learn)——每步写明「做什么/怎么做/你会看到什么」,含 18 个可复制提示词 |
+| **零基础从零做一个赚钱的游戏站** | 📚 [学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)——每步写明「做什么/怎么做/你会看到什么」,含可复制的 AI 提示词 |
 | 看「从零到赚钱」的全部工作量 | 🗺️ [文档中心首页](https://anvilwiki.pages.dev/zh/landing/docs)——10 件事全景清单,逐项点入 |
-| 深度定制 / 给模板写代码 | 🔧 [开发手册(7 章)](https://anvilwiki.pages.dev/zh/landing/docs/dev) |
+| 深度定制 / 给模板写代码 | 🔧 [开发手册](https://anvilwiki.pages.dev/zh/landing/docs/dev) |
 | 看看做出来长什么样 | 🎮 [在线 Demo](https://anvilwiki.pages.dev/)——虚构游戏「Anvil Quest」的完整 wiki |
 | 对比 Fandom / Wiki.js / 其他方案 | ⚖️ [完整对比页](https://anvilwiki.pages.dev/zh/landing/comparison)——三种物种、自托管引擎数据表、什么时候不该选 AnvilWiki |
 
@@ -47,7 +47,7 @@ AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕�
 
 ### 核心特性
 
-- 📚 **零基础双手册**:学习手册 11 章 + 开发手册 7 章,中英双语,从选游戏到赚到钱,每步 SOP + 18 个可复制 AI 提示词([站内阅读](https://anvilwiki.pages.dev/zh/landing/docs))
+- 📚 **零基础双手册**:学习手册(重构为 6 阶段 29 课、分批上线)+ 开发手册,中英双语,从选游戏到赚到钱,每步 SOP + 可复制 AI 提示词([站内阅读](https://anvilwiki.pages.dev/zh/landing/docs))
 - 🤖 **AI 对话即产页**:内容技能随仓库分发(`.agent/skills/`),对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出自动通过构建质检;批量产页走 **PR 门控管道**——AI 写、八道质量门禁验、你审完才合并([docs/content-pipeline.md](docs/content-pipeline.md))
 - 🧭 **一套工具管 N 个站**:`anvilwiki-ops`(npx 免安装 + MCP)让 AI 替你拉 GSC/Cloudflare 数据、给优化清单,并追踪 ChatGPT/Perplexity 等 **AI 引用来路**([docs/multi-site.md](docs/multi-site.md))
 - 🧰 **产能三件套**:`pnpm template-audit` 检查「这个站还能不能干净复制成下一个」、`pnpm bulk-new-posts` 从关键词清单批量铺内页草稿、`pnpm gen-covers` 自动生成 1200×675 封面(中日文标题自动配字体)
@@ -101,7 +101,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | `anvil-refresh` | 新鲜度巡检 → 输出「该更新什么」优先级清单 |
 | `anvil-adsense-audit` | AdSense 申请前逐项体检(22 项政策清单,模板已解决的项自动给证据) |
 
-完整的提示词库(选品分析、产页、批量产页、翻译、SEO 体检、关键词选题等 18 个模板)在[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)里,整段复制就能用。
+完整的提示词库(选品分析、产页、批量产页、翻译、SEO 体检、关键词选题等模板)在[学习手册](https://anvilwiki.pages.dev/zh/landing/docs/learn)里,整段复制就能用。
 
 ### 文档在哪里?
 
@@ -120,7 +120,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | 每月成本 | **¥0**(Cloudflare Pages 免费无限带宽) | 免费(代价是失去控制权) | Vercel 免费额度有限 |
 | Lighthouse | **4×100 开箱即得** | 平台决定 | 自己调优数周 |
 | AI 产页 | **技能随仓库分发,对话即产页** | 无 | 自己搭 |
-| 上手门槛 | **零基础手册 11 章** | 低但受制于人 | 高 |
+| 上手门槛 | **零基础引导式双手册** | 低但受制于人 | 高 |
 
 更完整的选型对比——含 Wiki.js、BookStack、MediaWiki、DokuWiki、Docmost 五个自托管引擎的数据表,以及「什么时候不该选 AnvilWiki」:见[完整对比页](https://anvilwiki.pages.dev/zh/landing/comparison)。
 

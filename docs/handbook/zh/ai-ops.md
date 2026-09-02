@@ -1,5 +1,5 @@
 ---
-title: "开发 7 · 让 AI 替你运营:anvilwiki-ops 与 MCP"
+title: "让 AI 替你运营:anvilwiki-ops 与 MCP"
 description: "一行 npx 给你的 AI 助手装上运营工具:体检配置、拉 GSC 与 Cloudflare 真实数据、自动产出按优先级排序的优化清单、把新内容校验后开 PR 上线——写操作只走 PR 一条路,合并权永远在你手里。"
 manual: dev
 order: 7
@@ -10,7 +10,7 @@ updated: 2026-08-22
 
 ## 你现在在哪,这章解决什么
 
-[学习手册第 8 章](/zh/landing/docs/weekly-ops)的每周 30 分钟节奏很好,但那 30 分钟的大半是「跑命令、看数字、抄清单」——这恰好是 AI 最擅长的事。这一章把整个运营循环交给你的 AI 助手:你说「看看网站最近怎么样」,它拉数据、给建议、改内容、开 PR;你只负责最后的「合并」按钮。
+[学习手册「每周保鲜与增长」一课](/zh/landing/docs/weekly-ops)的每周 30 分钟节奏很好,但那 30 分钟的大半是「跑命令、看数字、抄清单」——这恰好是 AI 最擅长的事。这一课把整个运营循环交给你的 AI 助手:你说「看看网站最近怎么样」,它拉数据、给建议、改内容、开 PR;你只负责最后的「合并」按钮。
 
 先弄懂两个词,后面不再解释:
 
@@ -116,7 +116,7 @@ npx anvilwiki-ops --site forge-wiki metrics
 - `gsc-access` FAIL:资源没共享给服务账号邮箱(第二步的第 3 小步)。
 - `Cloudflare API returned 401/403`:令牌权限不对,重选「账户 → Analytics → 阅读」。
 - `gh CLI not found`:装 GitHub CLI(submit 需要):https://cli.github.com/
-- `No site config found` / site-config FAIL:你的仓库删过 `wrangler.toml`(学习手册第 5 章的推荐做法,设置在 Cloudflare 网页)——在仓库根目录的 `.env` 里加一行 `SITE_URL=https://你的域名` 即可(需要 CF 数据就再加 `PUBLIC_CF_BEACON_TOKEN`)。**别**为了这个重建 wrangler.toml:文件一回来,你在网页上配的全部变量都会失效。
+- `No site config found` / site-config FAIL:你的仓库删过 `wrangler.toml`(学习手册「上线」一课的推荐做法,设置在 Cloudflare 网页)——在仓库根目录的 `.env` 里加一行 `SITE_URL=https://你的域名` 即可(需要 CF 数据就再加 `PUBLIC_CF_BEACON_TOKEN`)。**别**为了这个重建 wrangler.toml:文件一回来,你在网页上配的全部变量都会失效。
 - `No uncommitted changes to submit`:工作区是干净的,AI 还没写任何东西,先让它产出内容。
 - `npx anvilwiki-ops` 找不到包:需要 0.1.0 及以上版本(随模板 v1.15 发布;v2.0 搭载 1.0.0,含多站 + AI 引用)。
 - 管道没开出 PR:Settings → Actions → General → 勾选 "Allow GitHub Actions to create and approve pull requests"。
@@ -130,4 +130,4 @@ npx anvilwiki-ops --site forge-wiki metrics
 
 ## 开发手册到此完结
 
-地图(架构)→ 栏目语言 → 换肤首页 → 功能开关 → CI 安全 → 同步回流 → AI 自动化运营,你对这套模板已是维护者级掌控。回到[学习手册第 8 章](/zh/landing/docs/weekly-ops)的每周节奏——只是现在,那 30 分钟里的大半可以让 AI 代劳了。
+地图(架构)→ 栏目语言 → 换肤首页 → 功能开关 → CI 安全 → 同步回流 → AI 自动化运营,你对这套模板已是维护者级掌控。回到[学习手册「每周保鲜与增长」一课](/zh/landing/docs/weekly-ops)的每周节奏——只是现在,那 30 分钟里的大半可以让 AI 代劳了。

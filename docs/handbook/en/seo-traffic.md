@@ -1,18 +1,19 @@
 ---
-title: "Chapter 11 · SEO beyond indexing: rankings and AI citations"
+title: "SEO beyond indexing: rankings and AI citations"
 description: "Indexed is just the entry ticket — rankings and AI citations are where traffic lives. A keyword map, a per-page checklist, and the 2026 rule changes worth knowing."
 manual: learn
-order: 11
+order: 18
+stage: "Monetize & Operate"
 icon: lucide:trending-up
-tldr: "Indexed ≠ found: chapter 6 got you into Google, this chapter moves you up the results page. Three moves: ① pick keywords — one page, one query, from real GSC data, never guesswork; ② make it count — keyword in title, question H2, Quick Answer summary, tables, quality cover (Google Images reads it first); ③ build trust — freshness, bylines, internal links. 2026 rules: FAQ rich results are gone, llms.txt does nothing for Google, AI Overviews loves direct answers."
+tldr: "Indexed ≠ found: chapter 6 got you into Google, this lesson moves you up the results page. Three moves: ① pick keywords — one page, one query, from real GSC data, never guesswork; ② make it count — keyword in title, question H2, Quick Answer summary, tables, quality cover (Google Images reads it first); ③ build trust — freshness, bylines, internal links. 2026 rules: FAQ rich results are gone, llms.txt does nothing for Google, AI Overviews loves direct answers."
 updated: 2026-08-26
 ---
 
-## Where you are, what this chapter solves
+## Where you are, what this lesson solves
 
-Chapter 6 handed your sitemap to Google and pages started getting indexed; chapter 10 gave you dozens of inner pages, each targeting a query. But indexing is only the entry ticket — when a player searches "how to beat XX", Google shows ten results per page, and page two might as well not exist.
+the indexing lesson handed your sitemap to Google and pages started getting indexed; chapter 10 gave you dozens of inner pages, each targeting a query. But indexing is only the entry ticket — when a player searches "how to beat XX", Google shows ten results per page, and page two might as well not exist.
 
-This chapter is about climbing from "indexed" to "clicked", and then to the 2026 battleground: being cited by AI Overviews and AI assistants like ChatGPT. The good news: the template already handles the technical side (structured data, sitemap lastmod, hreflang, Quick Answer cards). What's left for you is two habits — picking keywords and making each one count — plus not stepping on the new rules.
+This lesson is about climbing from "indexed" to "clicked", and then to the 2026 battleground: being cited by AI Overviews and AI assistants like ChatGPT. The good news: the template already handles the technical side (structured data, sitemap lastmod, hreflang, Quick Answer cards). What's left for you is two habits — picking keywords and making each one count — plus not stepping on the new rules.
 
 ## What you'll walk away with
 
@@ -29,7 +30,7 @@ This chapter is about climbing from "indexed" to "clicked", and then to the 2026
 
 ## Step 1: Pick keywords — one page, one keyword
 
-"One page, one keyword" is the most important sentence in this chapter: every page fights for exactly one query; several pages crowding the same query just fight each other.
+"One page, one keyword" is the most important sentence in this lesson: every page fights for exactly one query; several pages crowding the same query just fight each other.
 
 Where keywords come from was covered in chapter 10 (GSC performance / competitor wikis / autocomplete / official patch notes). Here's how to judge whether a keyword is worth doing:
 
@@ -76,7 +77,7 @@ Output a four-column table: article | issue | exact location | suggested fix. On
 
 Rankings look past single pages to the whole site. Three slow variables — no shortcuts, but they compound:
 
-- **Freshness**: a wiki with expired codes and stale guides gets demoted site-wide. Chapter 8's weekly `refresh-audit` + `lastModified` loop is exactly this — the 30-minute weekly rhythm is SEO, not extra chores.
+- **Freshness**: a wiki with expired codes and stale guides gets demoted site-wide. the weekly-ops lesson's weekly `refresh-audit` + `lastModified` loop is exactly this — the 30-minute weekly rhythm is SEO, not extra chores.
 - **Author bylines**: register real authors in `src/config/authors.ts` and articles emit Person JSON-LD (more credible than an anonymous "staff").
 - **A real internal-link network**: tag hubs, related articles, and category pages interlink, showing Google a structured reference library rather than isolated pages.
 
@@ -97,7 +98,7 @@ The full chapter is "Link-building strategy" in the repo doc [`docs/seo.md`](htt
 
 - **FAQ rich results are dead**: since May 2026 Google fully removed the FAQ rich-snippet style — the old promise that "Q&A markup becomes a collapsible strip in results" is void. Keep the FAQPage structured data (machines still parse the semantics) but stop investing extra effort in it.
 - **llms.txt does nothing for Google**: Google officially confirmed it ignores llms.txt with zero ranking impact. But AI assistants like ChatGPT and Perplexity do use it as a site index — the template's `/llms.txt` still generates automatically; treat it as a business card for AI assistants, not a Google hack.
-- **AI Overviews citation preferences**: direct-answer blocks (summary), structured data (tables / stat cards), fresh content — exactly what the template ships plus this chapter's checklist. Just follow it.
+- **AI Overviews citation preferences**: direct-answer blocks (summary), structured data (tables / stat cards), fresh content — exactly what the template ships plus this lesson's checklist. Just follow it.
 - **Image-search entry = your cover image**: Google now prefers og:image when picking images, i.e. every article's cover. The cover went from decoration to a traffic entrance — worth two extra minutes to pick a good one.
 
 The full timeline (9 entries, with official links) lives in the repo doc [`docs/seo.md`](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md) under "Google 官方规范更新记录 (2026)" — dig in there if you want the sources.
@@ -115,6 +116,6 @@ The full timeline (9 entries, with official links) lives in the repo doc [`docs/
 - ☐ The step-2 audit prompt ran site-wide and its issue list is cleared
 - ☐ You can name the three pages most likely to land in AI Overviews, and why
 
-## After this chapter
+## After this lesson
 
 The Learning Manual now closes its full loop: pick a game → build the site → produce pages → get indexed → monetize → stay fresh → templatize → batch → **rank and get cited**. SEO is slow work: finish the checklist, then trust chapter 8's weekly rhythm and 4-12 weeks of patience. For technical depth, see the repo doc [`docs/seo.md`](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/seo.md) (configuration reference + the 2026 official-update log); to automate the weekly data review, see the [Development Manual's AI ops chapter](/landing/docs/ai-ops).

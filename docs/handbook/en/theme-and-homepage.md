@@ -1,5 +1,5 @@
 ---
-title: "Dev 3 · Change the Theme Color and Edit the Homepage"
+title: "Change the Theme Color and Edit the Homepage"
 description: "Swap all 8 theme-color variable lines together (a partial swap leaves the old hue); edit homepage copy only in the JSON home section; plus the new-field flow."
 manual: dev
 order: 3
@@ -8,9 +8,9 @@ tldr: "Changing the theme color means editing only the top 8 lines of globals.cs
 updated: 2026-08-17
 ---
 
-## Where you are now and what this chapter solves
+## Where you are now and what this lesson solves
 
-You want to recolor the site, rework the homepage pitch, or hang a new data field on articles — this chapter is the fixed recipe for all three. **A lookup manual: jump to the section you need.**
+You want to recolor the site, rework the homepage pitch, or hang a new data field on articles — this lesson is the fixed recipe for all three. **A lookup manual: jump to the section you need.**
 
 ## Request 1: Change the theme color (5 minutes)
 

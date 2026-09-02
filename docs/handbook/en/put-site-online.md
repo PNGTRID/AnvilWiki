@@ -1,20 +1,21 @@
 ---
-title: "Chapter 5 · Take Your Site Live: Onto the Free Shelf"
+title: "Take Your Site Live: Onto the Free Shelf"
 description: "Push the site to GitHub, connect Cloudflare's free shelf for a global URL, handle the beginner trap (which settings win), and buy-and-bind a domain. All free."
 manual: learn
-order: 5
+order: 12
+stage: "Launch & Get Indexed"
 icon: lucide:cloud
 tldr: "Shelving takes three steps: git push sends files to GitHub; Cloudflare Pages connects to the repo in a few clicks and hands you a free URL in two or three minutes; then delete wrangler.toml (settings have two registries — while the file exists, web settings are ignored; beginners delete the file, then use only the web UI). Finally, a full domain-buying side quest — required before AdSense money."
 updated: 2026-08-17
 ---
 
-## Where you are, and what this chapter solves
+## Where you are, and what this lesson solves
 
 Your 10 pages sit on your computer — but players can't reach them. It's like a book fresh from the print shop that hasn't been placed on any store shelf.
 
-This chapter puts the book on the shelf: first onto GitHub, then onto Cloudflare's free shelf (no money down, effectively unlimited bandwidth), and you come away with a URL the whole world can open.
+This lesson puts the book on the shelf: first onto GitHub, then onto Cloudflare's free shelf (no money down, effectively unlimited bandwidth), and you come away with a URL the whole world can open.
 
-## What you'll have when this chapter is done
+## What you'll have when this lesson is done
 
 - A URL anyone in the world can open (a free domain first; swap in your own later)
 - The site's "settings registry" straightened out, so turning on ads later won't trip you up
@@ -83,7 +84,7 @@ git push
 **What to do**: swap `project-name.pages.dev` for your own street address. **AdSense review basically requires a domain you own**, so you must buy one before earning (a few dozen dollars a year).
 **How to do it**: search for a `.com` / `.wiki` domain at [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/) (sells at cost, no markup) or a registrar like [Porkbun](https://porkbun.com) and buy it; then Cloudflare Pages → your project → **Custom domains** → Set up, and follow the prompts to point the domain over (with DNS on Cloudflare, it's next-next-next the whole way).
 **You'll see**: within minutes (a few hours at most), your domain opens your site.
-**Confirm it worked**: once your domain opens the site, change both the Domain in the Chapter 3 config and Cloudflare's `SITE_URL` variable to this domain (must start with `https://`, no exceptions), and redeploy.
+**Confirm it worked**: once your domain opens the site, change both the Domain in the the run-your-site lesson config and Cloudflare's `SITE_URL` variable to this domain (must start with `https://`, no exceptions), and redeploy.
 
 ## If you get stuck
 
@@ -100,4 +101,4 @@ git push
 
 ## Next step
 
-The site is live, but Google doesn't know you exist — the next chapter gets it to start indexing you, which is where traffic begins. [Go to Chapter 6 · Get Google to Know You](/landing/docs/get-on-google)
+The site is live, but Google doesn't know you exist — the next lesson gets it to start indexing you, which is where traffic begins. [Go to the indexing lesson · Get Google to Know You](/landing/docs/get-on-google)

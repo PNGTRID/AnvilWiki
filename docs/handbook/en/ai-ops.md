@@ -1,5 +1,5 @@
 ---
-title: "Dev 7 · Put an AI on Ops Duty: anvilwiki-ops and MCP"
+title: "Put an AI on Ops Duty: anvilwiki-ops and MCP"
 description: "Hand your AI assistant the whole ops loop: health checks, real GSC and Cloudflare data, prioritized actions, and PR-gated publishing — never a push to main."
 manual: dev
 order: 7
@@ -8,9 +8,9 @@ tldr: "anvilwiki-ops is the template's companion ops toolkit (an npm package, no
 updated: 2026-08-22
 ---
 
-## Where you are now and what this chapter solves
+## Where you are now and what this lesson solves
 
-The [learning manual, chapter 8](/landing/docs/weekly-ops) weekly 30-minute rhythm works — but most of those minutes are "run a command, read numbers, copy a list", which is exactly what AI is best at. This chapter hands the whole ops loop to your AI assistant: you say "how's the site doing?", and it pulls data, proposes actions, edits content, and opens a PR. You keep only the final merge click.
+The [the learning manual's Stay Fresh lesson](/landing/docs/weekly-ops) weekly 30-minute rhythm works — but most of those minutes are "run a command, read numbers, copy a list", which is exactly what AI is best at. This lesson hands the whole ops loop to your AI assistant: you say "how's the site doing?", and it pulls data, proposes actions, edits content, and opens a PR. You keep only the final merge click.
 
 Two terms, defined once:
 
@@ -130,4 +130,4 @@ The tool's write path is exactly one: **validate (check-content + check-i18n + f
 
 ## The dev manual ends here
 
-Map (architecture) → categories and languages → theme and homepage → feature toggles → CI and security → sync and contribute → AI-automated ops — your command of this template is now maintainer-level. Head back to the [learning manual, chapter 8](/landing/docs/weekly-ops) weekly rhythm — except now, AI can do most of those 30 minutes for you.
+Map (architecture) → categories and languages → theme and homepage → feature toggles → CI and security → sync and contribute → AI-automated ops — your command of this template is now maintainer-level. Head back to the [the learning manual's Stay Fresh lesson](/landing/docs/weekly-ops) weekly rhythm — except now, AI can do most of those 30 minutes for you.

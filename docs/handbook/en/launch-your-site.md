@@ -1,20 +1,21 @@
 ---
-title: "Chapter 3 · Copy the Template, Get Your Site Running"
+title: "Copy the Template, Get Your Site Running"
 description: "Fork the AnvilWiki template to your GitHub, clone it locally, and run one Q&A command that swaps the demo for your game — 30 minutes to your site in the browser."
 manual: learn
-order: 3
+order: 10
+stage: "Stand It Up"
 icon: lucide:rocket
 tldr: "Four steps: fork (copy the fully decorated bakery into your name) → clone (move it onto your computer) → pnpm install (install every part) → pnpm apply-template (one question-and-answer command that swaps the game name, theme color, categories, and languages for yours). Every step tells you what you'll see, and the finale is acceptance at localhost:4321 in the browser."
 updated: 2026-08-17
 ---
 
-## Where you are, and what this chapter solves
+## Where you are, and what this lesson solves
 
-Last chapter the tools were all installed, and your game is already picked — but right now you still have nothing. By the end of this chapter, your computer holds a full set of website files, and the browser opens a running site that carries your game's name.
+Last lesson the tools were all installed, and your game is already picked — but right now you still have nothing. By the end of this lesson, your computer holds a full set of website files, and the browser opens a running site that carries your game's name.
 
 Think of it as opening a bakery: the AnvilWiki template is a **bakery already fully decorated** (shelves, counter, and lights all in place, with a set of sample cakes on display). Your job is to copy the whole bakery and make it yours, then swap the samples for your own cakes.
 
-## What you'll have when this chapter is done
+## What you'll have when this lesson is done
 
 - A working website on your computer — open `http://localhost:4321` in a browser to see it
 - It shows your game's name, your theme color, and your categories
@@ -117,4 +118,4 @@ When you've seen enough, `Control + C` to stop it.
 
 ## Next step
 
-The store is decorated, but the shelves still hold sample goods. The next chapter is the best part of the whole book: have AI write 10 build-check-passing guides in one day. [Go to Chapter 4 · Let AI Write 10 Guides for You](/landing/docs/first-10-pages)
+The store is decorated, but the shelves still hold sample goods. The next lesson is the best part of the whole book: have AI write 10 build-check-passing guides in one day. [Go to Let AI Write 10 Guides for You](/landing/docs/first-10-pages)

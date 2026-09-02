@@ -1,20 +1,21 @@
 ---
-title: "Chapter 8 · Weekly Freshness and Growth: The 30-Minute Rhythm"
+title: "Weekly Freshness and Growth: The 30-Minute Rhythm"
 description: "Monday: freshness check, codes update, topic picks from data. Monthly: upstream sync, revenue review. Quarterly: SEO check. A fixed rhythm is the whole secret."
 manual: learn
-order: 8
+order: 15
+stage: "Monetize & Operate"
 icon: lucide:refresh-cw
 tldr: "Every Monday, 30 minutes, three things: run pnpm refresh-audit and let the site report its own stale pages (feed the report to the AI to turn it into todos), update the codes (one prompt or slash command), and read GSC data against four pass lines — CTR ≥2%, ≥1.5 pages per visit, 10+ new pages per week. Monthly, sync upstream updates (let the AI handle conflicts). Once site one works, site two costs almost nothing extra."
 updated: 2026-08-26
 ---
 
-## Where you are, and what this chapter solves
+## Where you are, and what this lesson solves
 
 The ads are on and the store is officially in business. But game guides fear going stale more than anything: expired codes left unattended, a reworked boss while your guide still teaches the old strategy — a player who finds waste paper once never comes back, and Google hands your rankings to someone else.
 
-This chapter gives you a fixed rhythm: 30 minutes every Monday, 10 minutes every month, 5 minutes every quarter. **A fixed rhythm is the only secret to a site that never goes stale.**
+This lesson gives you a fixed rhythm: 30 minutes every Monday, 10 minutes every month, 5 minutes every quarter. **A fixed rhythm is the only secret to a site that never goes stale.**
 
-## What you'll have when this chapter is done
+## What you'll have when this lesson is done
 
 - A do-exactly-this weekly action list (copy it into your calendar)
 - Fixed monthly and quarterly actions
@@ -67,7 +68,7 @@ When done, run pnpm check-content && pnpm build; only all-green counts as comple
 
 ### Action 3: Read the data, pick next week's topics (5 minutes)
 
-`git push` (Cloudflare reshelves automatically) → open GSC's "Performance" page and see which terms brought clicks these past days → pick 1 to 2 rising terms and write matching new pages next week with the Chapter 4 routine.
+`git push` (Cloudflare reshelves automatically) → open GSC's "Performance" page and see which terms brought clicks these past days → pick 1 to 2 rising terms and write matching new pages next week with the the page-production lesson routine.
 
 Don't eyeball the data — judge it against four pass lines (sources: GSC "Performance"; pages-per-visit from Cloudflare Web Analytics or GA4):
 
@@ -143,4 +144,4 @@ Output a problem table: file / problem / suggested fix; only change things after
 
 ## Where to go from here
 
-Scaling starts with Chapter 9: **[turn your first site into a template](/landing/docs/templatize-your-site)** and copy the next game's site in 30 minutes. To customize this site first, go deep with the [developer manual](/landing/docs/architecture) (add categories, add languages, reskin, turn on comments and analytics); once you have results, submit a PR adding your site to the AnvilWiki official showcase wall (edit the showcase data in `src/config/landing.ts`) — your real case is the best advertisement this template can get.
+Scaling starts with the templatize lesson: **[turn your first site into a template](/landing/docs/templatize-your-site)** and copy the next game's site in 30 minutes. To customize this site first, go deep with the [developer manual](/landing/docs/architecture) (add categories, add languages, reskin, turn on comments and analytics); once you have results, submit a PR adding your site to the AnvilWiki official showcase wall (edit the showcase data in `src/config/landing.ts`) — your real case is the best advertisement this template can get.

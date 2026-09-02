@@ -1,8 +1,9 @@
 ---
-title: "第 5 章 · 网站上线:搬上免费货架"
+title: "网站上线:搬上免费货架"
 description: "把网站推上 GitHub、连上 Cloudflare 免费货架拿到全世界能访问的网址,处理新手大坑(设置认谁),以及买域名并绑定的完整支线。全程免费。"
 manual: learn
-order: 5
+order: 12
+stage: "上线与收录"
 icon: lucide:cloud
 tldr: "三步上架:git push 把文件推上 GitHub;Cloudflare Pages 连接仓库点几下,两三分钟后拿到免费网址;然后删掉 wrangler.toml(网站的设置有两个登记处,文件在网页设置就无效——新手删文件,以后只用网页)。最后附买域名绑定的完整支线,AdSense 赚钱前必须买。"
 updated: 2026-08-17
@@ -12,7 +13,7 @@ updated: 2026-08-17
 
 10 篇内容躺在你的电脑里——但玩家访问不到。就像你印好了一本书,还没放上任何书店的货架。
 
-这一章把书上架:先放到 GitHub,再连上 Cloudflare 的免费货架(不花钱、流量几乎无限),你会拿到一个全世界都能打开的网址。
+这一课把书上架:先放到 GitHub,再连上 Cloudflare 的免费货架(不花钱、流量几乎无限),你会拿到一个全世界都能打开的网址。
 
 ## 这章做完你会得到
 
@@ -83,7 +84,7 @@ git push
 **做什么**:把 `项目名.pages.dev` 换成自己的门牌。**AdSense 广告审核基本要求自有域名**,所以赚钱前必须买(一年几十块)。
 **怎么做**:在 [Cloudflare Registrar](https://www.cloudflare.com/products/registrar/)(按成本价卖,不赚差价)或 [Porkbun](https://porkbun.com) 等注册商搜一个 `.com` / `.wiki` 域名买下;然后 Cloudflare Pages → 你的项目 → **Custom domains** → Set up,按提示把域名指过来(DNS 在 Cloudflare 管的话全程点下一步)。
 **你会看到**:几分钟后(最长几小时),你的域名打开就是你的站。
-**确认做对了**:用自己的域名能打开网站后,把第 3 章配置里的 Domain 和 Cloudflare 的 `SITE_URL` 变量都改成这个域名(`https://` 开头,不能少),重新部署。
+**确认做对了**:用自己的域名能打开网站后,把跑站那一课配置里的 Domain 和 Cloudflare 的 `SITE_URL` 变量都改成这个域名(`https://` 开头,不能少),重新部署。
 
 ## 卡住了怎么办
 
@@ -100,4 +101,4 @@ git push
 
 ## 下一步
 
-站上线了,但 Google 还不知道你存在——下一章让它开始收录你,这是流量的起点。[去第 6 章 · 让 Google 认识你](/zh/landing/docs/get-on-google)
+站上线了,但 Google 还不知道你存在——下一课让它开始收录你,这是流量的起点。[去收录那一课 · 让 Google 认识你](/zh/landing/docs/get-on-google)

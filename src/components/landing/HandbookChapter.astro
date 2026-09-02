@@ -75,6 +75,9 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
             <Icon name={chapter.data.icon} class="h-3.5 w-3.5" />
             {chapterNo}
           </span>
+          {chapter.data.stage && (
+            <span class="text-xs text-muted-foreground">· {chapter.data.stage}</span>
+          )}
           {updated && (
             <span class="text-xs text-muted-foreground">
               {t.handbook.updatedLabel} {updated}
