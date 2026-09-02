@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} handbook redesign complete — the Learning Manual now reads 29 lessons in six stages plus three appendices (the red-line master list, the troubleshooting tree, the glossary and command sheet), and the Development Manual grew from 7 chapters to 9 (the new verify-your-changes lesson, the ops chapter split into AI ops / content pipeline / multi-site, and sync-and-contribute split in two). Both manuals, both languages, fully rebuilt.` ,
+    text: `v${PROJECT_VERSION} handbook redesign complete — the Learning Manual now reads 29 lessons in six stages plus three appendices (the red-line master list, the troubleshooting tree, the glossary and command sheet), and the Development Manual grew from 7 chapters to 9 (the new verify-your-changes lesson, the ops chapter split into AI ops / content pipeline / multi-site, and sync-and-contribute split in two). Both manuals, both languages, fully rebuilt.`,
     href: RELEASES,
   },
   hero: {

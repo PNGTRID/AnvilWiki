@@ -39,7 +39,7 @@ export interface ParsedHandbookId {
 }
 
 /**
- * Parse a handbook entry id ("en/pick-your-game" — defensively strips a
+ * Parse a handbook entry id ("en/find-candidates" — defensively strips a
  * possible ".md" suffix, same gotcha as wiki entry ids) into locale + slug.
  * Returns null for ids that don't match <locale>/<slug>.
  */
