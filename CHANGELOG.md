@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.0] — 2026-09-02
+
+**手册教学法重构第一批：学习手册「选品找词」线（阶段 0+1，8 课 × 中英）+ 阶段化架构落地。**
+
+### Added
+
+- **学习手册重构启动**：按教学法六原则（一课一事/例子先于概念/每课新词≤3 放文末/产出即验收/三个经典错误前置/关键词主线地图）拆分，定案 29 课 6 阶段 + 3 附录（spec: `docs/superpowers/specs/2026-09-02-handbook-teaching-redesign.md`）；本批上线阶段 0（01 这门生意怎么赚钱 / 02 全程地图与学法，含「怎么给 AI 布置任务」通用三招）+ 阶段 1 选品找词（03 挖候选 / 04 看懂 Trends / 05 读懂结果页 / 06 意图满足度 / 07 打分拍板 / 08 首日 10 页清单）共 8 课 × 中英，每课统一骨架（场景开场→本课产出→编号步骤→三个经典错误→词卡≤3→产出验收→下一课钩子）。
+- **意图满足度独立成课（课 06）**：旧第 1 章「检查方法和实战案例见 docs/sourcing.md」的一句话甩链接，兑现为手册内完整 worked example（虚构示例第一页逐条判定 + 五步检查表）；sourcing.md 渠道精华吸收进课 03，原文降级为「进阶参考」链接。
+- **手册 frontmatter 新增可选 `stage` 字段**（学习手册六阶段标签，en/zh 各自本地化）：manual 列表页按阶段分组渲染小标题，章节页徽标旁显示阶段名；无 stage 的章节（开发手册）渲染扁平。编号展示仍由 `order` 驱动。
+
+### Changed
+
+- **旧第 1 章 pick-your-game 拆除**：内容拆入课 03-08，slug 移除，站内引用（landing.ts 卡片链接）同步改为 find-candidates。
+- **学习手册 order 重排为最终架构位**（新课 1-8、旧章顺延 9-18，order 在 manual 内唯一由 parity 测试钉住），开发手册本批不动。
+- **全部 18 章标题去掉硬编码「第 N 章 / Chapter N / 开发 N / Dev N」**——编号自此由 frontmatter `order` 渲染（列表徽标 / 章节页 Lesson N / 第 N 课），彻底消除改版时的编号漂移；站内标签 Chapter→Lesson（en）、第…章→第…课（zh），计数标签 chapters→lessons/课。
+- **章号互链全部改课名引用**（「去第 11 章 · SEO 进阶」→「去 SEO 进阶」、「学习手册第 7 章」→「学习手册『接广告』一课」等十余处 × 中英），「下一章/这一章」措辞统一改「课」。
+- **README / docs/README 计数漂移源清除**：去掉「学习手册 11 章 / 开发手册 7 章 / 18 个可复制提示词」等硬编码计数，改结构化表述「6 阶段 29 课、分批上线」。
+
+### 剩余批次（按阶段逐批发版）
+
+阶段 2-5 逐批重建（含 theme-and-homepage 调入学习手册、AI 提示词课、GA4 独立成课、外链课拆分、五处折叠内容随课落地）、开发手册 7 章→9 课（含新增「改完怎么自证」、ai-ops 三拆）、附录三件（作死行为检查表/排查决策树/术语表+命令速查）。
+
 ## [2.7.1] — 2026-09-02
 
 **apply-template 重跑安全加固 + 7 天文档漂移修复（全部 Fixed，无新特性）。**
@@ -809,7 +831,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.8.0...HEAD
+[2.8.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.1...v2.8.0
 [2.7.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.0...v2.7.1
 [2.7.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.3...v2.7.0
 [2.6.3]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.2...v2.6.3

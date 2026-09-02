@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.7.1';
+export const PROJECT_VERSION = '2.8.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} fork-safety hardening — apply-template's demo-locale cleanup now judges by content, not just filename: an en/ja locale only auto-deletes while its site.name is still the demo wiki's, locales you already rebranded (your translations) are kept with a loud warning, and corrupt JSON is never deleted. All eight site.ts string fields are now quote/backslash-escaped, so game names with apostrophes (e.g. "Assassin's …") no longer produce a syntactically broken config, and replacement goes through function callbacks so $&-style sequences in your input can't expand into the output. Docs: the AdSense pre-application audit baseline in docs/ads.md now reflects the v2.6.0 demo state.`,
+    text: `v${PROJECT_VERSION} handbook redesign, batch one — the Learning Manual's picking-and-validating line is rebuilt as eight standalone lessons: stage 0 (how the business works + the full map with three rules for briefing AI) and stage 1 (sourcing candidates, reading Trends, reading the results page, search intent with a full worked example, scoring and deciding, the day-one 10-page list). Chapters now group by stage, titles no longer carry hardcoded numbers, and the intent-satisfaction check that used to live only in a GitHub doc is taught inside the manual.`,
     href: RELEASES,
   },
   hero: {
@@ -559,7 +559,7 @@ pnpm install && pnpm dev`,
         title: 'Pick Your Game',
         description:
           'Which game is worth a wiki? A 4-layer selection funnel plus the first-day 10-pages plan.',
-        href: '/landing/docs/pick-your-game/',
+        href: '/landing/docs/find-candidates/',
       },
       {
         icon: 'lucide:rocket',
@@ -639,7 +639,7 @@ pnpm install && pnpm dev`,
       'Two separate hands-on manuals, written for complete beginners: the Learning Manual walks you from game selection to a live, indexed, monetized wiki — then shows you how to templatize it, batch-produce inner pages, and win rankings and AI citations; the Development Manual covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
     beginnerHint: {
       text: 'Complete beginner? Start with Learning Manual Chapter 1 — pick your game',
-      href: '/landing/docs/pick-your-game/',
+      href: '/landing/docs/find-candidates/',
     },
     manuals: {
       learn: {
@@ -653,7 +653,7 @@ pnpm install && pnpm dev`,
           'For customizers and contributors: the change map, categories & locales, theme & homepage copy, feature switches, CI & security, syncing upstream or contributing back, and running ops through AI (anvilwiki-ops CLI + MCP).',
       },
     },
-    chapterLabel: 'Chapter',
+    chapterLabel: 'Lesson',
     chapterSuffix: '',
     backToHub: 'All docs',
     prevLabel: 'Previous',
@@ -668,7 +668,7 @@ pnpm install && pnpm dev`,
       title: 'Building a game wiki: the whole job at a glance',
       hint: 'Ten jobs from zero to earning. Click any job to jump to the chapter that walks you through it step by step.',
       items: [
-        { label: 'Pick the right game', time: '2 days', href: '/landing/docs/pick-your-game/' },
+        { label: 'Pick the right game', time: '2 days', href: '/landing/docs/find-candidates/' },
         { label: 'Install the 6 tools', time: '30 min', href: '/landing/docs/install-tools/' },
         { label: 'Turn the template into your site', time: '30 min', href: '/landing/docs/launch-your-site/' },
         { label: 'Write the first 10 pages with AI', time: '1 day', href: '/landing/docs/first-10-pages/' },
@@ -681,7 +681,7 @@ pnpm install && pnpm dev`,
       ],
     },
     openManualLabel: 'Open this manual',
-    chaptersCountLabel: 'chapters',
+    chaptersCountLabel: 'lessons',
   },
   finalCta: {
     title: 'Ready to launch your game wiki?',
@@ -732,7 +732,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} fork 安全加固——apply-template 的 demo 语言清理改按内容判定：en/ja 只有在 site.name 仍是 demo 站名时才自动删除，你上一轮已换成自己游戏的语言文件（翻译成果）警告保留，损坏 JSON 一律不删。site.ts 八个字符串字段补单引号+反斜杠转义，含撇号的游戏名（如 "Assassin's …"）不再写出语法错误的配置，四处替换改函数回调杜绝 $& 展开。文档：docs/ads.md 的 AdSense 申请体检基线同步到 v2.6.0 后的 demo 状态。`,
+    text: `v${PROJECT_VERSION} 手册重构第一批——学习手册「选品找词」线重建为 8 篇独立成课：阶段 0（这门生意怎么赚钱+全程地图与 AI 布置任务三招）和阶段 1（挖候选/看懂 Trends/读懂结果页/意图满足度完整案例/打分拍板/首日 10 页清单）。手册按阶段分组，标题不再硬编码章号，原本只存在于 GitHub 文档里的「意图满足度」检查法现在手册内直接教。`,
     href: RELEASES,
   },
   hero: {
@@ -989,7 +989,7 @@ pnpm install && pnpm dev`,
         icon: 'lucide:crosshair',
         title: '选对游戏',
         description: '哪个游戏值得建 wiki?四层选品漏斗 + 首日 10 页计划。',
-        href: '/zh/landing/docs/pick-your-game/',
+        href: '/zh/landing/docs/find-candidates/',
       },
       {
         icon: 'lucide:rocket',
@@ -1067,7 +1067,7 @@ pnpm install && pnpm dev`,
       '两本相互独立的实操手册,按完全零基础标准编写:学习手册带你从选游戏走到上线、收录、变现,再教你把站打磨成模板、批量铺内页放大、把排名和 AI 引用做上去;开发手册覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
     beginnerHint: {
       text: '完全零基础?从学习手册第 1 章「选对游戏」开始',
-      href: '/zh/landing/docs/pick-your-game/',
+      href: '/zh/landing/docs/find-candidates/',
     },
     manuals: {
       learn: {
@@ -1082,7 +1082,7 @@ pnpm install && pnpm dev`,
       },
     },
     chapterLabel: '第',
-    chapterSuffix: '章',
+    chapterSuffix: '课',
     backToHub: '全部文档',
     prevLabel: '上一章',
     nextLabel: '下一章',
@@ -1096,7 +1096,7 @@ pnpm install && pnpm dev`,
       title: '建一个游戏 wiki 站:全部工作一览',
       hint: '从零到赚钱一共 10 件事。点任意一项,直接跳到手把手教你的那一章。',
       items: [
-        { label: '选对游戏', time: '2 天', href: '/zh/landing/docs/pick-your-game/' },
+        { label: '选对游戏', time: '2 天', href: '/zh/landing/docs/find-candidates/' },
         { label: '装好 6 样工具', time: '30 分钟', href: '/zh/landing/docs/install-tools/' },
         { label: '把模板变成你的站', time: '30 分钟', href: '/zh/landing/docs/launch-your-site/' },
         { label: '用 AI 写首日 10 页', time: '1 天', href: '/zh/landing/docs/first-10-pages/' },
@@ -1109,7 +1109,7 @@ pnpm install && pnpm dev`,
       ],
     },
     openManualLabel: '打开这本手册',
-    chaptersCountLabel: '章',
+    chaptersCountLabel: '课',
   },
   finalCta: {
     title: '准备好上线你的游戏 wiki 了吗?',
