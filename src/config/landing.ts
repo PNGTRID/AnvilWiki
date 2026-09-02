@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.9.0';
+export const PROJECT_VERSION = '2.10.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} handbook redesign, batch two — stage two "stand it up" rebuilt: the tools lesson now opens with GitHub two-factor auth and recovery codes (your account is the vault for site, content, and ad revenue); the old launch chapter is split into "run your site" (fork → clone → pnpm dev) and "make it yours" (the full apply-template Q&A table); and theme-and-homepage moves from the Development Manual into the Learning Manual as an elective. The Learning Manual now reads lessons 1-20.`,
+    text: `v${PROJECT_VERSION} handbook redesign, batch three — the content engine rebuilt: the old "write 10 pages with AI" chapter is now five standalone lessons — your first guide page (play an hour, paste the prompt), the codes page carrying the manual's thickest red line plus video-source rules, tier lists and the three legal media channels, the verify-one-at-a-time QA pipeline, and the 10-15 page launch schedule. The Learning Manual now reads lessons 1-24.`,
     href: RELEASES,
   },
   hero: {
@@ -608,8 +608,8 @@ pnpm install && pnpm dev`,
         description:
           'Open the repo in ZCode / Claude Code / Codex and just talk — agent skills ship inside the repo and the Zod schema gates every page.',
         command: '"write a boss guide from these notes"',
-        linkLabel: 'Ch.4 · Write pages with AI',
-        href: '/landing/docs/first-10-pages/',
+        linkLabel: 'Lesson 13 · Write pages with AI',
+        href: '/landing/docs/first-article/',
       },
       {
         title: 'Deploy for free',
@@ -671,7 +671,7 @@ pnpm install && pnpm dev`,
         { label: 'Pick the right game', time: '2 days', href: '/landing/docs/find-candidates/' },
         { label: 'Install the 6 tools', time: '30 min', href: '/landing/docs/install-tools/' },
         { label: 'Turn the template into your site', time: '30 min', href: '/landing/docs/rebrand-your-site/' },
-        { label: 'Write the first 10 pages with AI', time: '1 day', href: '/landing/docs/first-10-pages/' },
+        { label: 'Write the first 10 pages with AI', time: '1 day', href: '/landing/docs/first-article/' },
         { label: 'Put the site online (free hosting)', time: '15 min', href: '/landing/docs/put-site-online/' },
         { label: 'Register with Google (GSC + sitemap)', time: '20 min', href: '/landing/docs/get-on-google/' },
         { label: 'Buy and connect a domain', time: '30 min', href: '/landing/docs/put-site-online/' },
@@ -732,7 +732,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 手册重构第二批——阶段二「把站立起来」重建：装工具课开头补 GitHub 两步验证+恢复码（账号是站点、内容、广告费的保险柜）；旧「复制模板跑起你的站」一拆二为「把站跑起来」（fork→clone→pnpm dev）和「换成你的游戏」（完整 apply-template 问答表）；主题与门面从开发手册调入学习手册（选修课）。学习手册前 20 课就位。`,
+    text: `v${PROJECT_VERSION} 手册重构第三批——内容生产线重建：旧「让 AI 帮你写 10 篇攻略」拆为五课——第一篇（玩一小时+攻略页提示词）、兑换码页（全书最粗红线+视频素材双红线）、排行榜与配图（三条合法素材通道）、验收流水线（一篇一验）、首版排期（10-15 篇分批放）。学习手册前 24 课就位。`,
     href: RELEASES,
   },
   hero: {
@@ -1036,8 +1036,8 @@ pnpm install && pnpm dev`,
         description:
           '用 ZCode / Claude Code / Codex 打开仓库直接说——agent 技能随仓库分发,Zod schema 把住每一页的质量关。',
         command: '"帮我写一篇 Boss 攻略,要点如下:…"',
-        linkLabel: '第 4 章·AI 产页',
-        href: '/zh/landing/docs/first-10-pages/',
+        linkLabel: '课 13 · AI 产页',
+        href: '/zh/landing/docs/first-article/',
       },
       {
         title: '免费部署上线',
@@ -1099,7 +1099,7 @@ pnpm install && pnpm dev`,
         { label: '选对游戏', time: '2 天', href: '/zh/landing/docs/find-candidates/' },
         { label: '装好 6 样工具', time: '30 分钟', href: '/zh/landing/docs/install-tools/' },
         { label: '把模板变成你的站', time: '30 分钟', href: '/zh/landing/docs/rebrand-your-site/' },
-        { label: '用 AI 写首日 10 页', time: '1 天', href: '/zh/landing/docs/first-10-pages/' },
+        { label: '用 AI 写首日 10 页', time: '1 天', href: '/zh/landing/docs/first-article/' },
         { label: '网站上线(免费托管)', time: '15 分钟', href: '/zh/landing/docs/put-site-online/' },
         { label: '在 Google 登记(站长后台+目录)', time: '20 分钟', href: '/zh/landing/docs/get-on-google/' },
         { label: '买域名并绑定', time: '30 分钟', href: '/zh/landing/docs/put-site-online/' },

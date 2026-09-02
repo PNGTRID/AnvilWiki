@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.10.0] — 2026-09-02
+
+**手册教学法重构第三批：阶段 3「内容生产」（5 课 × 中英）。**
+
+### Added
+
+- **旧「让 AI 帮你写 10 篇攻略」一拆五**：课 13 第一篇（AI 打开文件夹自动加载规范+玩一小时记 20 条笔记+攻略页提示词；意图分类表与 frontmatter/质检/draft 三词讲透）、课 14 兑换码页（全书最粗红线：码只来自亲眼所见；⊕视频素材双红线——口播数值与兑换码视为未验证须 draft 核实转正、他人文案必须完全重写、嵌入原视频为合规做法；draft 转正标准动作）、课 15 排行榜与配图（排行榜提示词+gameVersion 版本戳；⊕素材三合法通道：自截自录/官方 press kit/CC 图库）、课 16 验收流水线（三关：AI 质检/肉眼看页面/回应待补充清单；draft 处置规则；一篇一 commit 存档点）、课 17 首版排期（首版 10-15 篇核心页+每周 10+ 分批补，「到点就走」反完美主义）。
+- **原「千万不要做的 7 件事」拆进各课「三个经典错误」**；`requirements/` 两张准备表降为课 13 进阶框；`docs/content-format.md` 媒体密度表引用保留在课 15。
+
+### Changed
+
+- **first-10-pages slug 移除**（first-article 承接），landing.ts 4 处链接与标签同步（「第 4 章/Ch.4」→「课 13/Lesson 13」），课 12 下一课链接改向。
+- **学习手册阶段 4-5 旧章顺延至 order 18-24**，现连续 1-24；开发手册不动。
+
+### 剩余批次
+
+阶段 4/5 重构（部署/收录课瘦身+新增计数器课、GA4 独立成课、收款课自 ads.md 吸收、seo-traffic 拆排名与外链两课、五处折叠随课落地）、开发手册 7 章→9 课、附录三件。
+
 ## [2.9.0] — 2026-09-02
 
 **手册教学法重构第二批：阶段 2「把站立起来」（4 课 × 中英）+ 开发手册重编号。**
@@ -851,7 +869,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.9.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.10.0...HEAD
+[2.10.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.8.0...v2.9.0
 [2.8.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.1...v2.8.0
 [2.7.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.0...v2.7.1
