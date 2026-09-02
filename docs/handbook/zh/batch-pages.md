@@ -2,7 +2,7 @@
 title: "批量做内页:一个站变出几十个流量入口"
 description: "首页抢不到几个搜索词,流量主力是几十上百个各对准一个词的内页。三步法:从 GSC 真实搜索词和竞品 wiki 列内页清单 → 用统一提示词模板 → pnpm bulk-new-posts 批量建草稿再让 AI 批量填充。最大的坑:批量不等于灌水。"
 manual: learn
-order: 17
+order: 19
 stage: "变现与长期经营"
 icon: lucide:files
 tldr: "搜索流量的大头在内页不在首页:几十个内页各对准一个搜索词,合起来才是主力。三步法:①从 GSC 真实搜索词+竞品 wiki 结构列清单;②写一份统一的内页生成提示词(固定骨架,不每篇临时想结构);③pnpm bulk-new-posts 批量建草稿,AI 按统一提示词批量填充,check-content+build 全绿验收。铁律:批量≠灌水,素材不足标待补充,禁止编造数据。"

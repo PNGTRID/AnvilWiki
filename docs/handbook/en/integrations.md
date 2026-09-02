@@ -2,7 +2,7 @@
 title: "The Feature-Toggle Table: Ads, Comments, Analytics"
 description: "All optional features share one toggle mechanism — empty variable = nothing rendered. The full variable table, where they go, and the advanced wrangler.toml route."
 manual: dev
-order: 4
+order: 3
 icon: lucide:plug
 tldr: "Every optional feature (ads, comments, analytics, sponsor card) follows the same recipe: the component reads its env variable and renders nothing when it's empty — fill nothing in and the site stays clean, fill in whichever you want and they never affect each other. Fill variables in the Cloudflare dashboard (recommended) or the repo's wrangler.toml (advanced: while it exists the dashboard settings are all ignored, NODE_VERSION goes in its [vars])."
 updated: 2026-08-26

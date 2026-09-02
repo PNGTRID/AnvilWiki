@@ -2,7 +2,7 @@
 title: "Put an AI on Ops Duty: anvilwiki-ops and MCP"
 description: "Hand your AI assistant the whole ops loop: health checks, real GSC and Cloudflare data, prioritized actions, and PR-gated publishing — never a push to main."
 manual: dev
-order: 7
+order: 6
 icon: lucide:bot
 tldr: "anvilwiki-ops is the template's companion ops toolkit (an npm package, no install needed with npx). doctor gives a guided health check; after you put a GSC service account and CF token in .env, metrics pulls real traffic and insights returns evidence-backed actions; with MCP registered, Claude/ZCode can pull data, edit content, and open PRs for you — every write goes through a PR with a human in the loop."
 updated: 2026-08-22
@@ -130,4 +130,4 @@ The tool's write path is exactly one: **validate (check-content + check-i18n + f
 
 ## The dev manual ends here
 
-Map (architecture) → categories and languages → theme and homepage → feature toggles → CI and security → sync and contribute → AI-automated ops — your command of this template is now maintainer-level. Head back to the [the learning manual's Stay Fresh lesson](/landing/docs/weekly-ops) weekly rhythm — except now, AI can do most of those 30 minutes for you.
+Map (architecture) → categories and languages → feature toggles → CI and security → sync and contribute → AI-automated ops — your command of this template is now maintainer-level. Head back to the [the learning manual's Stay Fresh lesson](/landing/docs/weekly-ops) weekly rhythm — except now, AI can do most of those 30 minutes for you.

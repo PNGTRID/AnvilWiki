@@ -2,7 +2,7 @@
 title: "Batch-Create Inner Pages: Dozens of Traffic Entrances"
 description: "Homepages win little search — dozens of inner pages, each aimed at one query, are the workhorse. Three steps: list queries, one prompt, bulk scaffolding."
 manual: learn
-order: 17
+order: 19
 stage: "Monetize & Operate"
 icon: lucide:files
 tldr: "The bulk of search traffic lives in inner pages, not the homepage: dozens of pages, each targeting one query. Three steps: ① build the list from real GSC queries and rival wikis; ② write ONE unified page-generation prompt — fixed skeleton, never improvised per page; ③ pnpm bulk-new-posts scaffolds the drafts, AI fills them, check-content + build gates the batch. Iron rule: batch ≠ spam; mark thin material 'to be added', never invent data."

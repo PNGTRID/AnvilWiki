@@ -2,7 +2,7 @@
 title: "Let AI Write 10 Guides for You"
 description: "Feed game notes to your AI; four prompts produce guide, codes, tier list, and media pages that pass the build check. Includes the intent table and 7 never-do rules."
 manual: learn
-order: 11
+order: 13
 stage: "Content Engine"
 icon: lucide:bot
 tldr: "You play the game for an hour and take notes, then feed the notes to your AI and say 'write a guide from these points' — it auto-loads the site's format rules and writes pages that pass the pnpm build check. Three disciplines: give full source material, verify each page on its own, mark missing data 'to be added' rather than invented. Day one output: 10 pages — launch the first version at 10 to 15 core pages, then add the rest in weekly batches."

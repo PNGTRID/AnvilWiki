@@ -2,7 +2,7 @@
 title: "CI Gates and Security Baselines"
 description: "The three automated pipelines and what each guards (CI's eight gates, weekly freshness reminders, initialize cleanup), plus the built-in security baselines."
 manual: dev
-order: 5
+order: 4
 icon: lucide:shield-check
 tldr: "The CI pipeline runs eight gates on every push; one red and the merge is blocked. The freshness audit defaults to the official repo only (a fork enables it by deleting one if line, and it only reminds, never edits content). Initialize only cleans up, never reskins. Security baselines are built in — escaped data, marked sponsored links, consent-gated tracking, zero JS — don't dismantle them."
 updated: 2026-08-17

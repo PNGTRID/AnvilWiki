@@ -2,7 +2,7 @@
 title: "Turn On Ads, Start Earning"
 description: "After 15 to 20 articles, apply for Google AdSense, pass review, fill 4 Cloudflare switches with ad IDs — ads appear without slowing the site; revenue is 100% yours."
 manual: learn
-order: 14
+order: 16
 stage: "Monetize & Operate"
 icon: lucide:dollar-sign
 tldr: "Earning takes three steps: self-check first (own domain, 15 to 20 articles, privacy pages built in), pass AdSense review, fill the 4 IDs into the Cloudflare variables — ads go live. On approval day, do the three payout tasks: W-8BEN tax form, PIN mailer, wire transfer. Zero revenue in the first 1 to 2 weeks is normal. Rejected? Add content and reapply."

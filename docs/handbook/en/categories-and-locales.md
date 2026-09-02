@@ -84,4 +84,4 @@ Note: the codes themselves (the `code` field) are never translated — they are 
 
 ## Next steps
 
-Customizations beyond categories and languages — changing the theme color, editing homepage copy, adding new article fields — are in [Dev 3 · change the theme color and edit the homepage](/landing/docs/theme-and-homepage).
+Customizations beyond categories and languages — changing the theme color, editing homepage copy, adding new article fields — are in the Learning Manual's [Theme & Homepage lesson](/landing/docs/theme-and-homepage).

@@ -2,7 +2,7 @@
 title: "让 Google 认识你:收录三件事"
 description: "注册 Google 站长后台(GSC)、递交网站目录页(sitemap)、给重点页面点请求收录——上线当天 20 分钟做完,Google 就开始把你的页面收进书架。"
 manual: learn
-order: 13
+order: 15
 stage: "上线与收录"
 icon: lucide:search
 tldr: "收录是流量的起点:Google 把你的页面收进它的图书馆,才有排名、才有流量。当天做三件事:注册站长后台(GSC,用一条环境变量就能验证身份)、递交自动生成的目录页(sitemap)、给最重要的 5 到 10 个网址逐个点「请求收录」。Bing 和 AI 引擎的部分是全自动的,不用管。上线 3 到 7 天后回每周保鲜那一课做第一次数据复盘。"

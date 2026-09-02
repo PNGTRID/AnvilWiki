@@ -2,7 +2,7 @@
 title: "Weekly Freshness and Growth: The 30-Minute Rhythm"
 description: "Monday: freshness check, codes update, topic picks from data. Monthly: upstream sync, revenue review. Quarterly: SEO check. A fixed rhythm is the whole secret."
 manual: learn
-order: 15
+order: 17
 stage: "Monetize & Operate"
 icon: lucide:refresh-cw
 tldr: "Every Monday, 30 minutes, three things: run pnpm refresh-audit and let the site report its own stale pages (feed the report to the AI to turn it into todos), update the codes (one prompt or slash command), and read GSC data against four pass lines — CTR ≥2%, ≥1.5 pages per visit, 10+ new pages per week. Monthly, sync upstream updates (let the AI handle conflicts). Once site one works, site two costs almost nothing extra."

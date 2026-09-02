@@ -106,4 +106,4 @@ pnpm build && pnpm check-links # 构建 + 全站死链检查
 
 ## 下一步
 
-地图有了,去[开发 2 · 加栏目与加语言](/zh/landing/docs/categories-and-locales):每个需求的分步操作和配套 AI 提示词;换皮肤改首页在[开发 3](/zh/landing/docs/theme-and-homepage)。
+地图有了,去[开发 2 · 加栏目与加语言](/zh/landing/docs/categories-and-locales):每个需求的分步操作和配套 AI 提示词;换肤与门面在[学习手册「主题与门面」一课](/zh/landing/docs/theme-and-homepage)。

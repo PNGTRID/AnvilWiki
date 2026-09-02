@@ -2,7 +2,7 @@
 title: "网站上线:搬上免费货架"
 description: "把网站推上 GitHub、连上 Cloudflare 免费货架拿到全世界能访问的网址,处理新手大坑(设置认谁),以及买域名并绑定的完整支线。全程免费。"
 manual: learn
-order: 12
+order: 14
 stage: "上线与收录"
 icon: lucide:cloud
 tldr: "三步上架:git push 把文件推上 GitHub;Cloudflare Pages 连接仓库点几下,两三分钟后拿到免费网址;然后删掉 wrangler.toml(网站的设置有两个登记处,文件在网页设置就无效——新手删文件,以后只用网页)。最后附买域名绑定的完整支线,AdSense 赚钱前必须买。"

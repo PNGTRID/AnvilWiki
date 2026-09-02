@@ -2,7 +2,7 @@
 title: "Keep Up With Official Updates and Give the Good Stuff Back"
 description: "Merge upstream safely (conflicts always keep your game config and articles), the SemVer promises, and the path to contributing back and the showcase."
 manual: dev
-order: 6
+order: 5
 icon: lucide:git-merge
 tldr: "Three commands bring official updates: set upstream, fetch, merge. Conflicts land almost only in the config and content layers, where the answer never changes — keep yours. The compatibility promises (fields only added, never renamed; new features off by default) make merging safe. Not syncing? A static site frozen on a version keeps running — but take security fixes at least. A good site earns a showcase PR."
 updated: 2026-08-17

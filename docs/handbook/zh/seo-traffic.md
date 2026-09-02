@@ -2,7 +2,7 @@
 title: "SEO 进阶:从被收录到排上去,再到被 AI 引用"
 description: "收录只是入场券,排名和 AI 引用才是流量。一页一词的选词地图、单页做满的自检清单、站点侧的信任信号,以及 2026 年 Google 新规则(FAQ 富结果移除、封面图成图片搜索入口、AI Overviews 引用偏好)——学完这章,你的站从「在 Google 里」变成「被玩家搜到」。"
 manual: learn
-order: 18
+order: 20
 stage: "变现与长期经营"
 icon: lucide:trending-up
 tldr: "收录≠流量:收录那一课让 Google 认识你,这章让页面排上去。三件事:①选词——一个页面只对准一个搜索词,词从 GSC 真实数据和竞品来,不从拍脑袋来;②把每个词做满——标题带词、H2 用问句、Quick Answer 直答、数据进表格、封面图有质量(2026 年起 Google 图片搜索首选读封面);③攒信任——新鲜度、作者署名、真实内链。另附 2026 新规则:FAQ 富结果已被 Google 移除、llms.txt 对 Google 无效但对 ChatGPT 有用、AI Overviews 爱引用直答块。"

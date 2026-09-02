@@ -2,7 +2,7 @@
 title: "Turn Your First Site into a Template"
 description: "One command (pnpm template-audit) checks template health; fix violations, distill a rebrand checklist — then every new game is copy, apply-template, swap, build."
 manual: learn
-order: 16
+order: 18
 stage: "Monetize & Operate"
 icon: lucide:copy-check
 tldr: "Before copying the repo, run pnpm template-audit: it checks whether game-specific strings leaked into the code layer (❌ must fix) and how much config/content is still tied to the old game (⚠️ handle before copying). Then distill a rebrand checklist. Every new site after that: copy repo → pnpm apply-template → swap the content layer → pnpm build — 30 minutes, zero code edits."

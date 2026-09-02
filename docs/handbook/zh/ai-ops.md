@@ -2,7 +2,7 @@
 title: "让 AI 替你运营:anvilwiki-ops 与 MCP"
 description: "一行 npx 给你的 AI 助手装上运营工具:体检配置、拉 GSC 与 Cloudflare 真实数据、自动产出按优先级排序的优化清单、把新内容校验后开 PR 上线——写操作只走 PR 一条路,合并权永远在你手里。"
 manual: dev
-order: 7
+order: 6
 icon: lucide:bot
 tldr: "anvilwiki-ops 是模板配套的运营工具包(npm 包,npx 免安装)。doctor 一次体检看清配置缺什么;GSC 服务账号和 CF token 写进 .env 后,metrics 拉真实流量,insights 给出带证据的行动清单;接入 MCP 后 Claude/ZCode 直接替你查数据、改内容、开 PR——所有写操作只走 PR,人工把关每一步。"
 updated: 2026-08-22
@@ -130,4 +130,4 @@ npx anvilwiki-ops --site forge-wiki metrics
 
 ## 开发手册到此完结
 
-地图(架构)→ 栏目语言 → 换肤首页 → 功能开关 → CI 安全 → 同步回流 → AI 自动化运营,你对这套模板已是维护者级掌控。回到[学习手册「每周保鲜与增长」一课](/zh/landing/docs/weekly-ops)的每周节奏——只是现在,那 30 分钟里的大半可以让 AI 代劳了。
+地图(架构)→ 栏目语言 → 功能开关 → CI 安全 → 同步回流 → AI 自动化运营,你对这套模板已是维护者级掌控。回到[学习手册「每周保鲜与增长」一课](/zh/landing/docs/weekly-ops)的每周节奏——只是现在,那 30 分钟里的大半可以让 AI 代劳了。

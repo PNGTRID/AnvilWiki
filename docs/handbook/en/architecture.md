@@ -106,4 +106,4 @@ If you touched pure functions under `src/lib/`, add tests (`pnpm test`); if you 
 
 ## Next steps
 
-The map is yours. Head to [Dev 2 · add categories and languages](/landing/docs/categories-and-locales): step-by-step instructions and a companion AI prompt for every request; reskinning and homepage edits live in [Dev 3](/landing/docs/theme-and-homepage).
+The map is yours. Head to [Dev 2 · add categories and languages](/landing/docs/categories-and-locales): step-by-step instructions and a companion AI prompt for every request; reskinning and storefront edits live in the Learning Manual's [Theme & Homepage lesson](/landing/docs/theme-and-homepage).

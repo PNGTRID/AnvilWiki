@@ -2,7 +2,7 @@
 title: "接广告,开始赚钱"
 description: "攒够 15 到 20 篇内容后申请 Google AdSense,通过审核拿到广告编号,填进 Cloudflare 的 4 个开关——广告自动出现且不拖慢网站,收入 100% 归你。"
 manual: learn
-order: 14
+order: 16
 stage: "变现与长期经营"
 icon: lucide:dollar-sign
 tldr: "赚钱三步走:先自查申请条件(自有域名、15 到 20 篇内容、隐私页模板已内置),过 AdSense 审核后把 4 个编号填进 Cloudflare 变量,广告上线;审核当天就办收款三件事——交 W-8BEN 税表、盯 PIN 明信片、绑电汇,别等攒到 $100 才发现钱取不出。头 1 到 2 周收入为零是正常的。被拒就补内容再申请。"

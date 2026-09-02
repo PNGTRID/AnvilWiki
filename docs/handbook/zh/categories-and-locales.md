@@ -83,4 +83,4 @@ pnpm check-content && pnpm build && pnpm check-i18n,全绿才算完成。
 
 ## 下一步
 
-栏目和语言之外的其他定制——换主题色、改首页文案、给文章加新字段——在[开发 3 · 换主题色与改首页](/zh/landing/docs/theme-and-homepage)。
+栏目和语言之外的其他定制——换主题色、改首页文案、给文章加新字段——在[学习手册「主题与门面」一课](/zh/landing/docs/theme-and-homepage)。
