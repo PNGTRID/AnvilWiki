@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.7.0';
+export const PROJECT_VERSION = '2.7.1';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} video-to-guide — anvil-new-article gains a Step 0 for YouTube sources: fetch the transcript (paste it, yt-dlp, or youtube-transcript-api), extract a structured brief (category, slug, summary answer, 5-8 FAQ pairs, question-shaped H2s), and draft MDX under two red lines — numbers spoken in the video stay draft:true until you verify them in-game, and other people's videos are fact-reference only with the body fully rewritten (embedding the original video is the compliant move). Pipeline inspired by kennyzir/7deer_skills' youtube-content-gen (MIT).`,
+    text: `v${PROJECT_VERSION} fork-safety hardening — apply-template's demo-locale cleanup now judges by content, not just filename: an en/ja locale only auto-deletes while its site.name is still the demo wiki's, locales you already rebranded (your translations) are kept with a loud warning, and corrupt JSON is never deleted. All eight site.ts string fields are now quote/backslash-escaped, so game names with apostrophes (e.g. "Assassin's …") no longer produce a syntactically broken config, and replacement goes through function callbacks so $&-style sequences in your input can't expand into the output. Docs: the AdSense pre-application audit baseline in docs/ads.md now reflects the v2.6.0 demo state.`,
     href: RELEASES,
   },
   hero: {
@@ -732,7 +732,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 视频转攻略——anvil-new-article 新增 Step 0：YouTube 视频抓字幕（粘贴 / yt-dlp / youtube-transcript-api 三通道）→ 结构化提取（分类判型 / slug / summary 直答 / 5-8 组 FAQ / 问题式 H2）→ MDX 草稿。两条红线：视频口播数值一律 draft:true、人工核实后才转正；他人视频只做事实参考、正文必须完全重写（嵌入原视频才是合规做法）。管线设计致谢 kennyzir/7deer_skills(MIT) 的 youtube-content-gen。`,
+    text: `v${PROJECT_VERSION} fork 安全加固——apply-template 的 demo 语言清理改按内容判定：en/ja 只有在 site.name 仍是 demo 站名时才自动删除，你上一轮已换成自己游戏的语言文件（翻译成果）警告保留，损坏 JSON 一律不删。site.ts 八个字符串字段补单引号+反斜杠转义，含撇号的游戏名（如 "Assassin's …"）不再写出语法错误的配置，四处替换改函数回调杜绝 $& 展开。文档：docs/ads.md 的 AdSense 申请体检基线同步到 v2.6.0 后的 demo 状态。`,
     href: RELEASES,
   },
   hero: {

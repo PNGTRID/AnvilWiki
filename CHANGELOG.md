@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.1] — 2026-09-02
+
+**apply-template 重跑安全加固 + 7 天文档漂移修复（全部 Fixed，无新特性）。**
+
 ### Fixed
 
 - **apply-template 重跑删 locale 改内容判定（24h 审计 P2 残留边界）**:demo 文件名（en/ja）的 locale 只有在 `site.name` 仍是 demo 站名时才自动删除；上一轮已被 CLI 重写成用户游戏的 locale 文件（翻译成果）重跑时归入警告保留路径，不再被当 demo 残留静默销毁；损坏 JSON / 缺 `site.name` 一律保留（不可判定时不删）。判定下沉 `scripts/lib/apply-rewrites.ts` 纯函数 `isDemoLocaleContent` 直测（契约测试钉 demo en/ja 实文件标记 + 杂散提及不误判），E2E 重跑步骤新增「rebranded ja.json 存活且未被改写」断言；`docs/apply-template.md` 两类表述更新为三类。
@@ -805,7 +809,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.1...HEAD
+[2.7.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.0...v2.7.1
 [2.7.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.3...v2.7.0
 [2.6.3]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.2...v2.6.3
 [2.6.2]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.1...v2.6.2
