@@ -40,7 +40,9 @@ import {
   DEMO_COVERS,
   DEMO_GALLERY_IMAGES,
   DEMO_LOCALES,
+  isDemoLocaleContent,
   rewriteLocaleJson,
+  rewriteSiteTs as rewriteSiteTsBlock,
   rewriteWranglerVars,
   slugify,
   type SkinInput,
@@ -192,39 +194,15 @@ async function askBool(rl: LinePrompt, question: string, fallback = false): Prom
 
 function rewriteSiteTs(input: SkinInput): string {
   // Rewrite the `site` object literal only. Everything else in the file stays.
+  // Pure block rewrite lives in lib/apply-rewrites.ts (escaping + $-safe
+  // function replacer, unit-tested); this wrapper owns the IO + failure gate.
   const filePath = 'src/config/site.ts';
-  const src = read(filePath);
-  const newSite = `export const site: SiteConfig = {
-  name: '${input.gameName} Wiki',
-  shortName: '${input.shortName}',
-  description: '${input.description.replace(/'/g, "\\'")}',
-  domain: '${input.domain}',
-  tagline: '${input.tagline.replace(/'/g, "\\'")}',
-  legalNotice: '${input.legalNotice.replace(/'/g, "\\'")}',
-  // Set a real address if you run no social channels — the contact page
-  // renders it as a mailto link.
-  contactEmail: '',
-  social: {
-    official: '${input.officialUrl}',
-  },
-  game: {
-    name: '${input.gameName}',
-    platform: '${input.platform}',
-    developer: '${input.developer}',
-    genre: '${input.genre}',
-    releaseDate: '${input.releaseDate}',
-  },
-  // og:image dims of the SHIPPED hero.webp — if you replace public/images/hero.webp,
-  // update these in src/config/site.ts to match (wrong dims mis-crop share cards).
-  ogImageWidth: 1200,
-  ogImageHeight: 630,
-};`;
-  const siteRe = /export const site: SiteConfig = \{[\s\S]*?\n\};/;
-  if (!siteRe.test(src)) {
+  const rewritten = rewriteSiteTsBlock(read(filePath), input);
+  if (rewritten === null) {
     console.error(`❌ Could not find site object in ${filePath}. Aborting (file untouched).`);
     process.exit(1);
   }
-  return src.replace(siteRe, newSite);
+  return rewritten;
 }
 
 function rewriteNavigationTs(input: SkinInput): string {
@@ -242,7 +220,9 @@ function rewriteNavigationTs(input: SkinInput): string {
     console.error(`❌ Could not find NAVIGATION_CONFIG in ${filePath}. Aborting.`);
     process.exit(1);
   }
-  return src.replace(navRe, newArray);
+  // Function replacer everywhere: string-mode replace would expand `$&`-style
+  // sequences from user input into the rewritten file.
+  return src.replace(navRe, () => newArray);
 }
 
 function rewriteGlobalsCss(input: SkinInput): string {
@@ -305,7 +285,10 @@ function rewriteGlobalsCss(input: SkinInput): string {
 function rewriteRoutingTs(input: SkinInput): string {
   const filePath = 'src/i18n/routing.ts';
   const src = read(filePath);
-  const locs = input.locales.map((l) => `'${l}'`).join(', ');
+  // Escape for a single-quoted TS literal: locale keys come from user input
+  // (slugify's `|| raw` fallback can pass unusual characters through).
+  const ts = (s: string) => s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  const locs = input.locales.map((l) => `'${ts(l)}'`).join(', ');
   const newArray = `export const locales = [${locs}] as const;`;
   // Build LOCALE_LABELS with English defaults for unknown locales.
   const KNOWN: Record<string, string> = {
@@ -320,7 +303,7 @@ function rewriteRoutingTs(input: SkinInput): string {
     de: 'Deutsch',
   };
   const labels = input.locales
-    .map((l) => `  ${l}: '${KNOWN[l] ?? l}'`)
+    .map((l) => `  ${l}: '${ts(KNOWN[l] ?? l)}'`)
     .join(',\n');
   const newLabels = `export const LOCALE_LABELS: Record<Locale, string> = {\n${labels},\n};`;
   const localesRe = /export const locales = \[[\s\S]*?\] as const;/;
@@ -329,8 +312,8 @@ function rewriteRoutingTs(input: SkinInput): string {
     console.error(`❌ Could not locate locales/LOCALE_LABELS blocks in ${filePath}. Aborting.`);
     process.exit(1);
   }
-  let updated = src.replace(localesRe, newArray);
-  updated = updated.replace(labelsRe, newLabels);
+  let updated = src.replace(localesRe, () => newArray);
+  updated = updated.replace(labelsRe, () => newLabels);
   return updated;
 }
 
@@ -356,10 +339,10 @@ function rewriteUiTs(input: SkinInput): string {
     console.error(`❌ Could not rewrite locale imports in ${filePath}. Aborting.`);
     process.exit(1);
   }
-  let updated = src.replace(importBlockRe, `${imports}\n`);
+  let updated = src.replace(importBlockRe, () => `${imports}\n`);
   updated = updated.replace(
     messagesRe,
-    `const messages: Record<Locale, Record<string, unknown>> = {\n${messagesEntries}\n};`,
+    () => `const messages: Record<Locale, Record<string, unknown>> = {\n${messagesEntries}\n};`,
   );
   return updated;
 }
@@ -746,21 +729,26 @@ async function main() {
     console.log(`   ✅ ${localePath}`);
   }
 
-  // Delete locale JSONs the forker did NOT choose — but ONLY the demo's own
-  // leftovers (en/ja). Those carry full demo-game translations (identity
-  // leak) and make `pnpm check-config` red on day one ("locale JSON exists
-  // but not in routing.ts"). Anything else — a locale the user added via a
-  // previous run or `pnpm new-locale` — may hold their own translation work,
-  // so a re-run must report it, never delete it.
+  // Delete locale JSONs the forker did NOT choose — but ONLY demo-named files
+  // (en/ja) that still CARRY demo content (site.name check, not just the
+  // filename): pristine demo leftovers are an identity leak and keep
+  // `pnpm check-config` red, but a file a previous run already rewrote for
+  // the forker's own game (they chose ja then, not now) is translation work —
+  // it takes the warn-and-keep path instead of a silent delete. Anything
+  // else — a locale the user added via a previous run or `pnpm new-locale` —
+  // is likewise reported, never deleted.
   if (!DRY_RUN && fs.existsSync(path.resolve(ROOT, 'src/locales'))) {
     const orphanLocales: string[] = [];
     for (const file of fs.readdirSync(path.resolve(ROOT, 'src/locales'))) {
       if (!file.endsWith('.json')) continue;
       const key = file.replace(/\.json$/, '');
       if (uniqueLocales.includes(key)) continue;
-      if (DEMO_LOCALES.includes(key)) {
+      if (
+        DEMO_LOCALES.includes(key) &&
+        isDemoLocaleContent(read(path.join('src/locales', file)))
+      ) {
         fs.unlinkSync(path.resolve(ROOT, 'src/locales', file));
-        console.log(`   🗑️  Removed src/locales/${file} (locale not chosen — demo translation leftover)`);
+        console.log(`   🗑️  Removed src/locales/${file} (locale not chosen — still demo translation leftover)`);
       } else {
         orphanLocales.push(file);
       }
@@ -768,8 +756,9 @@ async function main() {
     if (orphanLocales.length > 0) {
       console.warn(`\n   ⚠️  Kept ${orphanLocales.length} locale file(s) not in your chosen locales (${uniqueLocales.join(', ')}) — NOT deleted:`);
       for (const f of orphanLocales) console.warn(`      src/locales/${f}`);
-      console.warn('      These are not demo files and may hold your own translations. Delete them');
-      console.warn('      yourself if they are leftovers — until then `pnpm check-config` stays red.');
+      console.warn('      These were kept because they are either not demo files, or demo-named files you');
+      console.warn('      already rewrote for your own game — either way they may hold translation work.');
+      console.warn('      Delete them yourself if they are leftovers — until then `pnpm check-config` stays red.');
     }
   }
 

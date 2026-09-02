@@ -20,7 +20,9 @@ import {
   DEMO_ARTICLE_IMAGES,
   DEMO_COVERS,
   DEMO_GALLERY_IMAGES,
+  isDemoLocaleContent,
   rewriteLocaleJson,
+  rewriteSiteTs,
   rewriteWranglerVars,
   type SkinInput,
 } from '../scripts/lib/apply-rewrites';
@@ -184,5 +186,104 @@ describe('demo asset inventories stay in sync with setup.yml (drift has shipped 
   test('the three inventories do not overlap', () => {
     const all = [...DEMO_COVERS, ...DEMO_GALLERY_IMAGES, ...DEMO_ARTICLE_IMAGES];
     expect(new Set(all).size).toBe(all.length);
+  });
+});
+
+describe('rewriteSiteTs (quote/backslash-safe, $-expansion-proof site.ts rewriting)', () => {
+  const SITE_TS = [
+    "import type { SiteConfig } from '~/lib/site';",
+    '',
+    'export const site: SiteConfig = {',
+    "  name: 'Anvil Quest Wiki',",
+    "  shortName: 'AQ Wiki',",
+    "  description: 'demo description',",
+    "  domain: 'anvilwiki.pages.dev',",
+    "  tagline: 'demo tagline',",
+    "  legalNotice: 'demo notice',",
+    "  contactEmail: '',",
+    '  social: {',
+    "    official: 'https://example.com',",
+    '  },',
+    '  game: {',
+    "    name: 'Anvil Quest',",
+    "    platform: 'PC',",
+    "    developer: 'Forge Studios',",
+    "    genre: 'RPG',",
+    "    releaseDate: '2026-01-01',",
+    '  },',
+    '  ogImageWidth: 1200,',
+    '  ogImageHeight: 630,',
+    '};',
+    '',
+    'export const other = 1;',
+  ].join('\n');
+
+  test("an apostrophe in the game name cannot break the string literal", () => {
+    const out = rewriteSiteTs(SITE_TS, makeInput({ gameName: "Assassin's Creed Shadows" }));
+    expect(out).toContain("name: 'Assassin\\'s Creed Shadows Wiki'");
+  });
+
+  test('every free-text field is escaped, not just the historical three', () => {
+    const out = rewriteSiteTs(
+      SITE_TS,
+      makeInput({
+        shortName: "O'B",
+        domain: "x'y.dev",
+        platform: "Robl'o",
+        developer: "Dev's",
+        genre: "RPG'X",
+        releaseDate: "2026'",
+        officialUrl: "https://ex.com/'q",
+      }),
+    );
+    expect(out).toContain("shortName: 'O\\'B'");
+    expect(out).toContain("domain: 'x\\'y.dev'");
+    expect(out).toContain("official: 'https://ex.com/\\'q'");
+    expect(out).toContain("platform: 'Robl\\'o'");
+    expect(out).toContain("developer: 'Dev\\'s'");
+    expect(out).toContain("genre: 'RPG\\'X'");
+    expect(out).toContain("releaseDate: '2026\\''");
+  });
+
+  test("$& / $' from user input reach the file literally (function replacer)", () => {
+    const out = rewriteSiteTs(SITE_TS, makeInput({ gameName: 'A$&B', tagline: "t$'x" }));
+    expect(out).toContain("'A$&B Wiki'");
+    expect(out).toContain("'t$\\'x'");
+  });
+
+  test('a trailing backslash cannot eat the closing quote (backslash doubled first)', () => {
+    const out = rewriteSiteTs(SITE_TS, makeInput({ legalNotice: 'ends with backslash \\' }));
+    expect(out).toContain("'ends with backslash \\\\'");
+  });
+
+  test('no site block → null (caller aborts, file untouched)', () => {
+    expect(rewriteSiteTs('nothing here', makeInput())).toBeNull();
+  });
+});
+
+describe('demo locale deletion is content-aware (rebranded locales must survive re-runs)', () => {
+  test('the shipped demo locale files still carry the site.name marker (marker drift guard)', () => {
+    for (const locale of ['en', 'ja']) {
+      const raw = readFileSync(join(repoRoot, 'src/locales', `${locale}.json`), 'utf8');
+      expect(isDemoLocaleContent(raw)).toBe(true);
+    }
+  });
+
+  test('a rewritten demo-named locale is no longer demo content', () => {
+    const demoEn = readFileSync(join(repoRoot, 'src/locales/en.json'), 'utf8');
+    const rebranded = rewriteLocaleJson(makeInput(), 'ja', demoEn);
+    expect(isDemoLocaleContent(rebranded)).toBe(false);
+  });
+
+  test('the marker is site.name, not any stray "Anvil Quest" mention', () => {
+    expect(
+      isDemoLocaleContent('{"note": "mentions Anvil Quest", "site": {"name": "My Game Wiki"}}'),
+    ).toBe(false);
+    expect(isDemoLocaleContent('{"site": {"name": "Anvil Quest Wiki"}}')).toBe(true);
+  });
+
+  test('corrupt JSON or missing site.name is never classified as demo (never delete unreadable)', () => {
+    expect(isDemoLocaleContent('{ not json')).toBe(false);
+    expect(isDemoLocaleContent('{"nav": {"home": "Home"}}')).toBe(false);
   });
 });

@@ -147,6 +147,14 @@ if (existsSync(join(scratch, 'src/locales/ja.json'))) {
   fail('demo ja.json still present — unchosen demo locale was not removed on run 1');
 }
 writeFileSync(join(scratch, 'src/locales/ko.json'), JSON.stringify({ nav: { home: '홈' } }, null, 2), 'utf8');
+// A demo-NAMED locale whose content was already rewritten for the forker's own
+// game (a previous run chose ja) must also survive: auto-delete is content-aware
+// (site.name still demo?) — filename alone must not decide (24h-audit P2 follow-up).
+writeFileSync(
+  join(scratch, 'src/locales/ja.json'),
+  JSON.stringify({ site: { name: 'My Game Wiki' }, nav: { home: 'ホーム' } }, null, 2),
+  'utf8',
+);
 step('apply-template re-run (idempotent, keeps user locales)');
 const rerun = spawnSync(
   'pnpm',
@@ -177,8 +185,15 @@ if (!/not in your chosen locales/.test((rerun.stdout || '') + (rerun.stderr || '
 if (!existsSync(join(scratch, 'src/locales/ko.json'))) {
   fail('re-run DELETED src/locales/ko.json — user locale destroyed (audit P1 regression)');
 }
+if (!existsSync(join(scratch, 'src/locales/ja.json'))) {
+  fail('re-run DELETED the rebranded ja.json — content-aware check regressed to filename-only');
+}
+if (!/My Game Wiki/.test(readFileSync(join(scratch, 'src/locales/ja.json'), 'utf8'))) {
+  fail('re-run overwrote the rebranded ja.json site.name with demo/placeholder content');
+}
 // Heed the warning like a user would, so the gates below see a clean state.
 rmSync(join(scratch, 'src/locales/ko.json'));
+rmSync(join(scratch, 'src/locales/ja.json'));
 
 // 5. The fork's first build must succeed.
 step("pnpm build (the fork's first build must succeed)");

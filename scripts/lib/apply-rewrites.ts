@@ -2,10 +2,11 @@
  * apply-rewrites.ts — pure rewrite helpers for scripts/apply-template.ts.
  *
  * Extracted (verbatim where possible) so vitest can test them without
- * importing the interactive CLI: rewriteLocaleJson (locale JSON shapes),
- * rewriteWranglerVars (wrangler.toml [vars] reset), and the demo asset
- * inventories shared with the "Clear demo content" step in
- * .github/workflows/setup.yml. No fs/path access — callers own all IO.
+ * importing the interactive CLI: rewriteSiteTs (site.ts object literal),
+ * rewriteLocaleJson (locale JSON shapes), rewriteWranglerVars (wrangler.toml
+ * [vars] reset), the demo asset inventories shared with the "Clear demo
+ * content" step in .github/workflows/setup.yml, and the content-aware demo
+ * locale check. No fs/path access — callers own all IO.
  */
 
 
@@ -161,6 +162,51 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
 }
 
 
+/**
+ * Rewrite the `export const site: SiteConfig = { ... };` block in site.ts.
+ * Returns null when the block cannot be found — the caller aborts loudly
+ * without touching the file.
+ *
+ * Every user-supplied string is escaped for a single-quoted TS literal
+ * (backslash FIRST, then quotes — otherwise a trailing backslash escapes the
+ * closing quote and the file stops parsing) and inserted via a FUNCTION
+ * replacer: string-mode replace expands `$&`/`$'`/`$$` sequences from user
+ * input into the replacement, and an unescaped apostrophe in a game name
+ * like "Assassin's …" previously produced a site.ts that did not parse.
+ */
+export function rewriteSiteTs(src: string, input: SkinInput): string | null {
+  const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  const newSite = `export const site: SiteConfig = {
+  name: '${esc(input.gameName)} Wiki',
+  shortName: '${esc(input.shortName)}',
+  description: '${esc(input.description)}',
+  domain: '${esc(input.domain)}',
+  tagline: '${esc(input.tagline)}',
+  legalNotice: '${esc(input.legalNotice)}',
+  // Set a real address if you run no social channels — the contact page
+  // renders it as a mailto link.
+  contactEmail: '',
+  social: {
+    official: '${esc(input.officialUrl)}',
+  },
+  game: {
+    name: '${esc(input.gameName)}',
+    platform: '${esc(input.platform)}',
+    developer: '${esc(input.developer)}',
+    genre: '${esc(input.genre)}',
+    releaseDate: '${esc(input.releaseDate)}',
+  },
+  // og:image dims of the SHIPPED hero.webp — if you replace public/images/hero.webp,
+  // update these in src/config/site.ts to match (wrong dims mis-crop share cards).
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
+};`;
+  const siteRe = /export const site: SiteConfig = \{[\s\S]*?\n\};/;
+  if (!siteRe.test(src)) return null;
+  return src.replace(siteRe, () => newSite);
+}
+
+
 export function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: string): string {
   // Start from existing (if any) or a minimal skeleton; reset site/footer/nav/overview.
   let obj: Record<string, unknown> = {};
@@ -239,9 +285,11 @@ export function rewriteLocaleJson(input: SkinInput, _locale: string, existing?: 
  */
 export function rewriteWranglerVars(input: SkinInput, src: string): string | null {
   const filePath = 'wrangler.toml';
+  // TOML basic strings: escape backslash first, then the double quote.
+  const tomlStr = (s: string) => s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
   const newVars = `[vars]
 # Site (must include https:// protocol — Astro validates this as a URL)
-SITE_URL = "https://${input.domain}"
+SITE_URL = "https://${tomlStr(input.domain)}"
 # Giscus comments — blank = comments disabled until you fill your own values.
 # See docs/comments.md for how to get these from giscus.app.
 PUBLIC_GISCUS_REPO = ""
@@ -325,5 +373,24 @@ export const DEMO_ARTICLE_IMAGES = [
   'weapon-voidforge.png',
 ];
 
-/** Locale JSONs the demo itself ships — always safe to auto-delete. */
+/** Locale JSONs the demo itself ships — auto-deletable ONLY while still demo content. */
 export const DEMO_LOCALES = ['en', 'ja'];
+
+/**
+ * site.name values the demo's own locale JSONs ship (en and ja both use the
+ * same English site name). Content, not filename, decides deletion: a
+ * demo-named file the forker already rewrote for their own game (a previous
+ * run chose that locale) holds their translation work and must fall into the
+ * warn-and-keep path. Anything unclassifiable (corrupt JSON, missing
+ * site.name) is kept too — never delete what cannot be read.
+ */
+export const DEMO_SITE_NAMES = ['Anvil Quest Wiki'];
+
+export function isDemoLocaleContent(raw: string): boolean {
+  try {
+    const parsed = JSON.parse(raw) as { site?: { name?: unknown } };
+    return parsed?.site?.name !== undefined && DEMO_SITE_NAMES.includes(parsed.site.name as string);
+  } catch {
+    return false;
+  }
+}

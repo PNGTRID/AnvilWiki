@@ -48,7 +48,7 @@
 
 **保留不删（有意设计）**：favicon/hero 图等二进制资产（CLI 生成不了，脚手架下一步指引你手动换）；`docs/handbook/` 手册源码。
 
-**⚠️ 语言 JSON 分两类处理（重跑安全）**：未选择的语言里，**demo 自带的**（`ja.json`）会被**直接删除**——它们装载着完整的 demo 游戏翻译，留着是身份泄漏；且 `pnpm check-config` 会对「locale 文件存在但不在 routing.ts」报错，fork 第一天 CI 就是红的。**你自己创建的** locale 文件（之前运行本 CLI 或 `pnpm new-locale` 加的）则**只警告、绝不删除**——重跑不能毁掉你的翻译工作；看到「Kept N locale file(s)」警告后自行决定删除或把该语言加进所选列表，处理前 `pnpm check-config` 会一直是红的。
+**⚠️ 语言 JSON 分三类处理（重跑安全，按内容判定不只按文件名）**：未选择的语言里——① **demo 自带且仍是 demo 内容的**（`ja.json` 等，`site.name` 仍是 demo 站名）会被**直接删除**：它们装载着完整的 demo 游戏翻译，留着是身份泄漏，且 `pnpm check-config` 会对「locale 文件存在但不在 routing.ts」报错，fork 第一天 CI 就是红的；② **demo 文件名但内容已换成你游戏的**（比如上一轮运行选了 ja、这一轮没选）——内容判定发现 `site.name` 已不是 demo 站名，**只警告、绝不删除**；③ **你自己创建的** locale 文件（`pnpm new-locale` 加的等）同样**只警告、绝不删除**——重跑不能毁掉你的翻译工作。②③ 看到「Kept N locale file(s)」警告后自行决定删除或把该语言加进所选列表，处理前 `pnpm check-config` 会一直是红的。
 
 **逃生口**：`pnpm apply-template --dry-run`（只打印不写入）、`--no-clear-content`（保留 demo 文章）、`--keep-landing`（保留项目官网）、`--answers answers.json`（非交互模式，复制第二个站/CI 时用）。
 
