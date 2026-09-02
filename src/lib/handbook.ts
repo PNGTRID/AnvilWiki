@@ -53,6 +53,17 @@ export function parseHandbookId(id: string): ParsedHandbookId | null {
   return { locale, slug };
 }
 
+/** Full title → short nav label: text before the first colon; "附录 A · X" → X. */
+export function shortTitle(title: string): string {
+  const ascii = title.indexOf(':');
+  const full = title.indexOf('：');
+  const colon = ascii !== -1 && (full === -1 || ascii < full) ? ascii : full;
+  if (colon > 0) return title.slice(0, colon).trim();
+  const dot = title.indexOf(' · ');
+  if (dot > 0) return title.slice(dot + 3).trim();
+  return title;
+}
+
 /** Sort: learn manual first, then dev; ascending order inside each manual. */
 export function sortChapters<T extends ChapterLike>(chapters: T[]): T[] {
   return [...chapters].sort((a, b) => {

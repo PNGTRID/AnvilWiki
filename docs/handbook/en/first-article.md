@@ -1,5 +1,5 @@
 ---
-title: "Your First Page: One Hour of Play, One QA-Passing Guide"
+title: "Your First Guide: One Hour of Play, One QA-Passing Page"
 description: "Open the site folder in your AI assistant, play an hour, take 20 notes, paste the guide prompt. Frontmatter, the QA gate, and draft — plus the intent table."
 manual: learn
 order: 13

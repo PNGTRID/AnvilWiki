@@ -16,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 
 import {
   chaptersForLocale,
+  shortTitle,
   handbookPath,
   parseHandbookId,
   prevNext,
@@ -84,6 +85,27 @@ describe('handbook: en/zh parity (hard requirement)', () => {
         seen.set(key, file);
       }
     }
+  });
+});
+
+describe('shortTitle: nav label derivation', () => {
+  it('takes the text before the first colon', () => {
+    expect(shortTitle('去哪挖候选:每天 20 分钟,把候选池填到 10 个')).toBe('去哪挖候选');
+    expect(shortTitle('Run Your Site: See It Working in Three Steps')).toBe('Run Your Site');
+  });
+
+  it('prefers the earliest colon and handles full-width colons', () => {
+    expect(shortTitle('A:B:C')).toBe('A');
+    expect(shortTitle('开广告：时机与接入')).toBe('开广告');
+  });
+
+  it('appendix dot rule: keeps the part after " · "', () => {
+    expect(shortTitle('附录 A · 作死红线总检查表')).toBe('作死红线总检查表');
+    expect(shortTitle('Appendix A · The Red-Line Master List')).toBe('The Red-Line Master List');
+  });
+
+  it('falls back to the full title', () => {
+    expect(shortTitle('加栏目与加语言')).toBe('加栏目与加语言');
   });
 });
 

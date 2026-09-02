@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.0] — 2026-09-02
+
+**手册阅读体验优化：左侧目录短标题 + 三栏布局下探到 lg(1024px)。**
+
+### Added
+
+- **左侧手册树改用短标题**:`lib/handbook.ts` 新增 `shortTitle` 纯函数(取首个冒号前的重点段;附录取「 · 」后段;无冒号回退全标题),HandbookNav 桌面树与折叠态统一使用,4 条单测钉住。课程标题正文的完整标题不受影响(列表页/前课后课卡仍是全称)。
+- **三栏阅读布局下探 lg(1024px)**:HandbookChapter 网格在 1024-1279px 区间改用窄侧栏三栏(此前该区间右侧「本页目录」退化为文首静态折叠块、随页面滚走);TableOfContents 的 desktopAt 同步 lg——右侧目录在 ≥1024 即为粘性卡且高亮跟随滚动(scrollView spy 原本就有,此前的报告源于断点差 12px)。
+- 第 13 课标题微调:「第一篇攻略:…」(短标题「第一篇攻略」比「第一篇」达意)。
+
 ## [2.12.0] — 2026-09-02
 
 **手册教学法重构收官：开发手册 7 章→9 课 + 附录三件（学习手册 29 课 + 3 附录 + 开发手册 9 课,两册双语全部重建完毕）。**
@@ -907,7 +917,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.12.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.13.0...HEAD
+[2.13.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.12.0...v2.13.0
 [2.12.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.9.0...v2.10.0

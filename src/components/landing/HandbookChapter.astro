@@ -2,7 +2,7 @@
 /**
  * HandbookChapter — the chapter page body for /landing/docs/[slug].
  * Three-column layout from xl up: manual tree (HandbookNav) | chapter prose
- * | on-page TOC (reuses the wiki TableOfContents with desktopAt="xl").
+ * | on-page TOC (reuses the wiki TableOfContents with desktopAt="lg").
  * Below xl both trees collapse into <details> blocks around the content.
  * Renders breadcrumb, chapter meta, TL;DR card, prev/next within the same
  * manual, and an "Edit on GitHub" link. Labels come from landing.ts.
@@ -44,7 +44,7 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
 
 <section class="section">
   <div
-    class="mx-auto grid max-w-7xl grid-cols-1 justify-center gap-8 xl:grid-cols-[13rem_minmax(0,48rem)_13.5rem]"
+    class="mx-auto grid max-w-7xl grid-cols-1 justify-center gap-8 lg:grid-cols-[11.5rem_minmax(0,1fr)_11.5rem] xl:grid-cols-[13rem_minmax(0,48rem)_13.5rem]"
   >
     {/* Left: manual tree */}
     <HandbookNav chapters={chapters} currentId={chapter.id} locale={locale} t={t} />
@@ -101,8 +101,8 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
       )}
 
       {/* On-page TOC — collapsible below xl (the sticky right column takes over then) */}
-      <div class="mt-6 xl:hidden">
-        <TableOfContents headings={headings} heading={t.handbook.onThisPageLabel} desktopAt="xl" />
+      <div class="mt-6 lg:hidden">
+        <TableOfContents headings={headings} heading={t.handbook.onThisPageLabel} desktopAt="lg" />
       </div>
 
       <div
@@ -165,8 +165,8 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
     </article>
 
     {/* Right: on-page TOC (sticky) */}
-    <aside class="hidden xl:block">
-      <TableOfContents headings={headings} heading={t.handbook.onThisPageLabel} desktopAt="xl" />
+    <aside class="hidden lg:block">
+      <TableOfContents headings={headings} heading={t.handbook.onThisPageLabel} desktopAt="lg" />
     </aside>
   </div>
 </section>

@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.12.0';
+export const PROJECT_VERSION = '2.13.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} handbook redesign complete — the Learning Manual now reads 29 lessons in six stages plus three appendices (the red-line master list, the troubleshooting tree, the glossary and command sheet), and the Development Manual grew from 7 chapters to 9 (the new verify-your-changes lesson, the ops chapter split into AI ops / content pipeline / multi-site, and sync-and-contribute split in two). Both manuals, both languages, fully rebuilt.`,
+    text: `v${PROJECT_VERSION} handbook UX polish: the left manual tree now shows short titles (the part before the colon), and the three-column chapter layout — sticky manual tree plus the on-page table of contents with scroll-following highlight — now starts at 1024px instead of 1280px, so smaller windows keep both rails.`,
     href: RELEASES,
   },
   hero: {
@@ -732,7 +732,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 手册重构完成——学习手册 6 阶段 29 课+3 附录（作死红线总表/疑难排查树/术语与命令速查），开发手册 7 章→9 课（新增「改完怎么自证」，AI 运营拆为运营/内容管道/多站三课，同步与回流一拆二）。两本手册、双语、全部重建完毕。`,
+    text: `v${PROJECT_VERSION} 手册阅读体验优化：左侧目录改用短标题（取冒号前重点），三栏阅读布局的下探断点从 1280px 降到 1024px——更小的窗口也能同时保留左侧手册树和右侧「本页目录」（高亮跟随滚动）。`,
     href: RELEASES,
   },
   hero: {
