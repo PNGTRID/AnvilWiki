@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.0] — 2026-09-02
+
+**手册教学法重构收官：开发手册 7 章→9 课 + 附录三件（学习手册 29 课 + 3 附录 + 开发手册 9 课,两册双语全部重建完毕）。**
+
+### Added
+
+- **开发手册新增三课**:「改完怎么自证」(本地七命令+CI 八门禁+三流水线+安全/性能底线——原内容散在 development.md 与 ci-and-security,手册首次成课);「内容管道」(关键词 CSV→草稿 PR,自 ai-ops 拆出并扩写确定性生成器/门禁前置/三产线分工);「多站管理」(sites.toml 注册表+--all/--site+AI referrals+submit 拒绝 --all,自 ai-ops 拆出并扩写)。
+- **学习手册附录三件**:附录 A 作死红线总检查表(内容/AdSense/外链/版权隐私/工程五类,每条附为什么与正确替代);附录 B 疑难排查决策树(六症状:没收录/404/构建红/广告空白/统计没数/排名不涨);附录 C 术语表与命令速查(30+ 术语按主题归拢+20 条命令按场景分组)。
+
+### Changed
+
+- **sync-and-contribute 一拆二**:「同步上游」(三行命令+冲突口诀+版本号承诺)与「贡献回流」(五步贡献+展示墙);ci-and-security 内容并入「改完怎么自证」后移除;ai-ops 重写为纯运营课(多站/管道拆出),dev 手册 order 重排连续 1-9。
+- **计数收口**:README/docs README「重构分批上线」表述更新为最终形态(学习手册 6 阶段 29 课+3 附录、开发手册 9 课)。
+- 手册 interlink 末课互指(29 课结尾→开发手册 ai-ops 与附录;multi-site 结尾→weekly-ops 与附录)。
+
 ## [2.11.0] — 2026-09-02
 
 **手册教学法重构第四批：阶段 4+5「上线收录与变现经营」（学习手册 29 课完整收官）。**
@@ -892,7 +907,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.11.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.12.0...HEAD
+[2.12.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.8.0...v2.9.0

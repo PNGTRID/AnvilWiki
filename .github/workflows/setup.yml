@@ -102,8 +102,8 @@ jobs:
           # residue ships with the fork. Demo artwork is removed BY NAME —
           # never a wildcard or a whole directory (public/images/articles/ is
           # where fork authors put their own inline images). Keep this list in
-          # sync with DEMO_COVERS / DEMO_GALLERY_IMAGES / DEMO_ARTICLE_IMAGES
-          # in scripts/lib/apply-rewrites.ts — pinned by
+          # sync with DEMO_COVERS / DEMO_GALLERY_IMAGES / DEMO_ARTICLE_IMAGES /
+          # DEMO_PUBLIC_FILES in scripts/lib/apply-rewrites.ts — pinned by
           # tests/apply-template.test.ts.
           find src/content/wiki -name '*.mdx' -delete
           rm -f src/assets/gallery/beginner-class-picks.png \
@@ -122,7 +122,8 @@ jobs:
                 src/assets/covers/en-bosses-frostbound-monarch.png \
                 src/assets/covers/en-guides-forging-guide.png \
                 src/assets/covers/en-items-emberforged-armor-set.png \
-                src/assets/covers/en-items-forging-materials-guide.png
+                src/assets/covers/en-items-forging-materials-guide.png \
+                public/google8362d9398114b66b.html
           python3 - <<'EOF'
           import re
           p = 'src/config/authors.ts'

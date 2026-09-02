@@ -70,4 +70,4 @@ SITE_URL = "https://你的域名"
 
 ## 下一步
 
-仓库里那几条自动检查(CI)在守护什么、安全底线有哪些——[开发 5 · CI 门禁与安全](/zh/landing/docs/ci-and-security)。
+仓库里那几条自动检查(CI)在守护什么、安全底线有哪些——[改完怎么自证](/zh/landing/docs/verify-your-changes)一课。

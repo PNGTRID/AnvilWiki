@@ -47,7 +47,7 @@ AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕�
 
 ### 核心特性
 
-- 📚 **零基础双手册**:学习手册(重构为 6 阶段 29 课、分批上线)+ 开发手册,中英双语,从选游戏到赚到钱,每步 SOP + 可复制 AI 提示词([站内阅读](https://anvilwiki.pages.dev/zh/landing/docs))
+- 📚 **零基础双手册**:学习手册(6 阶段 29 课+3 附录)+ 开发手册(9 课),中英双语,从选游戏到赚到钱,每步 SOP + 可复制 AI 提示词([站内阅读](https://anvilwiki.pages.dev/zh/landing/docs))
 - 🤖 **AI 对话即产页**:内容技能随仓库分发(`.agent/skills/`),对 ZCode / Claude Code / Codex 说「根据这些笔记写篇攻略」,产出自动通过构建质检;批量产页走 **PR 门控管道**——AI 写、八道质量门禁验、你审完才合并([docs/content-pipeline.md](docs/content-pipeline.md))
 - 🧭 **一套工具管 N 个站**:`anvilwiki-ops`(npx 免安装 + MCP)让 AI 替你拉 GSC/Cloudflare 数据、给优化清单,并追踪 ChatGPT/Perplexity 等 **AI 引用来路**([docs/multi-site.md](docs/multi-site.md))
 - 🧰 **产能三件套**:`pnpm template-audit` 检查「这个站还能不能干净复制成下一个」、`pnpm bulk-new-posts` 从关键词清单批量铺内页草稿、`pnpm gen-covers` 自动生成 1200×675 封面(中日文标题自动配字体)

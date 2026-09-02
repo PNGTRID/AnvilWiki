@@ -373,6 +373,18 @@ export const DEMO_ARTICLE_IMAGES = [
   'weapon-voidforge.png',
 ];
 
+/**
+ * Upstream-owned domain-ops tokens at the public/ root — search-console
+ * verification for the DEMO property itself. Deleted by exact name: a fork
+ * verifying their own property generates a different random token filename,
+ * so this can never collide with user work. Keep in sync with the "Clear
+ * demo content" step in .github/workflows/setup.yml — pinned by
+ * tests/apply-template.test.ts.
+ */
+export const DEMO_PUBLIC_FILES = [
+  'google8362d9398114b66b.html',
+];
+
 /** Locale JSONs the demo itself ships — auto-deletable ONLY while still demo content. */
 export const DEMO_LOCALES = ['en', 'ja'];
 

@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.11.0';
+export const PROJECT_VERSION = '2.12.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} handbook redesign, batch four — the Learning Manual is complete at 29 lessons. Stages four and five rebuilt: launch and indexing (deploy, Google submission, the two counters, first-week readings), monetization and operations (ads timing, the three payout tasks, GA4 as an optional upgrade, the 30-minute freshness loop, site cloning, batch production, and the ranking close — one keyword per page plus trust and backlinks).`,
+    text: `v${PROJECT_VERSION} handbook redesign complete — the Learning Manual now reads 29 lessons in six stages plus three appendices (the red-line master list, the troubleshooting tree, the glossary and command sheet), and the Development Manual grew from 7 chapters to 9 (the new verify-your-changes lesson, the ops chapter split into AI ops / content pipeline / multi-site, and sync-and-contribute split in two). Both manuals, both languages, fully rebuilt.` ,
     href: RELEASES,
   },
   hero: {
@@ -732,7 +732,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 手册重构第四批——学习手册 29 课完整收官：阶段四五重建——上线与收录（部署/提交 Google/两个计数器/第一周读数）、变现与经营（广告时机/收款三件事/GA4 可选升级/每周 30 分钟保鲜/复制第二个站/批量铺页/选词做满/信任与外链）。`,
+    text: `v${PROJECT_VERSION} 手册重构完成——学习手册 6 阶段 29 课+3 附录（作死红线总表/疑难排查树/术语与命令速查），开发手册 7 章→9 课（新增「改完怎么自证」，AI 运营拆为运营/内容管道/多站三课，同步与回流一拆二）。两本手册、双语、全部重建完毕。`,
     href: RELEASES,
   },
   hero: {

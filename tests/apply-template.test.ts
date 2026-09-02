@@ -20,6 +20,7 @@ import {
   DEMO_ARTICLE_IMAGES,
   DEMO_COVERS,
   DEMO_GALLERY_IMAGES,
+  DEMO_PUBLIC_FILES,
   isDemoLocaleContent,
   rewriteLocaleJson,
   rewriteSiteTs,
@@ -170,8 +171,13 @@ describe('rewriteLocaleJson (P3: no unchosen-category leak, re-run labels kept)'
 describe('demo asset inventories stay in sync with setup.yml (drift has shipped before)', () => {
   test('every demo file is listed in the "Clear demo content" rm list — and nothing else', () => {
     const yml = readFileSync(join(repoRoot, '.github/workflows/setup.yml'), 'utf8');
-    const listed = new Set(yml.match(/[\w-]+\.png/g) || []);
-    const demo = new Set([...DEMO_COVERS, ...DEMO_GALLERY_IMAGES, ...DEMO_ARTICLE_IMAGES]);
+    const listed = new Set(yml.match(/[\w-]+\.(?:png|html)/g) || []);
+    const demo = new Set([
+      ...DEMO_COVERS,
+      ...DEMO_GALLERY_IMAGES,
+      ...DEMO_ARTICLE_IMAGES,
+      ...DEMO_PUBLIC_FILES,
+    ]);
     for (const name of demo) {
       expect(listed.has(name), `${name} missing from setup.yml rm list`).toBe(true);
     }
@@ -183,8 +189,13 @@ describe('demo asset inventories stay in sync with setup.yml (drift has shipped 
     expect(yml).not.toMatch(/rm -rf public\/images\/articles/);
   });
 
-  test('the three inventories do not overlap', () => {
-    const all = [...DEMO_COVERS, ...DEMO_GALLERY_IMAGES, ...DEMO_ARTICLE_IMAGES];
+  test('the inventories do not overlap', () => {
+    const all = [
+      ...DEMO_COVERS,
+      ...DEMO_GALLERY_IMAGES,
+      ...DEMO_ARTICLE_IMAGES,
+      ...DEMO_PUBLIC_FILES,
+    ];
     expect(new Set(all).size).toBe(all.length);
   });
 });

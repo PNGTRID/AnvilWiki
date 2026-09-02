@@ -40,6 +40,7 @@ import {
   DEMO_COVERS,
   DEMO_GALLERY_IMAGES,
   DEMO_LOCALES,
+  DEMO_PUBLIC_FILES,
   isDemoLocaleContent,
   rewriteLocaleJson,
   rewriteSiteTs as rewriteSiteTsBlock,
@@ -420,6 +421,17 @@ function clearDemoAssets() {
         if (!DRY_RUN) fs.unlinkSync(path.join(covers, file));
         removed++;
       }
+    }
+  }
+  // Upstream's own domain-ops tokens at the public/ root (search-console
+  // verification for the demo property) — dead weight in a fork. By exact
+  // name only: a fork verifying their own property uses a different random
+  // token filename and is never touched.
+  for (const file of DEMO_PUBLIC_FILES) {
+    const p = path.resolve(ROOT, 'public', file);
+    if (fs.existsSync(p)) {
+      if (!DRY_RUN) fs.unlinkSync(p);
+      removed++;
     }
   }
   return removed;

@@ -113,6 +113,12 @@ step('Assert output shape');
 for (const p of ['src/config/landing.ts', 'src/components/landing', 'src/pages/landing', 'src/pages/zh/landing']) {
   if (existsSync(join(scratch, p))) fail(`landing path still present after removal: ${p}`);
 }
+// Upstream's own search-console token must not ride along into forks
+// (DEMO_PUBLIC_FILES, cleared by clearDemoAssets). Vacuous until the file is
+// committed to the tree git archive snapshots — meaningful from then on.
+if (existsSync(join(scratch, 'public/google8362d9398114b66b.html'))) {
+  fail('demo search-console verification file still present — DEMO_PUBLIC_FILES was not cleared');
+}
 const en = JSON.parse(readFileSync(join(scratch, 'src/locales/en.json'), 'utf8'));
 const checks = [
   ['home.meta.title is a string', typeof en.home?.meta?.title === 'string'],

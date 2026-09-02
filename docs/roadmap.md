@@ -2,7 +2,7 @@
 
 > 本页回答两个问题:**这套模板过去按什么方向演化**(帮你判断它的成熟度和侧重),以及**接下来会往哪走**(帮你决定现在入场合不合适)。逐版本的完整变更见 [CHANGELOG](../CHANGELOG.md);正在做什么见 [PRD](./PRD.md) 第 14 章。
 
-> **当前版本:v2.11.0**(2026-09-02 发布)。发版历史与最新版本见 [Releases](https://github.com/PNGTRID/AnvilWiki/releases)。
+> **当前版本:v2.12.0**(2026-09-02 发布)。发版历史与最新版本见 [Releases](https://github.com/PNGTRID/AnvilWiki/releases)。
 
 ## 演化主线:从「建站模板」到「内容经营操作系统」
 

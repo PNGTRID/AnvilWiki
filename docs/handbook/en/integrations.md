@@ -70,4 +70,4 @@ A diagnostic trick (for when a setting seems to have no effect): temporarily add
 
 ## Next steps
 
-What the automated checks in the repo (CI) guard, and which security baselines exist — [Dev 5 · CI gates and security](/landing/docs/ci-and-security).
+What the automated checks in the repo (CI) guard, and which security baselines exist — the [Verify Your Changes lesson](/landing/docs/verify-your-changes).
