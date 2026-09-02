@@ -17,7 +17,7 @@ On day four of content production the urge arrives: have AI generate 50 pages an
 
 1. **A first release of 10-15 core pages is enough** — codes, tier list, guide queries first. That's precisely the output of the last four lessons: 1 codes page + 1 beginner guide + 3 boss guides + 1 tier list + 1 FAQ page + 3 window-query pages (Lesson 8's list, cashed in).
 2. **Add 10+ pages weekly** — `draft: true` drafts verified and flipped one by one; new query pages keep following the Lesson 8 list downward.
-3. **Batch production obeys the same rule** — when you later mass-produce dozens of pages (Lesson 23's pipeline), the discipline stands: **generate in batches, ship in batches**.
+3. **Batch production obeys the same rule** — when you later mass-produce dozens of pages (Lesson 27's pipeline), the discipline stands: **generate in batches, ship in batches**.
 
 ## When the batch is green, walk away
 

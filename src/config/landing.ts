@@ -125,7 +125,7 @@ export interface LandingContent {
     beginnerHint: { text: string; href: string };
     manuals: { learn: ManualCopy; dev: ManualCopy };
     chapterLabel: string;
-    /** Empty for en ("Chapter 3"); "章" for zh ("第 3 章"). */
+    /** Empty for en ("Lesson 3"); "课" for zh ("第 3 课"). */
     chapterSuffix: string;
     backToHub: string;
     prevLabel: string;
@@ -616,7 +616,7 @@ pnpm install && pnpm dev`,
         description:
           'Push to GitHub and connect Cloudflare Pages — the Astro build is auto-detected; free unlimited bandwidth + global CDN.',
         command: 'pnpm build && git push',
-        linkLabel: 'Ch.5 · Put it online',
+        linkLabel: 'Lesson 18 · Take it live',
         href: '/landing/docs/put-site-online/',
       },
       {
@@ -624,7 +624,7 @@ pnpm install && pnpm dev`,
         description:
           'A weekly audit workflow flags stale pages, codes skills keep redemption pages current, and upstream updates sync cleanly.',
         command: 'pnpm refresh-audit',
-        linkLabel: 'Ch.8 · Stay fresh',
+        linkLabel: 'Lesson 25 · Stay fresh',
         href: '/landing/docs/weekly-ops/',
       },
     ],
@@ -638,7 +638,7 @@ pnpm install && pnpm dev`,
     hubSubtitle:
       'Two separate hands-on manuals, written for complete beginners: the Learning Manual walks you from game selection to a live, indexed, monetized wiki — then shows you how to templatize it, batch-produce inner pages, and win rankings and AI citations; the Development Manual covers customization and engineering. Every step is a SOP with copy-paste AI prompts.',
     beginnerHint: {
-      text: 'Complete beginner? Start with Learning Manual Chapter 1 — pick your game',
+      text: 'Complete beginner? Start with the Pick & Validate stage — find a game worth writing about',
       href: '/landing/docs/find-candidates/',
     },
     manuals: {
@@ -660,13 +660,13 @@ pnpm install && pnpm dev`,
     nextLabel: 'Next',
     editLabel: 'Edit on GitHub',
     updatedLabel: 'Updated',
-    readLabel: 'Read chapter',
+    readLabel: 'Read lesson',
     tldrLabel: 'TL;DR',
     onThisPageLabel: 'On this page',
     manualsLabel: 'Manual contents',
     roadmap: {
       title: 'Building a game wiki: the whole job at a glance',
-      hint: 'Ten jobs from zero to earning. Click any job to jump to the chapter that walks you through it step by step.',
+      hint: 'Ten jobs from zero to earning. Click any job to jump to the lesson that walks you through it step by step.',
       items: [
         { label: 'Pick the right game', time: '2 days', href: '/landing/docs/find-candidates/' },
         { label: 'Install the 6 tools', time: '30 min', href: '/landing/docs/install-tools/' },
@@ -1044,7 +1044,7 @@ pnpm install && pnpm dev`,
         description:
           '推到 GitHub、连接 Cloudflare Pages——自动识别 Astro 构建,免费无限带宽 + 全球 CDN。',
         command: 'pnpm build && git push',
-        linkLabel: '第 5 章·免费上线',
+        linkLabel: '课 18 · 网站上线',
         href: '/zh/landing/docs/put-site-online/',
       },
       {
@@ -1052,7 +1052,7 @@ pnpm install && pnpm dev`,
         description:
           '每周审计工作流自动标记过期页面,兑换码技能守住长尾流量,上游更新随时可同步。',
         command: 'pnpm refresh-audit',
-        linkLabel: '第 8 章·每周保鲜',
+        linkLabel: '课 25 · 每周保鲜',
         href: '/zh/landing/docs/weekly-ops/',
       },
     ],
@@ -1066,7 +1066,7 @@ pnpm install && pnpm dev`,
     hubSubtitle:
       '两本相互独立的实操手册,按完全零基础标准编写:学习手册带你从选游戏走到上线、收录、变现,再教你把站打磨成模板、批量铺内页放大、把排名和 AI 引用做上去;开发手册覆盖定制与工程。每一步都是 SOP + 可复制的 AI 提示词。',
     beginnerHint: {
-      text: '完全零基础?从学习手册第 1 章「选对游戏」开始',
+      text: '完全零基础?从学习手册「选品找词」阶段开始',
       href: '/zh/landing/docs/find-candidates/',
     },
     manuals: {
@@ -1084,17 +1084,17 @@ pnpm install && pnpm dev`,
     chapterLabel: '第',
     chapterSuffix: '课',
     backToHub: '全部文档',
-    prevLabel: '上一章',
-    nextLabel: '下一章',
+    prevLabel: '上一课',
+    nextLabel: '下一课',
     editLabel: '在 GitHub 上编辑',
     updatedLabel: '更新于',
-    readLabel: '阅读本章',
+    readLabel: '阅读本课',
     tldrLabel: '太长不看',
     onThisPageLabel: '本页目录',
     manualsLabel: '手册目录',
     roadmap: {
       title: '建一个游戏 wiki 站:全部工作一览',
-      hint: '从零到赚钱一共 10 件事。点任意一项,直接跳到手把手教你的那一章。',
+      hint: '从零到赚钱一共 10 件事。点任意一项,直接跳到手把手教你的那一课。',
       items: [
         { label: '选对游戏', time: '2 天', href: '/zh/landing/docs/find-candidates/' },
         { label: '装好 6 样工具', time: '30 分钟', href: '/zh/landing/docs/install-tools/' },

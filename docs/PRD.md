@@ -292,7 +292,7 @@ anvilwiki/
 ├── LICENSE / CONTRIBUTING.md / CHANGELOG.md
 ├── docs/
 │   ├── PRD.md                    # ⭐ 本文档
-│   ├── handbook/<locale>/<slug>.md  # ⭐ 站内文档中心源码（learn 11 章 + dev 7 章，en/zh；fork 保留）
+│   ├── handbook/<locale>/<slug>.md  # ⭐ 站内文档中心源码（learn 29 课+3 附录 + dev 9 课，en/zh；fork 保留）
 │   ├── deployment.md / apply-template.md / content-format.md
 │   ├── game-selection.md / staying-up-to-date.md / development.md / seo.md
 │   └── superpowers/              # specs + plans（架构决策存档）
@@ -1062,7 +1062,7 @@ const show = !!(client && slot);
 
 **套用模板** = 把通用 AnvilWiki 模板变成特定游戏的站点。只改配置层和内容层，代码层不动。
 
-完整的配置参考见 [`docs/apply-template.md`](./apply-template.md)——按文件组织，你要改什么就查对应章节。也可用 `pnpm apply-template` CLI 自动完成基础配置。第一个站跑通后、复制下一个站前，用 `pnpm template-audit` 检查模板健康度（见学习手册第 9 章）。
+完整的配置参考见 [`docs/apply-template.md`](./apply-template.md)——按文件组织，你要改什么就查对应章节。也可用 `pnpm apply-template` CLI 自动完成基础配置。第一个站跑通后、复制下一个站前，用 `pnpm template-audit` 检查模板健康度（见学习手册课 26「复制第二个站」）。
 
 ### 11.2 改动对象与 AnvilWiki 路径对照
 
@@ -1375,7 +1375,7 @@ describe('sitemap', () => {
 |---|---|---|
 | README.md（中英双语） | 所有用户，新手入门 | 仓库根目录 |
 | docs/README.md | 文档中心索引（按角色与时机组织，附阅读路径） | docs/ |
-| docs/handbook/（中英 18+18 篇） | 零基础站长（learn 11 章）/ 定制者（dev 7 章）；站内 `/landing/docs` 渲染同一内容 | docs/handbook/ |
+| docs/handbook/（中英 41+41 篇） | 零基础站长（learn 29 课+3 附录）/ 定制者（dev 9 课）；站内 `/landing/docs` 渲染同一内容 | docs/handbook/ |
 | docs/game-selection.md | 想建站赚钱的人：选品漏斗 + 首日 10 页 | docs/ |
 | docs/sourcing.md | 挖词 9 渠道 + 意图满足度判断（v2.1.0） | docs/ |
 | requirements/（2 张填空模板） | 产页前素材准备：事实来源表 + 对标参考表（v2.1.0） | 仓库根 requirements/ |
@@ -1399,7 +1399,7 @@ describe('sitemap', () => {
 - **官方 demo**：`anvilwiki.pages.dev`，用虚构游戏 "Anvil Quest" 做一个完整 demo 站。
 - **源码**：demo 内容就在本仓库内（`src/content/wiki/`，英文在根、日文带前缀）——fork 后由 `pnpm apply-template` / setup 工作流整体替换。
 - **目的**：让用户直观看到 AnvilWiki 长什么样、性能如何。
-- **文档中心**：站内 `/landing/docs` 双手册（learn 11 章 + dev 7 章，中英），markdown 源在 `docs/handbook/`，fork 保留。
+- **文档中心**：站内 `/landing/docs` 双手册（learn 29 课+3 附录 + dev 9 课，中英），markdown 源在 `docs/handbook/`，fork 保留。
 
 ### 15.4 社区运营
 

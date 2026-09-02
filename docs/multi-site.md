@@ -54,4 +54,4 @@ MCP 侧:5 个工具(doctor/metrics/audit/insights/submit_pr)都接受可选 `sit
 
 ## 新站的正确打开方式
 
-第二个站依然是「复制仓库 + `pnpm template-audit` 健康检查 + `pnpm apply-template` 重 branding」(学习手册第 9 章),然后 `anvil-ops sites add` 把它纳入统一运营。多站没有魔法:**每个站仍是独立的 git 仓库 + 独立的 Cloudflare Pages 项目**,统一的只是观测层。
+第二个站依然是「复制仓库 + `pnpm template-audit` 健康检查 + `pnpm apply-template` 重 branding」(学习手册课 26「复制第二个站」),然后 `anvil-ops sites add` 把它纳入统一运营。多站没有魔法:**每个站仍是独立的 git 仓库 + 独立的 Cloudflare Pages 项目**,统一的只是观测层。
