@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.0] — 2026-09-02
+
+**手册教学法重构第二批：阶段 2「把站立起来」（4 课 × 中英）+ 开发手册重编号。**
+
+### Added
+
+- **课 10「把站跑起来」/ 课 11「换成你的游戏」**：旧「复制模板,跑起你的站」一拆二——fork/clone/`pnpm dev` 三步先跑通样品站独立成课;apply-template 15 题问答对照表、`--dry-run` 预览、Initialize AnvilWiki「只做收尾清理」警示、favicon/`pnpm gen-assets` 图标支线、亲眼验收清单独立成课;`docs/apply-template.md` 降为进阶参考链接。
+- **课 09「装好 6 样工具」按新骨架重写**：⊕补 GitHub 两步验证与恢复码 30 秒（原全手册零覆盖；定位=账号是站点/内容/广告费的保险柜），验收清单加 2FA 项。
+- **课 12「主题与门面」自开发手册调入学习手册**（order 12，选修定位：apply-template 已自动换色，本课教「8 行变量为什么一起换」的规矩与首页文案的 JSON 改法）。
+
+### Changed
+
+- **学习手册 order 重排**：阶段 3-5 旧章顺延 13-20，学习手册现为连续 1-20；开发手册移出 theme-and-homepage 后重编号为连续 1-6。
+- **launch-your-site slug 移除**，站内引用全部改向 run-your-site / rebrand-your-site：landing.ts 8 处卡片与 devGuide 五步链接（标签「第 3 章/Ch.3」→「课 N/Lesson N」）、install-tools 下一课链接。
+- **architecture / categories-and-locales 对主题课的「开发 3」引用**改为「学习手册『主题与门面』一课」；**ai-ops 结尾开发地图**去掉主题步。
+
+### 剩余批次
+
+阶段 3 内容生产、阶段 4 上线收录、阶段 5 变现经营（含 GA4 独立成课、外链课拆分、五处折叠随课落地）、开发手册 7 章→9 课定案、附录三件。
+
 ## [2.8.0] — 2026-09-02
 
 **手册教学法重构第一批：学习手册「选品找词」线（阶段 0+1，8 课 × 中英）+ 阶段化架构落地。**
@@ -831,7 +851,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.8.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.9.0...HEAD
+[2.9.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.8.0...v2.9.0
 [2.8.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.1...v2.8.0
 [2.7.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.7.0...v2.7.1
 [2.7.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.6.3...v2.7.0

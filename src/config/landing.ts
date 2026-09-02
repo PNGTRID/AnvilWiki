@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.8.0';
+export const PROJECT_VERSION = '2.9.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,7 +271,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} handbook redesign, batch one — the Learning Manual's picking-and-validating line is rebuilt as eight standalone lessons: stage 0 (how the business works + the full map with three rules for briefing AI) and stage 1 (sourcing candidates, reading Trends, reading the results page, search intent with a full worked example, scoring and deciding, the day-one 10-page list). Chapters now group by stage, titles no longer carry hardcoded numbers, and the intent-satisfaction check that used to live only in a GitHub doc is taught inside the manual.`,
+    text: `v${PROJECT_VERSION} handbook redesign, batch two — stage two "stand it up" rebuilt: the tools lesson now opens with GitHub two-factor auth and recovery codes (your account is the vault for site, content, and ad revenue); the old launch chapter is split into "run your site" (fork → clone → pnpm dev) and "make it yours" (the full apply-template Q&A table); and theme-and-homepage moves from the Development Manual into the Learning Manual as an elective. The Learning Manual now reads lessons 1-20.`,
     href: RELEASES,
   },
   hero: {
@@ -571,7 +571,7 @@ pnpm install && pnpm dev`,
         icon: 'lucide:palette',
         title: 'Apply Template',
         description: 'Fork the template and swap in your game — one guided command.',
-        href: '/landing/docs/launch-your-site/',
+        href: '/landing/docs/rebrand-your-site/',
       },
       {
         icon: 'lucide:search',
@@ -592,16 +592,16 @@ pnpm install && pnpm dev`,
         description:
           'Clone your fork and start the dev server — the demo wiki (fictional game "Anvil Quest") works out of the box.',
         command: 'pnpm install && pnpm dev',
-        linkLabel: 'Ch.3 · Launch your site',
-        href: '/landing/docs/launch-your-site/',
+        linkLabel: 'Lesson 10 · Run your site',
+        href: '/landing/docs/run-your-site/',
       },
       {
         title: 'Make it yours',
         description:
           'One interactive CLI swaps game identity, theme color, locales and nav — and resets demo values (incl. wrangler.toml).',
         command: 'pnpm apply-template',
-        linkLabel: 'Ch.3 · Apply the template',
-        href: '/landing/docs/launch-your-site/',
+        linkLabel: 'Lesson 11 · Make it yours',
+        href: '/landing/docs/rebrand-your-site/',
       },
       {
         title: 'Write pages by chatting',
@@ -670,7 +670,7 @@ pnpm install && pnpm dev`,
       items: [
         { label: 'Pick the right game', time: '2 days', href: '/landing/docs/find-candidates/' },
         { label: 'Install the 6 tools', time: '30 min', href: '/landing/docs/install-tools/' },
-        { label: 'Turn the template into your site', time: '30 min', href: '/landing/docs/launch-your-site/' },
+        { label: 'Turn the template into your site', time: '30 min', href: '/landing/docs/rebrand-your-site/' },
         { label: 'Write the first 10 pages with AI', time: '1 day', href: '/landing/docs/first-10-pages/' },
         { label: 'Put the site online (free hosting)', time: '15 min', href: '/landing/docs/put-site-online/' },
         { label: 'Register with Google (GSC + sitemap)', time: '20 min', href: '/landing/docs/get-on-google/' },
@@ -732,7 +732,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 手册重构第一批——学习手册「选品找词」线重建为 8 篇独立成课：阶段 0（这门生意怎么赚钱+全程地图与 AI 布置任务三招）和阶段 1（挖候选/看懂 Trends/读懂结果页/意图满足度完整案例/打分拍板/首日 10 页清单）。手册按阶段分组，标题不再硬编码章号，原本只存在于 GitHub 文档里的「意图满足度」检查法现在手册内直接教。`,
+    text: `v${PROJECT_VERSION} 手册重构第二批——阶段二「把站立起来」重建：装工具课开头补 GitHub 两步验证+恢复码（账号是站点、内容、广告费的保险柜）；旧「复制模板跑起你的站」一拆二为「把站跑起来」（fork→clone→pnpm dev）和「换成你的游戏」（完整 apply-template 问答表）；主题与门面从开发手册调入学习手册（选修课）。学习手册前 20 课就位。`,
     href: RELEASES,
   },
   hero: {
@@ -1001,7 +1001,7 @@ pnpm install && pnpm dev`,
         icon: 'lucide:palette',
         title: '套用模板',
         description: 'Fork 模板,一条问答式命令换成你的游戏。',
-        href: '/zh/landing/docs/launch-your-site/',
+        href: '/zh/landing/docs/rebrand-your-site/',
       },
       {
         icon: 'lucide:search',
@@ -1020,16 +1020,16 @@ pnpm install && pnpm dev`,
         title: 'Fork 并本地跑起来',
         description: '克隆你的 fork、启动开发服务器——demo wiki(虚构游戏「Anvil Quest」)开箱即用。',
         command: 'pnpm install && pnpm dev',
-        linkLabel: '第 3 章·建起你的站',
-        href: '/zh/landing/docs/launch-your-site/',
+        linkLabel: '课 10 · 把站跑起来',
+        href: '/zh/landing/docs/run-your-site/',
       },
       {
         title: '换成你的游戏',
         description:
           '一条交互式 CLI 替换游戏信息、主题色、多语言与导航,并重置 demo 配置(含 wrangler.toml)。',
         command: 'pnpm apply-template',
-        linkLabel: '第 3 章·换皮命令',
-        href: '/zh/landing/docs/launch-your-site/',
+        linkLabel: '课 11 · 换成你的游戏',
+        href: '/zh/landing/docs/rebrand-your-site/',
       },
       {
         title: '和 AI 对话产页',
@@ -1098,7 +1098,7 @@ pnpm install && pnpm dev`,
       items: [
         { label: '选对游戏', time: '2 天', href: '/zh/landing/docs/find-candidates/' },
         { label: '装好 6 样工具', time: '30 分钟', href: '/zh/landing/docs/install-tools/' },
-        { label: '把模板变成你的站', time: '30 分钟', href: '/zh/landing/docs/launch-your-site/' },
+        { label: '把模板变成你的站', time: '30 分钟', href: '/zh/landing/docs/rebrand-your-site/' },
         { label: '用 AI 写首日 10 页', time: '1 天', href: '/zh/landing/docs/first-10-pages/' },
         { label: '网站上线(免费托管)', time: '15 分钟', href: '/zh/landing/docs/put-site-online/' },
         { label: '在 Google 登记(站长后台+目录)', time: '20 分钟', href: '/zh/landing/docs/get-on-google/' },
