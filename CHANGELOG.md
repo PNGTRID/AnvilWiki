@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.14.1] — 2026-09-03
+
+**文档中心顶栏优化：搜索触发器升级为品牌组旁的加宽搜索胶囊。**
+
 ### Changed
 
-- **文档中心搜索触发器升级**:SearchButton 增 `variant='icon'|'field'`(默认 icon,wiki SiteHeader/404 零改动);docs header 的搜索框改为加宽胶囊——占位文字(sm+,zh「搜索手册文档…」)+ ⌘K 提示(md+),窄屏退化为图标,置于品牌组之后 flex 撑开(max-w-xs)——原小图标挤在右侧不显眼(用户反馈)。
+- **文档中心搜索触发器升级**:SearchButton 增 `variant='icon'|'field'`(默认 icon,wiki SiteHeader/404 零改动);docs header 的搜索框改为加宽胶囊——占位文字(sm+,zh「搜索手册文档…」来自 landing.ts search 段)+ ⌘K 提示(md+),窄屏退化为图标,置于品牌组之后 flex 撑开(max-w-xs)——原小图标挤在右侧不显眼(用户反馈)。营销 landing 与 wiki 侧均不受影响。
 
 ## [2.14.0] — 2026-09-03
 
@@ -936,7 +940,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.1...HEAD
+[2.14.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.0...v2.14.1
 [2.14.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.13.0...v2.14.0
 [2.13.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.12.0...v2.13.0
 [2.12.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.11.0...v2.12.0

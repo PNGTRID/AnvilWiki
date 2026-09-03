@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.14.0';
+export const PROJECT_VERSION = '2.14.1';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -279,7 +279,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} docs-center search + GSC guidance: all 41 handbook lessons × EN/ZH are now searchable site-wide (Pagefind), the AI-ops lesson is renamed to surface its GSC API setup walkthrough, and \`anvil-ops doctor\` links the guide when GSC isn't configured.`,
+    text: `v${PROJECT_VERSION} docs header polish: the docs-center search trigger is now a prominent search field right next to the brand — placeholder text, ⌘K hint, icon-only on narrow screens.`,
     href: RELEASES,
   },
   hero: {
@@ -746,7 +746,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 文档中心搜索 + GSC 引导：手册 41 课×双语全站可搜（Pagefind），开发手册 AI 运营课改名露出 GSC API 接入教程，anvil-ops doctor 在 GSC 未配置时直接给出教程链接。`,
+    text: `v${PROJECT_VERSION} 文档中心顶栏优化：搜索框升级为品牌组旁的加宽搜索胶囊（带占位文字与 ⌘K 提示，窄屏自动退化为图标）。`,
     href: RELEASES,
   },
   hero: {
