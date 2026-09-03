@@ -29,8 +29,15 @@ interface Props {
   locale?: string;
   /** String overrides for non-wiki locales (see locale note above). */
   labels?: { trigger?: string; placeholder?: string; noResults?: string; close?: string };
+  /**
+   * 'icon' (default) = compact header icon button (wiki SiteHeader).
+   * 'field' = prominent search pill for the docs-center header, placed
+   * right after the brand: grows with flex, shows the placeholder text
+   * (sm+) and a ⌘K hint (md+); icon-only below sm.
+   */
+  variant?: 'icon' | 'field';
 }
-const { locale = defaultLocale, labels } = Astro.props;
+const { locale = defaultLocale, labels, variant = 'icon' } = Astro.props;
 const ui = getUi(locale);
 const search = ui.search as Record<string, string>;
 const nav = ui.nav as Record<string, string>;
@@ -40,15 +47,32 @@ const placeholder = labels?.placeholder ?? search.placeholder ?? 'Search...';
 const closeLabel = labels?.close ?? nav.close ?? 'Close';
 ---
 
-{/* Trigger button */}
+{/* Trigger button — icon variant matches the wiki SiteHeader look;
+    field variant is the docs-center search pill. */}
 <button
   id="search-trigger"
   type="button"
   aria-label={btnLabel}
   title={btnLabel}
-  class="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground transition hover:bg-muted"
+  class:list={[
+    variant === 'field'
+      ? 'inline-flex h-9 w-9 items-center justify-center gap-2 rounded-md border border-border bg-muted/40 text-muted-foreground transition hover:border-nav/40 hover:text-nav sm:w-auto sm:min-w-0 sm:flex-1 sm:justify-start sm:px-3 sm:max-w-xs'
+      : 'inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground transition hover:bg-muted',
+  ]}
 >
-  <Icon name="lucide:search" class="h-5 w-5" />
+  <Icon name="lucide:search" class="h-5 w-5 shrink-0" />
+  {
+    variant === 'field' && (
+      <>
+        <span class="hidden min-w-0 flex-1 truncate text-left text-sm sm:inline">
+          {placeholder}
+        </span>
+        <kbd class="hidden shrink-0 rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] font-medium md:inline">
+          ⌘K
+        </kbd>
+      </>
+    )
+  }
 </button>
 
 {/* Command palette modal */}
