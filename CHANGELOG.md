@@ -7,8 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.14.0] — 2026-09-03
+
+**文档中心接入全站搜索（手册 41 课×双语）+ GSC API 接入引导三层修复。**
+
+### Added
+
+- **手册×双语接入全站搜索**:HandbookChapter `<article>` 加 `data-pagefind-body`(面包屑/页脚 `data-pagefind-ignore`,H1 加 `data-pagefind-meta` 对齐 ArticlePage)——Pagefind 的规则是站点任一页面标记 body 后**未标记页面整体排除出索引**,此前只有文章页标记,落地页与两本手册对站内搜索完全隐形。Pagefind 按 `<html lang>` 自动分语言索引,zh 页搜出 zh 结果;wiki 里搜「GSC」也能命中手册课。SearchButton 增可选 `labels` 覆盖(zh 不是 wiki locale,`getUi('zh')` 会回退英文),locale 放宽为 string——wiki 侧 SiteHeader/404 调用零改动;landing.ts 接口+双语数据增 `search` 段,LandingLayout 增 `search` 开关,8 个 docs 路由(en+zh × hub/learn/dev/[slug])开启,营销 landing 保持无搜索。契约测试钉住 `data-pagefind-body`:丢了它全部手册静默退出索引而所有门禁仍绿。
+- **shortTitle 可选 frontmatter 覆盖字段**:`lib/handbook.ts` `shortTitle(title, override?)` + handbook schema `shortTitle`(≤40 字符,optional)+ HandbookNav 两处消费,+2 单测——冒号派生法永远无法在侧边栏露出只在标题后半段的关键词。
+
 ### Fixed
 
+- **GSC API 接入引导三层修复**(用户问「模板有没有 GSC API 接入指引」而 AI 回答含糊:内容一直在开发手册第 7 课,但三层引导失灵):① 第 7 课改名×双语「让 AI 替你运营:GSC 数据接入、metrics 与 MCP」/"Run Ops with AI: GSC setup, metrics & MCP",短标题「AI 运营与 GSC 接入」/"AI ops & GSC setup" 露出侧边栏,H2 改「GSC API 接入(5 分钟)+ CF Web Analytics(2 分钟)」露出页内 TOC,slug `ai-ops` 不动互链零影响,contribute-back 双语链接文本同步;② 三处指路——docs/README 找文档决策树新行、deployment.md 数据复盘节链教程(显式区分 GSC 站点验证≠API 接入)、tools/anvil-ops README GSC setup 节反链手册(GitHub 绝对链,npm README 相对链会断);③ `anvil-ops doctor` gsc-config 缺配置 detail 追加教程 URL(`fix` 字段仅 FAIL 渲染,env 门控 `ok:true` 契约不变,测试钉 URL 断言)。
 - **手册列表页 stage 分组对「隔断后重现」健壮**:HandbookManualList 的表头判断从「记录最近出现过的 stage 标签」改为对照**紧邻上一课**——同一 stage 隔着一篇无 stage 课文再次出现时,原实现第二段会静默丢失表头(当前 32 课数据 stage 全连续,故线上从未触发,属潜伏缺陷)。纯函数 `manualListRows` 下沉 `src/lib/handbook.ts` 直测(沿用 lib/apply-rewrites 先例),+3 条单测(隔断重现/连续分组/无 stage 扁平)。
 - 同批清掉 v2.13.0 断点 xl→lg 改动遗留的 7 处注释漂移(HandbookChapter×3、HandbookNav×3、TableOfContents JSDoc×1)——纯注释,零行为变更。
 
@@ -922,7 +932,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.13.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.0...HEAD
+[2.14.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.13.0...v2.14.0
 [2.13.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.12.0...v2.13.0
 [2.12.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.10.0...v2.11.0
