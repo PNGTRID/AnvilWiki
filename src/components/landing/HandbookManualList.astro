@@ -9,6 +9,7 @@ import { Icon } from 'astro-icon/components';
 import { type LandingContent } from '~/config/landing';
 import {
   handbookPath,
+  manualListRows,
   parseHandbookId,
   type HandbookEntry,
   type HandbookLocale,
@@ -28,21 +29,10 @@ const manualIcons: Record<HandbookManual, string> = {
 };
 const items = chapters.filter((c) => c.data.manual === manual);
 
-/**
- * Flatten into render rows, inserting a stage header whenever the chapter's
- * `stage` label changes (chapters without a stage render flat — dev manual).
- * `items` arrives order-sorted, so consecutive same-stage chapters group up.
- */
-type Row = { type: 'stage'; label: string } | { type: 'chapter'; chapter: HandbookEntry };
-const rows: Row[] = [];
-let lastStage: string | undefined;
-for (const chapter of items) {
-  if (chapter.data.stage && chapter.data.stage !== lastStage) {
-    lastStage = chapter.data.stage;
-    rows.push({ type: 'stage', label: chapter.data.stage });
-  }
-  rows.push({ type: 'chapter', chapter });
-}
+// Stage header between chapters whose `stage` label changes vs the previous
+// chapter; chapters without a stage render flat (dev manual). `items` arrives
+// order-sorted (chaptersForLocale), so consecutive same-stage chapters group up.
+const rows = manualListRows(items);
 ---
 
 <section class="section">

@@ -80,6 +80,28 @@ export function chaptersForLocale<T extends ChapterLike>(chapters: T[], locale: 
 }
 
 /**
+ * Flatten an order-sorted chapter list into render rows for the manual list
+ * page: a stage header whenever a chapter's `stage` label differs from the
+ * immediately preceding chapter's (chapters without a stage render flat —
+ * dev manual). Compare against the previous chapter instead of tracking the
+ * last seen label, so a stage that resumes after an unstaged chapter keeps
+ * its header.
+ */
+export type ManualListRow<T> = { type: 'stage'; label: string } | { type: 'chapter'; chapter: T };
+
+export function manualListRows<T extends { data: { stage?: string } }>(items: T[]): ManualListRow<T>[] {
+  const rows: ManualListRow<T>[] = [];
+  for (let i = 0; i < items.length; i++) {
+    const stage = items[i].data.stage;
+    if (stage && stage !== items[i - 1]?.data.stage) {
+      rows.push({ type: 'stage', label: stage });
+    }
+    rows.push({ type: 'chapter', chapter: items[i] });
+  }
+  return rows;
+}
+
+/**
  * Previous/next neighbors of a chapter, scoped to its own manual (no
  * cross-manual navigation — each handbook reads as one linear path).
  * Pass an already locale-filtered list.

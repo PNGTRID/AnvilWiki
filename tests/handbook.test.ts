@@ -18,6 +18,7 @@ import {
   chaptersForLocale,
   shortTitle,
   handbookPath,
+  manualListRows,
   parseHandbookId,
   prevNext,
   sortChapters,
@@ -106,6 +107,37 @@ describe('shortTitle: nav label derivation', () => {
 
   it('falls back to the full title', () => {
     expect(shortTitle('加栏目与加语言')).toBe('加栏目与加语言');
+  });
+});
+
+describe('manualListRows: stage grouping', () => {
+  const ch = (stage?: string) => ({ data: { stage } });
+
+  it('inserts a header only when the stage differs from the previous chapter', () => {
+    expect(manualListRows([ch('A'), ch('A'), ch('B'), ch()])).toEqual([
+      { type: 'stage', label: 'A' },
+      { type: 'chapter', chapter: { data: { stage: 'A' } } },
+      { type: 'chapter', chapter: { data: { stage: 'A' } } },
+      { type: 'stage', label: 'B' },
+      { type: 'chapter', chapter: { data: { stage: 'B' } } },
+      { type: 'chapter', chapter: { data: {} } },
+    ]);
+  });
+
+  it('re-opens the header when a stage resumes after an unstaged chapter', () => {
+    const rows = manualListRows([ch('A'), ch(), ch('A')]);
+    expect(rows.filter((r) => r.type === 'stage')).toEqual([
+      { type: 'stage', label: 'A' },
+      { type: 'stage', label: 'A' },
+    ]);
+  });
+
+  it('renders flat when no chapter has a stage (dev manual)', () => {
+    expect(manualListRows([ch(), ch(), ch()])).toEqual([
+      { type: 'chapter', chapter: { data: {} } },
+      { type: 'chapter', chapter: { data: {} } },
+      { type: 'chapter', chapter: { data: {} } },
+    ]);
   });
 });
 
