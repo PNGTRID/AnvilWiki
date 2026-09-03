@@ -17,19 +17,27 @@
  * All UI text from JSON (Hard Rule 1): search.{placeholder, noResults} + nav.search.
  */
 import { Icon } from 'astro-icon/components';
-import { type Locale } from '~/i18n/routing';
+import { defaultLocale } from '~/i18n/routing';
 import { getUi } from '~/i18n/ui';
 
 interface Props {
-  locale: Locale;
+  /**
+   * Wiki locale for default UI strings (getUi falls back to English for
+   * unknown codes). Landing-only locales (zh) aren't in routing.ts, so the
+   * docs center passes explicit `labels` instead of relying on the fallback.
+   */
+  locale?: string;
+  /** String overrides for non-wiki locales (see locale note above). */
+  labels?: { trigger?: string; placeholder?: string; noResults?: string; close?: string };
 }
-const { locale } = Astro.props;
+const { locale = defaultLocale, labels } = Astro.props;
 const ui = getUi(locale);
 const search = ui.search as Record<string, string>;
 const nav = ui.nav as Record<string, string>;
-const btnLabel = nav.search ?? 'Search';
-const noResults = search.noResults ?? 'No matches found';
-const placeholder = search.placeholder ?? 'Search...';
+const btnLabel = labels?.trigger ?? nav.search ?? 'Search';
+const noResults = labels?.noResults ?? search.noResults ?? 'No matches found';
+const placeholder = labels?.placeholder ?? search.placeholder ?? 'Search...';
+const closeLabel = labels?.close ?? nav.close ?? 'Close';
 ---
 
 {/* Trigger button */}
@@ -59,12 +67,12 @@ const placeholder = search.placeholder ?? 'Search...';
       <div class="search-footer-hints">
         <span class="hint">
           <kbd>Esc</kbd>
-          {nav.close ?? 'Close'}
+          {closeLabel}
         </span>
         <span class="hint-divider">·</span>
         <span class="hint">
           <kbd>↵</kbd>
-          {nav.search ?? 'Search'}
+          {btnLabel}
         </span>
       </div>
       <span class="search-footer-brand">

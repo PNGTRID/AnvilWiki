@@ -49,10 +49,14 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
     {/* Left: manual tree */}
     <HandbookNav chapters={chapters} currentId={chapter.id} locale={locale} t={t} />
 
-    {/* Center: the chapter itself */}
-    <article class="mx-auto w-full min-w-0 max-w-3xl xl:mx-0">
+    {/* Center: the chapter itself. data-pagefind-body opts this page into
+        the Pagefind index (its rule: once ANY page marks a body, unmarked
+        pages are excluded site-wide) — without it the 41 handbook lessons
+        are invisible to site search. Breadcrumb/footer stay out. */}
+    <article data-pagefind-body class="mx-auto w-full min-w-0 max-w-3xl xl:mx-0">
       <!-- Breadcrumb: docs hub → manual → chapter -->
       <nav
+        data-pagefind-ignore
         aria-label="Breadcrumb"
         class="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground"
       >
@@ -84,7 +88,10 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
             </span>
           )}
         </div>
-        <h1 class="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+        <h1
+          data-pagefind-meta={`title:${chapter.data.title}`}
+          class="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl"
+        >
           {chapter.data.title}
         </h1>
         <p class="mt-3 text-lg text-muted-foreground">{chapter.data.description}</p>
@@ -112,7 +119,7 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
       </div>
 
       <!-- Chapter footer: prev / next within the same manual + edit link -->
-      <footer class="mt-12 border-t border-border pt-6">
+      <footer data-pagefind-ignore class="mt-12 border-t border-border pt-6">
         <div class="grid gap-3 sm:grid-cols-2">
           {prev ? (
             <a

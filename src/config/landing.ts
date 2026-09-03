@@ -118,6 +118,14 @@ export interface LandingContent {
     steps: { title: string; description: string; command: string; linkLabel: string; href: string }[];
     allDocs: { label: string; href: string };
   };
+  /** Docs-center search (Pagefind modal). Landing zh isn't a wiki locale,
+   * so SearchButton can't fall back to src/locales — docs pages pass these. */
+  search: {
+    label: string;
+    placeholder: string;
+    noResults: string;
+    close: string;
+  };
   handbook: {
     hubTitle: string;
     hubSubtitle: string;
@@ -633,6 +641,12 @@ pnpm install && pnpm dev`,
       href: '/landing/docs/',
     },
   },
+  search: {
+    label: 'Search',
+    placeholder: 'Search the docs...',
+    noResults: 'No matches found',
+    close: 'Close',
+  },
   handbook: {
     hubTitle: 'AnvilWiki Docs',
     hubSubtitle:
@@ -1060,6 +1074,12 @@ pnpm install && pnpm dev`,
       label: '打开文档中心 —— 两本实操手册,含可复制的 AI 提示词',
       href: '/zh/landing/docs/',
     },
+  },
+  search: {
+    label: '搜索',
+    placeholder: '搜索手册文档…',
+    noResults: '没有找到相关内容',
+    close: '关闭',
   },
   handbook: {
     hubTitle: 'AnvilWiki 文档中心',

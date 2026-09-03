@@ -124,6 +124,20 @@ describe('shortTitle: nav label derivation', () => {
   });
 });
 
+describe('handbook search contract (Pagefind)', () => {
+  it('HandbookChapter opts chapters into the search index', () => {
+    // Pagefind's rule: once ANY page on the site marks a data-pagefind-body
+    // (ArticlePage does), unmarked pages are excluded from the index
+    // entirely. Losing this attribute would silently drop all 41 lessons ×
+    // 2 locales out of site search while every gate stays green.
+    const src = fs.readFileSync(
+      path.resolve(ROOT, 'src/components/landing/HandbookChapter.astro'),
+      'utf8',
+    );
+    expect(src).toContain('data-pagefind-body');
+  });
+});
+
 describe('manualListRows: stage grouping', () => {
   const ch = (stage?: string) => ({ data: { stage } });
 

@@ -9,6 +9,7 @@
  */
 import BaseLayout from '~/components/layout/BaseLayout.astro';
 import ThemeToggle from '~/components/header/ThemeToggle.astro';
+import SearchButton from '~/components/header/SearchButton.astro';
 import { Icon } from 'astro-icon/components';
 import {
   landingContent,
@@ -35,8 +36,14 @@ interface Props {
   togglePath?: string;
   /** Extra JSON-LD objects appended after the default WebSite one. */
   extraJsonLd?: Record<string, unknown>[];
-}
-const { locale, alternates = [], pageTitle, pageDescription, togglePath, extraJsonLd = [] } =
+  /**
+   * Render the Pagefind search button in the header (docs center pages
+   * only — marketing landing pages stay search-free; results would be
+   * article/handbook noise there). Labels come from landing.ts `search`.
+   */
+  search?: boolean;
+};
+const { locale, alternates = [], pageTitle, pageDescription, togglePath, extraJsonLd = [], search = false } =
   Astro.props;
 const t = landingContent[locale];
 const other: LandingLocale = locale === 'en' ? 'zh' : 'en';
@@ -142,6 +149,16 @@ const description = pageDescription ?? t.description;
           <Icon name="lucide:external-link" class="h-4 w-4" />
           <span>Demo</span>
         </a>
+        {search && (
+          <SearchButton
+            labels={{
+              trigger: t.search.label,
+              placeholder: t.search.placeholder,
+              noResults: t.search.noResults,
+              close: t.search.close,
+            }}
+          />
+        )}
         <ThemeToggle />
       </div>
     </div>
