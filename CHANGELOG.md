@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **文档中心搜索触发器升级**:SearchButton 增 `variant='icon'|'field'`(默认 icon,wiki SiteHeader/404 零改动);docs header 的搜索框改为加宽胶囊——占位文字(sm+,zh「搜索手册文档…」)+ ⌘K 提示(md+),窄屏退化为图标,置于品牌组之后 flex 撑开(max-w-xs)——原小图标挤在右侧不显眼(用户反馈)。
+
 ## [2.14.0] — 2026-09-03
 
 **文档中心接入全站搜索（手册 41 课×双语）+ GSC API 接入引导三层修复。**
