@@ -105,7 +105,11 @@ export async function runDoctor(opts: { cwd: string; deps?: DoctorDeps }): Promi
     checks.push({
       name: 'gsc-config',
       ok: true,
-      detail: 'GSC not configured — metrics will run CF-only (env-gated, not an error)',
+      // Env-gated by design (not an error), so `fix` (rendered only on FAIL)
+      // wouldn't show — the guide pointer rides in the detail line instead,
+      // at the exact moment a user learns metrics is running CF-only.
+      detail:
+        'GSC not configured — metrics will run CF-only (env-gated, not an error). To enable GSC metrics, follow the 5-minute setup guide: https://anvilwiki.pages.dev/landing/docs/ai-ops/',
     });
   }
   for (const p of env.problems) {

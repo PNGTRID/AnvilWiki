@@ -282,7 +282,7 @@ curl -I https://<你的域名>/privacy-policy/
 | 人均浏览页数 | ≥ 1.5 页 | CF Web Analytics / GA4 | < 1.5 页 = 内链不够：每篇文章至少 3 条站内链接（不足则补，指向相关文章，codes 页 ↔ 攻略页互指） |
 | 每周新增内页 | 10+ 篇 | 自己数 | **只加不改旧页**——新增页面是给 Google 的增量信号，复盘期别顺手大改已收录的页面 |
 
-> 用了 [anvilwiki-ops](./multi-site.md) 的话，一条命令拉数：`anvil-ops metrics`（聚合 GSC + Cloudflare Web Analytics）。
+> 用了 [anvilwiki-ops](./multi-site.md) 的话，一条命令拉数：`anvil-ops metrics`（聚合 GSC + Cloudflare Web Analytics）。GSC 数据走 API，需要一次性配服务账号（含 Google 群组中转授权的坑），五分钟步骤见开发手册[《AI 运营与 GSC 接入》](./handbook/zh/ai-ops.md)；注意区分——上面第 2 步的 GSC **站点验证**（HTML 文件）只是给 Google 证明站权，配不配 API 互不影响。
 
 ---
 

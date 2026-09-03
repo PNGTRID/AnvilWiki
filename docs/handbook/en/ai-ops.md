@@ -1,11 +1,12 @@
 ---
-title: "Put an AI on Ops Duty: anvilwiki-ops and MCP"
-description: "One npx line arms your AI assistant with the ops loop: doctor, metrics, insights, PR-gated publishing — the merge button stays yours."
+title: "Run Ops with AI: GSC setup, metrics & MCP"
+description: "GSC API setup in five minutes (Google Group relay), CF token into .env, then doctor, metrics and evidence-ranked insights — with MCP, every write lands as a PR."
 manual: dev
 order: 7
 icon: lucide:bot
+shortTitle: "AI ops & GSC setup"
 tldr: "anvilwiki-ops (npm package, runs via npx) hands the weekly ops loop to AI: doctor checks what's missing in one pass; once a GSC service account (authorized through a Google Group) and a CF token sit in .env, metrics pulls 28 days of real data and insights ranks evidence-backed actions; with MCP registered you just talk — five tools (doctor/metrics/audit/insights/submit_pr), and every write goes verify → branch → PR with the merge button staying yours."
-updated: 2026-09-02
+updated: 2026-09-03
 ---
 
 ## Where you are, and what this lesson solves
@@ -22,10 +23,10 @@ From the repo root:
 npx anvilwiki-ops doctor
 ```
 
-**You'll see**: one item per line — `site-config` (SITE_URL read from wrangler.toml), `gh` (GitHub CLI present), `gsc-config` / `cf-config` (credentials configured). Missing items aren't failures — just "metrics will run in degraded mode".
+**You'll see**: one item per line — `site-config` (SITE_URL read from wrangler.toml), `gh` (GitHub CLI present), `gsc-config` / `cf-config` (credentials configured). Missing items aren't failures — just "metrics will run in degraded mode" plus a link to the setup guide.
 **Check**: it ends `All checks passed.`, or you know exactly what's missing and accept it.
 
-## Step 2: connect two data sources (GSC 5 minutes, CF 2 minutes)
+## Step 2: GSC API setup (5 minutes) + CF Web Analytics (2 minutes)
 
 GSC provides search queries and rankings; Cloudflare Web Analytics (already instrumented by the template) provides visits.
 

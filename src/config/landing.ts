@@ -650,7 +650,7 @@ pnpm install && pnpm dev`,
       dev: {
         label: 'Development Manual',
         description:
-          'For customizers and contributors: the change map, categories & locales, theme & homepage copy, feature switches, CI & security, syncing upstream or contributing back, and running ops through AI (anvilwiki-ops CLI + MCP).',
+          'For customizers and contributors: the change map, categories & locales, theme & homepage copy, feature switches, CI & security, syncing upstream or contributing back, and running ops through AI (GSC API setup, anvilwiki-ops CLI + MCP).',
       },
     },
     chapterLabel: 'Lesson',
@@ -1078,7 +1078,7 @@ pnpm install && pnpm dev`,
       dev: {
         label: '开发手册',
         description:
-          '面向定制者与贡献者:改动地图、加栏目与加语言、换主题与改首页、功能开关总表、CI 门禁与安全、同步上游与贡献回流、让 AI 替你运营(anvilwiki-ops 命令行与 MCP)。',
+          '面向定制者与贡献者:改动地图、加栏目与加语言、换主题与改首页、功能开关总表、CI 门禁与安全、同步上游与贡献回流、让 AI 替你运营(GSC API 接入、anvilwiki-ops 与 MCP)。',
       },
     },
     chapterLabel: '第',

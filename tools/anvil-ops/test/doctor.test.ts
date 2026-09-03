@@ -46,8 +46,13 @@ describe('runDoctor', () => {
   it('gsc-config skipped-ok when GSC not configured (env-gated)', async () => {
     const dir = tmpSite('CF_API_TOKEN=t\nCF_ACCOUNT_ID=a\n');
     const r = await runDoctor({ cwd: dir, deps: { ghVersion: ghOk, cfQuery: cfOk } });
-    expect(r.checks.find((c) => c.name === 'gsc-config')?.ok).toBe(true);
+    const gsc = r.checks.find((c) => c.name === 'gsc-config')!;
+    expect(gsc.ok).toBe(true);
     expect(r.checks.find((c) => c.name === 'gsc-access')).toBeUndefined();
+    // Discoverability contract: the degraded-mode line must carry the setup
+    // guide (fix lines only render on FAIL, so the pointer lives in detail).
+    expect(gsc.detail).toContain('https://anvilwiki.pages.dev/landing/docs/ai-ops/');
+    expect(formatDoctor(r)).toContain('landing/docs/ai-ops');
   });
 
   it('gsc-access fails when property not shared with SA', async () => {

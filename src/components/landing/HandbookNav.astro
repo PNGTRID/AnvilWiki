@@ -76,7 +76,7 @@ const groups = manuals.map((manual) => ({
                         ]}
                       >
                         <span class="tabular-nums opacity-60">{c.data.order}.</span>
-                        <span>{shortTitle(c.data.title)}</span>
+                        <span>{shortTitle(c.data.title, c.data.shortTitle)}</span>
                       </a>
                     </li>
                   );
@@ -123,7 +123,7 @@ const groups = manuals.map((manual) => ({
                         ]}
                       >
                         <span class="tabular-nums opacity-60">{c.data.order}.</span>
-                        <span>{shortTitle(c.data.title)}</span>
+                        <span>{shortTitle(c.data.title, c.data.shortTitle)}</span>
                       </a>
                     </li>
                   );

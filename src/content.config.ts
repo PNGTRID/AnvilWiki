@@ -159,6 +159,13 @@ const handbook = defineCollection({
      * the chapter page. Numbering itself always comes from `order`.
      */
     stage: z.string().max(40).optional(),
+    /**
+     * Nav label override for the manual tree (HandbookNav). Empty/absent
+     * falls back to the derived short title (lib/handbook.ts shortTitle:
+     * text before the first colon / " · " tail for appendices). Use when
+     * the derived label can't carry the chapter's most findable keyword.
+     */
+    shortTitle: z.string().max(40).optional(),
     icon: z.string().default('lucide:book-open'),
     /**
      * 40–60 word direct answer, rendered as the TL;DR card (AI Overviews

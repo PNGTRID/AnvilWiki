@@ -37,4 +37,4 @@ PR your site onto the official showcase wall by editing the showcase data in `sr
 
 ## Next lesson
 
-Template matters settled — back to the site itself: hand the weekly ops loop to AI. [Put an AI on Ops Duty](/landing/docs/ai-ops)
+Template matters settled — back to the site itself: hand the weekly ops loop to AI. [Run Ops with AI](/landing/docs/ai-ops)

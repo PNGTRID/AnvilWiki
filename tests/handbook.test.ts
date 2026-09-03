@@ -108,6 +108,20 @@ describe('shortTitle: nav label derivation', () => {
   it('falls back to the full title', () => {
     expect(shortTitle('加栏目与加语言')).toBe('加栏目与加语言');
   });
+
+  it('frontmatter override wins when non-empty', () => {
+    expect(
+      shortTitle('让 AI 替你运营:GSC 数据接入、metrics 与 MCP', 'AI 运营与 GSC 接入'),
+    ).toBe('AI 运营与 GSC 接入');
+    expect(shortTitle('Run Ops with AI: GSC setup, metrics & MCP', 'AI ops & GSC setup')).toBe(
+      'AI ops & GSC setup',
+    );
+  });
+
+  it('blank or absent override falls back to derivation', () => {
+    expect(shortTitle('Run Ops with AI: GSC setup, metrics & MCP', '   ')).toBe('Run Ops with AI');
+    expect(shortTitle('加栏目与加语言', undefined)).toBe('加栏目与加语言');
+  });
 });
 
 describe('manualListRows: stage grouping', () => {

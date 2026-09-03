@@ -28,6 +28,8 @@ export interface HandbookEntry {
     icon: string;
     /** Stage label (learn manual's six stages); absent = render flat. */
     stage?: string;
+    /** Nav label override; absent = derived from title (see shortTitle). */
+    shortTitle?: string;
     tldr?: string;
     updated?: Date;
   };
@@ -53,8 +55,16 @@ export function parseHandbookId(id: string): ParsedHandbookId | null {
   return { locale, slug };
 }
 
-/** Full title → short nav label: text before the first colon; "附录 A · X" → X. */
-export function shortTitle(title: string): string {
+/**
+ * Full title → short nav label: text before the first colon; "附录 A · X" → X.
+ * A non-empty frontmatter `shortTitle` override wins over the derivation —
+ * the colon rule can't surface a keyword (e.g. GSC) that only appears in the
+ * title's tail half, and the nav label is the only table of contents many
+ * readers ever scan.
+ */
+export function shortTitle(title: string, override?: string): string {
+  const trimmed = override?.trim();
+  if (trimmed) return trimmed;
   const ascii = title.indexOf(':');
   const full = title.indexOf('：');
   const colon = ascii !== -1 && (full === -1 || ascii < full) ? ascii : full;

@@ -37,4 +37,4 @@ updated: 2026-09-02
 
 ## 下一课
 
-模板的事告一段落,回到站本身:让 AI 替你跑每周运营循环——anvilwiki-ops 命令行与 MCP。[AI 运营](/zh/landing/docs/ai-ops)
+模板的事告一段落,回到站本身:接上 GSC 数据源,让 AI 替你跑每周运营循环——anvilwiki-ops 命令行与 MCP。[AI 运营与 GSC 接入](/zh/landing/docs/ai-ops)

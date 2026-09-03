@@ -1,11 +1,12 @@
 ---
-title: "让 AI 替你运营:anvilwiki-ops 与 MCP"
-description: "一行 npx 给 AI 助手装上运营工具:doctor 体检、metrics 拉真实数据、insights 出带证据的行动清单,接 MCP 后自然语言直接指挥——写操作只走 PR,合并权永远在你手里。"
+title: "让 AI 替你运营:GSC 数据接入、metrics 与 MCP"
+description: "GSC API 五分钟接入(Google 群组中转授权)与 CF 令牌写进 .env 后,doctor 体检、metrics 拉 28 天真实数据、insights 出带证据的行动清单,MCP 接入后自然语言指挥 AI 运营——写操作只走 PR,合并权在你。"
 manual: dev
 order: 7
 icon: lucide:bot
+shortTitle: "AI 运营与 GSC 接入"
 tldr: "anvilwiki-ops(npm 包,npx 免安装)把每周运营循环交给 AI:doctor 一次体检看配置缺什么;GSC 服务账号(经 Google 群组中转授权)和 CF token 写进 .env 后,metrics 拉 28 天真实数据,insights 按严重度出带证据的行动清单;MCP 接入后对 AI 说人话即可——五个工具 doctor/metrics/audit/insights/submit_pr,写操作只走校验→分支→PR 一条路,合并权在你。"
-updated: 2026-09-02
+updated: 2026-09-03
 ---
 
 ## 你现在在哪,这章解决什么
@@ -22,10 +23,10 @@ updated: 2026-09-02
 npx anvilwiki-ops doctor
 ```
 
-**你会看到**:一行一项——`site-config`(读到 wrangler.toml 的 SITE_URL)、`gh`(GitHub CLI 在不在)、`gsc-config`/`cf-config`(数据凭据配没配)。没配不算失败,只提示「metrics 将以降级模式运行」。
+**你会看到**:一行一项——`site-config`(读到 wrangler.toml 的 SITE_URL)、`gh`(GitHub CLI 在不在)、`gsc-config`/`cf-config`(数据凭据配没配)。没配不算失败,只提示「metrics 将以降级模式运行」并附上接入教程链接。
 **确认做对了**:结尾 `All checks passed.`,或你明确知道哪项没配并接受。
 
-## 第二步:接上两个数据源(GSC 5 分钟,CF 2 分钟)
+## 第二步:GSC API 接入(5 分钟)+ CF Web Analytics(2 分钟)
 
 GSC 提供搜索词和排名,Cloudflare Web Analytics(模板已内置埋点)提供访问量。
 

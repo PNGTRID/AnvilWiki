@@ -87,6 +87,7 @@
 ├─ 上线了,数据复盘/看热力图 ─────────→ deployment.md(数据复盘 + Clarity 两节)
 ├─ 什么时候开广告 / 钱怎么收 / 接哪家平台 → ads.md(含游戏垂直网络)
 ├─ 要写/更新文章 ────────────────────→ content-format.md 或直接对 AI 说
+├─ 要接 GSC API 拉搜索数据 ──────────→ 开发手册《AI 运营与 GSC 接入》(handbook/zh/ai-ops.md)
 ├─ 想批量铺内容/开草稿 PR ───────────→ content-pipeline.md
 ├─ 有第二个站了,想统一运营 ─────────→ multi-site.md
 ├─ 上游更新了,要不要合并 ───────────→ staying-up-to-date.md
