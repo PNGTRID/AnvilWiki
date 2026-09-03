@@ -20,9 +20,9 @@ interface Props {
   heading?: string;
   /**
    * Breakpoint where the sticky desktop card takes over from the collapsible
-   * <details>. Wiki articles use the default 'lg' (TOC sits beside the
-   * content there); handbook chapters use 'xl' (their 3-column layout with
-   * the manual tree only fits from 1280px up).
+   * <details>. Both consumers sit beside the content from lg up: wiki
+   * articles use the default, handbook chapters pass 'lg' explicitly (their
+   * three-column layout with the manual tree starts at 1024px).
    */
   desktopAt?: 'lg' | 'xl';
 }

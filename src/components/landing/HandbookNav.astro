@@ -2,7 +2,7 @@
 /**
  * HandbookNav — the left-hand manual tree on chapter pages: every chapter of
  * both manuals, grouped, with the current chapter highlighted. Sticky sidebar
- * on xl+ screens; collapsible <details> below (same dual pattern as the wiki
+ * on lg+ screens; collapsible <details> below (same dual pattern as the wiki
  * TableOfContents). Pure HTML/CSS, zero JS.
  */
 import { Icon } from 'astro-icon/components';
@@ -38,7 +38,7 @@ const groups = manuals.map((manual) => ({
 ---
 
 <nav aria-label={t.handbook.manualsLabel} class="not-prose">
-  {/* Desktop (xl+): sticky tree */}
+  {/* Desktop (lg+): sticky tree */}
   <div class="hidden lg:sticky lg:top-20 lg:block">
     <div class="rounded-lg border border-border bg-card p-4">
       <a
@@ -88,7 +88,7 @@ const groups = manuals.map((manual) => ({
     </div>
   </div>
 
-  {/* Mobile / tablet (<xl): collapsible */}
+  {/* Mobile / tablet (<lg): collapsible */}
   <details class="rounded-lg border border-border bg-card p-3 lg:hidden">
     <summary class="flex cursor-pointer items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
       <Icon name="lucide:list-tree" class="h-3.5 w-3.5" />

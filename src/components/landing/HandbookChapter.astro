@@ -1,9 +1,9 @@
 ---
 /**
  * HandbookChapter — the chapter page body for /landing/docs/[slug].
- * Three-column layout from xl up: manual tree (HandbookNav) | chapter prose
+ * Three-column layout from lg up: manual tree (HandbookNav) | chapter prose
  * | on-page TOC (reuses the wiki TableOfContents with desktopAt="lg").
- * Below xl both trees collapse into <details> blocks around the content.
+ * Below lg both trees collapse into <details> blocks around the content.
  * Renders breadcrumb, chapter meta, TL;DR card, prev/next within the same
  * manual, and an "Edit on GitHub" link. Labels come from landing.ts.
  */
@@ -100,7 +100,7 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
         </aside>
       )}
 
-      {/* On-page TOC — collapsible below xl (the sticky right column takes over then) */}
+      {/* On-page TOC — collapsible below lg (the sticky right column takes over then) */}
       <div class="mt-6 lg:hidden">
         <TableOfContents headings={headings} heading={t.handbook.onThisPageLabel} desktopAt="lg" />
       </div>

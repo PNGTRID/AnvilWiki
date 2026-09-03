@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **手册列表页 stage 分组对「隔断后重现」健壮**:HandbookManualList 的表头判断从「记录最近出现过的 stage 标签」改为对照**紧邻上一课**——同一 stage 隔着一篇无 stage 课文再次出现时,原实现第二段会静默丢失表头(当前 32 课数据 stage 全连续,故线上从未触发,属潜伏缺陷)。纯函数 `manualListRows` 下沉 `src/lib/handbook.ts` 直测(沿用 lib/apply-rewrites 先例),+3 条单测(隔断重现/连续分组/无 stage 扁平)。
+- 同批清掉 v2.13.0 断点 xl→lg 改动遗留的 7 处注释漂移(HandbookChapter×3、HandbookNav×3、TableOfContents JSDoc×1)——纯注释,零行为变更。
 
 ## [2.13.0] — 2026-09-02
 
