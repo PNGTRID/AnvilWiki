@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.15.0] — 2026-09-05
+
+**挖词选品技能：新增 `anvil-find-keywords`（第 6 个 anvil-\*），把 docs/sourcing.md 的 9 渠道挖词方法论变成智能体可自动执行的工作流。**
+
 ### Added
 
 - **`anvil-find-keywords` 挖词选品技能(第 6 个 anvil-\*)**:把 docs/sourcing.md 的 9 渠道挖词 + 意图满足度 + 判决框架整理成智能体可自动执行的工作流(用户:「整理一套能让智能体自动挖词找词的提示词」)——Step 0 输入收集(市场/已有站/付费工具账号/本轮预算)→ Step 1 多渠道挖候选(渠道编号对齐 sourcing.md;agent 自助通道:SteamDB 反爬换 steamcharts/二手汇总、old.reddit 异常值、CrazyGames sitemap、Trends RSS、开发者追更、`alternative` 二创、预告埋伏、AI 类游戏;用户通道:TikTok 登录墙贴链接验证、付费工具给查询式回填)→ Step 2 逐候选两分钟快验(SERP 构成 + 意图满足度 + 搜索萌芽 + 可玩供给)→ Step 3 判决打分(需求轨 7 项/早期爆发轨/KD 分档,点名未测项)→ Step 4 落盘 `seo-reports/game-pipeline.md`(已 gitignore;决定/上线日期/链接三列对齐多站台账口径,【考虑】带 3/7/14/28 天复查日,不覆盖用户已填结论)→ Step 5 交接(game-selection 四层漏斗 → requirements 两张表 → anvil-new-article/batch-articles)。五条红线:禁编造数据/未测≠零/平台内流量≠独立需求/拍板在用户/不覆盖用户结论。技能枚举同步 5 处:README 中英技能表(5→6 个)、AGENTS.md 产页章节、PRD 架构树、docs/README 阅读路径 A(懒人通道)/C。
@@ -944,7 +948,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.15.0...HEAD
+[2.15.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.1...v2.15.0
 [2.14.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.0...v2.14.1
 [2.14.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.13.0...v2.14.0
 [2.13.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.12.0...v2.13.0

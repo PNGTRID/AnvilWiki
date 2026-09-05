@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.14.1';
+export const PROJECT_VERSION = '2.15.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -279,7 +279,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} docs header polish: the docs-center search trigger is now a prominent search field right next to the brand — placeholder text, ⌘K hint, icon-only on narrow screens.`,
+    text: `v${PROJECT_VERSION} keyword & game sourcing: a 6th agent skill, \`anvil-find-keywords\`, mines candidates across the 9 sourcing channels, runs SERP + intent-satisfaction checks, scores with the verdict framework, and writes a decision table with 3/7/14/28-day review dates.`,
     href: RELEASES,
   },
   hero: {
@@ -746,7 +746,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 文档中心顶栏优化：搜索框升级为品牌组旁的加宽搜索胶囊（带占位文字与 ⌘K 提示，窄屏自动退化为图标）。`,
+    text: `v${PROJECT_VERSION} 挖词选品：新增第 6 个智能体技能 anvil-find-keywords——9 渠道自动挖候选、SERP 快验 + 意图满足度检查、判决框架打分，落盘带 3/7/14/28 天复查日的决策管理表。`,
     href: RELEASES,
   },
   hero: {
