@@ -341,7 +341,7 @@ anvilwiki/
 │   └── lib/                      # content.ts / content-utils.ts / navigation.ts / seo.ts / url.ts / handbook.ts
 ├── scripts/                      # 14 个运维脚本（check-* ×5 + refresh-audit + new-locale/new-post + apply-template + template-audit + bulk-new-posts + gen-covers + gen-assets + submit-indexnow）
 ├── tools/anvil-ops/              # ⭐ 独立 npm 包 anvilwiki-ops（CLI + MCP，自有 workspace）
-├── .agent/skills/                # ⭐ AI 内容技能（anvil-new-article / anvil-batch-articles / anvil-update-codes / anvil-refresh / anvil-adsense-audit）
+├── .agent/skills/                # ⭐ AI 内容技能（anvil-find-keywords / anvil-new-article / anvil-batch-articles / anvil-update-codes / anvil-refresh / anvil-adsense-audit）
 └── .github/
     ├── workflows/
     │   ├── ci.yml                # 8 道门禁（lint/typecheck/test/check-config/build/check-content/check-links/check-i18n，门禁定义在共享 composite action .github/actions/gates）+ ops-toolkit job（tools/anvil-ops 的 typecheck/test/build）

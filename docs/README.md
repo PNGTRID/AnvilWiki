@@ -39,6 +39,7 @@
                             (https://anvilwiki.pages.dev/zh/landing/docs,含提示词)
 1. game-selection.md      ← 先回答"做哪个游戏",这比建站重要
    └ sourcing.md          ← 候选池不够大时:9 个挖词渠道 + 选词决策管理表
+   (懒人通道:对 AI 说「帮我挖词」——/anvil-find-keywords 自动跑挖候选→快验→打分)
 2. README                 ← fork + 本地跑起来(5 分钟)
 3. apply-template.md      ← 换成你的游戏(或跑 pnpm apply-template)
 4. requirements/ 两张表    ← 产页前备素材:事实来源表 + 对标参考表
@@ -61,7 +62,7 @@
 
 ```
 1. AGENTS.md              ← 仓库根目录,自动加载:硬规则 + 对话式产页章节
-2. .agent/skills/         ← 自动发现的 5 个技能(anvil-new-article / batch-articles / update-codes / refresh / adsense-audit)
+2. .agent/skills/         ← 自动发现的 6 个技能(find-keywords / new-article / batch-articles / update-codes / refresh / adsense-audit)
 3. docs/content-format.md ← 需要字段细节时查
 ```
 

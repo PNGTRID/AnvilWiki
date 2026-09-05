@@ -106,10 +106,11 @@ AnvilWiki 是一个**游戏 SEO 内容站模板**——用来快速搭建围绕�
 
 ### 用 AI 直接生成内容(无需脚本)
 
-fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可产页。Agent 会自动加载仓库里的内容规范,生成后自动跑 `pnpm check-content && pnpm build` 自检。内置 5 个技能:
+fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可产页。Agent 会自动加载仓库里的内容规范,生成后自动跑 `pnpm check-content && pnpm build` 自检。内置 6 个技能:
 
 | 技能 | 用途 |
 |---|---|
+| `anvil-find-keywords` | 挖词选品:9 渠道自动挖候选 → SERP 快验+意图满足度 → 判决打分,落盘决策管理表(含复查日) |
 | `anvil-new-article` | 任意素材(口述/视频字幕/原始数据)→ 合规 MDX 文章,支持 YouTube 视频转攻略 |
 | `anvil-batch-articles` | 关键词清单 → 批量生成一批内页(意图归类 → `bulk-new-posts` 脚手架 → 统一提示词填充) |
 | `anvil-update-codes` | 新兑换码/过期码 → 更新 codes 页并同步多语言 |
@@ -239,10 +240,11 @@ AnvilWiki is an **open-source game wiki site template**: build a content site ar
 
 ### Generate content by talking to your AI (no scripts needed)
 
-After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just talk. Agents auto-load the content spec shipped in the repo and self-check with `pnpm check-content && pnpm build` after generating. Five skills are built in:
+After forking, open the repo in ZCode / Claude Code / Codex / Cursor and just talk. Agents auto-load the content spec shipped in the repo and self-check with `pnpm check-content && pnpm build` after generating. Six skills are built in:
 
 | Skill | What it does |
 |---|---|
+| `anvil-find-keywords` | Keyword & game sourcing: mine candidates across 9 channels → SERP + intent checks → scoring framework, outputs a decision pipeline table with review dates |
 | `anvil-new-article` | Any source material (notes / YouTube transcripts / raw data) → spec-compliant MDX article, incl. a video-to-guide workflow |
 | `anvil-batch-articles` | A keyword list → a batch of inner pages (intent classification → `bulk-new-posts` scaffolding → one unified prompt fills them) |
 | `anvil-update-codes` | New / expired codes → update the codes page across locales |
