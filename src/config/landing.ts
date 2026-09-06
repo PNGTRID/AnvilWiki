@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.15.1';
+export const PROJECT_VERSION = '2.16.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -279,7 +279,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} skill polish: \`anvil-find-keywords\` now mirrors docs/sourcing.md verbatim — concrete early-burst thresholds (≥3 independent posters, ≥20 interactions or ≥500 views, ≥2 platform types) plus the English handbook path in its methodology sources.`,
+    text: `v${PROJECT_VERSION} codes sync: \`pnpm sync-codes\` batch-applies a codes-sync.csv into codes pages' frontmatter — new codes prepended, expired kept for long-tail SEO, same-name pages in every locale follow the first row. Deterministic gates stay out of the AI session.`,
     href: RELEASES,
   },
   hero: {
@@ -746,7 +746,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 技能收口：anvil-find-keywords 与 docs/sourcing.md 逐字对齐——早期爆发轨补具体阈值（≥3 独立发布者、互动 ≥20 次或播放 ≥500、跨 ≥2 类平台），方法论来源补英文手册路径。`,
+    text: `v${PROJECT_VERSION} codes 页批量同步：\`pnpm sync-codes\` 读一份 CSV 确定性合并进 codes 页 frontmatter——新码前置、过期保留养长尾、同名页全语言自动跟随首行；确定性脚本不占 AI 会话。`,
     href: RELEASES,
   },
   hero: {

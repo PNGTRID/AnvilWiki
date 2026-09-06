@@ -2,7 +2,7 @@
 
 > 本页回答两个问题:**这套模板过去按什么方向演化**(帮你判断它的成熟度和侧重),以及**接下来会往哪走**(帮你决定现在入场合不合适)。逐版本的完整变更见 [CHANGELOG](../CHANGELOG.md);正在做什么见 [PRD](./PRD.md) 第 14 章。
 
-> **当前版本:v2.15.1**(2026-09-06 发布)。发版历史与最新版本见 [Releases](https://github.com/PNGTRID/AnvilWiki/releases)。
+> **当前版本:v2.16.0**(2026-09-06 发布)。发版历史与最新版本见 [Releases](https://github.com/PNGTRID/AnvilWiki/releases)。
 
 ## 演化主线:从「建站模板」到「内容经营操作系统」
 
@@ -31,7 +31,7 @@ AnvilWiki 的版本历史不是功能大杂烩,而是一条主线:**不断把「
 - **邮件订阅**(v2.0 遗留):RSS 已就绪,差订阅表单的模板级支持——涉及第三方服务选型(Buttondown 等)与 double opt-in 合规,做就做干净。
 - **preferred sources 适配**:Google 2026-08-20 刚发布「偏好来源」自定义按钮,等实现方式稳定后评估模板层支持。
 - **选品决策支持**:「哪个游戏值得建站」目前靠学习手册课 7「打分拍板」的人工四关卡,可沉淀为数据脚本(搜索趋势/竞争度抓取)。
-- **管道生成器扩展**:codes 同步、Trello 导入等确定性任务接入 auto-content.yml(同一套门禁契约)。
+- **管道生成器扩展**:codes 同步脚本本体已交付(v2.16.0 `pnpm sync-codes`;接入 auto-content.yml 留独立小版本)、Trello 导入等确定性任务接入 auto-content.yml(同一套门禁契约)。
 - **Astro 6/7 升级**:Astro 7 已 GA 但 v2.0 刻意锁 5.x(降回归风险);作为独立小版本做 5→6→7 两跳迁移,重点回归 check-content/check-links。
 
 ### 中期(v2.0 方向)——✅ 已随 v2.0.0 交付

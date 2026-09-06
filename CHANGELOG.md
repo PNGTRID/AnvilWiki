@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.16.0] — 2026-09-06
+
+**codes 页批量同步脚本：`pnpm sync-codes` 把「新增/过期兑换码」从 AI 会话搬进确定性脚本（第 15 个运维脚本，管道生成器扩展第一步）。**
+
 ### Added
 
 - **`pnpm sync-codes`:codes 页批量同步脚本(第 15 个运维脚本,管道生成器扩展第一步)**——读仓库根 `codes-sync.csv`(`locale,slug,code,status,reward,expiryDate,source`,CSV/TSV 自适应,`--dry-run` 预览),确定性合并进已有 codes 页的 frontmatter `codes:` 数组:新码前置、过期翻转但保留(长尾 SEO)、空可选单元格保留现值、零改写页不重写(lastModified 是保鲜信号,无真实变更绝不空跳);**全语言同名页同步**——显式行优先(每语言可给翻译行),无行的语言自动跟随该 slug 首行 fan-out(码不翻译,reward/source 照搬需人工复查非 en 措辞,计划输出逐条提示);合并语义与 anvil-update-codes 技能逐条对齐,是该技能的机械半边;先全量校验后写入(all-or-nothing),扁平标量解析器遇到未知字段/行内注释/嵌套结构响亮中止绝不盲写,单元格含换行/控制字符解析期即拒(不写出非法 YAML),CRLF 页面兼容且保留原 EOL 风格,lastModified 随写随更。纯函数下沉 `scripts/lib/sync-codes.ts`(第 12 套件 tests/sync-codes.test.ts,含 fan-out/CRLF/控制字符/序列化幂等逐字节钉死);CSV/TSV 解析器抽共享 `scripts/lib/delimited.ts`(bulk-new-posts 同源复用);目标页必须已存在,同步不建页;未知 flag 一律报错(防 `--drry-run` 笔误静默真写)。管道接入(auto-content.yml 任务输入+契约测试)留独立小版本(docs/content-pipeline.md 候选已标注)。文档同步:AGENTS 命令表+套件计数/手册附录 C 双语(20→21 条)/content-pipeline 新节/PRD 脚本计数/anvil-update-codes 技能批量提示+示例去行内注释。
@@ -960,7 +964,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.15.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.16.0...HEAD
+[2.16.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.15.1...v2.16.0
 [2.15.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.15.0...v2.15.1
 [2.15.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.1...v2.15.0
 [2.14.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.0...v2.14.1
