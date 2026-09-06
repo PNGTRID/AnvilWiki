@@ -36,6 +36,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {
+  fanOutLocales,
   mergeCodes,
   parseCodesBlock,
   parseCodesCsv,
@@ -49,8 +50,24 @@ const CONTENT_BASE = path.resolve(ROOT, 'src/content/wiki');
 const ARGS = process.argv.slice(2);
 const DRY_RUN = ARGS.includes('--dry-run') || ARGS.includes('-n');
 
+// Unknown flags are rejected loudly: a typo'd --drry-run must fail, never
+// silently degrade into a real write.
+const UNKNOWN_FLAGS = ARGS.filter((a) => a.startsWith('-') && a !== '-n' && a !== '--dry-run' && !a.startsWith('--locales'));
+if (UNKNOWN_FLAGS.length > 0) {
+  console.error(`❌ Unknown flag(s): ${UNKNOWN_FLAGS.join(', ')} — supported: --dry-run/-n, --locales=<comma,list>`);
+  process.exit(1);
+}
+
 const LOCALES_FLAG = ARGS.find((a) => a.startsWith('--locales'));
-const LOCALE_FILTER = LOCALES_FLAG ? LOCALES_FLAG.split('=')[1]?.split(',').map((s) => s.trim()).filter(Boolean) : null;
+const LOCALE_FILTER = (() => {
+  if (!LOCALES_FLAG) return null;
+  const list = LOCALES_FLAG.slice('--locales='.length).split(',').map((s) => s.trim()).filter(Boolean);
+  if (list.length === 0) {
+    console.error('❌ --locales requires a comma-separated locale list, e.g. --locales=en,ja');
+    process.exit(1);
+  }
+  return list;
+})();
 
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
@@ -156,6 +173,15 @@ if (filtered.length === 0) {
   process.exit(0);
 }
 
+// Cross-locale fan-out: a slug with no row for an existing page's locale
+// follows the slug's first explicit row (skill Step 3 semantics). Explicit
+// rows win; fan-out only fills locales that pass the --locales filter.
+const fanTargets = LOCALE_FILTER ?? locales;
+const fan = fanOutLocales(groups, fanTargets, (locale, slug) =>
+  fs.existsSync(path.join(CONTENT_BASE, locale, 'codes', `${slug}.mdx`)),
+);
+for (const note of fan.notes) console.log(`  ℹ️  ${note}`);
+
 // ---------------------------------------------------------------------------
 // Parse + merge every target file BEFORE writing anything (all-or-nothing)
 // ---------------------------------------------------------------------------
@@ -168,7 +194,7 @@ interface Planned {
 
 const planned: Planned[] = [];
 const fileErrors: string[] = [];
-for (const [key, group] of groups) {
+for (const [key, group] of fan.groups) {
   const label = `src/content/wiki/${key.replace('/', '/codes/')}.mdx`;
   const filePath = path.join(CONTENT_BASE, key.split('/')[0], 'codes', `${key.split('/')[1]}.mdx`);
   if (!fs.existsSync(filePath)) {
@@ -205,17 +231,30 @@ const describeStats = (s: MergeStats): string => {
   return parts.length > 0 ? parts.join(' · ') : 'no changes';
 };
 
+const hasChanges = (s: MergeStats): boolean => s.added.length + s.updated.length + s.expiredFlipped.length > 0;
+
 if (DRY_RUN) {
   console.log('\n🔍 Dry run — nothing written. Plan:\n');
   for (const p of planned) {
-    console.log(`  ${p.label}\n    ${describeStats(p.stats)}`);
+    const cleanNote = hasChanges(p.stats) ? '' : '  (no changes → will not be rewritten)';
+    console.log(`  ${p.label}\n    ${describeStats(p.stats)}${cleanNote}`);
   }
   console.log('\nRe-run without --dry-run to write.');
   process.exit(0);
 }
 
 let touched = 0;
+let skippedClean = 0;
 for (const p of planned) {
+  // A page whose rows are all "unchanged" is not rewritten: lastModified is a
+  // freshness signal (refresh-audit reads it) — never bump it without a real
+  // change to show for it.
+  if (!hasChanges(p.stats)) {
+    console.log(`  ⏭️  ${p.label}`);
+    console.log('     no changes — not rewritten (lastModified preserved)');
+    skippedClean += 1;
+    continue;
+  }
   fs.writeFileSync(p.filePath, p.output, 'utf8');
   touched += 1;
   console.log(`  ✅ ${p.label}`);
@@ -223,8 +262,11 @@ for (const p of planned) {
 }
 
 console.log(
-  `\n📊 Synced ${touched} page${touched === 1 ? '' : 's'}, lastModified → ${todayIso()}. Next:` +
-    `\n   1. Review reward/source wording on non-en locales (sync copies text as-given)` +
-    `\n   2. Verify: pnpm check-content && pnpm build` +
-    `\n   3. Commit the pages (one commit per game keeps history reviewable).`,
+  `\n📊 Synced ${touched} page${touched === 1 ? '' : 's'}` +
+    (skippedClean > 0 ? ` (skipped ${skippedClean} unchanged)` : '') +
+    `, lastModified → ${todayIso()} on written pages. Next:` +
+    `\n   1. Update title / summary to match (code count, "as of" date — they feed the Quick Answer card + AI Overviews)` +
+    `\n   2. Review reward/source wording on non-en locales (sync copies text as-given)` +
+    `\n   3. Verify: pnpm check-content && pnpm build` +
+    `\n   4. Commit the pages (one commit per game keeps history reviewable).`,
 );

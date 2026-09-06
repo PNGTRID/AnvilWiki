@@ -6,7 +6,7 @@ order: 32
 stage: "Appendices"
 icon: lucide:book-marked
 tldr: "Two parts: ① the glossary — every lesson's word cards regrouped by theme (SEO & search / site & content / monetization & ops); ② the command sheet — pnpm commands by scenario: writing (new-post / bulk-new-posts / sync-codes), QA (check-content / check-links / build), config (check-config / apply-template / new-locale), ops (refresh-audit / submit-indexnow), assets (gen-covers / gen-assets). One line each — when detail fades, start here."
-updated: 2026-09-02
+updated: 2026-09-06
 ---
 
 ## Glossary (grouped by theme)

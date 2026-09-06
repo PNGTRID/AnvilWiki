@@ -6,7 +6,7 @@ order: 32
 stage: "附录"
 icon: lucide:book-marked
 tldr: "两部分:①术语表——各课词卡按主题归拢(SEO 类/站务类/变现类/工程类);②命令速查——pnpm 命令按场景分组:写作(new-post/bulk-new-posts/sync-codes)、质检(check-content/check-links/build)、配置(check-config/apply-template/new-locale)、运营(refresh-audit/submit-indexnow)、资产(gen-covers/gen-assets)。每条一句话说明,忘了细节先来这里。"
-updated: 2026-09-02
+updated: 2026-09-06
 ---
 
 ## 术语表(按主题归拢)

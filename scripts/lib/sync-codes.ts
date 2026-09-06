@@ -140,6 +140,18 @@ export function parseCodesCsv(text: string, locales: readonly string[]): CsvResu
       continue;
     }
 
+    // A newline/control char inside a cell would be written into a single-
+    // quoted YAML scalar literally, producing INVALID frontmatter that only
+    // `pnpm build` would catch — far too late. Reject loudly at parse time.
+    let hasControlError = false;
+    for (const [name, value] of [['code', code], ['reward', get('reward')], ['expiryDate', expiryDate], ['source', get('source')]] as const) {
+      if (/[\n\r\u0000-\u0008\u000B-\u001F\u007F]/.test(value)) {
+        result.errors.push(`line ${line}: "${name}" contains a newline/control character (not valid in a YAML scalar)`);
+        hasControlError = true;
+      }
+    }
+    if (hasControlError) continue;
+
     const dedupeKey = `${locale}/${slug}/${code}`;
     if (seen.has(dedupeKey)) {
       result.errors.push(`line ${line}: duplicate row for ${locale}/${slug} code "${code}"`);
@@ -201,6 +213,47 @@ export function mergeCodes(
     }
   }
   return { merged: [...addedEntries, ...existing], stats };
+}
+
+// ---------------------------------------------------------------------------
+// Cross-locale fan-out
+// ---------------------------------------------------------------------------
+
+/** Expand per-locale rows to every locale that has the same slug page but no
+ * explicit row — the anvil-update-codes skill's Step 3 semantics ("同步数据"
+ * wherever a same-name page exists). Explicit rows always win (so per-locale
+ * translated reward/source text stays possible); fan-out rows are shallow
+ * clones of the slug's FIRST explicit row with only the locale changed, i.e.
+ * reward/source text is copied as-given and needs a wording review on non-en
+ * locales. Only `targetLocales` are filled (respects the --locales filter);
+ * locales without an existing page are skipped (sync never creates pages). */
+export function fanOutLocales(
+  groups: Map<string, CodesCsvRow[]>,
+  targetLocales: readonly string[],
+  hasPage: (locale: string, slug: string) => boolean,
+): { groups: Map<string, CodesCsvRow[]>; notes: string[] } {
+  const notes: string[] = [];
+  const expanded = new Map(groups);
+  const covered = new Map<string, Set<string>>(); // slug → locales with rows
+  const sources = new Map<string, CodesCsvRow>(); // slug → first explicit row
+  for (const [key, rows] of groups) {
+    const [locale, slug] = key.split('/');
+    if (!covered.has(slug)) covered.set(slug, new Set());
+    covered.get(slug)!.add(locale);
+    if (!sources.has(slug)) sources.set(slug, rows[0]);
+  }
+  for (const [slug, source] of sources) {
+    for (const locale of targetLocales) {
+      if (covered.get(slug)!.has(locale)) continue;
+      if (!hasPage(locale, slug)) continue;
+      expanded.set(`${locale}/${slug}`, [{ ...source, locale, line: source.line }]);
+      covered.get(slug)!.add(locale);
+      notes.push(
+        `slug "${slug}": locale "${locale}" has no CSV row → synced from the "${source.locale}" row (line ${source.line}); review reward/source wording`,
+      );
+    }
+  }
+  return { groups: expanded, notes };
 }
 
 // ---------------------------------------------------------------------------
@@ -267,11 +320,20 @@ function readScalar(raw: string, lineNo: number): { value: string } | { error: s
   return { value: scanned.value };
 }
 
+/** A CRLF-saved page (Windows editors are an explicit supported audience)
+ * must sync like any other: parse on a normalized copy, and remember the
+ * file's EOL so upsert can re-apply it instead of silently converting. */
+function splitLines(fileText: string): { lines: string[]; eol: string } {
+  const eol = fileText.includes('\r\n') ? '\r\n' : '\n';
+  const lines = (eol === '\r\n' ? fileText.replace(/\r\n/g, '\n') : fileText).split('\n');
+  return { lines, eol };
+}
+
 /** Parse the `codes:` frontmatter block. Conservative: any structure beyond
  * flat single-line scalars (nested maps, multiline strings, unknown keys,
  * comments inside the block) is a loud error, never a silent rewrite. */
 export function parseCodesBlock(fileText: string): ParsedCodes | { error: string } {
-  const lines = fileText.split('\n');
+  const { lines } = splitLines(fileText);
   if ((lines[0] ?? '').trim() !== '---') return { error: 'file does not start with a frontmatter --- delimiter' };
   let closing = -1;
   for (let i = 1; i < lines.length; i++) {
@@ -368,13 +430,14 @@ export function serializeCodesBlock(entries: CodesEntry[]): string[] {
 }
 
 /** Replace (or insert) the codes block and bump lastModified. Everything
- * outside the touched lines is preserved byte-for-byte. */
+ * outside the touched lines is preserved byte-for-byte; the file's original
+ * EOL style (LF or CRLF) is kept. */
 export function upsertCodesFrontmatter(
   fileText: string,
   entries: CodesEntry[],
   today: string,
 ): { output: string } | { error: string } {
-  const lines = fileText.split('\n');
+  const { lines, eol } = splitLines(fileText);
   if ((lines[0] ?? '').trim() !== '---') return { error: 'file does not start with a frontmatter --- delimiter' };
   let closing = -1;
   for (let i = 1; i < lines.length; i++) {
@@ -423,5 +486,5 @@ export function upsertCodesFrontmatter(
   } else {
     lines.splice(closing, 0, ...block);
   }
-  return { output: lines.join('\n') };
+  return { output: lines.join(eol) };
 }

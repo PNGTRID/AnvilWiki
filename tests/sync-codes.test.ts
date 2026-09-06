@@ -7,6 +7,7 @@
  */
 import { describe, expect, test } from 'vitest';
 import {
+  fanOutLocales,
   mergeCodes,
   parseCodesBlock,
   parseCodesCsv,
@@ -92,7 +93,9 @@ describe('parseCodesCsv', () => {
 });
 
 describe('mergeCodes', () => {
-  const existing: CodesEntry[] = [
+  // Factory, not a shared const: mergeCodes mutates entries in place, so a
+  // shared fixture would leak mutations across tests.
+  const makeExisting = (): CodesEntry[] => [
     { code: 'FORGE-2026', reward: '+500 Gold', status: 'active', expiryDate: 'Aug 31' },
     { code: 'FROSTPIKE', reward: '+250 Gold', status: 'expired', expiryDate: 'Aug 21' },
   ];
@@ -109,7 +112,7 @@ describe('mergeCodes', () => {
   });
 
   test('new codes are prepended in CSV order; existing entries keep their order', () => {
-    const { merged, stats } = mergeCodes(existing, [
+    const { merged, stats } = mergeCodes(makeExisting(), [
       row({ code: 'NEW-B' }),
       row({ code: 'NEW-A' }),
     ]);
@@ -119,7 +122,7 @@ describe('mergeCodes', () => {
   });
 
   test('active → expired flips are tracked and the entry is kept in place', () => {
-    const { merged, stats } = mergeCodes(existing, [row({ code: 'FORGE-2026', status: 'expired' })]);
+    const { merged, stats } = mergeCodes(makeExisting(), [row({ code: 'FORGE-2026', status: 'expired' })]);
     expect(stats.expiredFlipped).toEqual(['FORGE-2026']);
     const forge = merged.find((c) => c.code === 'FORGE-2026');
     expect(forge?.status).toBe('expired');
@@ -127,7 +130,7 @@ describe('mergeCodes', () => {
   });
 
   test('empty optional CSV cells keep existing values; provided cells overwrite', () => {
-    const { merged, stats } = mergeCodes(existing, [row({ code: 'FORGE-2026', reward: '+750 Gold' })]);
+    const { merged, stats } = mergeCodes(makeExisting(), [row({ code: 'FORGE-2026', reward: '+750 Gold' })]);
     expect(stats.updated).toEqual(['FORGE-2026']);
     expect(merged[0]).toMatchObject({ reward: '+750 Gold', expiryDate: 'Aug 31' });
     const again = mergeCodes(merged, [row({ code: 'FORGE-2026', reward: '+750 Gold' })]);
@@ -215,5 +218,79 @@ describe('serializeCodesBlock + upsertCodesFrontmatter', () => {
       '    status: active',
       "    source: 'a ''source'''",
     ]);
+  });
+});
+
+describe('CRLF handling', () => {
+  test('CRLF pages parse and upsert preserves the CRLF EOL style', () => {
+    const crlfPage = pageWithCodes(demoBlock).replace(/\n/g, '\r\n');
+    const parsed = parseCodesBlock(crlfPage);
+    if ('error' in parsed) throw new Error(parsed.error);
+    expect(parsed.codes).toHaveLength(2);
+    const out = upsertCodesFrontmatter(crlfPage, parsed.codes, '2026-09-06');
+    if ('error' in out) throw new Error(out.error);
+    expect(out.output).toContain('lastModified: 2026-09-06\r');
+    expect(out.output).not.toMatch(/\r[^\n]/); // every \r is part of a \r\n pair
+    const reparsed = parseCodesBlock(out.output);
+    if ('error' in reparsed) throw new Error(reparsed.error);
+    expect(reparsed.codes).toEqual(parsed.codes);
+  });
+});
+
+describe('CSV hostile-cell rejection', () => {
+  test('embedded newline in a quoted cell is rejected at parse time (would write invalid YAML)', () => {
+    const csv = 'locale,slug,code,status,reward\nen,all-codes,BAD-NL,active,"two\nlines"';
+    const { rows, errors } = parseCodesCsv(csv, LOCALES);
+    expect(rows).toEqual([]);
+    expect(errors.some((e) => e.includes('control character'))).toBe(true);
+  });
+});
+
+describe('schema boundaries', () => {
+  test('expiryDate of exactly 40 chars passes (schema cap)', () => {
+    const csv = `locale,slug,code,expiryDate\nen,all-codes,EDGE40,${'x'.repeat(40)}`;
+    const { rows, errors } = parseCodesCsv(csv, LOCALES);
+    expect(errors).toEqual([]);
+    expect(rows[0]?.expiryDate).toHaveLength(40);
+  });
+});
+
+describe('fanOutLocales', () => {
+  const row = (over: Partial<{ locale: string; slug: string; code: string; reward: string }> = {}) => ({
+    line: 2,
+    locale: 'en',
+    slug: 'all-codes',
+    code: 'NEW-1',
+    status: 'active' as const,
+    reward: '+1 Gold',
+    expiryDate: '',
+    source: '',
+    ...over,
+  });
+
+  test('fills locales that have the page but no explicit row, with a review note', () => {
+    const groups = new Map([['en/all-codes', [row()]]]);
+    const { groups: expanded, notes } = fanOutLocales(groups, ['en', 'ja'], (locale) => locale === 'en' || locale === 'ja');
+    expect([...expanded.keys()].sort()).toEqual(['en/all-codes', 'ja/all-codes']);
+    expect(expanded.get('ja/all-codes')![0]).toMatchObject({ locale: 'ja', code: 'NEW-1', reward: '+1 Gold' });
+    expect(notes[0]).toContain('synced from the "en" row');
+  });
+
+  test('explicit per-locale rows win and produce no fan-out note', () => {
+    const groups = new Map([
+      ['en/all-codes', [row()]],
+      ['ja/all-codes', [row({ locale: 'ja', reward: '翻訳済み報酬' })]],
+    ]);
+    const { groups: expanded, notes } = fanOutLocales(groups, ['en', 'ja'], () => true);
+    expect(expanded.size).toBe(2);
+    expect(expanded.get('ja/all-codes')![0].reward).toBe('翻訳済み報酬');
+    expect(notes).toEqual([]);
+  });
+
+  test('locales without an existing page are skipped (sync never creates pages)', () => {
+    const groups = new Map([['en/all-codes', [row()]]]);
+    const { groups: expanded, notes } = fanOutLocales(groups, ['en', 'ja', 'ko'], (locale) => locale === 'en');
+    expect(expanded.size).toBe(1);
+    expect(notes).toEqual([]);
   });
 });

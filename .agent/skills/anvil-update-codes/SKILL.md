@@ -25,10 +25,12 @@ ls src/content/wiki/en/codes/   # 或用户指定的 locale
 codes:
   - code: FORGE-2026
     reward: '+500 Gold'
-    status: active        # active | expired
+    status: active
     expiryDate: 'Aug 31'
     source: 'Official Discord announcement'
 ```
+
+(`status` 取值 `active | expired`;YAML 块内不要写行内注释——`pnpm sync-codes` 的解析器会响亮拒绝。)
 
 - 新码:在 `codes:` 数组 active 项最前面追加(带 reward/expiryDate)
 - 用户说"XX 过期了":把该项 `status` 改为 `expired`(保留,不删除——过期码是 "is X still working" 长尾 SEO 内容)
