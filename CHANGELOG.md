@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`pnpm sync-codes`:codes 页批量同步脚本(第 15 个运维脚本,管道生成器扩展第一步)**——读仓库根 `codes-sync.csv`(`locale,slug,code,status,reward,expiryDate,source`,CSV/TSV 自适应,`--dry-run` 预览),确定性合并进已有 codes 页的 frontmatter `codes:` 数组:新码前置、过期翻转但保留(长尾 SEO)、空可选单元格保留现值、全语言同名页同步(码不翻译,reward/source 照搬需人工复查非 en 措辞);合并语义与 anvil-update-codes 技能逐条对齐,是该技能的机械半边;先全量校验后写入(all-or-nothing),扁平标量解析器遇到未知字段/行内注释/嵌套结构响亮中止绝不盲写,lastModified 随写随更。纯函数下沉 `scripts/lib/sync-codes.ts`(第 12 套件 tests/sync-codes.test.ts,14 条,序列化逐字节钉死+幂等);CSV/TSV 解析器抽共享 `scripts/lib/delimited.ts`(bulk-new-posts 同源复用);目标页必须已存在,同步不建页。管道接入(auto-content.yml 任务输入+契约测试)留独立小版本(docs/content-pipeline.md 候选已标注)。文档同步:AGENTS 命令表/手册附录 C 双语(20→21 条)/content-pipeline 新节/PRD 脚本计数/anvil-update-codes 技能批量提示。
+
 ## [2.15.1] — 2026-09-06
 
 **anvil-find-keywords 技能收口：SKILL.md 与 docs/sourcing.md 逐字对齐（早期爆发轨具体阈值 + 英文手册路径），零代码行为变更。**

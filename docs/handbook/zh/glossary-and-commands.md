@@ -1,11 +1,11 @@
 ---
 title: "附录 C · 术语表与命令速查"
-description: "全手册词卡的统一住处:30+ 个术语按拼音/字母排列;20 条 pnpm 命令按场景分组(写作/质检/配置/运营/资产),各带一句话说明。"
+description: "全手册词卡的统一住处:30+ 个术语按拼音/字母排列;21 条 pnpm 命令按场景分组(写作/质检/配置/运营/资产),各带一句话说明。"
 manual: learn
 order: 32
 stage: "附录"
 icon: lucide:book-marked
-tldr: "两部分:①术语表——各课词卡按主题归拢(SEO 类/站务类/变现类/工程类);②命令速查——pnpm 命令按场景分组:写作(new-post/bulk-new-posts)、质检(check-content/check-links/build)、配置(check-config/apply-template/new-locale)、运营(refresh-audit/submit-indexnow)、资产(gen-covers/gen-assets)。每条一句话说明,忘了细节先来这里。"
+tldr: "两部分:①术语表——各课词卡按主题归拢(SEO 类/站务类/变现类/工程类);②命令速查——pnpm 命令按场景分组:写作(new-post/bulk-new-posts/sync-codes)、质检(check-content/check-links/build)、配置(check-config/apply-template/new-locale)、运营(refresh-audit/submit-indexnow)、资产(gen-covers/gen-assets)。每条一句话说明,忘了细节先来这里。"
 updated: 2026-09-02
 ---
 
@@ -61,6 +61,7 @@ updated: 2026-09-02
 ```bash
 pnpm new-post           # 交互式单篇脚手架
 pnpm bulk-new-posts     # 从关键词 CSV 批量建草稿(--dry-run 预览)
+pnpm sync-codes         # 从 CSV 批量同步兑换码(新增/过期,--dry-run 预览)
 ```
 
 **质检(改完必跑)**

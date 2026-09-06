@@ -1,11 +1,11 @@
 ---
 title: "Appendix C · Glossary & Command Cheat Sheet"
-description: "Every word card in one place — 30+ terms by theme — plus twenty pnpm commands grouped by scenario: writing, QA, config, ops, assets."
+description: "Every word card in one place — 30+ terms by theme — plus twenty-one pnpm commands grouped by scenario: writing, QA, config, ops, assets."
 manual: learn
 order: 32
 stage: "Appendices"
 icon: lucide:book-marked
-tldr: "Two parts: ① the glossary — every lesson's word cards regrouped by theme (SEO & search / site & content / monetization & ops); ② the command sheet — pnpm commands by scenario: writing (new-post / bulk-new-posts), QA (check-content / check-links / build), config (check-config / apply-template / new-locale), ops (refresh-audit / submit-indexnow), assets (gen-covers / gen-assets). One line each — when detail fades, start here."
+tldr: "Two parts: ① the glossary — every lesson's word cards regrouped by theme (SEO & search / site & content / monetization & ops); ② the command sheet — pnpm commands by scenario: writing (new-post / bulk-new-posts / sync-codes), QA (check-content / check-links / build), config (check-config / apply-template / new-locale), ops (refresh-audit / submit-indexnow), assets (gen-covers / gen-assets). One line each — when detail fades, start here."
 updated: 2026-09-02
 ---
 
@@ -61,6 +61,7 @@ updated: 2026-09-02
 ```bash
 pnpm new-post           # interactive single-page scaffold
 pnpm bulk-new-posts     # batch drafts from a keyword CSV (--dry-run to preview)
+pnpm sync-codes         # batch-sync redeem codes from a CSV (--dry-run to preview)
 ```
 
 **QA (after every change)**

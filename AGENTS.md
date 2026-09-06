@@ -103,6 +103,7 @@ pnpm gen-assets       # scripts/gen-assets.ts — regenerate favicon set + hero.
 pnpm submit-indexnow  # scripts/submit-indexnow.ts — push all dist/ sitemap URLs to IndexNow (run after build+deploy; first run generates the key file)
 pnpm template-audit   # scripts/template-audit.ts — template health check (code purity / rebrand leftovers / health score)
 pnpm bulk-new-posts   # scripts/bulk-new-posts.ts — batch-create draft MDX from a new-posts.csv keyword list (--dry-run preview)
+pnpm sync-codes       # scripts/sync-codes.ts — batch-apply a codes-sync.csv into codes pages' frontmatter codes array (add/expire; --dry-run preview)
 pnpm refresh-audit    # scripts/refresh-audit.ts — deterministic freshness report (codes pages >7d, stale categories >90d)
 pnpm apply-template   # interactive template-apply CLI (hex→HSL theme, rewrite config/locales)
 pnpm new-post         # interactive MDX article scaffold

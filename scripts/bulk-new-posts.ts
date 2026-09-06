@@ -34,6 +34,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { isBlankOrComment, parseDelimited } from './lib/delimited';
 
 const ROOT = process.cwd();
 const CONTENT_BASE = path.resolve(ROOT, 'src/content/wiki');
@@ -93,48 +94,7 @@ function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-/** Minimal RFC-4180-ish delimited parser: quoted fields, "" escapes, CSV or TSV.
- * Reports an unterminated quote instead of silently swallowing the file tail. */
-function parseDelimited(text: string): { rows: string[][]; unterminatedQuote: boolean } {
-  const firstLine = text.slice(0, text.indexOf('\n') === -1 ? text.length : text.indexOf('\n'));
-  const delim = firstLine.includes('\t') && !firstLine.includes(',') ? '\t' : ',';
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let field = '';
-  let inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (inQuotes) {
-      if (c === '"') {
-        if (text[i + 1] === '"') {
-          field += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        field += c;
-      }
-    } else if (c === '"') {
-      inQuotes = true;
-    } else if (c === delim) {
-      row.push(field);
-      field = '';
-    } else if (c === '\n') {
-      row.push(field);
-      rows.push(row);
-      row = [];
-      field = '';
-    } else if (c !== '\r') {
-      field += c;
-    }
-  }
-  if (field.length > 0 || row.length > 0) {
-    row.push(field);
-    rows.push(row);
-  }
-  return { rows, unterminatedQuote: inQuotes };
-}
+/** Minimal RFC-4180-ish delimited parser: shared in scripts/lib/delimited.ts. */
 
 function findInputFile(): string | null {
   const isFlag = (a: string) => a.startsWith('--') || a === '-n';
@@ -207,8 +167,6 @@ if (table.length === 0) {
 
 // The header is the first non-blank, non-comment row (the list may open
 // with "#" comment lines). Row loop below starts after it.
-const isBlankOrComment = (cells: string[]) =>
-  cells.every((c) => c.trim() === '') || (cells[0] ?? '').trim().startsWith('#');
 const headerIdx = table.findIndex((cells) => !isBlankOrComment(cells));
 if (headerIdx === -1) {
   console.error(`❌ ${inputFile} has no header row (expected columns: ${[...REQUIRED_COLUMNS, 'description'].join(', ')}).`);
