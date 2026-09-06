@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.15.0';
+export const PROJECT_VERSION = '2.15.1';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -279,7 +279,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} keyword & game sourcing: a 6th agent skill, \`anvil-find-keywords\`, mines candidates across the 9 sourcing channels, runs SERP + intent-satisfaction checks, scores with the verdict framework, and writes a decision table with 3/7/14/28-day review dates.`,
+    text: `v${PROJECT_VERSION} skill polish: \`anvil-find-keywords\` now mirrors docs/sourcing.md verbatim — concrete early-burst thresholds (≥3 independent posters, ≥20 interactions or ≥500 views, ≥2 platform types) plus the English handbook path in its methodology sources.`,
     href: RELEASES,
   },
   hero: {
@@ -746,7 +746,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 挖词选品：新增第 6 个智能体技能 anvil-find-keywords——9 渠道自动挖候选、SERP 快验 + 意图满足度检查、判决框架打分，落盘带 3/7/14/28 天复查日的决策管理表。`,
+    text: `v${PROJECT_VERSION} 技能收口：anvil-find-keywords 与 docs/sourcing.md 逐字对齐——早期爆发轨补具体阈值（≥3 独立发布者、互动 ≥20 次或播放 ≥500、跨 ≥2 类平台），方法论来源补英文手册路径。`,
     href: RELEASES,
   },
   hero: {

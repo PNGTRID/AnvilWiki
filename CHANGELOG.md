@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.15.1] — 2026-09-06
+
+**anvil-find-keywords 技能收口：SKILL.md 与 docs/sourcing.md 逐字对齐（早期爆发轨具体阈值 + 英文手册路径），零代码行为变更。**
+
 ### Fixed
 
 - **`anvil-find-keywords` SKILL.md 与 docs/sourcing.md 逐字对齐收口**(24h 风险审计两条低置信观察闭环):早期爆发轨从意译「非官方互动达标且在涨」补齐具体阈值——独立发布者 ≥3(非官方账号、非同一文案的搬运)、传播横跨 ≥2 类平台(如 Reddit + YouTube)、非官方互动 ≥20 次或播放 ≥500 且复查时仍在涨;方法论来源补英文手册路径 `docs/handbook/en/find-candidates.md`(原只引 zh 版)。
@@ -952,7 +956,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.15.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.15.1...HEAD
+[2.15.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.15.0...v2.15.1
 [2.15.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.1...v2.15.0
 [2.14.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.0...v2.14.1
 [2.14.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.13.0...v2.14.0
