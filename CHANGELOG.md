@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`sync-codes` 接入 auto-content.yml 管道(管道生成器扩展收官)**——Run workflow 任务选择新增 `sync-codes`:把 `codes-sync.csv` 粘进 `csv_text`(或 commit 到仓库根留空),生成器确定性合并进 codes 页 frontmatter,**同一套八道门禁前置**,绿了才开 draft PR;与 import-csv 同契约——`--require-output`(所有行已应用的重跑响亮失败,不开空 PR,sync-codes 脚本新增该 flag)、内容白名单 add-paths、任务级固定分支 `chore/sync-codes`(与 import-csv 的 `chore/auto-content` 互不干扰,任务不混 PR)、零 secrets、LLM 永不进 CI;PR 正文按任务提示 codes 页特有的复查项(非 en 措辞/title·summary 码数与日期)。契约测试钉:sync-codes 生成步 task 门控+require-output、双任务分支表达式、门禁前置、草稿 PR;docs/content-pipeline.md 补任务用法+候选标 ✅。
+
 ## [2.16.0] — 2026-09-06
 
 **codes 页批量同步脚本：`pnpm sync-codes` 把「新增/过期兑换码」从 AI 会话搬进确定性脚本（第 15 个运维脚本，管道生成器扩展第一步）。**

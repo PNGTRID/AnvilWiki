@@ -29,6 +29,7 @@
  *   pnpm sync-codes my-codes.csv     # explicit file
  *   pnpm sync-codes --dry-run        # print the plan, write nothing
  *   pnpm sync-codes --locales=en,ja  # only apply rows for these locales
+ *   pnpm sync-codes --require-output # exit 1 if 0 pages changed (CI pipeline)
  *
  * Style matches scripts/bulk-new-posts.ts (node builtins, emoji output).
  */
@@ -49,12 +50,18 @@ const ROOT = process.cwd();
 const CONTENT_BASE = path.resolve(ROOT, 'src/content/wiki');
 const ARGS = process.argv.slice(2);
 const DRY_RUN = ARGS.includes('--dry-run') || ARGS.includes('-n');
+// Used by auto-content.yml: a run that changes 0 pages (empty list, every
+// row already applied) exits 1 — a pipeline run must not pass all gates
+// green and then quietly create no PR at all.
+const REQUIRE_OUTPUT = ARGS.includes('--require-output');
 
 // Unknown flags are rejected loudly: a typo'd --drry-run must fail, never
 // silently degrade into a real write.
-const UNKNOWN_FLAGS = ARGS.filter((a) => a.startsWith('-') && a !== '-n' && a !== '--dry-run' && !a.startsWith('--locales'));
+const UNKNOWN_FLAGS = ARGS.filter(
+  (a) => a.startsWith('-') && a !== '-n' && a !== '--dry-run' && a !== '--require-output' && !a.startsWith('--locales'),
+);
 if (UNKNOWN_FLAGS.length > 0) {
-  console.error(`❌ Unknown flag(s): ${UNKNOWN_FLAGS.join(', ')} — supported: --dry-run/-n, --locales=<comma,list>`);
+  console.error(`❌ Unknown flag(s): ${UNKNOWN_FLAGS.join(', ')} — supported: --dry-run/-n, --locales=<comma,list>, --require-output`);
   process.exit(1);
 }
 
@@ -270,3 +277,10 @@ console.log(
     `\n   3. Verify: pnpm check-content && pnpm build` +
     `\n   4. Commit the pages (one commit per game keeps history reviewable).`,
 );
+
+if (REQUIRE_OUTPUT && touched === 0) {
+  console.error(
+    `\n❌ --require-output: 0 pages changed (empty list, every row already applied, or all-unchanged). Nothing to open a PR for.`,
+  );
+  process.exit(1);
+}

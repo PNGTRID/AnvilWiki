@@ -49,6 +49,7 @@ const EIGHT_GATES = [
 
 interface Step {
   name?: string;
+  if?: string;
   run?: string;
   uses?: string;
   with?: Record<string, unknown>;
@@ -139,12 +140,25 @@ describe('auto-content pipeline safety contract', () => {
     expect(gen?.run).toContain('bulk-new-posts --require-output');
   });
 
+  test('sync-codes task: gated generator with the same require-output contract', () => {
+    // The codes generator follows the identical pipeline contract as
+    // import-csv: task-gated step, --require-output so an all-applied run
+    // fails loudly instead of opening an empty PR.
+    const gen = steps.find((s) => /pnpm sync-codes/.test(s.run ?? ''));
+    expect(gen?.run).toContain('pnpm sync-codes --require-output');
+    expect(gen?.if).toContain("inputs.task == 'sync-codes'");
+  });
+
   test('PRs are drafts on a fixed branch and contain ONLY content changes', () => {
     const pr = steps.find((s) => (s.uses ?? '').includes('create-pull-request'));
     expect(pr?.with?.draft).toBe(true);
-    expect(pr?.with?.branch).toBe('chore/auto-content');
-    // add-paths keeps the pasted csv_text (new-posts.csv) OUT of the PR —
-    // without it the keyword list gets committed to main on merge.
+    // One fixed branch per task (idempotent re-dispatch, tasks never mix):
+    // the branch is a task-conditional expression covering both names.
+    const branch = String(pr?.with?.branch ?? '');
+    expect(branch).toContain('chore/auto-content');
+    expect(branch).toContain('chore/sync-codes');
+    // add-paths keeps the pasted csv_text (new-posts.csv / codes-sync.csv)
+    // OUT of the PR — without it the list gets committed to main on merge.
     expect(String(pr?.with?.['add-paths'] ?? '')).toContain('src/content/**');
   });
 
