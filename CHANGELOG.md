@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`anvil-find-keywords` SKILL.md 与 docs/sourcing.md 逐字对齐收口**(24h 风险审计两条低置信观察闭环):早期爆发轨从意译「非官方互动达标且在涨」补齐具体阈值——独立发布者 ≥3(非官方账号、非同一文案的搬运)、传播横跨 ≥2 类平台(如 Reddit + YouTube)、非官方互动 ≥20 次或播放 ≥500 且复查时仍在涨;方法论来源补英文手册路径 `docs/handbook/en/find-candidates.md`(原只引 zh 版)。
+
 ## [2.15.0] — 2026-09-05
 
 **挖词选品技能：新增 `anvil-find-keywords`（第 6 个 anvil-\*），把 docs/sourcing.md 的 9 渠道挖词方法论变成智能体可自动执行的工作流。**
