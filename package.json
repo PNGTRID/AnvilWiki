@@ -47,6 +47,7 @@
     "check-config": "tsx scripts/check-config.ts",
     "new-post": "tsx scripts/new-post.ts",
     "bulk-new-posts": "tsx scripts/bulk-new-posts.ts",
+    "sync-codes": "tsx scripts/sync-codes.ts",
     "gen-covers": "tsx scripts/gen-covers.ts",
     "gen-assets": "tsx scripts/gen-assets.ts",
     "submit-indexnow": "tsx scripts/submit-indexnow.ts",

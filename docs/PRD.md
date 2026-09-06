@@ -339,7 +339,7 @@ anvilwiki/
 │   ├── styles/globals.css        # ⭐ --brand 4 变量（:root 4 行 + .dark 4 行）
 │   ├── assets/                   # 封面图等（走 astro:assets <Image> 管线，WebP+srcset）
 │   └── lib/                      # content.ts / content-utils.ts / navigation.ts / seo.ts / url.ts / handbook.ts
-├── scripts/                      # 14 个运维脚本（check-* ×5 + refresh-audit + new-locale/new-post + apply-template + template-audit + bulk-new-posts + gen-covers + gen-assets + submit-indexnow）
+├── scripts/                      # 15 个运维脚本（check-* ×5 + refresh-audit + new-locale/new-post + apply-template + template-audit + bulk-new-posts + sync-codes + gen-covers + gen-assets + submit-indexnow）
 ├── tools/anvil-ops/              # ⭐ 独立 npm 包 anvilwiki-ops（CLI + MCP，自有 workspace）
 ├── .agent/skills/                # ⭐ AI 内容技能（anvil-find-keywords / anvil-new-article / anvil-batch-articles / anvil-update-codes / anvil-refresh / anvil-adsense-audit）
 └── .github/

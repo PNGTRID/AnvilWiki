@@ -63,8 +63,12 @@ merge → Cloudflare Pages 自动部署
 | 做什么 | 只读审计 → 开 issue 提醒「什么过期了」 | 确定性生成 → 八道门禁 → draft PR |
 | 改内容 | 从不改 | 只创建 `draft: true` 脚手架,真实内容仍由人/AI 本地会话填 |
 
+## codes 批量同步(本地,`pnpm sync-codes`)
+
+codes 页是更新频率最高的页面,`pnpm sync-codes` 把「新增/过期兑换码」变成一条确定性脚本:读一份 `codes-sync.csv`(`locale,slug,code,status,reward,expiryDate,source`),合并进已有 codes 页的 frontmatter `codes:` 数组——新码前置、过期翻转但保留(长尾 SEO)、空可选单元格保留现值;同名页面在所有语言同步(显式语言行优先,可按语言给翻译行;无行的语言自动跟随该 slug 首行,reward/source 文案照搬,非 en 语言需复查措辞)。合并语义与 `.agent/skills/anvil-update-codes` 一致,它是那套流程的机械半边;解析失败(未知字段/行内注释/嵌套结构)一律响亮中止,绝不盲写。先 `--dry-run` 预览。目标页必须已存在——同步不建页。
+
 ## v2.1 候选
 
-- `codes-sync` 生成器(从结构化数据源同步兑换码,仍走同一管道)
+- ✅ `codes-sync` 生成器(脚本本体已交付:`pnpm sync-codes`;剩余:接入 auto-content.yml 管道——新增任务输入 + workflows.test.ts 契约,单独小版本做)
 - issue 评论 `/generate` 触发(需 collaborator 校验,见 GitHub Actions 安全实践)
 - GitHub App token(让管道 PR 上的 CI 自动跑,而非待批准)

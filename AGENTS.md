@@ -90,7 +90,7 @@ pnpm dev              # dev server, http://localhost:4321
 pnpm build            # includes Content schema validation — fails on bad frontmatter; postbuild indexes Pagefind search
 pnpm typecheck        # astro check (0 errors expected)
 pnpm lint             # ESLint (eslint-plugin-astro)
-pnpm test             # Vitest — 11 suites (url, seo, tags, i18n-smoke, content-utils, handbook, workflows, covers, affiliates, prompt, apply-template)
+pnpm test             # Vitest — 12 suites (url, seo, tags, i18n-smoke, content-utils, handbook, workflows, covers, affiliates, prompt, apply-template, sync-codes)
 pnpm test:e2e         # apply-template real-mode E2E (git archive → scratch copy → pipe answers → assert shape → build; CI job e2e-template runs it; tests the COMMITTED tree)
 pnpm check-config     # scripts/check-config.ts — nav/locale 3-place consistency
 pnpm new-locale       # scripts/new-locale.ts — scaffold a new language
@@ -103,6 +103,7 @@ pnpm gen-assets       # scripts/gen-assets.ts — regenerate favicon set + hero.
 pnpm submit-indexnow  # scripts/submit-indexnow.ts — push all dist/ sitemap URLs to IndexNow (run after build+deploy; first run generates the key file)
 pnpm template-audit   # scripts/template-audit.ts — template health check (code purity / rebrand leftovers / health score)
 pnpm bulk-new-posts   # scripts/bulk-new-posts.ts — batch-create draft MDX from a new-posts.csv keyword list (--dry-run preview)
+pnpm sync-codes       # scripts/sync-codes.ts — batch-apply a codes-sync.csv into codes pages' frontmatter codes array (add/expire; --dry-run preview)
 pnpm refresh-audit    # scripts/refresh-audit.ts — deterministic freshness report (codes pages >7d, stale categories >90d)
 pnpm apply-template   # interactive template-apply CLI (hex→HSL theme, rewrite config/locales)
 pnpm new-post         # interactive MDX article scaffold

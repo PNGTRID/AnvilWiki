@@ -25,10 +25,12 @@ ls src/content/wiki/en/codes/   # 或用户指定的 locale
 codes:
   - code: FORGE-2026
     reward: '+500 Gold'
-    status: active        # active | expired
+    status: active
     expiryDate: 'Aug 31'
     source: 'Official Discord announcement'
 ```
+
+(`status` 取值 `active | expired`;YAML 块内不要写行内注释——`pnpm sync-codes` 的解析器会响亮拒绝。)
 
 - 新码:在 `codes:` 数组 active 项最前面追加(带 reward/expiryDate)
 - 用户说"XX 过期了":把该项 `status` 改为 `expired`(保留,不删除——过期码是 "is X still working" 长尾 SEO 内容)
@@ -36,6 +38,8 @@ codes:
 - 若文章标题含年月(如 "All Working Codes (August 2026)"),跨月时同步更新 title
 - `summary` 里的码数量/日期同步修正
 - 正文里的 CodeBlock 列表(旧格式)迁移到 frontmatter 后删除,正文保留 how-to-redeem 等散文内容
+
+> **批量场景**(一次新增/过期多个码):`pnpm sync-codes` 读 `codes-sync.csv` 确定性合并进 frontmatter(`--dry-run` 预览,新码前置/过期保留,全语言同名页同步)。本技能仍是单页精修与翻译判断(reward 等文案按语言译)的正道。
 
 ### Step 3 — 多语言同步
 
