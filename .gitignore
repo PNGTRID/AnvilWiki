@@ -44,3 +44,6 @@ pnpm-debug.log*
 *.pem
 *.key
 seo-reports/
+
+# daily ops reports (local automation, never committed)
+reports/
