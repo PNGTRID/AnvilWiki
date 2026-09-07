@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.16.1';
+export const PROJECT_VERSION = '2.17.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -290,7 +290,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} sync-codes hardening: slugs with path separators are rejected at parse time (a stray / could silently retarget another page), mixed-EOL files and unknown YAML escapes abort loudly, page writes are atomic. Audit-driven, zero semantic loosening.`,
+    text: `v${PROJECT_VERSION} pipeline finale: codes sync joins the Auto content PR workflow (paste a CSV → gated draft PR after the same eight gates); cross-locale fan-out now carries the full code list instead of just the first row — no more silently dropped codes on non-English pages.`,
     href: RELEASES,
   },
   hero: {
@@ -757,7 +757,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} sync-codes 加固：slug 含路径分隔符解析期即拒（误带 / 不再静默写错页）、混合 EOL 与未知 YAML 转义响亮中止、页面写入改原子替换；24h 审计四项闭环，零语义放宽。`,
+    text: `v${PROJECT_VERSION} 管道收官：codes 同步接入 Auto content PR（粘一份 CSV → 八道门禁后的 draft PR）；跨语言 fan-out 修复为整组同步，多码清单不再在非 en 页静默掉码。`,
     href: RELEASES,
   },
   hero: {
