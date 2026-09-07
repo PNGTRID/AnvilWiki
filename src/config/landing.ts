@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.16.1';
+export const PROJECT_VERSION = '2.16.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -271,6 +271,17 @@ export const COMMUNITY_SITES: {
       'A build database for the action roguelite Sephiria — patch-stamped weapon tier lists and evidence-graded build guides.',
     descriptionZh: '动作肉鸽 Sephiria 的 build 数据库——带版本戳的武器强度榜与证据分级的 build 攻略。',
   },
+  {
+    name: 'Resonance Wiki',
+    url: 'https://resonanceplaguetale.wiki/',
+    game: 'Resonance: A Plague Tale Legacy',
+    image: '/images/showcase/sites/resonance.jpg',
+    imageAltEn: 'Screenshot of the Resonance Wiki homepage',
+    imageAltZh: 'Resonance Wiki 首页截图',
+    descriptionEn:
+      'A fan-made wiki for Resonance: A Plague Tale Legacy — full chapter walkthrough, all collectible locations, trophy roadmap, and puzzle solutions.',
+    descriptionZh: '《Resonance: A Plague Tale Legacy》粉丝 wiki——全章节流程攻略、全部收集品位置、奖杯路线图、谜题解法与 Sophia 技能推荐。',
+  },
 ];
 
 const en: LandingContent = {
@@ -279,7 +290,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} sync-codes hardening: slugs with path separators are rejected at parse time (a stray / could silently retarget another page), mixed-EOL files and unknown YAML escapes abort loudly, page writes are atomic. Audit-driven, zero semantic loosening.`,
+    text: `v${PROJECT_VERSION} codes sync: \`pnpm sync-codes\` batch-applies a codes-sync.csv into codes pages' frontmatter — new codes prepended, expired kept for long-tail SEO, same-name pages in every locale follow the first row. Deterministic gates stay out of the AI session.`,
     href: RELEASES,
   },
   hero: {
@@ -746,7 +757,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} sync-codes 加固：slug 含路径分隔符解析期即拒（误带 / 不再静默写错页）、混合 EOL 与未知 YAML 转义响亮中止、页面写入改原子替换；24h 审计四项闭环，零语义放宽。`,
+    text: `v${PROJECT_VERSION} codes 页批量同步：\`pnpm sync-codes\` 读一份 CSV 确定性合并进 codes 页 frontmatter——新码前置、过期保留养长尾、同名页全语言自动跟随首行；确定性脚本不占 AI 会话。`,
     href: RELEASES,
   },
   hero: {
