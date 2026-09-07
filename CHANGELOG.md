@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`pnpm sync-codes` 24h 风险审计四项闭环**(1 Important + 3 低置信,纯加固零语义放宽):① CSV slug 含路径分隔符(`/`、`\`)或控制字符解析期即拒——原先 `/` 会在 `key.split('/')[1]` 处被静默截断,把码写进截断后命中的另一张已有页且计划标签同步失真(dry-run 实证;win32 反斜杠上跳同根因);② 混合 LF/CRLF 文件响亮中止——原先 `includes('\r\n')` 判定会把混合 EOL 整文件翻转,破坏「块外逐字节保留」承诺;③ 双引号值仅解码 `\"`/`\\`,其余转义(`\n`/`\t`/`\u…`)响亮拒绝——原先一律丢弃反斜杠误读,误读值会在触碰重写时静默固化;④ 页面写入改同目录临时文件 + `renameSync` 原子替换,进程中途被杀不再留下截断 MDX。测试 153→156;文档同步 content-pipeline/SKILL.md。
+
 ## [2.16.0] — 2026-09-06
 
 **codes 页批量同步脚本：`pnpm sync-codes` 把「新增/过期兑换码」从 AI 会话搬进确定性脚本（第 15 个运维脚本，管道生成器扩展第一步）。**

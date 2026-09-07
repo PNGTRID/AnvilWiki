@@ -39,7 +39,7 @@ codes:
 - `summary` 里的码数量/日期同步修正
 - 正文里的 CodeBlock 列表(旧格式)迁移到 frontmatter 后删除,正文保留 how-to-redeem 等散文内容
 
-> **批量场景**(一次新增/过期多个码):`pnpm sync-codes` 读 `codes-sync.csv` 确定性合并进 frontmatter(`--dry-run` 预览,新码前置/过期保留,全语言同名页同步)。本技能仍是单页精修与翻译判断(reward 等文案按语言译)的正道。
+> **批量场景**(一次新增/过期多个码):`pnpm sync-codes` 读 `codes-sync.csv` 确定性合并进 frontmatter(`--dry-run` 预览,新码前置/过期保留,全语言同名页同步;CSV 的 slug 必须是单个文件名,不含 `/`、`\` 或换行——含则解析期响亮拒绝,防静默写错页)。本技能仍是单页精修与翻译判断(reward 等文案按语言译)的正道。
 
 ### Step 3 — 多语言同步
 

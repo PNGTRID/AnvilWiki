@@ -112,6 +112,13 @@ export function parseCodesCsv(text: string, locales: readonly string[]): CsvResu
       result.errors.push(`line ${line}: slug is empty`);
       continue;
     }
+    // A slug maps to ONE MDX file name. A path separator would be silently
+    // truncated at key.split('/') downstream (file path + plan label),
+    // retargeting the row at a different existing page — reject at parse.
+    if (/[\\/]/.test(slug)) {
+      result.errors.push(`line ${line}: slug "${slug}" contains a path separator (/ or \\) — target a single page file name like "all-codes"`);
+      continue;
+    }
     if (slug !== slug.toLowerCase()) {
       result.notes.push(`line ${line}: slug "${slug}" — target file must exist as-is; slugs are case-sensitive`);
     }
@@ -144,7 +151,7 @@ export function parseCodesCsv(text: string, locales: readonly string[]): CsvResu
     // quoted YAML scalar literally, producing INVALID frontmatter that only
     // `pnpm build` would catch — far too late. Reject loudly at parse time.
     let hasControlError = false;
-    for (const [name, value] of [['code', code], ['reward', get('reward')], ['expiryDate', expiryDate], ['source', get('source')]] as const) {
+    for (const [name, value] of [['slug', slug], ['code', code], ['reward', get('reward')], ['expiryDate', expiryDate], ['source', get('source')]] as const) {
       if (/[\n\r\u0000-\u0008\u000B-\u001F\u007F]/.test(value)) {
         result.errors.push(`line ${line}: "${name}" contains a newline/control character (not valid in a YAML scalar)`);
         hasControlError = true;
@@ -293,9 +300,22 @@ function scanYamlScalar(raw: string): { value: string; rest: string } | { error:
     let out = '';
     while (i < v.length) {
       if (v[i] === '\\') {
-        out += v[i + 1] ?? '';
-        i += 2;
-        continue;
+        const next = v[i + 1];
+        // Only \" and \\ have a literal-char decoding the single-line
+        // serializer can re-emit faithfully; any other YAML escape (\n, \t,
+        // \u…) would be mis-read here and its mis-read value silently
+        // persisted on rewrite — abort loudly instead.
+        if (next === '"' || next === '\\') {
+          out += next;
+          i += 2;
+          continue;
+        }
+        return {
+          error:
+            next === undefined
+              ? 'trailing backslash in double-quoted value'
+              : `unsupported escape \\${next} in double-quoted value (only \\" and \\\\ decode — edit the value manually)`,
+        };
       }
       if (v[i] === '"') break;
       out += v[i];
@@ -322,9 +342,16 @@ function readScalar(raw: string, lineNo: number): { value: string } | { error: s
 
 /** A CRLF-saved page (Windows editors are an explicit supported audience)
  * must sync like any other: parse on a normalized copy, and remember the
- * file's EOL so upsert can re-apply it instead of silently converting. */
-function splitLines(fileText: string): { lines: string[]; eol: string } {
-  const eol = fileText.includes('\r\n') ? '\r\n' : '\n';
+ * file's EOL so upsert can re-apply it instead of silently converting.
+ * A file MIXING LF and CRLF cannot be re-joined byte-for-byte by a uniform
+ * EOL, so it is rejected loudly instead of whole-file flipping. */
+function splitLines(fileText: string): { lines: string[]; eol: '\n' | '\r\n' } | { error: string } {
+  const crlf = (fileText.match(/\r\n/g) ?? []).length;
+  const lf = (fileText.match(/\n/g) ?? []).length;
+  if (crlf > 0 && crlf < lf) {
+    return { error: 'file mixes LF and CRLF line endings — normalize the file to one style, then re-run' };
+  }
+  const eol = crlf > 0 ? '\r\n' : '\n';
   const lines = (eol === '\r\n' ? fileText.replace(/\r\n/g, '\n') : fileText).split('\n');
   return { lines, eol };
 }
@@ -333,7 +360,9 @@ function splitLines(fileText: string): { lines: string[]; eol: string } {
  * flat single-line scalars (nested maps, multiline strings, unknown keys,
  * comments inside the block) is a loud error, never a silent rewrite. */
 export function parseCodesBlock(fileText: string): ParsedCodes | { error: string } {
-  const { lines } = splitLines(fileText);
+  const split = splitLines(fileText);
+  if ('error' in split) return split;
+  const { lines } = split;
   if ((lines[0] ?? '').trim() !== '---') return { error: 'file does not start with a frontmatter --- delimiter' };
   let closing = -1;
   for (let i = 1; i < lines.length; i++) {
@@ -437,7 +466,9 @@ export function upsertCodesFrontmatter(
   entries: CodesEntry[],
   today: string,
 ): { output: string } | { error: string } {
-  const { lines, eol } = splitLines(fileText);
+  const split = splitLines(fileText);
+  if ('error' in split) return split;
+  const { lines, eol } = split;
   if ((lines[0] ?? '').trim() !== '---') return { error: 'file does not start with a frontmatter --- delimiter' };
   let closing = -1;
   for (let i = 1; i < lines.length; i++) {
