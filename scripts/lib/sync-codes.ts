@@ -230,10 +230,12 @@ export function mergeCodes(
  * explicit row — the anvil-update-codes skill's Step 3 semantics ("同步数据"
  * wherever a same-name page exists). Explicit rows always win (so per-locale
  * translated reward/source text stays possible); fan-out rows are shallow
- * clones of the slug's FIRST explicit row with only the locale changed, i.e.
- * reward/source text is copied as-given and needs a wording review on non-en
- * locales. Only `targetLocales` are filled (respects the --locales filter);
- * locales without an existing page are skipped (sync never creates pages). */
+ * clones of the slug's FIRST explicit locale's ENTIRE row set with only the
+ * locale changed (a one-row fan-out would silently drop codes 2..N on locales
+ * without explicit rows), i.e. reward/source text is copied as-given and needs
+ * a wording review on non-en locales. Only `targetLocales` are filled
+ * (respects the --locales filter); locales without an existing page are
+ * skipped (sync never creates pages). */
 export function fanOutLocales(
   groups: Map<string, CodesCsvRow[]>,
   targetLocales: readonly string[],
@@ -242,21 +244,27 @@ export function fanOutLocales(
   const notes: string[] = [];
   const expanded = new Map(groups);
   const covered = new Map<string, Set<string>>(); // slug → locales with rows
-  const sources = new Map<string, CodesCsvRow>(); // slug → first explicit row
+  const sources = new Map<string, CodesCsvRow[]>(); // slug → ALL rows of the first locale that has any
   for (const [key, rows] of groups) {
     const [locale, slug] = key.split('/');
     if (!covered.has(slug)) covered.set(slug, new Set());
     covered.get(slug)!.add(locale);
-    if (!sources.has(slug)) sources.set(slug, rows[0]);
+    // Insertion order: the first locale seen for a slug is the fan-out source.
+    // The whole group fans out — a multi-code CSV synced from one row would
+    // silently drop codes 2..N on every locale without explicit rows.
+    if (!sources.has(slug)) sources.set(slug, rows);
   }
-  for (const [slug, source] of sources) {
+  for (const [slug, sourceRows] of sources) {
     for (const locale of targetLocales) {
       if (covered.get(slug)!.has(locale)) continue;
       if (!hasPage(locale, slug)) continue;
-      expanded.set(`${locale}/${slug}`, [{ ...source, locale, line: source.line }]);
+      expanded.set(
+        `${locale}/${slug}`,
+        sourceRows.map((r) => ({ ...r, locale, line: r.line })),
+      );
       covered.get(slug)!.add(locale);
       notes.push(
-        `slug "${slug}": locale "${locale}" has no CSV row → synced from the "${source.locale}" row (line ${source.line}); review reward/source wording`,
+        `slug "${slug}": locale "${locale}" has no CSV row → synced from the "${sourceRows[0].locale}" rows (${sourceRows.length} code${sourceRows.length === 1 ? '' : 's'}, first at line ${sourceRows[0].line}); review reward/source wording`,
       );
     }
   }

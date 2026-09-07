@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`sync-codes` 接入 auto-content.yml 管道(管道生成器扩展收官)**——Run workflow 任务选择新增 `sync-codes`:把 `codes-sync.csv` 粘进 `csv_text`(或 commit 到仓库根留空),生成器确定性合并进 codes 页 frontmatter,**同一套八道门禁前置**,绿了才开 draft PR;与 import-csv 同契约——`--require-output`(所有行已应用的重跑响亮失败,不开空 PR,sync-codes 脚本新增该 flag)、内容白名单 add-paths、任务级固定分支 `chore/sync-codes`(与 import-csv 的 `chore/auto-content` 互不干扰,任务不混 PR)、零 secrets、LLM 永不进 CI;PR 正文按任务提示 codes 页特有的复查项(非 en 措辞/title·summary 码数与日期)。契约测试钉:sync-codes 生成步 task 门控+require-output、双任务分支表达式、门禁前置、草稿 PR;docs/content-pipeline.md 补任务用法+候选标 ✅。
+
+### Fixed
+
+- **`sync-codes` 跨语言 fan-out 只带 slug 首行**——`fanOutLocales` 此前只复制该 slug 首个显式行的**一行**,多码 CSV(如 en 两行过期翻转)在没有显式行的语言页上会静默漏掉第 2..N 个码(demo 站 9 月保鲜实测踩中:en 计划 2 码、ja 只翻 1 码);改为跟随首个语言行的**整组行**(插入序首个有行语言为准,不跨语言混源),fan-out 提示带码数,测试钉多码整组/首语言为准两条;docs/content-pipeline.md 两处 fan-out 表述同步。
+
 ## [2.16.1] — 2026-09-07
 
 ### Fixed
