@@ -57,7 +57,7 @@ merge → Cloudflare Pages 自动部署
 
 ### codes 同步(`sync-codes` 任务,v2.16 起)
 
-Run workflow 时任务选 `sync-codes`,把兑换码清单粘进 `csv_text`(`locale,slug,code,status,reward,expiryDate,source`;长清单直接 commit 一份仓库根的 `codes-sync.csv`,输入框留空):生成器把码确定性合并进已有 codes 页的 frontmatter(显式语言行优先,无行语言自动跟随该 slug 首行),八道门禁绿了才开 draft PR(固定分支 `chore/sync-codes`,与 import-csv 的 PR 分支互不干扰)。合并前复查非 en 语言的 reward/source 措辞与 title/summary 里的码数、日期;所有行都已应用过的重跑会响亮失败(require-output 契约),不会开出空 PR。
+Run workflow 时任务选 `sync-codes`,把兑换码清单粘进 `csv_text`(`locale,slug,code,status,reward,expiryDate,source`;长清单直接 commit 一份仓库根的 `codes-sync.csv`,输入框留空):生成器把码确定性合并进已有 codes 页的 frontmatter(显式语言行优先,无行语言自动跟随该 slug 首个语言行的**全部行**——只带首行会让多码清单在非 en 页静默掉码),八道门禁绿了才开 draft PR(固定分支 `chore/sync-codes`,与 import-csv 的 PR 分支互不干扰)。合并前复查非 en 语言的 reward/source 措辞与 title/summary 里的码数、日期;所有行都已应用过的重跑会响亮失败(require-output 契约),不会开出空 PR。
 
 ## 与「每周新鲜度审计」的分工
 
@@ -69,7 +69,7 @@ Run workflow 时任务选 `sync-codes`,把兑换码清单粘进 `csv_text`(`loca
 
 ## codes 批量同步(本地,`pnpm sync-codes`)
 
-codes 页是更新频率最高的页面,`pnpm sync-codes` 把「新增/过期兑换码」变成一条确定性脚本:读一份 `codes-sync.csv`(`locale,slug,code,status,reward,expiryDate,source`),合并进已有 codes 页的 frontmatter `codes:` 数组——新码前置、过期翻转但保留(长尾 SEO)、空可选单元格保留现值;同名页面在所有语言同步(显式语言行优先,可按语言给翻译行;无行的语言自动跟随该 slug 首行,reward/source 文案照搬,非 en 语言需复查措辞)。合并语义与 `.agent/skills/anvil-update-codes` 一致,它是那套流程的机械半边;解析失败(未知字段/行内注释/嵌套结构)一律响亮中止,绝不盲写;slug 必须是单段文件名——含 `/`、`\` 或控制字符的行解析期即拒(路径分隔符会被静默截断、把行写进另一张已有页),混合 LF/CRLF 的页面同样响亮中止(保留原 EOL 风格的前提是全文件统一)。先 `--dry-run` 预览。目标页必须已存在——同步不建页。
+codes 页是更新频率最高的页面,`pnpm sync-codes` 把「新增/过期兑换码」变成一条确定性脚本:读一份 `codes-sync.csv`(`locale,slug,code,status,reward,expiryDate,source`),合并进已有 codes 页的 frontmatter `codes:` 数组——新码前置、过期翻转但保留(长尾 SEO)、空可选单元格保留现值;同名页面在所有语言同步(显式语言行优先,可按语言给翻译行;无行的语言自动跟随该 slug 首个语言行的全部行,reward/source 文案照搬,非 en 语言需复查措辞)。合并语义与 `.agent/skills/anvil-update-codes` 一致,它是那套流程的机械半边;解析失败(未知字段/行内注释/嵌套结构)一律响亮中止,绝不盲写;slug 必须是单段文件名——含 `/`、`\` 或控制字符的行解析期即拒(路径分隔符会被静默截断、把行写进另一张已有页),混合 LF/CRLF 的页面同样响亮中止(保留原 EOL 风格的前提是全文件统一)。先 `--dry-run` 预览。目标页必须已存在——同步不建页。
 
 ## v2.1 候选
 

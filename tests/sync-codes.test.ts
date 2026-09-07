@@ -281,7 +281,7 @@ describe('schema boundaries', () => {
 });
 
 describe('fanOutLocales', () => {
-  const row = (over: Partial<{ locale: string; slug: string; code: string; reward: string }> = {}) => ({
+  const row = (over: Partial<{ locale: string; slug: string; code: string; reward: string; line: number }> = {}) => ({
     line: 2,
     locale: 'en',
     slug: 'all-codes',
@@ -317,5 +317,26 @@ describe('fanOutLocales', () => {
     const { groups: expanded, notes } = fanOutLocales(groups, ['en', 'ja', 'ko'], (locale) => locale === 'en');
     expect(expanded.size).toBe(1);
     expect(notes).toEqual([]);
+  });
+
+  test('fan-out carries ALL rows of the source locale, not just the first (multi-code lists sync whole)', () => {
+    const groups = new Map([
+      ['en/all-codes', [row({ code: 'NEW-1' }), row({ code: 'NEW-2', line: 3 }), row({ code: 'NEW-3', line: 4 })]],
+    ]);
+    const { groups: expanded, notes } = fanOutLocales(groups, ['en', 'ja'], () => true);
+    expect(expanded.get('ja/all-codes')!.map((r) => r.code)).toEqual(['NEW-1', 'NEW-2', 'NEW-3']);
+    expect(expanded.get('ja/all-codes')!.every((r) => r.locale === 'ja')).toBe(true);
+    expect(notes[0]).toContain('3 codes');
+  });
+
+  test('several explicit locales for one slug: fan-out source is the first locale in file order (no cross-locale mixing)', () => {
+    const groups = new Map([
+      ['en/all-codes', [row({ code: 'NEW-1' })]],
+      ['de/all-codes', [row({ locale: 'de', code: 'NEW-1' })]],
+    ]);
+    const { groups: expanded, notes } = fanOutLocales(groups, ['en', 'de', 'ko'], () => true);
+    expect(expanded.get('ko/all-codes')!.map((r) => r.locale)).toEqual(['ko']);
+    expect(expanded.get('ko/all-codes')!.map((r) => r.code)).toEqual(['NEW-1']);
+    expect(notes[0]).toContain('synced from the "en" rows');
   });
 });
