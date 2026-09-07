@@ -159,6 +159,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | [Jujutsu Shenanigans Player Guide](https://jjs-player-guide.pages.dev/) | Jujutsu Shenanigans(Roblox) | 中英日三语玩家 wiki：角色路线、Black Flash、地图、兑换码与版本更新 |
 | [Mortal Shell II Wiki](https://mortalshell2.space/) | Mortal Shell II | Shell、武器、Boss、地点、物品与 Open Beta 攻略 |
 | [Sephiria Builds](https://sephiriabuilds.xyz/) | Sephiria | 动作肉鸽 Sephiria 的 build 数据库——带版本戳的武器强度榜与证据分级的 build 攻略 |
+| [Resonance Wiki](https://resonanceplaguetale.wiki/) | Resonance: A Plague Tale Legacy | 全章节流程攻略、全部收集品位置、奖杯路线图、谜题解法与技能推荐 |
 
 提 PR 在 `src/config/landing.ts` 的 `COMMUNITY_SITES` 追加一条即可——官网([/landing](https://anvilwiki.pages.dev/landing) 与 [/zh/landing](https://anvilwiki.pages.dev/zh/landing))的「Built with AnvilWiki」区块会自动展示。
 
@@ -293,6 +294,7 @@ Real sites built with AnvilWiki (in submission order):
 | [Jujutsu Shenanigans Player Guide](https://jjs-player-guide.pages.dev/) | Jujutsu Shenanigans (Roblox) | Trilingual player wiki: character routes, Black Flash, maps, codes, and patch notes |
 | [Mortal Shell II Wiki](https://mortalshell2.space/) | Mortal Shell II | Guides for Shells, weapons, bosses, locations, items, and the Open Beta |
 | [Sephiria Builds](https://sephiriabuilds.xyz/) | Sephiria | Build database for the action roguelite Sephiria: patch-stamped weapon tier lists and evidence-graded build guides |
+| [Resonance Wiki](https://resonanceplaguetale.wiki/) | Resonance: A Plague Tale Legacy | Full chapter walkthrough, all collectible locations, trophy roadmap, puzzle solutions, and skill picks |
 
 Built a site? Open a PR appending an entry to `COMMUNITY_SITES` in `src/config/landing.ts` — it will show up in the "Built with AnvilWiki" section on the [landing page](https://anvilwiki.pages.dev/landing).
 
