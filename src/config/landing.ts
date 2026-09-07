@@ -271,6 +271,17 @@ export const COMMUNITY_SITES: {
       'A build database for the action roguelite Sephiria — patch-stamped weapon tier lists and evidence-graded build guides.',
     descriptionZh: '动作肉鸽 Sephiria 的 build 数据库——带版本戳的武器强度榜与证据分级的 build 攻略。',
   },
+  {
+    name: 'Resonance Wiki',
+    url: 'https://resonanceplaguetale.wiki/',
+    game: 'Resonance: A Plague Tale Legacy',
+    image: '/images/showcase/sites/resonance.jpg',
+    imageAltEn: 'Screenshot of the Resonance Wiki homepage',
+    imageAltZh: 'Resonance Wiki 首页截图',
+    descriptionEn:
+      'A fan-made wiki for Resonance: A Plague Tale Legacy — full chapter walkthrough, all collectible locations, trophy roadmap, and puzzle solutions.',
+    descriptionZh: '《Resonance: A Plague Tale Legacy》粉丝 wiki——全章节流程攻略、全部收集品位置、奖杯路线图、谜题解法与 Sophia 技能推荐。',
+  },
 ];
 
 const en: LandingContent = {
