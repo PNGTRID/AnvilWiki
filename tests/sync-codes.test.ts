@@ -90,6 +90,16 @@ describe('parseCodesCsv', () => {
     expect(errors).toEqual([]);
     expect(rows[0]?.code).toBe('TABBY');
   });
+
+  test('rejects slugs with path separators (would silently retarget another page) and control characters', () => {
+    const csv = ['locale,slug,code', 'en,all-codes/nested,A', 'en,..\\escape,B', 'en,"bad\nslug",C'].join('\n');
+    const { rows, errors } = parseCodesCsv(csv, LOCALES);
+    expect(rows).toEqual([]);
+    expect(errors).toHaveLength(3);
+    expect(errors[0]).toContain('path separator');
+    expect(errors[1]).toContain('path separator');
+    expect(errors[2]).toContain('control character');
+  });
 });
 
 describe('mergeCodes', () => {
@@ -172,6 +182,15 @@ describe('parseCodesBlock', () => {
     expect(parseCodesBlock(pageWithCodes('codes:\n  - code: A\n  - - weird'))).toHaveProperty('error');
     expect(parseCodesBlock('no frontmatter here')).toHaveProperty('error');
   });
+
+  test('decodes \\" and \\\\ in double-quoted values, aborts on other escapes (mis-read would be persisted on rewrite)', () => {
+    const ok = parseCodesBlock(pageWithCodes('codes:\n  - code: "A\\"B\\\\C"'));
+    if ('error' in ok) throw new Error(ok.error);
+    expect(ok.codes[0]?.code).toBe('A"B\\C');
+
+    expect(parseCodesBlock(pageWithCodes('codes:\n  - code: "A\\nB"'))).toHaveProperty('error');
+    expect(parseCodesBlock(pageWithCodes('codes:\n  - code: "A\\"'))).toHaveProperty('error');
+  });
 });
 
 describe('serializeCodesBlock + upsertCodesFrontmatter', () => {
@@ -234,6 +253,12 @@ describe('CRLF handling', () => {
     const reparsed = parseCodesBlock(out.output);
     if ('error' in reparsed) throw new Error(reparsed.error);
     expect(reparsed.codes).toEqual(parsed.codes);
+  });
+
+  test('mixed LF/CRLF files abort loudly instead of whole-file EOL flip', () => {
+    const mixed = pageWithCodes(demoBlock).replace('lastModified: 2026-08-31', 'lastModified: 2026-08-31\r');
+    expect(parseCodesBlock(mixed)).toHaveProperty('error');
+    expect(upsertCodesFrontmatter(mixed, [], '2026-09-06')).toHaveProperty('error');
   });
 });
 

@@ -262,7 +262,18 @@ for (const p of planned) {
     skippedClean += 1;
     continue;
   }
-  fs.writeFileSync(p.filePath, p.output, 'utf8');
+  // Write via a sibling temp file + rename: a crash mid-write leaves the
+  // previous page intact instead of a truncated MDX. Same-directory rename
+  // is atomic on POSIX and Windows; the .sync-tmp suffix never matches the
+  // content glob (*/[locale]/[category]/*.mdx).
+  const tmpPath = `${p.filePath}.sync-tmp`;
+  try {
+    fs.writeFileSync(tmpPath, p.output, 'utf8');
+    fs.renameSync(tmpPath, p.filePath);
+  } catch (err) {
+    fs.rmSync(tmpPath, { force: true });
+    throw err;
+  }
   touched += 1;
   console.log(`  ✅ ${p.label}`);
   console.log(`     ${describeStats(p.stats)}`);

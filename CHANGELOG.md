@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **`sync-codes` 接入 auto-content.yml 管道(管道生成器扩展收官)**——Run workflow 任务选择新增 `sync-codes`:把 `codes-sync.csv` 粘进 `csv_text`(或 commit 到仓库根留空),生成器确定性合并进 codes 页 frontmatter,**同一套八道门禁前置**,绿了才开 draft PR;与 import-csv 同契约——`--require-output`(所有行已应用的重跑响亮失败,不开空 PR,sync-codes 脚本新增该 flag)、内容白名单 add-paths、任务级固定分支 `chore/sync-codes`(与 import-csv 的 `chore/auto-content` 互不干扰,任务不混 PR)、零 secrets、LLM 永不进 CI;PR 正文按任务提示 codes 页特有的复查项(非 en 措辞/title·summary 码数与日期)。契约测试钉:sync-codes 生成步 task 门控+require-output、双任务分支表达式、门禁前置、草稿 PR;docs/content-pipeline.md 补任务用法+候选标 ✅。
 
+## [2.16.1] — 2026-09-07
+
+### Fixed
+
+- **`pnpm sync-codes` 24h 风险审计四项闭环**(1 Important + 3 低置信,纯加固零语义放宽):① CSV slug 含路径分隔符(`/`、`\`)或控制字符解析期即拒——原先 `/` 会在 `key.split('/')[1]` 处被静默截断,把码写进截断后命中的另一张已有页且计划标签同步失真(dry-run 实证;win32 反斜杠上跳同根因);② 混合 LF/CRLF 文件响亮中止——原先 `includes('\r\n')` 判定会把混合 EOL 整文件翻转,破坏「块外逐字节保留」承诺;③ 双引号值仅解码 `\"`/`\\`,其余转义(`\n`/`\t`/`\u…`)响亮拒绝——原先一律丢弃反斜杠误读,误读值会在触碰重写时静默固化;④ 页面写入改同目录临时文件 + `renameSync` 原子替换,进程中途被杀不再留下截断 MDX。测试 153→156;文档同步 content-pipeline/SKILL.md。
+
 ## [2.16.0] — 2026-09-06
 
 **codes 页批量同步脚本：`pnpm sync-codes` 把「新增/过期兑换码」从 AI 会话搬进确定性脚本（第 15 个运维脚本，管道生成器扩展第一步）。**
@@ -968,7 +974,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.16.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.16.1...HEAD
+[2.16.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.16.0...v2.16.1
 [2.16.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.15.1...v2.16.0
 [2.15.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.15.0...v2.15.1
 [2.15.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.14.1...v2.15.0
