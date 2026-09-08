@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **落地页新增「社群精华」页(/landing/community + /zh/landing/community)**——把主理人微信交流群(2026-08-16 建群)的真实讨论整理成常青内容页:五分类(精华干货 25 条/避坑警示 13/问答精选 24/反馈建议 9/动态公告 23)+23 天每日速览+**每日 12 维结构化报告**(数据概览/精华观点/答疑/干货/高频问题/选题预告公开;未解决/活跃成员/新人/情绪研判属主私有,走 gitignored 本地报告与 PR 正文),全部由 AI 管道从 2298 条群聊记录整理(仅群昵称、原始记录不公开、可申请删除)。数据存 `src/components/landing/community-digest.json`(schema v2,组件同目录,fork 时随 landing 层整体移除,零 LANDING_PATHS 改动);展示标签在 landing.ts 新节 `communityHighlights`(en/zh);footer+header 导航双入口+llms.txt 补一行。**页面经 UI/UX 专家团(布局/视觉/响应式/可读性 4 视角)大宽屏重构**:1600/1728 阶梯容器(LandingLayout 新增 wide 属性)、每日速览全宽横滑带、章节差异化密度卡片、TOC scroll-spy、修复 QR 浮层死引用。配套每日定时管道(automation-ed12b284,每天 23:00):wechat MCP 抓取→六分类+12 维日报→PR 更新 JSON(不自动进 main),契约见 docs/superpowers/specs/2026-09-08-community-digest-pipeline.md。
+- **落地页新增「社群精华」页(/landing/community + /zh/landing/community)**——把主理人微信交流群(2026-08-16 建群)的真实讨论整理成常青内容页:五分类(精华干货 25 条/避坑警示 12/问答精选 24/反馈建议 9/动态公告 23)+23 天每日速览+**每日 12 维结构化报告**(数据概览/精华观点/答疑/干货/高频问题/选题预告公开;未解决/活跃成员/新人/情绪研判属主私有,走 gitignored 本地报告与 PR 正文),全部由 AI 管道从 2298 条群聊记录整理(仅群昵称、原始记录不公开、可申请删除)。数据存 `src/components/landing/community-digest.json`(schema v2,组件同目录,fork 时随 landing 层整体移除,零 LANDING_PATHS 改动);展示标签在 landing.ts 新节 `communityHighlights`(en/zh);footer+header 导航双入口+llms.txt 补一行。**页面经 UI/UX 专家团(布局/视觉/响应式/可读性 4 视角)大宽屏重构**:1600/1728 阶梯容器(LandingLayout 新增 wide 属性)、每日速览全宽横滑带、章节差异化密度卡片、TOC scroll-spy、修复 QR 浮层死引用。配套每日定时管道(automation-ed12b284,每天 23:00):wechat MCP 抓取→六分类+12 维日报→PR 更新 JSON(不自动进 main),契约见 docs/superpowers/specs/2026-09-08-community-digest-pipeline.md。
 
 ### Fixed
 
