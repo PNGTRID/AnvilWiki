@@ -118,6 +118,20 @@ export interface LandingContent {
     /** Relative day labels on the two newest daily cards. */
     todayLabel: string;
     yesterdayLabel: string;
+    /** Public subset of the per-day structured report (latest day rendered
+     *  under the daily band; owner-only dims stay out of the public page). */
+    report: {
+      title: string;
+      statsMessages: string;
+      statsSpeakers: string;
+      statsPeak: string;
+      quotesTitle: string;
+      takeawaysTitle: string;
+      qaTitle: string;
+      resourcesTitle: string;
+      faqTitle: string;
+      topicsTitle: string;
+    };
     cta: {
       title: string;
       subtitle: string;
@@ -604,6 +618,18 @@ pnpm install && pnpm dev`,
     openLabel: 'open',
     todayLabel: 'Today',
     yesterdayLabel: 'Yesterday',
+    report: {
+      title: 'Daily report',
+      statsMessages: 'messages',
+      statsSpeakers: 'speakers',
+      statsPeak: 'peak',
+      quotesTitle: 'Highlights of the day',
+      takeawaysTitle: 'Takeaways',
+      qaTitle: 'Resolved Q&A',
+      resourcesTitle: 'Resources shared',
+      faqTitle: 'Asked repeatedly',
+      topicsTitle: 'Article candidates',
+    },
     cta: {
       title: 'Building game content sites too?',
       subtitle:
@@ -1074,6 +1100,18 @@ pnpm install && pnpm dev`,
     openLabel: '待处理',
     todayLabel: '今天',
     yesterdayLabel: '昨天',
+    report: {
+      title: '每日报告',
+      statsMessages: '条消息',
+      statsSpeakers: '人发言',
+      statsPeak: '高峰',
+      quotesTitle: '精华观点',
+      takeawaysTitle: '干货要点',
+      qaTitle: '答疑记录',
+      resourcesTitle: '资源分享',
+      faqTitle: '高频问题',
+      topicsTitle: '选题预告',
+    },
     cta: {
       title: '也在做游戏内容站？',
       subtitle: '点右下角二维码加群一起讨论，或 fork 模板，30 分钟上线你自己的 wiki 站。',
