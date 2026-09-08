@@ -181,7 +181,11 @@ if (errors.length > 0) {
 }
 if (filtered.length === 0) {
   console.log('\nNothing to do (no rows after filtering).');
-  process.exit(0);
+  // --require-output must reach this exit too: a header-only CSV (or a
+  // --locales filter matching nothing) would otherwise exit 0 in the
+  // pipeline — green run, silently no PR. bulk-new-posts has no early exit
+  // here, so its final zero-output check already covers this shape.
+  process.exit(REQUIRE_OUTPUT ? 1 : 0);
 }
 
 // Cross-locale fan-out: a slug with no row for an existing page's locale

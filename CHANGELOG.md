@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **`sync-codes --require-output` 补缺输入退出码**：Run workflow 派发 `sync-codes` 任务但 `csv_text` 留空且仓库根无 `codes-sync.csv` 时，脚本打印 usage 后以 exit 0 退出——八道门禁绿灯、create-pull-request 无 diff、无 PR，恰是该 flag 要杜绝的空跑形态（`bulk-new-posts` 同路径自 v2.0.1 起 exit 1，管道接入时漏移植 `|| REQUIRE_OUTPUT` 子句；24h 审计发现并实测复现）。已对齐两生成器同契约，契约测试钉死双脚本退出码同构防回退。
+- **`sync-codes --require-output` 补齐全部零产出早退路径**：脚本有两条提前 exit 0 的路径会绕过末尾的 require-output 检查，CI 里表现为八道门禁绿灯、create-pull-request 无 diff、无 PR——恰是该 flag 要杜绝的空跑形态。①缺输入文件（Run workflow 派发 `sync-codes` 任务但 `csv_text` 留空且仓库根无 `codes-sync.csv`；`bulk-new-posts` 同路径自 v2.0.1 起 exit 1，管道接入时漏移植 `|| REQUIRE_OUTPUT` 子句）；②零数据行（仅表头/全注释行/被 `--locales` 滤空时 "Nothing to do" 提前退出；`bulk-new-posts` 无此早退，天然被末尾检查兜住）。24h 审计+复检两轮发现，退出码路径实测复现与复验；契约测试钉双脚本退出码同构防回退。
 
 ## [2.17.0] — 2026-09-07
 
