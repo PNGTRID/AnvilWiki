@@ -132,6 +132,8 @@ export interface LandingContent {
       faqTitle: string;
       topicsTitle: string;
     };
+    /** Fold summary label for section items beyond the default window. */
+    expandLabel: string;
     cta: {
       title: string;
       subtitle: string;
@@ -630,6 +632,7 @@ pnpm install && pnpm dev`,
       faqTitle: 'Asked repeatedly',
       topicsTitle: 'Article candidates',
     },
+    expandLabel: 'Show all',
     cta: {
       title: 'Building game content sites too?',
       subtitle:
@@ -1112,6 +1115,7 @@ pnpm install && pnpm dev`,
       faqTitle: '高频问题',
       topicsTitle: '选题预告',
     },
+    expandLabel: '展开全部',
     cta: {
       title: '也在做游戏内容站？',
       subtitle: '点右下角二维码加群一起讨论，或 fork 模板，30 分钟上线你自己的 wiki 站。',

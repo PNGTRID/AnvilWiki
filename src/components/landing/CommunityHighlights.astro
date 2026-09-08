@@ -1,21 +1,21 @@
 ---
 /**
  * CommunityHighlights — the standalone "社群精华" page (/landing/community +
- * /zh/landing/community), ultra-wide layout (v3, expert-panel redesign):
+ * /zh/landing/community), v5 (expert-panel round 2: 内容减负+字号放大+秩序收敛):
  *
- *   [header: title+meta | stats chips + disclaimer]
- *   [full-bleed horizontal daily-digest band — the freshness signal]
- *   [main: left sticky TOC (scroll-spy) | chapter sections, per-category
- *    density (gold heavy cards / pitfalls accent cards / qa rows /
- *    feedback open-highlight cards / news compact timeline) + CTA]
+ *   [header: title+meta | borderless stat line + disclaimer]
+ *   [full-bleed horizontal daily band — clickable, jumps to the report]
+ *   [daily report card — date select, quotes+takeaways open, the rest folded]
+ *   [five sections in a divide-y rhythm — uniform card/row anatomy, each
+ *    shows the newest N items with a native <details> "show all" fold]
+ *   [CTA — the page's single filled surface]
  *
- * Container steps 1600px → 1728px (2xl); wider viewports gain columns via
- * auto-fill grids, never longer lines (Chinese comfort ≈ 30-40 chars/row).
- * Renders the AI-curated WeChat digest from community-digest.json (daily
- * automation PR; this file needs no manual edits). Labels live in
- * landing.ts (`communityHighlights`); item content is Chinese source data
- * shown as-is on both locales. apply-template removes the whole landing
- * layer, so forks never inherit the digest.
+ * Type scale: body 15/16px in foreground/80 (depth, not size, for hierarchy);
+ * 12px is the hard floor for badges. Content strategy: newest-N windows keep
+ * the default page length constant as automation appends daily. Renders the
+ * AI-curated WeChat digest from community-digest.json; labels live in
+ * landing.ts (`communityHighlights`); item content is Chinese source data on
+ * both locales. apply-template removes the whole landing layer.
  */
 import { Icon } from 'astro-icon/components';
 import { type LandingContent } from '~/config/landing';
@@ -37,14 +37,6 @@ interface DigestItem {
   attrib?: string;
   status?: string;
 }
-interface CommunityDigest {
-  schemaVersion: number;
-  updated: string;
-  since: string;
-  categories: { id: string; items: DigestItem[] }[];
-  daily: { date: string; summary: string; topics: string[] }[];
-  reports?: DailyReport[];
-}
 interface DailyReport {
   date: string;
   stats: { messages: number; speakers: number; peakHour: string; heat: string };
@@ -55,14 +47,17 @@ interface DailyReport {
   faq: { pattern: string; count: number }[];
   topics: { title: string; source: string }[];
 }
+interface CommunityDigest {
+  schemaVersion: number;
+  updated: string;
+  since: string;
+  categories: { id: string; items: DigestItem[] }[];
+  daily: { date: string; summary: string; topics: string[] }[];
+  reports?: DailyReport[];
+}
 const data = digest as CommunityDigest;
 
 const byId = new Map(data.categories.map((cat) => [cat.id, cat.items]));
-const reports = data.reports ?? [];
-/** Relative day labels for the two newest reports (position = recency). */
-const dayLabels = new Map<string, string>();
-if (reports.length > 0) dayLabels.set(reports[0].date, c.todayLabel);
-if (reports.length > 1) dayLabels.set(reports[1].date, c.yesterdayLabel);
 const SECTION_META = [
   { id: 'gold', icon: 'lucide:gem' },
   { id: 'pitfalls', icon: 'lucide:triangle-alert' },
@@ -70,26 +65,43 @@ const SECTION_META = [
   { id: 'feedback', icon: 'lucide:megaphone' },
   { id: 'news', icon: 'lucide:rocket' },
 ] as const;
-type SectionId = (typeof SECTION_META)[number]['id'];
 const visible = SECTION_META.map((s) => ({ ...s, items: byId.get(s.id) ?? [] })).filter(
   (s) => s.items.length > 0,
 );
 
-/** Ultra-wide stepped container — mirrors LandingLayout's `wide` header/footer. */
+/** Default newest-N items per section — keeps the default page length constant. */
+const VISIBLE: Record<string, number> = { gold: 6, pitfalls: 6, qa: 8, feedback: 6, news: 8 };
+/** Per-section item grids (mins sized for 15/16px body). */
+const GRIDS: Record<string, string> = {
+  gold: 'grid gap-4 md:grid-cols-[repeat(auto-fill,minmax(500px,1fr))]',
+  pitfalls: 'grid gap-4 md:grid-cols-[repeat(auto-fill,minmax(470px,1fr))]',
+  qa: 'grid gap-x-8 md:grid-cols-[repeat(auto-fill,minmax(440px,1fr))]',
+  feedback: 'grid gap-4 md:grid-cols-[repeat(auto-fill,minmax(460px,1fr))]',
+};
+
+const reports = data.reports ?? [];
+const dayLabels = new Map<string, string>();
+if (reports.length > 0) dayLabels.set(reports[0].date, c.todayLabel);
+if (reports.length > 1) dayLabels.set(reports[1].date, c.yesterdayLabel);
+
 const WRAP = 'mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 2xl:max-w-[1728px] 2xl:px-10';
-const dateBadge = 'rounded bg-nav/10 px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums text-nav';
-const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground';
+const dateBadge = 'rounded bg-nav/10 px-2 py-0.5 text-xs font-semibold tabular-nums text-nav';
+const tagChip = 'rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground';
+const CARD = 'rounded-lg border border-border bg-card p-4 sm:p-5';
+const BODY = 'text-[15px] sm:text-base leading-[1.8] text-foreground/80';
 ---
 
 <section class="py-12 md:py-16">
-  <!-- A. Page header — two-column on xl: value copy left, stats + disclaimer right -->
+  <!-- A. Page header — value copy left, one borderless stat line + disclaimer right -->
   <div class:list={[WRAP]}>
-    <div class="xl:grid xl:grid-cols-[minmax(0,1fr)_400px] xl:items-start xl:gap-10">
+    <div class="xl:grid xl:grid-cols-[minmax(0,1fr)_420px] xl:items-start xl:gap-10">
       <div>
         <h1 class="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
           {c.title}
         </h1>
-        <p class="mt-3 max-w-3xl text-lg text-muted-foreground">{c.subtitle}</p>
+        <p class="mt-3 max-w-3xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+          {c.subtitle}
+        </p>
         <p class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
           <span class="inline-flex items-center gap-1.5">
             <Icon name="lucide:calendar-check" class="h-4 w-4 shrink-0 text-nav" />
@@ -102,38 +114,25 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
         </p>
       </div>
       <div class="mt-6 xl:mt-0">
-        <div class="grid grid-cols-3 gap-2">
+        <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
           {
             visible.map((s) => (
-              <a
-                href={`#${s.id}`}
-                class="rounded-lg border border-border bg-card px-3 py-2 text-center transition hover:border-nav/40"
-              >
-                <span class="block text-lg font-bold tabular-nums text-foreground">
-                  {s.items.length}
-                </span>
-                <span class="block truncate text-xs text-muted-foreground">
+              <a href={`#${s.id}`} class="group inline-flex items-baseline gap-1.5">
+                <span class="text-2xl font-bold tabular-nums text-foreground">{s.items.length}</span>
+                <span class="text-[13px] text-muted-foreground transition group-hover:text-foreground">
                   {c.sections[s.id].title}
                 </span>
               </a>
             ))
           }
-          <a
-            href="#daily"
-            class="rounded-lg border border-border bg-card px-3 py-2 text-center transition hover:border-nav/40"
-          >
-            <span class="block text-lg font-bold tabular-nums text-foreground">
-              {data.daily.length}
-            </span>
-            <span class="block truncate text-xs text-muted-foreground">
+          <a href="#daily" class="group inline-flex items-baseline gap-1.5">
+            <span class="text-2xl font-bold tabular-nums text-foreground">{data.daily.length}</span>
+            <span class="text-[13px] text-muted-foreground transition group-hover:text-foreground">
               {c.sections.daily.title}
             </span>
           </a>
         </div>
-        <p
-          class="mt-3 flex items-start gap-2 rounded-lg border border-border bg-muted/30 p-3 text-xs leading-relaxed text-muted-foreground"
-        >
-          <Icon name="lucide:info" class="mt-0.5 h-3.5 w-3.5 shrink-0 text-nav" />
+        <p class="mt-4 max-w-xl text-[13px] leading-relaxed text-muted-foreground">
           {c.disclaimer}
         </p>
       </div>
@@ -148,7 +147,7 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
           <a
             href={`#${s.id}`}
             data-spy-link={s.id}
-            class="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground transition hover:text-foreground"
+            class="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card px-3 py-1.5 text-[13px] text-muted-foreground transition hover:text-foreground"
           >
             <Icon name={s.icon} class="h-3.5 w-3.5 shrink-0 text-nav" />
             {c.sections[s.id].title}
@@ -162,13 +161,15 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
   <!-- C. Daily digest — full-bleed horizontal band, the freshness signal -->
   <div id="daily" class="mt-8 scroll-mt-20 border-y border-border bg-muted/30 py-6">
     <div class:list={[WRAP]}>
-      <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h2 class="flex items-center gap-2 text-lg font-bold tracking-tight text-foreground">
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <h2 class="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
           <Icon name="lucide:calendar-days" class="h-5 w-5 shrink-0 text-nav" />
           {c.sections.daily.title}
-          <span class="text-sm font-semibold tabular-nums text-nav">{data.daily.length}</span>
         </h2>
-        <span class="text-sm text-muted-foreground">{c.sections.daily.hint}</span>
+        <span class="rounded-full bg-muted px-2.5 py-0.5 text-[13px] font-semibold tabular-nums text-muted-foreground">
+          {data.daily.length}
+        </span>
+        <span class="text-[15px] text-muted-foreground">{c.sections.daily.hint}</span>
       </div>
       <div class="mt-4 flex gap-3 overflow-x-auto pb-2 [scrollbar-width:thin]">
         {
@@ -176,23 +177,23 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
             <article
               data-report-jump={day.date}
               title={c.report.title}
-              class="w-[280px] shrink-0 cursor-pointer snap-start rounded-lg border border-border bg-card p-4 transition hover:border-nav/40"
+              class="w-[300px] shrink-0 cursor-pointer snap-start rounded-lg border border-border bg-card p-4 transition hover:border-nav/40 sm:w-[320px] sm:p-5"
             >
-              <p class="flex items-center gap-1.5 text-sm font-bold text-nav">
+              <p class="flex items-center gap-2 text-[15px] font-bold text-nav">
                 {day.date}
                 {i === 0 && (
-                  <span class="rounded bg-nav/10 px-1.5 py-0.5 text-[11px] font-semibold">
+                  <span class="rounded bg-nav/10 px-2 py-0.5 text-xs font-semibold">
                     {c.todayLabel}
                   </span>
                 )}
                 {i === 1 && (
-                  <span class="rounded bg-nav/10 px-1.5 py-0.5 text-[11px] font-semibold">
+                  <span class="rounded bg-nav/10 px-2 py-0.5 text-xs font-semibold">
                     {c.yesterdayLabel}
                   </span>
                 )}
               </p>
-              <p class="mt-1.5 text-sm leading-relaxed text-muted-foreground">{day.summary}</p>
-              <div class="mt-2 flex flex-wrap gap-1">
+              <p class="mt-2 text-[15px] leading-[1.8] text-foreground/80 sm:text-base">{day.summary}</p>
+              <div class="mt-2.5 flex flex-wrap gap-1.5">
                 {day.topics.map((topic) => (
                   <span class={tagChip}>{topic}</span>
                 ))}
@@ -204,23 +205,21 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
     </div>
   </div>
 
-  <!-- C2. Daily structured report — public subset of the 12-dim owner report.
-       All days render as hidden panels; the select (and clicks on the daily
-       band cards) toggle the visible one. No-JS fallback: latest day only. -->
+  <!-- D. Daily structured report — public subset; date select; slim default view -->
   {
     reports.length > 0 && (
       <div id="daily-report" class:list={[WRAP, 'mt-8 scroll-mt-20']}>
-        <div class="rounded-xl border border-border bg-card p-5">
-          <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <h2 class="flex items-center gap-2 text-lg font-bold tracking-tight text-foreground">
+        <div class="rounded-xl border border-border bg-card p-4 sm:p-5">
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <h2 class="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
               <Icon name="lucide:newspaper" class="h-5 w-5 shrink-0 text-nav" />
               {c.report.title}
             </h2>
-            <label class="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
-              <Icon name="lucide:calendar-search" class="h-3.5 w-3.5 shrink-0 text-nav" />
+            <label class="ml-auto flex items-center gap-2 text-[13px] text-muted-foreground">
+              <Icon name="lucide:calendar-search" class="h-4 w-4 shrink-0 text-nav" />
               <select
                 data-report-select
-                class="rounded-md border border-border bg-background px-2 py-1.5 text-xs font-medium text-foreground"
+                class="rounded-md border border-border bg-background px-2 py-1.5 text-sm font-medium text-foreground"
               >
                 {reports.map((r) => (
                   <option value={r.date}>
@@ -233,139 +232,139 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
           </div>
           {reports.map((r, i) => (
             <div data-report-panel={r.date} hidden={i > 0}>
-              <p class="text-sm font-semibold text-nav">{r.date}</p>
-              <div class="mt-3 flex flex-wrap gap-2 text-xs">
-            <span class="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
-              {r.stats.messages} {c.report.statsMessages}
-            </span>
-            <span class="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
-              {r.stats.speakers} {c.report.statsSpeakers}
-            </span>
-            <span class="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
-              {c.report.statsPeak} {r.stats.peakHour}
-            </span>
-            <span class="rounded-full border border-nav/30 px-2.5 py-1 font-medium text-nav">
-              {r.stats.heat}
-            </span>
-          </div>
-
-          <div class="mt-5 space-y-5">
-            {r.quotes.length > 0 && (
-              <div>
-                <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                  <Icon name="lucide:quote" class="h-3.5 w-3.5 shrink-0 text-nav" />
-                  {c.report.quotesTitle}
-                </h3>
-                <ul class="mt-2 space-y-1.5">
-                  {r.quotes.map((q) => (
-                    <li class="border-l-2 border-nav/30 pl-3 text-sm leading-relaxed text-muted-foreground">
-                      「{q.text}」<span class="text-xs">—— {q.by}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div class="mt-4 flex flex-wrap gap-2 text-[13px]">
+                <span class="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
+                  {r.stats.messages} {c.report.statsMessages}
+                </span>
+                <span class="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
+                  {r.stats.speakers} {c.report.statsSpeakers}
+                </span>
+                <span class="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
+                  {c.report.statsPeak} {r.stats.peakHour}
+                </span>
+                <span class="rounded-full border border-nav/30 px-2.5 py-1 font-medium text-nav">
+                  {r.stats.heat}
+                </span>
               </div>
-            )}
 
-            <div class="grid gap-5 lg:grid-cols-2">
-              {r.takeaways.length > 0 && (
-                <div>
-                  <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                    <Icon name="lucide:list-checks" class="h-3.5 w-3.5 shrink-0 text-nav" />
-                    {c.report.takeawaysTitle}
-                  </h3>
-                  <ul class="mt-2 space-y-1.5">
-                    {r.takeaways.map((t) => (
-                      <li class="flex gap-1.5 text-sm leading-relaxed text-muted-foreground">
-                        <span class="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-nav/50" />
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {r.qa.length > 0 && (
-                <div>
-                  <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                    <Icon name="lucide:messages-square" class="h-3.5 w-3.5 shrink-0 text-nav" />
-                    {c.report.qaTitle}
-                  </h3>
-                  <ul class="mt-2 space-y-2">
-                    {r.qa.map((item) => (
-                      <li class="text-sm leading-relaxed">
-                        <span class="font-medium text-foreground">{item.q}</span>
-                        <span class="text-muted-foreground"> — {item.a}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {r.resources.length > 0 && (
-                <div>
-                  <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                    <Icon name="lucide:link" class="h-3.5 w-3.5 shrink-0 text-nav" />
-                    {c.report.resourcesTitle}
-                  </h3>
-                  <ul class="mt-2 space-y-1.5">
-                    {r.resources.map((res) => (
-                      <li class="text-sm leading-relaxed text-muted-foreground">
-                        <span class="font-medium text-foreground">{res.title}</span>
-                        {res.note && <span>：{res.note}</span>}
-                        {res.by && <span class="text-xs">（{res.by}）</span>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {(r.faq.length > 0 || r.topics.length > 0) && (
-                <div class="space-y-4">
-                  {r.faq.length > 0 && (
-                    <div>
-                      <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                        <Icon name="lucide:repeat" class="h-3.5 w-3.5 shrink-0 text-nav" />
-                        {c.report.faqTitle}
-                      </h3>
-                      <div class="mt-2 flex flex-wrap gap-1.5">
-                        {r.faq.map((f) => (
-                          <span class="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                            {f.pattern} ×{f.count}
-                          </span>
-                        ))}
-                      </div>
+              <div class="mt-4 space-y-4">
+                {r.quotes.length > 0 && (
+                  <div>
+                    <h3 class="flex items-center gap-2 text-base font-semibold text-foreground">
+                      <Icon name="lucide:quote" class="h-4 w-4 shrink-0 text-nav" />
+                      {c.report.quotesTitle}
+                    </h3>
+                    <ul class="mt-2 space-y-2">
+                      {r.quotes.map((q) => (
+                        <li class={`border-l-2 border-nav/30 pl-3 ${BODY}`}>
+                          「{q.text}」<span class="text-[13px] text-muted-foreground">—— {q.by}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {r.takeaways.length > 0 && (
+                  <div>
+                    <h3 class="flex items-center gap-2 text-base font-semibold text-foreground">
+                      <Icon name="lucide:list-checks" class="h-4 w-4 shrink-0 text-nav" />
+                      {c.report.takeawaysTitle}
+                    </h3>
+                    <ul class="mt-2 space-y-2">
+                      {r.takeaways.map((item) => (
+                        <li class={`flex gap-2 ${BODY}`}>
+                          <span class="mt-[11px] h-1 w-1 shrink-0 rounded-full bg-nav/50" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {r.qa.length > 0 && (
+                  <details class="group/rep">
+                    <summary class="flex cursor-pointer list-none items-center gap-2 text-base font-semibold text-foreground">
+                      <Icon name="lucide:messages-square" class="h-4 w-4 shrink-0 text-nav" />
+                      {c.report.qaTitle}
+                      <span class="rounded-full bg-muted px-2 py-0.5 text-[13px] text-muted-foreground">
+                        {r.qa.length}
+                      </span>
+                      <Icon name="lucide:chevron-down" class="chev ml-auto h-4 w-4 text-muted-foreground" />
+                    </summary>
+                    <ul class="mt-2 space-y-2">
+                      {r.qa.map((item) => (
+                        <li class={BODY}>
+                          <span class="font-semibold text-foreground">{item.q}</span>
+                          <span> — {item.a}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
+                {r.resources.length > 0 && (
+                  <details class="group/rep">
+                    <summary class="flex cursor-pointer list-none items-center gap-2 text-base font-semibold text-foreground">
+                      <Icon name="lucide:link" class="h-4 w-4 shrink-0 text-nav" />
+                      {c.report.resourcesTitle}
+                      <span class="rounded-full bg-muted px-2 py-0.5 text-[13px] text-muted-foreground">
+                        {r.resources.length}
+                      </span>
+                      <Icon name="lucide:chevron-down" class="chev ml-auto h-4 w-4 text-muted-foreground" />
+                    </summary>
+                    <ul class="mt-2 space-y-2">
+                      {r.resources.map((res) => (
+                        <li class={BODY}>
+                          <span class="font-semibold text-foreground">{res.title}</span>
+                          {res.note && <span>：{res.note}</span>}
+                          {res.by && <span class="text-[13px] text-muted-foreground">（{res.by}）</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
+                {(r.faq.length > 0 || r.topics.length > 0) && (
+                  <details class="group/rep">
+                    <summary class="flex cursor-pointer list-none items-center gap-2 text-base font-semibold text-foreground">
+                      <Icon name="lucide:pen-line" class="h-4 w-4 shrink-0 text-nav" />
+                      {c.report.faqTitle} · {c.report.topicsTitle}
+                      <span class="rounded-full bg-muted px-2 py-0.5 text-[13px] text-muted-foreground">
+                        {r.faq.length + r.topics.length}
+                      </span>
+                      <Icon name="lucide:chevron-down" class="chev ml-auto h-4 w-4 text-muted-foreground" />
+                    </summary>
+                    <div class="mt-2 space-y-3">
+                      {r.faq.length > 0 && (
+                        <div class="flex flex-wrap gap-1.5">
+                          {r.faq.map((f) => (
+                            <span class="rounded bg-muted px-2 py-1 text-[13px] text-muted-foreground">
+                              {f.pattern} ×{f.count}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {r.topics.length > 0 && (
+                        <ul class="space-y-1.5">
+                          {r.topics.map((topic) => (
+                            <li class={BODY}>《{topic.title}》</li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
-                  )}
-                  {r.topics.length > 0 && (
-                    <div>
-                      <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                        <Icon name="lucide:pen-line" class="h-3.5 w-3.5 shrink-0 text-nav" />
-                        {c.report.topicsTitle}
-                      </h3>
-                      <ul class="mt-2 space-y-1">
-                        {r.topics.map((t) => (
-                          <li class="text-sm leading-relaxed text-muted-foreground">
-                            《{t.title}》
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
+                  </details>
+                )}
+              </div>
             </div>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  )}
+    )
+  }
 
-  <!-- D. Main: left sticky TOC + chapter sections with per-category density -->
-  <div class:list={[WRAP, 'mt-10']}>
-    <div
-      class="grid gap-10 lg:grid-cols-[210px_minmax(0,1fr)] min-[1920px]:grid-cols-[240px_minmax(0,1fr)]"
-    >
+  <!-- E. Sections — uniform anatomy, divide-y rhythm, newest-N + show-all fold -->
+  <div class:list={[WRAP, 'mt-8']}>
+    <div class="grid gap-10 lg:grid-cols-[210px_minmax(0,1fr)] min-[1920px]:grid-cols-[240px_minmax(0,1fr)]">
       <aside class="hidden lg:block">
         <nav class="sticky top-20" aria-label={c.tocLabel}>
-          <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <p class="text-[13px] font-semibold uppercase tracking-wider text-muted-foreground">
             {c.tocLabel}
           </p>
           <ul class="mt-3 space-y-1">
@@ -375,11 +374,11 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
                   <a
                     href={`#${s.id}`}
                     data-spy-link={s.id}
-                    class="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                    class="flex items-center gap-2 rounded-md px-2 py-1.5 text-[15px] text-muted-foreground transition hover:bg-muted hover:text-foreground"
                   >
                     <Icon name={s.icon} class="h-4 w-4 shrink-0" />
                     <span class="truncate">{c.sections[s.id].title}</span>
-                    <span class="ml-auto text-xs tabular-nums text-muted-foreground/70">
+                    <span class="ml-auto text-[13px] tabular-nums text-muted-foreground/70">
                       {s.items.length}
                     </span>
                   </a>
@@ -389,166 +388,150 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
           </ul>
         </nav>
       </aside>
-
-      <div class="min-w-0 space-y-14">
-        {
-          visible.map((s) => {
-            const meta = c.sections[s.id];
+      <div class="min-w-0">
+    <div class="divide-y divide-border">
+      {
+        visible.map((s) => {
+          const meta = c.sections[s.id];
+          const n = VISIBLE[s.id] ?? 6;
+          const head = s.items.slice(0, n);
+          const tail = s.items.slice(n);
+          const fold = (items: DigestItem[]) => (
+            <details>
+              <summary class="flex cursor-pointer list-none items-center justify-center gap-2 rounded-lg border border-dashed border-border px-4 py-2.5 text-sm text-muted-foreground transition hover:border-nav/40 hover:text-nav">
+                <Icon name="lucide:chevron-down" class="chev h-4 w-4" />
+                {c.expandLabel}（{s.items.length}）
+              </summary>
+              <div class:list={['mt-4', GRIDS[s.id] ?? '']}>{items.map(renderItem(s.id))}</div>
+            </details>
+          );
+          const renderItem = (id: string) => (item: DigestItem) => {
+            if (id === 'gold') {
+              return (
+                <article class={`${CARD} relative`}>
+                  <span class:list={['absolute right-4 top-4', dateBadge]}>{item.date}</span>
+                  <h3 class="pr-24 text-[17px] font-semibold leading-snug text-foreground sm:text-lg">
+                    {item.title}
+                  </h3>
+                  {item.attrib && (
+                    <p class="mt-1 text-[13px] text-muted-foreground">— {item.attrib}</p>
+                  )}
+                  <p class={`mt-2 ${BODY}`}>{item.detail}</p>
+                  {item.tags && item.tags.length > 0 && (
+                    <div class="mt-3 flex flex-wrap gap-1.5">
+                      {item.tags.map((tag) => (
+                        <span class={tagChip}>{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              );
+            }
+            if (id === 'pitfalls') {
+              return (
+                <article class={`${CARD} relative border-l-2 border-l-nav/60`}>
+                  <span class:list={['absolute right-4 top-4', dateBadge]}>{item.date}</span>
+                  <h3 class="pr-24 text-base font-semibold leading-snug text-foreground sm:text-[17px]">
+                    {item.title}
+                  </h3>
+                  {item.attrib && (
+                    <p class="mt-1 text-[13px] text-muted-foreground">— {item.attrib}</p>
+                  )}
+                  <p class={`mt-2 ${BODY}`}>{item.detail}</p>
+                  {item.tags && item.tags.length > 0 && (
+                    <div class="mt-3 flex flex-wrap gap-1.5">
+                      {item.tags.map((tag) => (
+                        <span class={tagChip}>{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              );
+            }
+            if (id === 'qa') {
+              return (
+                <article class="border-b border-border py-3.5">
+                  <h3 class="text-base font-semibold leading-snug text-foreground sm:text-[17px]">
+                    <Icon name="lucide:help-circle" class="mr-1.5 inline-block h-4 w-4 text-nav" />
+                    {item.q}
+                    {item.attrib && (
+                      <span class="ml-2 text-[13px] font-normal text-muted-foreground">
+                        {item.attrib}
+                      </span>
+                    )}
+                  </h3>
+                  <p class={`mt-1.5 ${BODY}`}>{item.a}</p>
+                </article>
+              );
+            }
+            if (id === 'feedback') {
+              return (
+                <article class={CARD}>
+                  <div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+                    <span class={dateBadge}>{item.date}</span>
+                    <h3 class="text-base font-semibold text-foreground">{item.title}</h3>
+                    {item.status === 'open' && (
+                      <span class="rounded border border-nav/30 px-2 py-0.5 text-xs font-medium text-nav">
+                        {c.openLabel}
+                      </span>
+                    )}
+                  </div>
+                  <p class={`mt-2 ${BODY}`}>{item.detail}</p>
+                </article>
+              );
+            }
             return (
-              <section id={s.id} class="scroll-mt-28">
-                <header class="mb-5 border-b border-border pb-3">
-                  <h2 class="flex items-center gap-2.5 text-2xl font-bold tracking-tight text-foreground">
-                    <Icon name={s.icon} class="h-5 w-5 shrink-0 text-nav" />
-                    {meta.title}
-                    <span class="text-sm font-semibold tabular-nums text-nav">
-                      {s.items.length}
-                    </span>
-                  </h2>
-                  <p class="mt-1 text-sm text-muted-foreground">{meta.hint}</p>
-                </header>
-
-                {s.id === 'gold' && (
-                  <div class="grid gap-4 md:grid-cols-[repeat(auto-fill,minmax(430px,1fr))]">
-                    {s.items.map((item) => (
-                      <article class="relative rounded-xl border border-border bg-card p-5 transition hover:border-nav/40">
-                        <span class:list={['absolute right-4 top-4', dateBadge]}>{item.date}</span>
-                        <h3 class="pr-16 text-[15px] font-semibold leading-snug text-foreground">
-                          {item.title}
-                        </h3>
-                        {item.attrib && (
-                          <p class="mt-0.5 text-xs text-muted-foreground">— {item.attrib}</p>
-                        )}
-                        <p class="mt-2 text-sm leading-[1.8] text-muted-foreground">
-                          {item.detail}
-                        </p>
-                        {item.tags && item.tags.length > 0 && (
-                          <div class="mt-3 flex flex-wrap gap-1.5">
-                            {item.tags.map((tag) => (
-                              <span class={tagChip}>{tag}</span>
-                            ))}
-                          </div>
-                        )}
-                      </article>
-                    ))}
-                  </div>
-                )}
-
-                {s.id === 'pitfalls' && (
-                  <div class="grid gap-4 md:grid-cols-[repeat(auto-fill,minmax(400px,1fr))]">
-                    {s.items.map((item) => (
-                      <article class="relative rounded-lg border border-border border-l-4 border-l-nav/60 bg-background p-4">
-                        <span class:list={['absolute right-3.5 top-3.5', dateBadge]}>
-                          {item.date}
-                        </span>
-                        <h3 class="pr-14 text-sm font-semibold leading-snug text-foreground">
-                          {item.title}
-                        </h3>
-                        {item.attrib && (
-                          <p class="mt-0.5 text-xs text-muted-foreground">— {item.attrib}</p>
-                        )}
-                        <p class="mt-2 text-sm leading-[1.8] text-muted-foreground">
-                          {item.detail}
-                        </p>
-                        {item.tags && item.tags.length > 0 && (
-                          <div class="mt-2.5 flex flex-wrap gap-1.5">
-                            {item.tags.map((tag) => (
-                              <span class={tagChip}>{tag}</span>
-                            ))}
-                          </div>
-                        )}
-                      </article>
-                    ))}
-                  </div>
-                )}
-
-                {s.id === 'qa' && (
-                  <div class="grid gap-x-8 md:grid-cols-[repeat(auto-fill,minmax(380px,1fr))]">
-                    {s.items.map((item) => (
-                      <article class="border-b border-border py-3">
-                        <h3 class="text-sm font-semibold leading-snug text-foreground">
-                          <Icon
-                            name="lucide:help-circle"
-                            class="mr-1.5 inline-block h-3.5 w-3.5 text-nav"
-                          />
-                          {item.q}
-                          {item.attrib && (
-                            <span class="ml-2 text-xs font-normal text-muted-foreground">
-                              {item.attrib}
-                            </span>
-                          )}
-                        </h3>
-                        <p class="mt-1.5 text-sm leading-[1.8] text-muted-foreground">{item.a}</p>
-                      </article>
-                    ))}
-                  </div>
-                )}
-
-                {s.id === 'feedback' && (
-                  <div class="grid gap-3 md:grid-cols-2">
-                    {s.items.map((item) => (
-                      <article
-                        class:list={[
-                          'rounded-lg border p-4',
-                          item.status === 'open'
-                            ? 'border-nav/40 bg-nav/5'
-                            : 'border-border bg-background',
-                        ]}
-                      >
-                        <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                          <span class={dateBadge}>{item.date}</span>
-                          <h3 class="text-sm font-semibold text-foreground">{item.title}</h3>
-                          {item.status === 'open' && (
-                            <span class="rounded-full border border-nav/30 px-2 py-0.5 text-[11px] font-medium text-nav">
-                              {c.openLabel}
-                            </span>
-                          )}
-                        </div>
-                        <p class="mt-2 text-sm leading-[1.8] text-muted-foreground">
-                          {item.detail}
-                        </p>
-                      </article>
-                    ))}
-                  </div>
-                )}
-
-                {s.id === 'news' && (
-                  <div class="divide-y divide-border">
-                    {s.items.map((item) => (
-                      <article class="py-2.5">
-                        <div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-                          <span class:list={['shrink-0', dateBadge]}>{item.date}</span>
-                          <h3 class="text-sm font-medium text-foreground">{item.title}</h3>
-                        </div>
-                        <p class="mt-1 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">
-                          {item.detail}
-                        </p>
-                      </article>
-                    ))}
-                  </div>
-                )}
-              </section>
+              <article class="py-3">
+                <div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+                  <span class="shrink-0">{item.date}</span>
+                  <h3 class="text-[15px] font-medium text-foreground sm:text-base">{item.title}</h3>
+                </div>
+                <p class={`mt-1 line-clamp-2 ${BODY}`}>{item.detail}</p>
+              </article>
             );
-          })
-        }
+          };
+          return (
+            <section id={s.id} class="scroll-mt-28 py-8 first:pt-0 lg:py-10">
+              <header class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <h2 class="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
+                  <Icon name={s.icon} class="h-5 w-5 shrink-0 text-nav" />
+                  {meta.title}
+                </h2>
+                <span class="rounded-full bg-muted px-2.5 py-0.5 text-[13px] font-semibold tabular-nums text-muted-foreground">
+                  {s.items.length}
+                </span>
+                <span class="text-[15px] text-muted-foreground">{meta.hint}</span>
+              </header>
+              <div class="mt-5">
+                <div class:list={[GRIDS[s.id] ?? '', s.id === 'news' ? 'max-w-3xl divide-y divide-border' : '']}>
+                  {head.map(renderItem(s.id))}
+                </div>
+                {tail.length > 0 && fold(tail)}
+              </div>
+            </section>
+          );
+        })
+      }
+    </div>
 
-        <!-- CTA -->
-        <div
-          class="mt-14 rounded-xl border border-border bg-nav/5 p-8 text-center 2xl:flex 2xl:items-center 2xl:justify-between 2xl:py-6 2xl:text-left"
-        >
-          <div>
-            <h2 class="text-2xl font-extrabold tracking-tight text-foreground">{c.cta.title}</h2>
-            <p class="mt-2 text-muted-foreground">{c.cta.subtitle}</p>
-          </div>
-          <div class="mt-6 flex flex-wrap justify-center gap-3 2xl:mt-0 2xl:shrink-0 2xl:justify-end">
-            <a href={c.cta.primaryHref} class="btn-primary inline-flex items-center gap-1.5">
-              <Icon name="lucide:external-link" class="h-4 w-4" />
-              {c.cta.primaryLabel}
-            </a>
-            <a href={c.cta.secondaryHref} class="btn-outline inline-flex items-center gap-1.5">
-              {c.cta.secondaryLabel}
-            </a>
-          </div>
-        </div>
+    <!-- F. CTA — the page's single filled surface -->
+    <div class="mt-10 rounded-xl bg-nav/5 p-6 text-center sm:p-8 2xl:flex 2xl:items-center 2xl:justify-between 2xl:py-6 2xl:text-left">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">{c.cta.title}</h2>
+        <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+          {c.cta.subtitle}
+        </p>
+      </div>
+      <div class="mt-6 flex flex-wrap justify-center gap-3 2xl:mt-0 2xl:shrink-0 2xl:justify-end">
+        <a href={c.cta.primaryHref} class="btn-primary inline-flex items-center gap-1.5">
+          <Icon name="lucide:external-link" class="h-4 w-4" />
+          {c.cta.primaryLabel}
+        </a>
+        <a href={c.cta.secondaryHref} class="btn-outline inline-flex items-center gap-1.5">
+          {c.cta.secondaryLabel}
+        </a>
+      </div>
+    </div>
       </div>
     </div>
   </div>
@@ -560,6 +543,16 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
     color: hsl(var(--brand-text));
     background-color: hsl(var(--brand-text) / 0.1);
     font-weight: 600;
+  }
+  /* Fold chevrons + native marker cleanup. */
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+  details > summary .chev {
+    transition: transform 150ms ease;
+  }
+  details[open] > summary .chev {
+    transform: rotate(180deg);
   }
 </style>
 
