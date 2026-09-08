@@ -58,7 +58,11 @@ interface DailyReport {
 const data = digest as CommunityDigest;
 
 const byId = new Map(data.categories.map((cat) => [cat.id, cat.items]));
-const latest = data.reports?.[0];
+const reports = data.reports ?? [];
+/** Relative day labels for the two newest reports (position = recency). */
+const dayLabels = new Map<string, string>();
+if (reports.length > 0) dayLabels.set(reports[0].date, c.todayLabel);
+if (reports.length > 1) dayLabels.set(reports[1].date, c.yesterdayLabel);
 const SECTION_META = [
   { id: 'gold', icon: 'lucide:gem' },
   { id: 'pitfalls', icon: 'lucide:triangle-alert' },
@@ -169,7 +173,11 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
       <div class="mt-4 flex gap-3 overflow-x-auto pb-2 [scrollbar-width:thin]">
         {
           data.daily.map((day, i) => (
-            <article class="w-[280px] shrink-0 snap-start rounded-lg border border-border bg-card p-4">
+            <article
+              data-report-jump={day.date}
+              title={c.report.title}
+              class="w-[280px] shrink-0 cursor-pointer snap-start rounded-lg border border-border bg-card p-4 transition hover:border-nav/40"
+            >
               <p class="flex items-center gap-1.5 text-sm font-bold text-nav">
                 {day.date}
                 {i === 0 && (
@@ -196,42 +204,60 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
     </div>
   </div>
 
-  <!-- C2. Daily structured report — public subset of the 12-dim owner report -->
+  <!-- C2. Daily structured report — public subset of the 12-dim owner report.
+       All days render as hidden panels; the select (and clicks on the daily
+       band cards) toggle the visible one. No-JS fallback: latest day only. -->
   {
-    latest && (
-      <div class:list={[WRAP, 'mt-8']}>
+    reports.length > 0 && (
+      <div id="daily-report" class:list={[WRAP, 'mt-8 scroll-mt-20']}>
         <div class="rounded-xl border border-border bg-card p-5">
           <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <h2 class="flex items-center gap-2 text-lg font-bold tracking-tight text-foreground">
               <Icon name="lucide:newspaper" class="h-5 w-5 shrink-0 text-nav" />
               {c.report.title}
             </h2>
-            <span class="text-sm font-semibold text-nav">{latest.date}</span>
+            <label class="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
+              <Icon name="lucide:calendar-search" class="h-3.5 w-3.5 shrink-0 text-nav" />
+              <select
+                data-report-select
+                class="rounded-md border border-border bg-background px-2 py-1.5 text-xs font-medium text-foreground"
+              >
+                {reports.map((r) => (
+                  <option value={r.date}>
+                    {r.date}
+                    {dayLabels.has(r.date) ? ` · ${dayLabels.get(r.date)}` : ''}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
-          <div class="mt-3 flex flex-wrap gap-2 text-xs">
+          {reports.map((r, i) => (
+            <div data-report-panel={r.date} hidden={i > 0}>
+              <p class="text-sm font-semibold text-nav">{r.date}</p>
+              <div class="mt-3 flex flex-wrap gap-2 text-xs">
             <span class="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
-              {latest.stats.messages} {c.report.statsMessages}
+              {r.stats.messages} {c.report.statsMessages}
             </span>
             <span class="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
-              {latest.stats.speakers} {c.report.statsSpeakers}
+              {r.stats.speakers} {c.report.statsSpeakers}
             </span>
             <span class="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
-              {c.report.statsPeak} {latest.stats.peakHour}
+              {c.report.statsPeak} {r.stats.peakHour}
             </span>
             <span class="rounded-full border border-nav/30 px-2.5 py-1 font-medium text-nav">
-              {latest.stats.heat}
+              {r.stats.heat}
             </span>
           </div>
 
           <div class="mt-5 space-y-5">
-            {latest.quotes.length > 0 && (
+            {r.quotes.length > 0 && (
               <div>
                 <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
                   <Icon name="lucide:quote" class="h-3.5 w-3.5 shrink-0 text-nav" />
                   {c.report.quotesTitle}
                 </h3>
                 <ul class="mt-2 space-y-1.5">
-                  {latest.quotes.map((q) => (
+                  {r.quotes.map((q) => (
                     <li class="border-l-2 border-nav/30 pl-3 text-sm leading-relaxed text-muted-foreground">
                       「{q.text}」<span class="text-xs">—— {q.by}</span>
                     </li>
@@ -241,14 +267,14 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
             )}
 
             <div class="grid gap-5 lg:grid-cols-2">
-              {latest.takeaways.length > 0 && (
+              {r.takeaways.length > 0 && (
                 <div>
                   <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
                     <Icon name="lucide:list-checks" class="h-3.5 w-3.5 shrink-0 text-nav" />
                     {c.report.takeawaysTitle}
                   </h3>
                   <ul class="mt-2 space-y-1.5">
-                    {latest.takeaways.map((t) => (
+                    {r.takeaways.map((t) => (
                       <li class="flex gap-1.5 text-sm leading-relaxed text-muted-foreground">
                         <span class="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-nav/50" />
                         {t}
@@ -257,14 +283,14 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
                   </ul>
                 </div>
               )}
-              {latest.qa.length > 0 && (
+              {r.qa.length > 0 && (
                 <div>
                   <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
                     <Icon name="lucide:messages-square" class="h-3.5 w-3.5 shrink-0 text-nav" />
                     {c.report.qaTitle}
                   </h3>
                   <ul class="mt-2 space-y-2">
-                    {latest.qa.map((item) => (
+                    {r.qa.map((item) => (
                       <li class="text-sm leading-relaxed">
                         <span class="font-medium text-foreground">{item.q}</span>
                         <span class="text-muted-foreground"> — {item.a}</span>
@@ -273,14 +299,14 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
                   </ul>
                 </div>
               )}
-              {latest.resources.length > 0 && (
+              {r.resources.length > 0 && (
                 <div>
                   <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
                     <Icon name="lucide:link" class="h-3.5 w-3.5 shrink-0 text-nav" />
                     {c.report.resourcesTitle}
                   </h3>
                   <ul class="mt-2 space-y-1.5">
-                    {latest.resources.map((res) => (
+                    {r.resources.map((res) => (
                       <li class="text-sm leading-relaxed text-muted-foreground">
                         <span class="font-medium text-foreground">{res.title}</span>
                         {res.note && <span>：{res.note}</span>}
@@ -290,16 +316,16 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
                   </ul>
                 </div>
               )}
-              {(latest.faq.length > 0 || latest.topics.length > 0) && (
+              {(r.faq.length > 0 || r.topics.length > 0) && (
                 <div class="space-y-4">
-                  {latest.faq.length > 0 && (
+                  {r.faq.length > 0 && (
                     <div>
                       <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
                         <Icon name="lucide:repeat" class="h-3.5 w-3.5 shrink-0 text-nav" />
                         {c.report.faqTitle}
                       </h3>
                       <div class="mt-2 flex flex-wrap gap-1.5">
-                        {latest.faq.map((f) => (
+                        {r.faq.map((f) => (
                           <span class="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
                             {f.pattern} ×{f.count}
                           </span>
@@ -307,14 +333,14 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
                       </div>
                     </div>
                   )}
-                  {latest.topics.length > 0 && (
+                  {r.topics.length > 0 && (
                     <div>
                       <h3 class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
                         <Icon name="lucide:pen-line" class="h-3.5 w-3.5 shrink-0 text-nav" />
                         {c.report.topicsTitle}
                       </h3>
                       <ul class="mt-2 space-y-1">
-                        {latest.topics.map((t) => (
+                        {r.topics.map((t) => (
                           <li class="text-sm leading-relaxed text-muted-foreground">
                             《{t.title}》
                           </li>
@@ -325,11 +351,12 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
                 </div>
               )}
             </div>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
-    )
-  }
+    </div>
+  )}
 
   <!-- D. Main: left sticky TOC + chapter sections with per-category density -->
   <div class:list={[WRAP, 'mt-10']}>
@@ -535,6 +562,31 @@ const tagChip = 'rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foregroun
     font-weight: 600;
   }
 </style>
+
+<script>
+  // Daily-report day switcher: the <select> toggles panels; clicking a card
+  // in the daily band selects that day and scrolls to the report.
+  (() => {
+    const select = document.querySelector<HTMLSelectElement>('select[data-report-select]');
+    const panels = Array.from(document.querySelectorAll<HTMLElement>('[data-report-panel]'));
+    if (!select || panels.length === 0) return;
+    const show = (date: string) => {
+      for (const panel of panels) {
+        panel.hidden = panel.getAttribute('data-report-panel') !== date;
+      }
+    };
+    select.addEventListener('change', () => show(select.value));
+    for (const jump of document.querySelectorAll<HTMLElement>('[data-report-jump]')) {
+      jump.addEventListener('click', () => {
+        const date = jump.getAttribute('data-report-jump') || '';
+        if (!panels.some((panel) => panel.getAttribute('data-report-panel') === date)) return;
+        show(date);
+        select.value = date;
+        document.getElementById('daily-report')?.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+  })();
+</script>
 
 <script>
   // Scrollspy for the section nav — last heading scrolled past wins; the
