@@ -147,6 +147,13 @@ const description = pageDescription ?? t.description;
           <span>{t.handbook.manuals.dev.label}</span>
         </a>
         <a
+          href={locale === 'en' ? '/landing/community/' : '/zh/landing/community/'}
+          class="hidden items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground sm:inline-flex"
+        >
+          <Icon name="lucide:messages-square" class="h-4 w-4" />
+          <span>{t.communityHighlights.navLabel}</span>
+        </a>
+        <a
           href="https://github.com/PNGTRID/AnvilWiki"
           class="hidden items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground sm:inline-flex"
         >

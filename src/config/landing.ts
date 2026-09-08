@@ -100,6 +100,8 @@ export interface LandingContent {
     subtitle: string;
     /** Short label for the landing footer link. */
     navLabel: string;
+    /** Left sidebar "on this page" heading label. */
+    tocLabel: string;
     updatedLabel: string;
     sinceLabel: string;
     disclaimer: string;
@@ -583,6 +585,7 @@ pnpm install && pnpm dev`,
     subtitle:
       'The best of our WeChat builder group, curated daily by AI: hard-won know-how, monetization pitfalls, real Q&A, and what members want from the template. The discussion is in Chinese — items are kept faithful to the original.',
     navLabel: 'Highlights',
+    tocLabel: 'On this page',
     updatedLabel: 'Last updated',
     sinceLabel: 'Digest since',
     disclaimer:
@@ -1050,6 +1053,7 @@ pnpm install && pnpm dev`,
     subtitle:
       '来自「AnvilWiki 交流群」的真实讨论，AI 每天自动整理：实操干货、变现避坑、真实问答，以及群友对模板的意见。怎么选词、怎么做站、哪里有坑——这里都是过来人的一手经验。',
     navLabel: '社群精华',
+    tocLabel: '本页导航',
     updatedLabel: '最后更新',
     sinceLabel: '记录自',
     disclaimer:
