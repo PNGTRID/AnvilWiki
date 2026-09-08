@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **落地页新增「社群精华」页(/landing/community + /zh/landing/community)**——把主理人微信交流群(2026-08-16 建群)的真实讨论整理成常青内容页:五分类(精华干货 25 条/避坑警示 13/问答精选 24/反馈建议 9/动态公告 23)+23 天每日速览,全部由 AI 管道从 2298 条群聊记录整理(仅群昵称、原始记录不公开、可申请删除)。数据存 `src/components/landing/community-digest.json`(组件同目录,fork 时随 landing 层整体移除,零 LANDING_PATHS 改动);展示标签在 landing.ts 新节 `communityHighlights`(en/zh);footer 新加入口链接+llms.txt 补一行。配套每日定时管道:自动抓取→分类整理→PR 更新 JSON(不自动进 main),管道契约见 docs/superpowers/specs/2026-09-08-community-digest-pipeline.md。
+
 ### Fixed
 
 - **`sync-codes --require-output` 补齐全部零产出早退路径**：脚本有两条提前 exit 0 的路径会绕过末尾的 require-output 检查，CI 里表现为八道门禁绿灯、create-pull-request 无 diff、无 PR——恰是该 flag 要杜绝的空跑形态。①缺输入文件（Run workflow 派发 `sync-codes` 任务但 `csv_text` 留空且仓库根无 `codes-sync.csv`；`bulk-new-posts` 同路径自 v2.0.1 起 exit 1，管道接入时漏移植 `|| REQUIRE_OUTPUT` 子句）；②零数据行（仅表头/全注释行/被 `--locales` 滤空时 "Nothing to do" 提前退出；`bulk-new-posts` 无此早退，天然被末尾检查兜住）。24h 审计+复检两轮发现，退出码路径实测复现与复验；契约测试钉双脚本退出码同构防回退。

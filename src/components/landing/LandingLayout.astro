@@ -182,6 +182,12 @@ const description = pageDescription ?? t.description;
         </div>
         <div class="flex items-center gap-4 text-sm">
           <a
+            href={locale === 'en' ? '/landing/community/' : '/zh/landing/community/'}
+            class="text-foreground/70 transition hover:text-foreground"
+          >
+            {t.communityHighlights.navLabel}
+          </a>
+          <a
             href="https://github.com/PNGTRID/AnvilWiki"
             class="text-foreground/70 transition hover:text-foreground"
           >

@@ -1,0 +1,173 @@
+---
+/**
+ * CommunityHighlights — the standalone "社群精华" page (/landing/community +
+ * /zh/landing/community). Renders the AI-curated WeChat group digest from
+ * community-digest.json (refreshed daily by an automation pipeline that
+ * opens a PR; this file never needs manual edits). Section labels live in
+ * landing.ts (`communityHighlights`); item content is Chinese source data
+ * and is shown as-is on both locales. apply-template removes the whole
+ * landing layer, so forks never inherit the digest.
+ */
+import { Icon } from 'astro-icon/components';
+import { type LandingContent } from '~/config/landing';
+import digest from './community-digest.json';
+
+interface Props {
+  t: LandingContent;
+}
+const { t } = Astro.props;
+const c = t.communityHighlights;
+
+interface DigestItem {
+  date: string;
+  title?: string;
+  detail?: string;
+  q?: string;
+  a?: string;
+  tags?: string[];
+  attrib?: string;
+  status?: string;
+}
+interface CommunityDigest {
+  schemaVersion: number;
+  updated: string;
+  since: string;
+  categories: { id: string; items: DigestItem[] }[];
+  daily: { date: string; summary: string; topics: string[] }[];
+}
+const data = digest as CommunityDigest;
+
+const byId = new Map(data.categories.map((cat) => [cat.id, cat.items]));
+const SECTION_META = [
+  { id: 'gold', icon: 'lucide:gem' },
+  { id: 'pitfalls', icon: 'lucide:triangle-alert' },
+  { id: 'qa', icon: 'lucide:messages-square' },
+  { id: 'feedback', icon: 'lucide:megaphone' },
+  { id: 'news', icon: 'lucide:rocket' },
+] as const;
+---
+
+<section class="section">
+  <div class="mx-auto max-w-4xl">
+    <h1 class="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">{c.title}</h1>
+    <p class="mt-3 text-lg text-muted-foreground">{c.subtitle}</p>
+    <p class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+      <span class="inline-flex items-center gap-1.5">
+        <Icon name="lucide:calendar-check" class="h-4 w-4 shrink-0 text-nav" />
+        {c.updatedLabel}: {data.updated}
+      </span>
+      <span class="inline-flex items-center gap-1.5">
+        <Icon name="lucide:history" class="h-4 w-4 shrink-0 text-nav" />
+        {c.sinceLabel}: {data.since}
+      </span>
+    </p>
+    <p class="mt-3 flex items-start gap-2 rounded-lg border border-border bg-muted/30 p-3 text-xs leading-relaxed text-muted-foreground">
+      <Icon name="lucide:info" class="mt-0.5 h-4 w-4 shrink-0 text-nav" />
+      {c.disclaimer}
+    </p>
+
+    {
+      SECTION_META.map((section) => {
+        const items = byId.get(section.id) ?? [];
+        if (items.length === 0) return null;
+        const meta = c.sections[section.id];
+        return (
+          <div class="mt-12">
+            <h2
+              id={section.id}
+              class="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground"
+            >
+              <Icon name={section.icon} class="h-5 w-5 shrink-0 text-nav" />
+              {meta.title}
+              <span class="text-sm font-normal text-muted-foreground">{items.length}</span>
+            </h2>
+            <p class="mt-1 text-sm text-muted-foreground">{meta.hint}</p>
+            <div class="mt-5 space-y-3">
+              {items.map((item) => (
+                <article class="rounded-lg border border-border bg-muted/30 p-4">
+                  <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                    <span class="rounded bg-nav/10 px-1.5 py-0.5 text-xs font-semibold text-nav">
+                      {item.date}
+                    </span>
+                    {item.q ? (
+                      <h3 class="font-semibold text-foreground">{item.q}</h3>
+                    ) : (
+                      <h3 class="font-semibold text-foreground">{item.title}</h3>
+                    )}
+                    {item.attrib && (
+                      <span class="text-xs text-muted-foreground">— {item.attrib}</span>
+                    )}
+                    {item.status === 'open' && (
+                      <span class="rounded-full border border-nav/30 px-2 py-0.5 text-xs font-medium text-nav">
+                        {c.openLabel}
+                      </span>
+                    )}
+                  </div>
+                  {item.a && (
+                    <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{item.a}</p>
+                  )}
+                  {item.detail && (
+                    <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{item.detail}</p>
+                  )}
+                  {item.tags && item.tags.length > 0 && (
+                    <div class="mt-2 flex flex-wrap gap-1.5">
+                      {item.tags.map((tag) => (
+                        <span class="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+      })
+    }
+
+    <!-- Daily digest timeline -->
+    <div class="mt-12">
+      <h2 id="daily" class="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
+        <Icon name="lucide:calendar-days" class="h-5 w-5 shrink-0 text-nav" />
+        {c.sections.daily.title}
+      </h2>
+      <p class="mt-1 text-sm text-muted-foreground">{c.sections.daily.hint}</p>
+      <ol class="mt-6 space-y-4 border-l border-border pl-5">
+        {
+          data.daily.map((day) => (
+            <li class="relative">
+              <span class="absolute -left-[26px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-background bg-nav" />
+              <p class="text-sm leading-relaxed">
+                <span class="font-semibold text-foreground">{day.date}</span>
+                <span class="text-muted-foreground"> — {day.summary}</span>
+              </p>
+              <div class="mt-1.5 flex flex-wrap gap-1.5">
+                {day.topics.map((topic) => (
+                  <span class="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-12 rounded-xl border border-border bg-nav/5 p-8 text-center">
+      <h2 class="text-2xl font-extrabold tracking-tight text-foreground">{c.cta.title}</h2>
+      <p class="mt-2 text-muted-foreground">{c.cta.subtitle}</p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <a href={c.cta.primaryHref} class="btn-primary inline-flex items-center gap-1.5">
+          <Icon name="lucide:external-link" class="h-4 w-4" />
+          {c.cta.primaryLabel}
+        </a>
+        <a href={c.cta.secondaryHref} class="btn-outline inline-flex items-center gap-1.5">
+          {c.cta.secondaryLabel}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

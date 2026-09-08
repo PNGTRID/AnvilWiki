@@ -91,6 +91,37 @@ export interface LandingContent {
       secondaryHref: string;
     };
   };
+  /** Standalone community highlights page (/landing/community) — AI-curated
+   *  digest of the WeChat group chat, refreshed daily by automation. Item
+   *  content lives in community-digest.json next to the page component
+   *  (Chinese source, kept as-is on the en page). */
+  communityHighlights: {
+    title: string;
+    subtitle: string;
+    /** Short label for the landing footer link. */
+    navLabel: string;
+    updatedLabel: string;
+    sinceLabel: string;
+    disclaimer: string;
+    sections: {
+      gold: { title: string; hint: string };
+      pitfalls: { title: string; hint: string };
+      qa: { title: string; hint: string };
+      feedback: { title: string; hint: string };
+      news: { title: string; hint: string };
+      daily: { title: string; hint: string };
+    };
+    /** Chip label for open feedback items. */
+    openLabel: string;
+    cta: {
+      title: string;
+      subtitle: string;
+      primaryLabel: string;
+      primaryHref: string;
+      secondaryLabel: string;
+      secondaryHref: string;
+    };
+  };
   showcase: {
     title: string;
     subtitle: string;
@@ -547,6 +578,34 @@ pnpm install && pnpm dev`,
       secondaryHref: '/landing#docs',
     },
   },
+  communityHighlights: {
+    title: 'Community Highlights',
+    subtitle:
+      'The best of our WeChat builder group, curated daily by AI: hard-won know-how, monetization pitfalls, real Q&A, and what members want from the template. The discussion is in Chinese — items are kept faithful to the original.',
+    navLabel: 'Highlights',
+    updatedLabel: 'Last updated',
+    sinceLabel: 'Digest since',
+    disclaimer:
+      'Curated daily from the group chat by an automated pipeline — nicknames only, raw logs stay private. Items are member-shared experience, not official advice; ask the maintainer to remove anything.',
+    sections: {
+      gold: { title: 'Know-how', hint: 'Reusable methods, SOPs, tools, hard numbers' },
+      pitfalls: { title: 'Pitfalls', hint: 'Lessons that cost real money' },
+      qa: { title: 'Q&A', hint: 'Real member questions, answers merged from the thread' },
+      feedback: { title: 'Feedback & ideas', hint: 'What members want from the template and docs' },
+      news: { title: 'Milestones', hint: 'Releases, showcase entries, group events' },
+      daily: { title: 'Day by day', hint: 'One line per day' },
+    },
+    openLabel: 'open',
+    cta: {
+      title: 'Building game content sites too?',
+      subtitle:
+        'Scan the QR code (bottom-right) to join the WeChat group, or fork the template and launch your own wiki in about 30 minutes.',
+      primaryLabel: 'Fork on GitHub',
+      primaryHref: FORK_URL,
+      secondaryLabel: 'Read the docs',
+      secondaryHref: '/landing/docs/',
+    },
+  },
   showcase: {
     title: 'See it in action',
     subtitle:
@@ -984,6 +1043,33 @@ pnpm install && pnpm dev`,
       primaryHref: '/',
       secondaryLabel: '快速开始',
       secondaryHref: '/zh/landing#docs',
+    },
+  },
+  communityHighlights: {
+    title: '社群精华',
+    subtitle:
+      '来自「AnvilWiki 交流群」的真实讨论，AI 每天自动整理：实操干货、变现避坑、真实问答，以及群友对模板的意见。怎么选词、怎么做站、哪里有坑——这里都是过来人的一手经验。',
+    navLabel: '社群精华',
+    updatedLabel: '最后更新',
+    sinceLabel: '记录自',
+    disclaimer:
+      '本页由每日定时管道从群聊记录自动整理（AI 归纳，仅显示群昵称，不公开原始记录）。内容为群友个人经验分享，不代表项目立场；如需删除请联系主理人。',
+    sections: {
+      gold: { title: '精华干货', hint: '可复用的方法、SOP、工具与关键数据' },
+      pitfalls: { title: '避坑警示', hint: '群友真金白银换来的教训' },
+      qa: { title: '问答精选', hint: '群友真实提问与群里给出的解答' },
+      feedback: { title: '反馈与建议', hint: '大家对模板、手册和技能的意见' },
+      news: { title: '动态公告', hint: '版本发布、showcase 收录与群事件' },
+      daily: { title: '每日速览', hint: '一天一句话' },
+    },
+    openLabel: '待处理',
+    cta: {
+      title: '也在做游戏内容站？',
+      subtitle: '点右下角二维码加群一起讨论，或 fork 模板，30 分钟上线你自己的 wiki 站。',
+      primaryLabel: 'GitHub 上 Fork',
+      primaryHref: FORK_URL,
+      secondaryLabel: '阅读文档',
+      secondaryHref: '/zh/landing/docs/',
     },
   },
   showcase: {

@@ -1,0 +1,28 @@
+---
+/**
+ * Community highlights page (/zh/landing/community, Chinese) — AI-curated
+ * digest of the WeChat group chat, refreshed daily by an automation
+ * pipeline. English version at /landing/community. Removed together with
+ * the whole landing layer by apply-template (lives under src/pages/zh/landing/).
+ */
+import LandingLayout from '~/components/landing/LandingLayout.astro';
+import CommunityHighlights from '~/components/landing/CommunityHighlights.astro';
+import { landingContent } from '~/config/landing';
+import { siteUrl } from '~/config/site';
+
+const t = landingContent.zh;
+const alternates = [
+  { hreflang: 'en', href: `${siteUrl}/landing/community` },
+  { hreflang: 'zh', href: `${siteUrl}/zh/landing/community` },
+];
+---
+
+<LandingLayout
+  locale="zh"
+  alternates={alternates}
+  pageTitle={t.communityHighlights.title}
+  pageDescription={t.communityHighlights.subtitle}
+  togglePath="/landing/community"
+>
+  <CommunityHighlights t={t} />
+</LandingLayout>

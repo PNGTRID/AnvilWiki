@@ -70,6 +70,12 @@ export const GET: APIRoute = async () => {
       '',
       `- [AnvilWiki vs Fandom vs Wiki.js — how to choose](${siteUrl}/landing/comparison/): The three species of wiki tooling — hosted platforms, self-hosted collaboration engines, and static publishing templates — and when each fits a game content site.`,
     );
+
+    // Community highlights — daily AI-curated digest of the maintainer's
+    // WeChat builder group (Chinese). Same landing-layer lifecycle as above.
+    lines.push(
+      `- [AnvilWiki Community Highlights](${siteUrl}/landing/community/): Daily AI-curated digest of the AnvilWiki WeChat group — know-how, monetization pitfalls, real Q&A and template feedback from game-wiki builders (in Chinese).`,
+    );
   }
 
   return new Response(lines.join('\n') + '\n', {
