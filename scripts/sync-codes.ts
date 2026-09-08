@@ -134,7 +134,11 @@ Expected file (header required, order free; status/reward/expiryDate/source opti
 Rules: new codes are prepended; expired flips keep the entry; empty optional
 cells keep the existing values; codes data is synced to every locale that has
 the same page. Pages must already exist — sync never creates or deletes.`);
-  process.exit(NO_INPUT_IS_ERROR ? 1 : 0);
+  // --require-output must reach this early usage exit too: a pipeline
+  // dispatch with an empty csv_text and no repo-root CSV would otherwise
+  // exit 0 and hand the workflow a green run that silently produces no PR.
+  // Same contract as bulk-new-posts.ts.
+  process.exit(NO_INPUT_IS_ERROR || REQUIRE_OUTPUT ? 1 : 0);
 }
 
 if (LOCALE_FILTER) {

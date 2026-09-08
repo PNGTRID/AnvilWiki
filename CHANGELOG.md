@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`sync-codes --require-output` 补缺输入退出码**：Run workflow 派发 `sync-codes` 任务但 `csv_text` 留空且仓库根无 `codes-sync.csv` 时，脚本打印 usage 后以 exit 0 退出——八道门禁绿灯、create-pull-request 无 diff、无 PR，恰是该 flag 要杜绝的空跑形态（`bulk-new-posts` 同路径自 v2.0.1 起 exit 1，管道接入时漏移植 `|| REQUIRE_OUTPUT` 子句；24h 审计发现并实测复现）。已对齐两生成器同契约，契约测试钉死双脚本退出码同构防回退。
+
 ## [2.17.0] — 2026-09-07
 
 **管道生成器扩展收官：codes 同步成为 `auto-content.yml` 的第二个任务（与 import-csv 同一套八道门禁 + require-output 契约）；顺带修复跨语言 fan-out 只带首行的静默掉码缺陷。**

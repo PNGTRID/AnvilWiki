@@ -149,6 +149,18 @@ describe('auto-content pipeline safety contract', () => {
     expect(gen?.if).toContain("inputs.task == 'sync-codes'");
   });
 
+  test('require-output reaches the missing-input exit path in BOTH generator scripts', () => {
+    // Without the clause, a sync-codes dispatch with empty csv_text and no
+    // codes-sync.csv at the repo root prints usage and exits 0 — the run
+    // goes green and create-pull-request silently makes no PR, the exact
+    // no-op --require-output exists to prevent. bulk-new-posts.ts had the
+    // clause from day one; sync-codes ported the flag but not the clause.
+    for (const script of ['scripts/bulk-new-posts.ts', 'scripts/sync-codes.ts']) {
+      const src = readFileSync(join(root, script), 'utf8');
+      expect(src, script).toContain('process.exit(NO_INPUT_IS_ERROR || REQUIRE_OUTPUT ? 1 : 0)');
+    }
+  });
+
   test('PRs are drafts on a fixed branch and contain ONLY content changes', () => {
     const pr = steps.find((s) => (s.uses ?? '').includes('create-pull-request'));
     expect(pr?.with?.draft).toBe(true);
