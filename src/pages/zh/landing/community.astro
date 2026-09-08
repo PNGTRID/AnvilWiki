@@ -7,6 +7,7 @@
  */
 import LandingLayout from '~/components/landing/LandingLayout.astro';
 import CommunityHighlights from '~/components/landing/CommunityHighlights.astro';
+import Community from '~/components/landing/Community.astro';
 import { landingContent } from '~/config/landing';
 import { siteUrl } from '~/config/site';
 
@@ -23,6 +24,9 @@ const alternates = [
   pageTitle={t.communityHighlights.title}
   pageDescription={t.communityHighlights.subtitle}
   togglePath="/landing/community"
+  wide
 >
   <CommunityHighlights t={t} />
+  <!-- 微信二维码浮层——页面文案指向右下角二维码，本页自行挂载（与落地页首页一致）。 -->
+  <Community t={t} />
 </LandingLayout>

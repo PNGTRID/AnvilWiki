@@ -42,9 +42,24 @@ interface Props {
    * article/handbook noise there). Labels come from landing.ts `search`.
    */
   search?: boolean;
+  /**
+   * Ultra-wide mode: header/footer inner containers follow the community
+   * page's stepped max-width (1600px → 1728px at 2xl) so their edges stay
+   * aligned with that page's ultra-wide content. Default (false) keeps the
+   * site-wide max-w-7xl.
+   */
+  wide?: boolean;
 };
-const { locale, alternates = [], pageTitle, pageDescription, togglePath, extraJsonLd = [], search = false } =
-  Astro.props;
+const {
+  locale,
+  alternates = [],
+  pageTitle,
+  pageDescription,
+  togglePath,
+  extraJsonLd = [],
+  search = false,
+  wide = false,
+} = Astro.props;
 const t = landingContent[locale];
 const other: LandingLocale = locale === 'en' ? 'zh' : 'en';
 const jsonLd = [websiteJsonLd((locale === 'en' ? defaultLocale : 'zh') as Locale), ...extraJsonLd];
@@ -107,7 +122,14 @@ const description = pageDescription ?? t.description;
 
   {/* Minimal header — logo + language + GitHub + theme toggle */}
   <header class="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
-    <div class="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4">
+    <div
+      class:list={[
+        'mx-auto flex h-14 items-center gap-4',
+        wide
+          ? 'max-w-[1600px] px-4 sm:px-6 lg:px-8 2xl:max-w-[1728px] 2xl:px-10'
+          : 'max-w-7xl px-4',
+      ]}
+    >
       <a href={landingPath(locale)} class="flex shrink-0 items-center gap-2 font-bold text-foreground">
         <Icon name="lucide:hammer" class="h-6 w-6 text-nav" />
         <span>AnvilWiki</span>
@@ -178,7 +200,14 @@ const description = pageDescription ?? t.description;
 
   {/* Simplified footer */}
   <footer class="border-t border-border">
-    <div class="mx-auto max-w-7xl px-4 py-10">
+    <div
+      class:list={[
+        'mx-auto py-10',
+        wide
+          ? 'max-w-[1600px] px-4 sm:px-6 lg:px-8 2xl:max-w-[1728px] 2xl:px-10'
+          : 'max-w-7xl px-4',
+      ]}
+    >
       <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <div class="flex items-center gap-2">
           <Icon name="lucide:hammer" class="h-5 w-5 text-nav" />

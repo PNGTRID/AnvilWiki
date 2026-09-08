@@ -7,6 +7,7 @@
  */
 import LandingLayout from '~/components/landing/LandingLayout.astro';
 import CommunityHighlights from '~/components/landing/CommunityHighlights.astro';
+import Community from '~/components/landing/Community.astro';
 import { landingContent } from '~/config/landing';
 import { siteUrl } from '~/config/site';
 
@@ -23,6 +24,10 @@ const alternates = [
   pageTitle={t.communityHighlights.title}
   pageDescription={t.communityHighlights.subtitle}
   togglePath="/zh/landing/community"
+  wide
 >
   <CommunityHighlights t={t} />
+  <!-- Floating WeChat QR — the page copy points at the bottom-right QR, so
+       this page mounts the float itself (landing index does the same). -->
+  <Community t={t} />
 </LandingLayout>
