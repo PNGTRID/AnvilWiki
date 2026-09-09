@@ -32,7 +32,7 @@ AnvilWiki 的版本历史不是功能大杂烩,而是一条主线:**不断把「
 - **preferred sources 适配**:Google 2026-08-20 刚发布「偏好来源」自定义按钮,等实现方式稳定后评估模板层支持。
 - **选品决策支持**:「哪个游戏值得建站」目前靠学习手册课 7「打分拍板」的人工四关卡,可沉淀为数据脚本(搜索趋势/竞争度抓取)。
 - **管道生成器扩展(继续)**:codes 同步已接入 auto-content.yml(v2.17.0);Trello 导入等更多确定性任务走同一套门禁契约。
-- **可视化编辑层**(社区 issue #21):优先评估现成 git-based CMS 的模板级可选接入(Sveltia/Decap/Keystatic 本地模式——编辑对象就是仓库 Markdown,与纯静态架构天然兼容;注意 OAuth 配置门槛与 content.config.ts 的 schema 双源漂移风险);**不自研本地常驻后台**(CLI+setup.yml 已是两通道同步坑,第三通道是持续税,且偏离 AI 原生定位)——需求热度 n≥3 再启动。
+- **可视化编辑层**(社区 issue #21):优先评估现成 git-based CMS 的模板级可选接入(Sveltia/Decap/Keystatic 本地模式——编辑对象就是仓库 Markdown,与纯静态架构天然兼容;注意 OAuth 配置门槛与 content.config.ts 的 schema 双源漂移风险);**不自研本地常驻后台**(CLI+setup.yml 已是两通道同步坑,第三通道是持续税,且偏离 AI 原生定位)——需求热度 n≥3 再启动。✅ 评估已完成(2026-09-08):Sveltia 因不支持 MDX 排除、Decap 平庸不推荐;推荐形态=**Keystatic 独立 admin 站**(不碰主站零 adapter 架构),先决解锁项=Zod schema→CMS 配置生成器(双源变单源)。详见 docs/superpowers/specs/2026-09-08-git-based-cms-evaluation.md。
 - **Astro 6/7 升级**:Astro 7 已 GA 但 v2.0 刻意锁 5.x(降回归风险);作为独立小版本做 5→6→7 两跳迁移,重点回归 check-content/check-links。
 
 ### 中期(v2.0 方向)——✅ 已随 v2.0.0 交付
