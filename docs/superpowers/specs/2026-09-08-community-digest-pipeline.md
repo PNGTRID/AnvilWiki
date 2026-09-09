@@ -41,16 +41,16 @@ ZCode 会话自动连接本机 `wechat` MCP（`~/.zcode/cli/config.json` → std
 1. `quotes` 精华观点（摘原文+署名）2. `qa` 答疑记录（已解决配对）3. `takeaways` 干货要点（可执行列表）4. `unresolved` 未解决问题（待主理人跟进）5. `faqCandidates` 高频重复问题（≥2 次合并）6. `feedbackItems` 产品反馈（带 sentiment: pos/neg/neutral）7. `resources` 资源分享（标题+一句话+谁分享）8. `activeMembers` 活跃成员（KOL 潜力）9. `newcomers` 新人动态（入群+首问）10. `sentiment` 情绪与口碑信号（带原文佐证）11. `topics2create` 可二次创作选题 12. `stats` 数据概览（消息条数/发言人数/高峰时段/热度——**由脚本从原始数据精确计算，AI 不得自行统计**）。
 
 **双通道产出（隐私分级是本节的铁律）**：
-- **公开子集**（维度 1/2/3/5/7/11 + stats）→ 写入 `community-digest.json` 的 `reports` 数组**头部**（页面「每日报告」区只渲染 `reports[0]` 最新一天；数组保留历史供日后归档页）。公开层**永不包含** `unresolved`/`activeMembers`/`newcomers`/`sentiment`/`feedbackItems`——未解决问题、成员 KOL 排名、新人名单、情绪研判、带情绪倾向的反馈都属主理人私有运营情报。
+- **公开子集**（维度 1/2/3/5/7/11 + stats）→ 写入 `community-digest.json` 的 `reports` 数组**头部**（页面「每日报告」区支持按日期切换，渲染最新 `REPORTS_VISIBLE`=14 天——组件 `CommunityHighlights.astro` 窗口常量；更早历史保留在 JSON 供日后归档页）。公开层**永不包含** `unresolved`/`activeMembers`/`newcomers`/`sentiment`/`feedbackItems`——未解决问题、成员 KOL 排名、新人名单、情绪研判、带情绪倾向的反馈都属主理人私有运营情报。
 - **属主全量**（12 维全部）→ 追加写入 `reports/community-digest/daily-reports.md`（gitignored，本地文件），并在 **PR 正文**里完整贴出当天的 4/6/8/9/10 维（未解决/反馈/活跃成员/新人/情绪），方便主理人在合并 PR 时直接跟进。
 
 当天运行时（如 23:00 后群仍在聊），日报按当日已抓取内容生成，次日运行时**重写**该日报告为终稿（替换 `reports` 数组中同日期条目）。
 
-## 4. JSON schema（v1，与组件严格对齐）
+## 4. JSON schema（v2，与组件严格对齐）
 
 ```jsonc
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "updated": "YYYY-MM-DD",        // 本轮整理日期
   "since": "2026-08-16",          // 恒定：建群首日消息日
   "categories": [                  // 固定顺序 gold→pitfalls→qa→feedback→news
@@ -61,7 +61,12 @@ ZCode 会话自动连接本机 `wechat` MCP（`~/.zcode/cli/config.json` → std
     // pitfalls: { date,title,detail,tags? }  qa: { date,q,a,attrib? }
     // feedback: { date,title,detail,status:"open" }  news: { date,title,detail }
   ],
-  "daily": [ { "date": "YYYY-MM-DD", "summary": "一句话", "topics": ["…"] } ]
+  "daily": [ { "date": "YYYY-MM-DD", "summary": "一句话", "topics": ["…"] } ],
+  "reports": [                    // §3.5 公开子集（v2 增补），严格倒序
+    { "date": "YYYY-MM-DD", "stats": { "messages": 0, "speakers": 0, "peakHour": "17-18",
+      "heat": "高" }, "quotes": [], "takeaways": [], "qa": [], "resources": [],
+      "faq": [{ "pattern": "…", "count": 2 }], "topics": [{ "title": "…", "source": "…" }] }
+  ]
 }
 ```
 
@@ -91,4 +96,4 @@ ZCode 会话自动连接本机 `wechat` MCP（`~/.zcode/cli/config.json` → std
 
 ## 7. 契约测试
 
-无（内容数据文件，无逻辑）。防线是本 spec 的不变式清单 + 定时任务 PR 的人工合并。若未来给组件加逻辑（如排序/过滤），再补 vitest。
+有：`tests/community-digest.test.ts`（2026-09-09 起，组件已含渲染逻辑后补）钉住全部**机械**不变式——五分类 id 顺序与条目形状、`daily`/`reports` 严格倒序且 `daily` 抵达 `since`、`reports` 精确公开键集（兼证 §3.5 私有维度零泄漏）、隐私正则扫描（`wxid_\w+`/`gh_` 公众号 id/11 位手机号）、每个条目日期都有 `daily` 行。内容级红线（禁编造、第 6 节课程评价禁令）**有意不做机械校验**——正则会误伤未来合法内容，仍走本 spec 清单 + 定时任务 PR 的人工合并。

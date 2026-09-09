@@ -80,6 +80,13 @@ const GRIDS: Record<string, string> = {
 };
 
 const reports = data.reports ?? [];
+/** Newest-N window for structured daily reports — keeps page weight
+ * constant as automation appends one panel+option per day (same philosophy
+ * as the section VISIBLE windows). Older days stay in the JSON for a
+ * future archive page; daily-band cards older than the window simply
+ * don't jump. */
+const REPORTS_VISIBLE = 14;
+const visibleReports = reports.slice(0, REPORTS_VISIBLE);
 const dayLabels = new Map<string, string>();
 if (reports.length > 0) dayLabels.set(reports[0].date, c.todayLabel);
 if (reports.length > 1) dayLabels.set(reports[1].date, c.yesterdayLabel);
@@ -221,7 +228,7 @@ const BODY = 'text-[15px] sm:text-base leading-[1.8] text-foreground/80';
                 data-report-select
                 class="rounded-md border border-border bg-background px-2 py-1.5 text-sm font-medium text-foreground"
               >
-                {reports.map((r) => (
+                {visibleReports.map((r) => (
                   <option value={r.date}>
                     {r.date}
                     {dayLabels.has(r.date) ? ` · ${dayLabels.get(r.date)}` : ''}
@@ -230,7 +237,7 @@ const BODY = 'text-[15px] sm:text-base leading-[1.8] text-foreground/80';
               </select>
             </label>
           </div>
-          {reports.map((r, i) => (
+          {visibleReports.map((r, i) => (
             <div data-report-panel={r.date} hidden={i > 0}>
               <div class="mt-4 flex flex-wrap gap-2 text-[13px]">
                 <span class="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
