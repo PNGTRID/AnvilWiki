@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.17.0';
+export const PROJECT_VERSION = '2.18.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -342,7 +342,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION} pipeline finale: codes sync joins the Auto content PR workflow (paste a CSV → gated draft PR after the same eight gates); cross-locale fan-out now carries the full code list instead of just the first row — no more silently dropped codes on non-English pages.`,
+    text: `v${PROJECT_VERSION}: the Community Highlights page is live (/landing/community) — the maintainer's WeChat builder group, AI-curated daily into know-how, pitfalls, real Q&A and a structured daily report; plus digest contract tests, a newest-N report window and a content red-line cleanup.`,
     href: RELEASES,
   },
   hero: {
@@ -853,7 +853,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 管道收官：codes 同步接入 Auto content PR（粘一份 CSV → 八道门禁后的 draft PR）；跨语言 fan-out 修复为整组同步，多码清单不再在非 en 页静默掉码。`,
+    text: `v${PROJECT_VERSION}「社群精华」页上线（/zh/landing/community）——主理人微信交流群的 AI 每日整理（干货/避坑/真实问答/结构化日报）；同批补 digest 契约测试与日报渲染窗口，课程评价红线历史清理补漏。`,
     href: RELEASES,
   },
   hero: {

@@ -7,13 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.18.0] — 2026-09-09
+
+**社群精华页上线（/landing/community + /zh/landing/community，每日 AI 管道供数）+ 24h 只读风险审计闭环：课程评价红线历史清理补漏、digest JSON 契约测试兜底、日报渲染 newest-N 窗口。**
+
 ### Added
 
-- **落地页新增「社群精华」页(/landing/community + /zh/landing/community)**——把主理人微信交流群(2026-08-16 建群)的真实讨论整理成常青内容页:五分类(精华干货 25 条/避坑警示 12/问答精选 24/反馈建议 9/动态公告 23)+23 天每日速览+**每日 12 维结构化报告**(数据概览/精华观点/答疑/干货/高频问题/选题预告公开;未解决/活跃成员/新人/情绪研判属主私有,走 gitignored 本地报告与 PR 正文),全部由 AI 管道从 2298 条群聊记录整理(仅群昵称、原始记录不公开、可申请删除)。数据存 `src/components/landing/community-digest.json`(schema v2,组件同目录,fork 时随 landing 层整体移除,零 LANDING_PATHS 改动);展示标签在 landing.ts 新节 `communityHighlights`(en/zh);footer+header 导航双入口+llms.txt 补一行。**页面经 UI/UX 专家团(布局/视觉/响应式/可读性 4 视角)大宽屏重构**:1600/1728 阶梯容器(LandingLayout 新增 wide 属性)、每日速览全宽横滑带、章节差异化密度卡片、TOC scroll-spy、修复 QR 浮层死引用。配套每日定时管道(automation-ed12b284,每天 23:00):wechat MCP 抓取→六分类+12 维日报→PR 更新 JSON(不自动进 main),契约见 docs/superpowers/specs/2026-09-08-community-digest-pipeline.md。
+- **落地页新增「社群精华」页(/landing/community + /zh/landing/community)**——把主理人微信交流群(2026-08-16 建群)的真实讨论整理成常青内容页:五分类(精华干货/避坑警示/问答精选/反馈建议/动态公告)+23 天每日速览+**每日 12 维结构化报告**(数据概览/精华观点/答疑/干货/高频问题/选题预告公开;未解决/活跃成员/新人/情绪研判属主私有,走 gitignored 本地报告与 PR 正文),全部由 AI 管道从 2298 条群聊记录整理(仅群昵称、原始记录不公开、可申请删除)。数据存 `src/components/landing/community-digest.json`(schema v2,组件同目录,fork 时随 landing 层整体移除,零 LANDING_PATHS 改动);展示标签在 landing.ts 新节 `communityHighlights`(en/zh);footer+header 导航双入口+llms.txt 补一行。**页面经 UI/UX 专家团(布局/视觉/响应式/可读性 4 视角)大宽屏重构**:1600/1728 阶梯容器(LandingLayout 新增 wide 属性)、每日速览全宽横滑带、章节差异化密度卡片、TOC scroll-spy、修复 QR 浮层死引用。配套每日定时管道(automation-ed12b284,每天 23:00):wechat MCP 抓取→六分类+12 维日报→PR 更新 JSON(不自动进 main),契约见 docs/superpowers/specs/2026-09-08-community-digest-pipeline.md。
+- **`community-digest.json` 契约测试(第 13 套件,8 条)**——每日 AI 管道是全仓唯一无机械校验的内容写入路径,组件对 JSON 深取字段(`r.stats.messages`/`r.quotes.length` 等),坏增量只会在构建期炸且 PR 红灯可被人工越过;测试钉 spec §4/§5 全部机械不变式:五分类 id 顺序与条目形状、`daily`/`reports` 严格倒序且 `daily` 抵达 `since`、`reports` 精确公开键集(兼证 §3.5 私有维度零泄漏)、隐私正则全文件扫描(`wxid_`/`gh_` 公众号 id/11 位手机号)、每个条目日期都有 `daily` 行。内容级红线(禁编造、特定课程评价禁令)**有意不做机械校验**防误伤未来合法内容,仍走 spec 清单+PR 人工合并。spec §4 schema 升 v2(补 `reports`)、§3.5 渲染表述、§7 契约测试节三处漂移同步修正。
 
 ### Fixed
 
+- **社群精华「特定付费课程负面评价禁令」历史清理补漏**——2026-09-08 主理人指示(efbaee8)清了「听涛 888 小白课」全部 7 处,但同类「生财航海」负面评价仍在公开 JSON:09-01 日报 takeaway「课程评价『适合跑通流程,内容一般』」、pitfalls 干货「老师只教找词方法不负责选词」、qa「生财会员怎么收费/不建议现在报/内容只是简单入门」、faq 求评价条目(「值不值得买」「值得报吗」)、选题预告「生财航海 vs 开源项目」(source 含负面评价)、08-30 速览「聊课程评价」。按红线概括措辞清理:负面评价与求评价条目删除或剪除评价子句,事实市场数据(一期 700 站 70 个同游戏的内卷数据、案例站流量数据)与正面引用(「航海好事」)保留。24h 只读审计发现,主理人拍板全面清理。
 - **`sync-codes --require-output` 补齐全部零产出早退路径**：脚本有两条提前 exit 0 的路径会绕过末尾的 require-output 检查，CI 里表现为八道门禁绿灯、create-pull-request 无 diff、无 PR——恰是该 flag 要杜绝的空跑形态。①缺输入文件（Run workflow 派发 `sync-codes` 任务但 `csv_text` 留空且仓库根无 `codes-sync.csv`；`bulk-new-posts` 同路径自 v2.0.1 起 exit 1，管道接入时漏移植 `|| REQUIRE_OUTPUT` 子句）；②零数据行（仅表头/全注释行/被 `--locales` 滤空时 "Nothing to do" 提前退出；`bulk-new-posts` 无此早退，天然被末尾检查兜住）。24h 审计+复检两轮发现，退出码路径实测复现与复验；契约测试钉双脚本退出码同构防回退。
+
+### Changed
+
+- **「每日报告」区加 newest-N 窗口(`REPORTS_VISIBLE`=14)**——日期切换功能此前把全部日报渲染成 hidden panel+option,页面 DOM 随天数线性增长;收敛到与章节区 newest-N 同一哲学,更早历史留在 JSON 供日后归档页,窗口外的速览卡片点击不跳转(优雅降级,零报错)。
 
 ## [2.17.0] — 2026-09-07
 
@@ -990,7 +1000,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.17.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.0...HEAD
+[2.18.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.17.0...v2.18.0
 [2.17.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.16.1...v2.17.0
 [2.16.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.16.0...v2.16.1
 [2.16.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.15.1...v2.16.0
