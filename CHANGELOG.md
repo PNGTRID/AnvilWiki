@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **内容日期戳 UTC→本地日(五处脚本统一收口)**——`bulk-new-posts` / `sync-codes` / `new-post` / `apply-template` / `refresh-audit` 的「今天」原来都用 `toISOString()`(UTC),凌晨本地管道场景(CST 00:00–08:00)会把**昨天**的日期写进 frontmatter(sync-codes 在 03:10 CST 实测写入 09-09、当天实为 09-10,dogfood 发现)。抽出共享 `scripts/lib/today.ts`(`todayIso()` 按本地日历取日),五处统一替换;`refresh-audit` 在 CI(UTC)下行为不变,本地运行阈值日与用户日历一致。新增第 14 套件 `tests/today.test.ts`(3 条:本地日/零填充/与 UTC 偏差 ≤1 天);顺带修正 AGENTS 命令表套件计数 12→14(v2.18.0 漏更 community-digest,本次发现即修)。
+
 ## [2.18.0] — 2026-09-09
 
 **社群精华页上线（/landing/community + /zh/landing/community，每日 AI 管道供数）+ 24h 只读风险审计闭环：课程评价红线历史清理补漏、digest JSON 契约测试兜底、日报渲染 newest-N 窗口。**

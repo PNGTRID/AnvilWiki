@@ -20,6 +20,7 @@
  */
 
 import * as fs from 'node:fs';
+import { todayIso } from './lib/today';
 import * as path from 'node:path';
 
 const ROOT = process.cwd();
@@ -92,7 +93,7 @@ for (const file of files) {
 
 items.sort((a, b) => a.days - b.days);
 
-const today = new Date().toISOString().slice(0, 10);
+const today = todayIso();
 const lines: string[] = [];
 lines.push(`## Content freshness audit (${today})`);
 lines.push('');
