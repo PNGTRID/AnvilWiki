@@ -7,9 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.18.1] — 2026-09-10
+
+**文档一致性修复批 + 内容日期戳 UTC→本地日修复：七天「行为 vs 文档」漂移审计全部发现当日闭环——PRD 更新记录表停更 8 版补齐、开发手册管道课接上任务选择器、发版清单补齐无门禁纪律步；顺带根治五处脚本凌晨把昨日日期写进 frontmatter 的错写。**
+
 ### Fixed
 
 - **内容日期戳 UTC→本地日(五处脚本统一收口)**——`bulk-new-posts` / `sync-codes` / `new-post` / `apply-template` / `refresh-audit` 的「今天」原来都用 `toISOString()`(UTC),凌晨本地管道场景(CST 00:00–08:00)会把**昨天**的日期写进 frontmatter(sync-codes 在 03:10 CST 实测写入 09-09、当天实为 09-10,dogfood 发现)。抽出共享 `scripts/lib/today.ts`(`todayIso()` 按本地日历取日),五处统一替换;`refresh-audit` 在 CI(UTC)下行为不变,本地运行阈值日与用户日历一致。新增第 14 套件 `tests/today.test.ts`(3 条:本地日/零填充/与 UTC 偏差 ≤1 天);顺带修正 AGENTS 命令表套件计数 12→14(v2.18.0 漏更 community-digest,本次发现即修)。
+- **docs/PRD.md §更新记录表补 v2.14.0–v2.18.0 八行 + 错序 v2.7.0 行归位**——表止于 v2.13.0（2026-09-02），根因是「PRD 更新记录」自 v2.14.0 起从发版实践静默消失、且从未写进成文发版清单（docs/development.md 原清单对 PRD 只要求 §14.2 标 ✅），八门禁与巡检均抓不到；8 行按各版 CHANGELOG 段压缩，挂在表尾的 v2.7.0 行归位到 v2.6.3/v2.7.1 之间。
+- **开发手册管道课（dev 第 8 课 en+zh）「One full run」第 3 步补 Run workflow 任务选择器说明**——v2.17.0（946c7a3）给 auto-content.yml 新增 `task` 输入后，课内仍是单任务描述；现补「任务选 import-csv（默认）；兑换码批量同步走 sync-codes 任务（同一套八道门禁、同一契约）」，frontmatter `updated` 同步 2026-09-10，双语 parity 保持。
+- **docs/content-pipeline.md sync-codes 节 require-output 表述补全**——原句只覆盖「重跑零改写」，现含空 csv_text（且仓库根无 codes-sync.csv）与仅表头/全滤空两条早退失败路径（对齐 7bdc3eb+28b6ad9 契约）。
+- **CHANGELOG [2.18.0] 社群页条目折入「每日报告支持按日期切换 + 第二轮专家团优化（减负+大字+秩序收敛）」**——e359dc7/2bc6550 两提交此前未记。
+
+### Changed
+
+- **docs/development.md 发版清单重排 1-8 防复发**——第 2 步补 docs/roadmap.md 版本头（曾连续 4 版漏更，PR #15）、新增「docs/PRD.md 更新记录表补一行」（注记：无门禁，漏更不报警）与 AGENTS.md Status 两步；本次发版即按新清单执行。
 
 ## [2.18.0] — 2026-09-09
 
@@ -1004,7 +1016,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.1...HEAD
+[2.18.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.0...v2.18.1
 [2.18.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.17.0...v2.18.0
 [2.17.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.16.1...v2.17.0
 [2.16.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.16.0...v2.16.1
