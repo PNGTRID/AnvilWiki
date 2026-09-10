@@ -477,9 +477,13 @@ const BODY = 'text-[15px] sm:text-base leading-[1.8] text-foreground/80';
                   <div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
                     <span class={dateBadge}>{item.date}</span>
                     <h3 class="text-base font-semibold text-foreground">{item.title}</h3>
-                    {item.status === 'open' && (
+                    {item.status === 'open' ? (
                       <span class="rounded border border-nav/30 px-2 py-0.5 text-xs font-medium text-nav">
                         {c.openLabel}
+                      </span>
+                    ) : (
+                      <span class="rounded border border-green-600/30 bg-green-600/10 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400">
+                        {c.resolvedLabel}
                       </span>
                     )}
                   </div>

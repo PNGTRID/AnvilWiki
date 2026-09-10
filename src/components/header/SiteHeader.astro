@@ -12,7 +12,7 @@ import { localizePath } from '~/lib/url';
 import ThemeToggle from './ThemeToggle.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import SearchButton from './SearchButton.astro';
-import { landingLinkEnabled } from '~/config/project';
+import { landingLinkEnabled, zhLandingLink } from '~/config/project';
 
 interface Props {
   locale: Locale;
@@ -141,6 +141,14 @@ const samePagePathFor = (loc: Locale) => {
                 </a>
               ))
             }
+            {landingLinkEnabled && (
+              <a
+                href={zhLandingLink.href}
+                class="block border-t border-border px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-nav"
+              >
+                {zhLandingLink.label}
+              </a>
+            )}
           </div>
           {landingLinkEnabled && (
             <a

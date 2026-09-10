@@ -115,6 +115,8 @@ export interface LandingContent {
     };
     /** Chip label for open feedback items. */
     openLabel: string;
+    /** Chip label for feedback items the maintainer has resolved. */
+    resolvedLabel: string;
     /** Relative day labels on the two newest daily cards. */
     todayLabel: string;
     yesterdayLabel: string;
@@ -342,7 +344,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `v${PROJECT_VERSION}: docs-consistency batch — the PRD update log is backfilled 8 versions (misordered v2.7.0 row re-homed), the dev handbook pipeline lesson now explains the workflow task selector, and the release checklist gains the missing PRD-log / roadmap-head / AGENTS-status steps. Plus a date-stamp fix: the five content scripts now stamp the local calendar date, so night runs no longer write yesterday.`,
+    text: `AnvilWiki template update log (v${PROJECT_VERSION}): docs consistency fixes + a date-stamp fix so nightly content runs date correctly. This bar tracks template releases — details & full changelog on GitHub Releases.`,
     href: RELEASES,
   },
   hero: {
@@ -618,6 +620,7 @@ pnpm install && pnpm dev`,
       daily: { title: 'Day by day', hint: 'One line per day' },
     },
     openLabel: 'open',
+    resolvedLabel: 'fixed',
     todayLabel: 'Today',
     yesterdayLabel: 'Yesterday',
     report: {
@@ -853,7 +856,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `v${PROJECT_VERSION} 文档一致性批——PRD 更新记录表补齐 8 版（错序 v2.7.0 归位）、开发手册管道课补 Run workflow 任务选择器说明、发版清单补齐 roadmap 头/PRD 更新记录/AGENTS Status 三步；另修复五处内容日期戳 UTC→本地日，凌晨管道不再错写昨日。`,
+    text: `AnvilWiki 模板更新日志（v${PROJECT_VERSION}）：文档一致性修复 + 内容日期戳修复（凌晨自动更新不再写错日期）。本条为模板发版通告，非站点故障；详情与完整变更见 GitHub Releases。`,
     href: RELEASES,
   },
   hero: {
@@ -1101,6 +1104,7 @@ pnpm install && pnpm dev`,
       daily: { title: '每日速览', hint: '一天一句话' },
     },
     openLabel: '待处理',
+    resolvedLabel: '已处理',
     todayLabel: '今天',
     yesterdayLabel: '昨天',
     report: {

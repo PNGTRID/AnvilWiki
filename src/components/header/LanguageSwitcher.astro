@@ -5,6 +5,7 @@
  */
 import { Icon } from 'astro-icon/components';
 import { locales, LOCALE_LABELS, type Locale } from '~/i18n/routing';
+import { landingLinkEnabled, zhLandingLink } from '~/config/project';
 
 interface Props {
   locale: Locale;
@@ -42,6 +43,16 @@ const switchLocales = availableLocales ?? locales;
           {LOCALE_LABELS[loc]}
         </a>
       ))
+    }
+    {
+      landingLinkEnabled && (
+        <a
+          href={zhLandingLink.href}
+          class="block border-t border-border px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-nav"
+        >
+          {zhLandingLink.label}
+        </a>
+      )
     }
   </div>
 </details>
