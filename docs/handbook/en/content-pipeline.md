@@ -5,7 +5,7 @@ manual: dev
 order: 8
 icon: lucide:workflow
 tldr: "'Twenty pages from a keyword list' without a terminal: Actions → Auto content PR → paste the CSV → the deterministic bulk-new-posts generator builds drafts → all eight gates → a draft PR only on all-green. Then fill real data in local AI sessions, verify page by page, merge yourself. Prerequisite: allow GitHub Actions to create PRs. No AI keys in CI."
-updated: 2026-09-02
+updated: 2026-09-10
 ---
 
 ## Where you are, and what this lesson solves
@@ -20,7 +20,7 @@ Every pipeline step is a **deterministic script**: CSV parsing, scaffolding (bul
 
 1. **One-time setup**: repo Settings → Actions → General → enable **Allow GitHub Actions to create and approve pull requests** (unchecked, the pipeline can't open its PR at the last step)
 2. **Prepare the CSV**: one query per line, format in the repo's [docs/content-pipeline.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/content-pipeline.md) (query/page type; query selection follows the ranking lesson's three tests)
-3. **Run it**: repo **Actions** → **Auto content PR** → **Run workflow** → paste the CSV → run
+3. **Run it**: repo **Actions** → **Auto content PR** → **Run workflow** → pick the **import-csv** task (the default) → paste the CSV → run. (Swapping redeem codes into existing codes pages is the other task, **sync-codes** — same eight gates, same contract; CSV format in [docs/content-pipeline.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/content-pipeline.md).)
 4. **The pipeline**: bulk-new-posts generates every draft → all eight gates → **a draft PR only on all-green** (any red fails loudly; no PR opens)
 5. **Fill the flesh**: pull the branch locally and fill real game data in AI sessions (material and draft disciplines fully apply) → verify page by page
 6. **Human merge**: confirm and merge — **neither AI nor the pipeline touches main; the merge button is yours**

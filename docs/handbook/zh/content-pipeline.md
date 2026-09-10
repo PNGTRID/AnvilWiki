@@ -5,7 +5,7 @@ manual: dev
 order: 8
 icon: lucide:workflow
 tldr: "「从关键词清单铺 20 个页面」连终端都不用开:仓库 Actions → Auto content PR → Run workflow,粘进 CSV(new-posts 格式:关键词/页面类型),管道跑确定性生成器 bulk-new-posts 建草稿 → 八道质量门禁 → 只有全绿才开 draft PR。之后在本地 AI 会话把草稿填上真实游戏数据、逐篇验收,再 merge。前置:Settings → Actions 勾「Allow GitHub Actions to create and approve pull requests」。CI 里没有任何 AI key。"
-updated: 2026-09-02
+updated: 2026-09-10
 ---
 
 ## 你现在在哪,这章解决什么
@@ -20,7 +20,7 @@ updated: 2026-09-02
 
 1. **一次性设置**:仓库 Settings → Actions → General → 勾选 **Allow GitHub Actions to create and approve pull requests**(不勾,管道到最后一步开不了 PR)
 2. **准备 CSV**:一行一个词,格式见仓库 [docs/content-pipeline.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/content-pipeline.md)(关键词/页面类型;词的挑选按学习手册选词那课的三条判断)
-3. **跑管道**:仓库 **Actions** → **Auto content PR** → **Run workflow** → 粘入 CSV → 运行
+3. **跑管道**:仓库 **Actions** → **Auto content PR** → **Run workflow** → 任务选 **import-csv**(默认)→ 粘入 CSV → 运行(兑换码批量同步走另一个任务 **sync-codes**——同一套八道门禁、同一契约,CSV 格式见 [docs/content-pipeline.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/content-pipeline.md))
 4. **管道自动**:bulk-new-posts 生成全部草稿 → 八道门禁逐条过 → **只有全绿才开 draft PR**(任何一条红,管道响亮失败,不开 PR)
 5. **填肉**:本地拉分支,在 AI 会话里逐篇填真实游戏数据(素材纪律、draft 纪律全部适用)→ 逐篇验收
 6. **人审 merge**:确认后合并——**AI 和管道都碰不到 main,合并权在你**

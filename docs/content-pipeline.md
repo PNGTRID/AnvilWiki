@@ -57,7 +57,7 @@ merge → Cloudflare Pages 自动部署
 
 ### codes 同步(`sync-codes` 任务,v2.16 起)
 
-Run workflow 时任务选 `sync-codes`,把兑换码清单粘进 `csv_text`(`locale,slug,code,status,reward,expiryDate,source`;长清单直接 commit 一份仓库根的 `codes-sync.csv`,输入框留空):生成器把码确定性合并进已有 codes 页的 frontmatter(显式语言行优先,无行语言自动跟随该 slug 首个语言行的**全部行**——只带首行会让多码清单在非 en 页静默掉码),八道门禁绿了才开 draft PR(固定分支 `chore/sync-codes`,与 import-csv 的 PR 分支互不干扰)。合并前复查非 en 语言的 reward/source 措辞与 title/summary 里的码数、日期;所有行都已应用过的重跑会响亮失败(require-output 契约),不会开出空 PR。
+Run workflow 时任务选 `sync-codes`,把兑换码清单粘进 `csv_text`(`locale,slug,code,status,reward,expiryDate,source`;长清单直接 commit 一份仓库根的 `codes-sync.csv`,输入框留空):生成器把码确定性合并进已有 codes 页的 frontmatter(显式语言行优先,无行语言自动跟随该 slug 首个语言行的**全部行**——只带首行会让多码清单在非 en 页静默掉码),八道门禁绿了才开 draft PR(固定分支 `chore/sync-codes`,与 import-csv 的 PR 分支互不干扰)。合并前复查非 en 语言的 reward/source 措辞与 title/summary 里的码数、日期;所有行都已应用过的重跑、空 csv_text(且仓库根无 codes-sync.csv)、仅表头/全滤空的零数据输入,都会响亮失败(require-output 契约),不会开出空 PR。
 
 ## 与「每周新鲜度审计」的分工
 

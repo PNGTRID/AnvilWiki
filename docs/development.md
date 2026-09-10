@@ -83,14 +83,16 @@ pnpm check-i18n      # 加了 locale JSON key 后,看覆盖率报告
 
 ```
 1. 全部改动已合入 main,第 1 节验证清单全绿
-2. 版本号三处同步:
+2. 版本五处中的三处:
    - package.json "version"
-   - src/config/landing.ts PROJECT_VERSION + 中英公告文案(announcement.text)
-3. CHANGELOG.md:Unreleased 段落改日期标题 + 底部 compare 链接加一行 + [Unreleased] 指针上移到新版本(v2.4.1 起曾连续 6 版漏更,见 CHANGELOG [2.6.2])
-4. docs/PRD.md §14.2 路线图该版本标 ✅
-5. commit:feat(vX.Y): ... 一个 + git commit --allow-empty -m "chore(release): vX.Y.0" 一个
-6. git push origin main(CI 绿 + Cloudflare Pages 自动部署)
-7. gh release create vX.Y.0 --latest --notes "<CHANGELOG 同款中英摘要>"
+   - src/config/landing.ts PROJECT_VERSION + 中英横幅文案(announcement.text)
+   - docs/roadmap.md 顶部「当前版本」行(曾连续 4 版漏更,PR #15 教训)
+3. CHANGELOG.md(版本五处中另两处):Unreleased 段落改日期标题 + 底部 compare 链接加一行 + [Unreleased] 指针上移到新版本(v2.4.1 起曾连续 6 版漏更,见 CHANGELOG [2.6.2])
+4. docs/PRD.md 更新记录表补一行 + §14.2 路线图该版本标 ✅(更新记录表曾停更 v2.14.0–v2.17.0 连续 7 版才被文档漂移审计发现——此步无门禁,漏更不报警)
+5. AGENTS.md Status 段更新版本与要点
+6. commit:feat(vX.Y): ... 一个 + git commit --allow-empty -m "chore(release): vX.Y.0" 一个
+7. git push origin main(CI 绿 + Cloudflare Pages 自动部署)
+8. gh release create vX.Y.0 --latest --notes "<CHANGELOG 同款中英摘要>"
 ```
 
 Minor = 新功能(默认关闭/向后兼容);Patch = 修复;Major = breaking(需在 CHANGELOG 写迁移说明)。config 层兼容承诺见 [staying-up-to-date.md](staying-up-to-date.md)。
