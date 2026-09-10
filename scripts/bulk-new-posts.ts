@@ -35,6 +35,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { isBlankOrComment, parseDelimited } from './lib/delimited';
+import { todayIso } from './lib/today';
 
 const ROOT = process.cwd();
 const CONTENT_BASE = path.resolve(ROOT, 'src/content/wiki');
@@ -88,10 +89,6 @@ function slugify(s: string): string {
     .replace(/[^\p{L}\p{N}\s-]/gu, '')
     .replace(/[\s_-]+/g, '-')
     .replace(/^-+|-+$/g, '');
-}
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
 }
 
 /** Minimal RFC-4180-ish delimited parser: shared in scripts/lib/delimited.ts. */

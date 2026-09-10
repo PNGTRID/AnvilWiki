@@ -11,6 +11,7 @@
  */
 
 import * as fs from 'node:fs';
+import { todayIso } from './lib/today';
 import * as path from 'node:path';
 import { createLinePrompt } from './lib/prompt';
 
@@ -51,9 +52,7 @@ function slugify(s: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
+
 
 async function main() {
   const rl = createLinePrompt();

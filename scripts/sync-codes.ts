@@ -36,6 +36,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { todayIso } from './lib/today';
 import {
   fanOutLocales,
   mergeCodes,
@@ -75,10 +76,6 @@ const LOCALE_FILTER = (() => {
   }
   return list;
 })();
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 // Same config-reading helper as bulk-new-posts.ts (regex-read, no imports).
 function readLocales(): string[] {

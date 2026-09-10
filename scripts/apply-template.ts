@@ -33,6 +33,7 @@
  */
 
 import * as fs from 'node:fs';
+import { todayIso } from './lib/today';
 import * as path from 'node:path';
 import { createLinePrompt, type LinePrompt } from './lib/prompt';
 import {
@@ -462,7 +463,7 @@ function scaffoldContent(categories: { key: string }[]): number {
 title: "Getting Started with ${titleCase(key)} Guide"
 description: "A starter article for the ${key} category. Replace this scaffold with your real ${key} content — keep the description between 40 and 165 characters for SEO."
 category: "${key}"
-date: ${new Date().toISOString().slice(0, 10)}
+date: ${todayIso()}
 tags: []
 ---
 
