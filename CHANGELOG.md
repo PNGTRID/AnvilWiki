@@ -5,6 +5,8 @@ All notable changes to AnvilWiki are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
 ## [2.18.1] — 2026-09-10
 
 **文档一致性修复批 + 内容日期戳 UTC→本地日修复：七天「行为 vs 文档」漂移审计全部发现当日闭环——PRD 更新记录表停更 8 版补齐、开发手册管道课接上任务选择器、发版清单补齐无门禁纪律步；顺带根治五处脚本凌晨把昨日日期写进 frontmatter 的错写。**
@@ -1015,6 +1017,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.1...HEAD
 [2.18.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.0...v2.18.1
 [2.18.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.17.0...v2.18.0
 [2.17.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.16.1...v2.17.0
