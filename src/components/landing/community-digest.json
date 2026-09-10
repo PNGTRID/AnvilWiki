@@ -630,8 +630,8 @@
         {
           "date": "09-06",
           "title": "anvil-find-keywords 抓词质量反馈",
-          "detail": "群友用 anvil-find-keywords 技能抓了两轮词共 10 个，Trends 验证后发现全部「贴地」（无搜索量）；群主回应后续优化技能。挖词质量与验证口径待改进。",
-          "status": "open"
+          "detail": "群友用 anvil-find-keywords 技能抓了两轮词共 10 个，Trends 验证后发现全部「贴地」（无搜索量）；群主回应后续优化技能。挖词质量与验证口径待改进。（已处理：技能新增入池信号门槛、Trends 比较模式读法、早期爆发轨显式提醒与「全军覆没排障」四查；细节见 issue #27。）",
+          "status": "resolved"
         },
         {
           "date": "09-05",
