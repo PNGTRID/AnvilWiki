@@ -28,7 +28,7 @@ ZCode 会话自动连接本机 `wechat` MCP（`~/.zcode/cli/config.json` → std
 | `gold` | 精华干货 | 可复用的方法论、SOP、工具推荐、关键数据情报（金额/阈值/路线） |
 | `pitfalls` | 避坑警示 | 平台/工具的血泪教训：限流、封号、偷偷改设置、假 APP |
 | `qa` | 问答精选 | 群友真实提问 + 群里给出的实质解答（多人回答要融合） |
-| `feedback` | 反馈与建议 | 对 AnvilWiki 模板/手册/技能/文档/官网的具体意见、bug、功能请求（status 固定 "open"；修复后在 PR 描述里提醒主理人人工改 status） |
+| `feedback` | 反馈与建议 | 对 AnvilWiki 模板/手册/技能/文档/官网的具体意见、bug、功能请求（新条目 status 恒 "open"；主理人处理完成后由维护会话把 status 翻为 "resolved" 并在 detail 尾部补一句修复说明，页面渲染绿色「已处理」徽章） |
 | `news` | 动态公告 | 版本发布、showcase 收录、群规变更、重要群事件 |
 | `daily` | 每日速览 | 有消息的每一天一条：一句话主线 + 2~5 个话题词 |
 
@@ -59,7 +59,7 @@ ZCode 会话自动连接本机 `wechat` MCP（`~/.zcode/cli/config.json` → std
         "tags": ["…"], "attrib": "群昵称或省略" }
     ]}
     // pitfalls: { date,title,detail,tags? }  qa: { date,q,a,attrib? }
-    // feedback: { date,title,detail,status:"open" }  news: { date,title,detail }
+    // feedback: { date,title,detail,status:"open"|"resolved" }  news: { date,title,detail }
   ],
   "daily": [ { "date": "YYYY-MM-DD", "summary": "一句话", "topics": ["…"] } ],
   "reports": [                    // §3.5 公开子集（v2 增补），严格倒序
@@ -72,7 +72,7 @@ ZCode 会话自动连接本机 `wechat` MCP（`~/.zcode/cli/config.json` → std
 
 不变式（PR 前自查）：
 1. 全部 items 与 daily 按日期**倒序**（新在前）；`daily` 覆盖从 `since` 起每个有消息的日子，无空洞。
-2. `qa` 用 `q`/`a` 字段；其余分类用 `title`/`detail`；`feedback.status` 恒 `"open"`。
+2. `qa` 用 `q`/`a` 字段；其余分类用 `title`/`detail`；`feedback.status` ∈ `"open"|"resolved"`——**定时任务新增条目恒 `"open"`，且合并时不得改动既有条目的 status**；`"resolved"` 仅由主理人的维护会话翻转。
 3. 每类条数写进 PR 描述，与 JSON 一致。
 
 ## 5. 每日更新算法（定时任务执行此节）

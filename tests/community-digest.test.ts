@@ -82,7 +82,9 @@ describe('community-digest.json contract (written daily by automation)', () => {
           expect(typeof item.detail, `${cat.id} detail`).toBe('string');
           expect(item.detail).toBeTruthy();
           if (cat.id === 'feedback') {
-            expect(item.status, 'feedback status').toBe('open');
+            // New items are always "open"; the maintainer flips resolved ones
+            // to "resolved" after shipping the fix (spec §3/§4).
+            expect(['open', 'resolved'], 'feedback status').toContain(item.status);
           }
         }
         if (item.tags !== undefined) {
