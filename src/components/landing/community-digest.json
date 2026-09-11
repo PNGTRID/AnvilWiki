@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updated": "2026-09-09",
+  "updated": "2026-09-10",
   "since": "2026-08-16",
   "categories": [
     {
@@ -437,6 +437,18 @@
       "id": "qa",
       "items": [
         {
+          "date": "09-10",
+          "q": "免费的 AI agent 除了 workbuddy 还有哪些？",
+          "a": "群友实测口径：workbuddy 的每日免费积分够干很多事，是最简单的选择；trae 并不免费；豆包开始做同类产品抢 workbuddy 市场。日常轻量自动化优先用带免费额度的套餐型工具。",
+          "attrib": "无敌水管工（会员送 1）"
+        },
+        {
+          "date": "09-10",
+          "q": "社群精华页是用什么搭的？",
+          "a": "主理人答『用自己的 mcp』（即群内分享过的微信 MCP——把微信本地数据解密后封装成标准 MCP server，ZCode 定时任务每天抓取群聊→AI 整理→自动上架）。技术细节可爬楼看之前的分享。",
+          "attrib": "李良"
+        },
+        {
           "date": "09-09",
           "q": "AdSense 接入后怎么确认生效？曝光/点击数据到底看哪个？",
           "a": "三套口径一次分清：AdSense 后台 Impression>0 就说明广告接通了；广告后台的曝光/点击指广告本身；GSC 的指谷歌搜索结果页；GA 最全，统计所有渠道。收入=曝光×点击率×单价组合计算。详细可看项目 docs/ads.md。",
@@ -808,6 +820,15 @@
   ],
   "daily": [
     {
+      "date": "2026-09-10",
+      "summary": "安静日：GPT-6 算力降智吐槽引出免费 agent 之争（workbuddy/trae/豆包），社群精华页技术实现被追问。",
+      "topics": [
+        "免费agent",
+        "GPT-6",
+        "社群精华"
+      ]
+    },
+    {
       "date": "2026-09-09",
       "summary": "安静日：李良的广告数据口径答疑（AdSense/GSC/GA 三分法）为主线，凌晨群友围观社群精华的 zcode 定时任务自动化。",
       "topics": [
@@ -1044,6 +1065,35 @@
     }
   ],
   "reports": [
+    {
+      "date": "2026-09-10",
+      "stats": {
+        "messages": 28,
+        "speakers": 10,
+        "peakHour": "14:00-15:00",
+        "heat": "冷清"
+      },
+      "quotes": [],
+      "takeaways": [
+        "免费 agent 现状：workbuddy 每日免费积分最实用；trae 不免费；豆包同类功能开始抢 workbuddy 市场",
+        "GPT-6 当日算力紧张（servers overloaded），群友感知『降智』；多人转向对比 GLM 订阅额度"
+      ],
+      "qa": [
+        {
+          "q": "免费的 AI agent 除了 workbuddy 还有哪些？",
+          "a": "workbuddy 免费积分最简单；trae 不免费；豆包入场抢市场",
+          "by": "无敌水管工（会员送 1）"
+        },
+        {
+          "q": "社群精华页是用什么搭的？",
+          "a": "用自己的微信 MCP（群内分享过），zcode 定时任务每日自动抓取整理上架",
+          "by": "李良"
+        }
+      ],
+      "resources": [],
+      "faq": [],
+      "topics": []
+    },
     {
       "date": "2026-09-09",
       "stats": {
