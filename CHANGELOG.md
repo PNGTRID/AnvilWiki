@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **docs/comments.md 新增「轻量留言 / 反馈 / 在线沟通备选」节（PR #31，关闭 issue #28）**——想要不碰 GitHub 的普通访客也能留言/提反馈/在线聊时的四档选型表（Waline/Twikoo、Tally/Google Forms、Crisp/Tawk.to、Remark42），附 Cusdis 已于 2026-07 归档勿选提醒；重申本模板不内置、接哪个都学 `Comments` 组件的 env 门控模式（不配置 = 零加载，Lighthouse 不还债），文末互链手册 integrations 课双语。
+
+### Fixed
+
+- **CHANGELOG [Unreleased] 段与 compare 指针补回（PR #30）**——v2.18.1 发版收尾提交（2bc3cea）把空头和 `[Unreleased]: compare/v2.18.1...HEAD` 指针一起删了，违反发版清单第 3 步「指针上移到新版本」要求指针常在的本意（该指针缺失已有 5 次前科）；下次发版时按清单将本段改日期标题、指针上移即可。
+
 ## [2.18.1] — 2026-09-10
 
 **文档一致性修复批 + 内容日期戳 UTC→本地日修复：七天「行为 vs 文档」漂移审计全部发现当日闭环——PRD 更新记录表停更 8 版补齐、开发手册管道课接上任务选择器、发版清单补齐无门禁纪律步；顺带根治五处脚本凌晨把昨日日期写进 frontmatter 的错写。**
