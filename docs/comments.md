@@ -51,6 +51,21 @@ AnvilWiki 内置可选的评论系统，基于 [Giscus](https://giscus.app) —�
 
 把 `.env` 里的 5 个 `PUBLIC_GISCUS_*` 字段留空（或删除）即可。`Comments` 组件会 `return null`，文章页不渲染评论区，零 JS 加载。
 
+## 轻量留言 / 反馈 / 在线沟通备选
+
+Giscus 是「评论」(需要 GitHub 登录),不是「留言板」或「客服窗口」。想让**不碰 GitHub 的普通访客**也能留一句话、提个反馈、或找到你,有这些轻量路子——都走「一段嵌入脚本」模式,选型时守住本模板的开箱契约:**env 门控、不配即不渲染、零 JS 时不拖累 Lighthouse 4×100**(参照 `Comments` 组件的做法:把脚本挂在 `BaseLayout.astro` 末尾或文章页,外层包一个「env 有值才渲染」的判断,别硬编码)。
+
+| 组件 | 一句话定位 | 接入成本 | 注意 |
+|---|---|---|---|
+| [Waline](https://waline.js.org)([Twikoo](https://twikoo.js.org) 同类) | 匿名可留言的轻量评论/留言板,CJK 社区主流,支持邮件通知 | 需部署一个 serverless 后端(Vercel/云函数)+ 数据库,再贴一段脚本 | 有后端才有匿名留言——多一个要维护的服务;隐私合规自己把好关 |
+| [Tally](https://tally.so) / Google Forms 嵌入 | 反馈表单(不是评论区):收集「这页有错/求补充」类一句话反馈 | Tally 免费档建表单后复制嵌入脚本;Google Forms 用 iframe 嵌入 | 表单数据存在第三方,别在表单里收敏感信息;Google Forms 样式定制弱 |
+| [Crisp](https://crisp.chat)(同类: Tawk.to) | 在线客服挂件:访客右下角开窗实时聊 | 注册后复制一行 script,免费档够个人站 | 实时聊天意味着你要在线;挂件 JS 有常驻成本,移动端注意不挡内容 |
+| [Remark42](https://remark42.com) | 自托管、隐私优先的轻量评论,无追踪 | 需要自己跑一个服务(Docker),成本高于上面所有选项 | 适合已有服务器的人;纯 Cloudflare Pages 用户不建议为此引入服务器 |
+
+> **勿选提醒**:Cusdis 曾是本类需求的标准答案,但**已于 2026-07 归档弃维护**(仓库只读,无安全补丁)——旧教程还在推荐它,别接。
+
+选型原则重申:本模板**不内置**任何此类组件(保持开箱零第三方 JS);接哪个都建议学 `Comments` 组件的 env 门控模式——不配置 = 零加载,Lighthouse 分数不还债。
+
 ## 常见问题
 
 **评论不显示？** 逐项检查：
@@ -70,4 +85,5 @@ AnvilWiki 内置可选的评论系统，基于 [Giscus](https://giscus.app) —�
 ## 进一步阅读
 
 - [Giscus 官方文档](https://giscus.app)
+- 手册「第三方集成速查」课有全部 env 门控组件的总表:[中文](./handbook/zh/integrations.md) / [English](./handbook/en/integrations.md)
 - [设计决策](https://github.com/PNGTRID/AnvilWiki/commits/main/)(设计过程见 git 历史)（为什么选 Giscus 不选 Utterances、为什么用官方 script 不用静态 iframe）
