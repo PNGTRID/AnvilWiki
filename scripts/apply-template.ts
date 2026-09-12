@@ -504,6 +504,7 @@ const LANDING_PATHS = [
   'src/pages/zh/landing', // directory (zh docs routes)
   'public/images/showcase', // directory (demo screenshots + community site screenshots — landing only)
   'public/images/wechat-qr.jpg', // maintainer's personal QR — not needed by forks
+  'public/_redirects', // 301s for renamed handbook lesson slugs — only the demo serves /landing/docs routes
 ];
 
 function removeLandingPage(): number {

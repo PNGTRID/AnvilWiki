@@ -91,7 +91,7 @@ jobs:
           # Keep in sync with LANDING_PATHS in scripts/apply-template.ts —
           # forgetting src/pages/landing (docs routes) leaves files importing
           # the deleted ~/config/landing and breaks the fork's build.
-          rm -rf src/components/landing src/config/landing.ts src/pages/landing.astro src/pages/landing src/pages/zh/landing.astro src/pages/zh/landing public/images/showcase public/images/wechat-qr.jpg
+          rm -rf src/components/landing src/config/landing.ts src/pages/landing.astro src/pages/landing src/pages/zh/landing.astro src/pages/zh/landing public/images/showcase public/images/wechat-qr.jpg public/_redirects
           sed -i.bak 's/landingLinkEnabled = true/landingLinkEnabled = false/' src/config/project.ts && rm -f src/config/project.ts.bak
 
       - name: Clear demo content and demo author
