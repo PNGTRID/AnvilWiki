@@ -45,7 +45,7 @@ function parseRedirects(): Rule[] {
     const parts = trimmed.split(/\s+/);
     expect(parts, `malformed _redirects line (want "src target 301"): ${line}`).toHaveLength(3);
     const [source, target, status] = parts;
-    expect(source, line).toMatch(/^\/(zh\/)?landing\/docs\/[\w-]+\/$/);
+    expect(source, line).toMatch(/^\/(zh\/)?landing\/docs\/[\w-]+\/?$/);
     expect(target, line).toMatch(/^\/(zh\/)?landing\/docs\/[\w-]+\/$/);
     expect(status, `permanent only, no placeholders: ${line}`).toBe('301');
     rules.push({ source, target, status });
@@ -70,10 +70,13 @@ function slugOf(pathname: string): string {
 describe('public/_redirects (renamed handbook lesson slugs)', () => {
   const rules = parseRedirects();
 
-  test('covers exactly the removed slugs × both locales — nothing more', () => {
+  test('covers exactly the removed slugs × both locales × both slash forms — nothing more', () => {
     const expected = new Set(
       LOCALE_PREFIXES.flatMap((prefix) =>
-        REMOVED_SLUGS.map(([from]) => `${prefix}/landing/docs/${from}/`),
+        REMOVED_SLUGS.flatMap(([from]) => [
+          `${prefix}/landing/docs/${from}/`,
+          `${prefix}/landing/docs/${from}`,
+        ]),
       ),
     );
     const sources = rules.map((r) => r.source);

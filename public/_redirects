@@ -8,7 +8,10 @@
 #
 # EXACT PATHS ONLY. Placeholder/splat rules here once looped forever with
 # Cloudflare's directory normalization (301 -> internal slash normalization ->
-# rule matches again) — never add pattern rules to this file.
+# rule matches again) — never add pattern rules to this file. Both the
+# trailing-slash and the bare form are listed because Cloudflare only
+# normalizes the slash on paths that resolve to a real asset — dead paths
+# never hit that normalization, so the bare form needs its own rule.
 #
 # Demo-layer file: only the demo serves /landing/docs routes, so fork
 # initialization removes it together with the landing pages (LANDING_PATHS in
@@ -21,6 +24,10 @@
 /landing/docs/monetize-and-grow/ /landing/docs/enable-ads/ 301
 /zh/landing/docs/deploy-and-get-indexed/ /zh/landing/docs/put-site-online/ 301
 /zh/landing/docs/monetize-and-grow/ /zh/landing/docs/enable-ads/ 301
+/landing/docs/deploy-and-get-indexed /landing/docs/put-site-online/ 301
+/landing/docs/monetize-and-grow /landing/docs/enable-ads/ 301
+/zh/landing/docs/deploy-and-get-indexed /zh/landing/docs/put-site-online/ 301
+/zh/landing/docs/monetize-and-grow /zh/landing/docs/enable-ads/ 301
 
 # v2.8.0-v2.12.0 teaching redesign (2026-09-02)
 /landing/docs/pick-your-game/ /landing/docs/find-candidates/ 301
@@ -37,3 +44,17 @@
 /zh/landing/docs/seo-traffic/ /zh/landing/docs/rank-one-keyword/ 301
 /zh/landing/docs/sync-and-contribute/ /zh/landing/docs/sync-upstream/ 301
 /zh/landing/docs/ci-and-security/ /zh/landing/docs/verify-your-changes/ 301
+/landing/docs/pick-your-game /landing/docs/find-candidates/ 301
+/landing/docs/launch-your-site /landing/docs/run-your-site/ 301
+/landing/docs/first-10-pages /landing/docs/first-article/ 301
+/landing/docs/templatize-your-site /landing/docs/clone-your-site/ 301
+/landing/docs/seo-traffic /landing/docs/rank-one-keyword/ 301
+/landing/docs/sync-and-contribute /landing/docs/sync-upstream/ 301
+/landing/docs/ci-and-security /landing/docs/verify-your-changes/ 301
+/zh/landing/docs/pick-your-game /zh/landing/docs/find-candidates/ 301
+/zh/landing/docs/launch-your-site /zh/landing/docs/run-your-site/ 301
+/zh/landing/docs/first-10-pages /zh/landing/docs/first-article/ 301
+/zh/landing/docs/templatize-your-site /zh/landing/docs/clone-your-site/ 301
+/zh/landing/docs/seo-traffic /zh/landing/docs/rank-one-keyword/ 301
+/zh/landing/docs/sync-and-contribute /zh/landing/docs/sync-upstream/ 301
+/zh/landing/docs/ci-and-security /zh/landing/docs/verify-your-changes/ 301
