@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **手册旧 slug 301 重定向（用户报障 `/zh/landing/docs/pick-your-game/` 404）**——2026-09-02 手册教学法重构（v2.8.0–v2.12.0）拆除 7 个旧章 slug、v1.14 章节拆分（2026-08-17）又拆除 2 个，共 9 个旧 URL×中英对旧书签/旧分享链接硬 404。新增 `public/_redirects` 18 条**精确路径** 301，目标按重构 spec 的权威新旧映射（站内本就零残留断链、Bing 实测旧 URL 未被收录，属防御性收口）；精确路径 only——占位符/通配规则曾与 Cloudflare 目录规范化打成无限循环（v2.4.0 前科）；文件属 demo 层（fork 无 /landing/docs 路由），随 `LANDING_PATHS` 双通道（CLI + setup.yml landing 步骤）fork 时删除；新增第 15 套件 `tests/redirects.test.ts` 6 条（精确源集/中英对称/源不得遮蔽活页/目标真实存在/无链式/双通道同步钉）。
 - **CHANGELOG [Unreleased] 段与 compare 指针补回（PR #30）**——v2.18.1 发版收尾提交（2bc3cea）把空头和 `[Unreleased]: compare/v2.18.1...HEAD` 指针一起删了，违反发版清单第 3 步「指针上移到新版本」要求指针常在的本意（该指针缺失已有 5 次前科）；下次发版时按清单将本段改日期标题、指针上移即可。
 
 ## [2.18.1] — 2026-09-10
