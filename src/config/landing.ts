@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.18.1';
+export const PROJECT_VERSION = '2.19.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -344,7 +344,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `AnvilWiki template update log (v${PROJECT_VERSION}): docs consistency fixes + a date-stamp fix so nightly content runs date correctly. This bar tracks template releases — details & full changelog on GitHub Releases.`,
+    text: `AnvilWiki template update log (v${PROJECT_VERSION}): 301 redirects for renamed handbook URLs + a changelog release-contract test + docs for lightweight comment options. This bar tracks template releases — details & full changelog on GitHub Releases.`,
     href: RELEASES,
   },
   hero: {
@@ -856,7 +856,7 @@ const zh: LandingContent = {
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `AnvilWiki 模板更新日志（v${PROJECT_VERSION}）：文档一致性修复 + 内容日期戳修复（凌晨自动更新不再写错日期）。本条为模板发版通告，非站点故障；详情与完整变更见 GitHub Releases。`,
+    text: `AnvilWiki 模板更新日志（v${PROJECT_VERSION}）：手册旧链接 301 重定向 + CHANGELOG 发版契约门禁 + 轻量留言备选文档。本条为模板发版通告，非站点故障；详情与完整变更见 GitHub Releases。`,
     href: RELEASES,
   },
   hero: {

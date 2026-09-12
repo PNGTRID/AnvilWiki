@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.19.0] — 2026-09-12
+
 ### Added
 
 - **docs/comments.md 新增「轻量留言 / 反馈 / 在线沟通备选」节（PR #31，关闭 issue #28）**——想要不碰 GitHub 的普通访客也能留言/提反馈/在线聊时的四档选型表（Waline/Twikoo、Tally/Google Forms、Crisp/Tawk.to、Remark42），附 Cusdis 已于 2026-07 归档勿选提醒；重申本模板不内置、接哪个都学 `Comments` 组件的 env 门控模式（不配置 = 零加载，Lighthouse 不还债），文末互链手册 integrations 课双语。
@@ -1028,7 +1030,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.19.0...HEAD
+[2.19.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.1...v2.19.0
 [2.18.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.0...v2.18.1
 [2.18.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.17.0...v2.18.0
 [2.17.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.16.1...v2.17.0
