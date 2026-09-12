@@ -15,8 +15,13 @@
  * without false positives on future legitimate content and stay with the
  * spec checklist + human review at PR merge.
  */
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
 import digest from '~/components/landing/community-digest.json';
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 type Raw = Record<string, unknown>;
 
@@ -158,5 +163,14 @@ describe('community-digest.json contract (written daily by automation)', () => {
     for (const [name, pattern] of PRIVACY_PATTERNS) {
       expect(raw, name).not.toMatch(pattern);
     }
+  });
+
+  test('file ends with exactly one trailing newline (daily-append ping-pong guard)', () => {
+    // The 23:00 automation rewrites this file daily; it has twice stripped
+    // the trailing newline, churning every later diff and tangling stacked
+    // PRs. Pinned so a bare rewrite goes red in CI instead of ping-ponging.
+    const raw = readFileSync(join(root, 'src/components/landing/community-digest.json'), 'utf8');
+    expect(raw.endsWith('\n'), 'missing trailing newline').toBe(true);
+    expect(raw.endsWith('\n\n'), 'more than one trailing newline').toBe(false);
   });
 });

@@ -10,11 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **docs/comments.md 新增「轻量留言 / 反馈 / 在线沟通备选」节（PR #31，关闭 issue #28）**——想要不碰 GitHub 的普通访客也能留言/提反馈/在线聊时的四档选型表（Waline/Twikoo、Tally/Google Forms、Crisp/Tawk.to、Remark42），附 Cusdis 已于 2026-07 归档勿选提醒；重申本模板不内置、接哪个都学 `Comments` 组件的 env 门控模式（不配置 = 零加载，Lighthouse 不还债），文末互链手册 integrations 课双语。
+- **CHANGELOG 发版契约测试（第 16 套件 `tests/changelog.test.ts` 3 条，PR #33，凌晨自动化产出）**——首段必须是 `[Unreleased]`、`[Unreleased]:` 指针必须等于 `compare/v最新版...HEAD`、全部版本段必须有引用链接；把「发版忘补空 [Unreleased] 头 / 忘上移指针」（5 次前科）从纯纪律变 CI 门禁——下次发版若漏，`pnpm test` 当场红。
 
 ### Fixed
 
 - **手册旧 slug 301 重定向（用户报障 `/zh/landing/docs/pick-your-game/` 404）**——2026-09-02 手册教学法重构（v2.8.0–v2.12.0）拆除 7 个旧章 slug、v1.14 章节拆分（2026-08-17）又拆除 2 个，共 9 个旧 URL×中英对旧书签/旧分享链接硬 404。新增 `public/_redirects` 18 条**精确路径** 301，目标按重构 spec 的权威新旧映射（站内本就零残留断链、Bing 实测旧 URL 未被收录，属防御性收口）；精确路径 only——占位符/通配规则曾与 Cloudflare 目录规范化打成无限循环（v2.4.0 前科）；文件属 demo 层（fork 无 /landing/docs 路由），随 `LANDING_PATHS` 双通道（CLI + setup.yml landing 步骤）fork 时删除；新增第 15 套件 `tests/redirects.test.ts` 6 条（精确源集/中英对称/源不得遮蔽活页/目标真实存在/无链式/双通道同步钉）。
 - **CHANGELOG [Unreleased] 段与 compare 指针补回（PR #30）**——v2.18.1 发版收尾提交（2bc3cea）把空头和 `[Unreleased]: compare/v2.18.1...HEAD` 指针一起删了，违反发版清单第 3 步「指针上移到新版本」要求指针常在的本意（该指针缺失已有 5 次前科）；下次发版时按清单将本段改日期标题、指针上移即可。
+- **社群日报 JSON 尾换行逐日 ping-pong 根治（第 11 轮审计发现，第 2 例实证）**——23:00 自动化裸写 `community-digest.json` 不带尾换行，人工补回后次晚又丢；三处收口：spec 写文件步骤与自动化 prompt 补「恰好一个尾换行」要求、`tests/community-digest.test.ts` 新增第 9 条契约钉死、PR #32 合并时顺带补回当日文件。
 
 ## [2.18.1] — 2026-09-10
 

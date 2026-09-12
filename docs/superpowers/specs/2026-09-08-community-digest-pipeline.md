@@ -41,7 +41,7 @@ ZCode 会话自动连接本机 `wechat` MCP（`~/.zcode/cli/config.json` → std
 1. `quotes` 精华观点（摘原文+署名）2. `qa` 答疑记录（已解决配对）3. `takeaways` 干货要点（可执行列表）4. `unresolved` 未解决问题（待主理人跟进）5. `faqCandidates` 高频重复问题（≥2 次合并）6. `feedbackItems` 产品反馈（带 sentiment: pos/neg/neutral）7. `resources` 资源分享（标题+一句话+谁分享）8. `activeMembers` 活跃成员（KOL 潜力）9. `newcomers` 新人动态（入群+首问）10. `sentiment` 情绪与口碑信号（带原文佐证）11. `topics2create` 可二次创作选题 12. `stats` 数据概览（消息条数/发言人数/高峰时段/热度——**由脚本从原始数据精确计算，AI 不得自行统计**）。
 
 **双通道产出（隐私分级是本节的铁律）**：
-- **公开子集**（维度 1/2/3/5/7/11 + stats）→ 写入 `community-digest.json` 的 `reports` 数组**头部**（页面「每日报告」区支持按日期切换，渲染最新 `REPORTS_VISIBLE`=14 天——组件 `CommunityHighlights.astro` 窗口常量；更早历史保留在 JSON 供日后归档页）。公开层**永不包含** `unresolved`/`activeMembers`/`newcomers`/`sentiment`/`feedbackItems`——未解决问题、成员 KOL 排名、新人名单、情绪研判、带情绪倾向的反馈都属主理人私有运营情报。
+- **公开子集**（维度 1/2/3/5/7/11 + stats）→ 写入 `community-digest.json` 的 `reports` 数组**头部**（页面「每日报告」区支持按日期切换，渲染最新 `REPORTS_VISIBLE`=14 天——组件 `CommunityHighlights.astro` 窗口常量；更早历史保留在 JSON 供日后归档页）。公开层**永不包含** `unresolved`/`activeMembers`/`newcomers`/`sentiment`/`feedbackItems`——未解决问题、成员 KOL 排名、新人名单、情绪研判、带情绪倾向的反馈都属主理人私有运营情报。**文件必须以恰好一个换行符结尾**——自动化裸写不带尾换行曾两次造成逐日 diff ping-pong（2026-09-12 起契约测试钉死）。
 - **属主全量**（12 维全部）→ 追加写入 `reports/community-digest/daily-reports.md`（gitignored，本地文件），并在 **PR 正文**里完整贴出当天的 4/6/8/9/10 维（未解决/反馈/活跃成员/新人/情绪），方便主理人在合并 PR 时直接跟进。
 
 当天运行时（如 23:00 后群仍在聊），日报按当日已抓取内容生成，次日运行时**重写**该日报告为终稿（替换 `reports` 数组中同日期条目）。
