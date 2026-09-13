@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updated": "2026-09-11",
+  "updated": "2026-09-12",
   "since": "2026-08-16",
   "categories": [
     {
@@ -849,6 +849,14 @@
   ],
   "daily": [
     {
+      "date": "2026-09-12",
+      "summary": "极安静日：仅群友分享 codex 重置倒计时工具（whenreset.dev，支持 webhook），晚间主理人提及修复若干 bug。",
+      "topics": [
+        "codex重置",
+        "工具分享"
+      ]
+    },
+    {
       "date": "2026-09-11",
       "summary": "重要修正：实测广告组件加 sandbox 后 rra 收益骤降（平台反制），推翻此前无条件加 sandbox 的共识；另有两则广告/GSC 答疑与一个 GPT-6 工具站复刻实操。",
       "topics": [
@@ -1104,6 +1112,27 @@
     }
   ],
   "reports": [
+    {
+      "date": "2026-09-12",
+      "stats": {
+        "messages": 17,
+        "speakers": 7,
+        "peakHour": "16:00-17:00",
+        "heat": "冷清"
+      },
+      "quotes": [],
+      "takeaways": [],
+      "qa": [],
+      "resources": [
+        {
+          "title": "codex 重置倒计时工具",
+          "note": "whenreset.dev/zh-cn——Codex 订阅额度重置时间倒计时，支持 webhook 提醒",
+          "by": "鱼头 🌊"
+        }
+      ],
+      "faq": [],
+      "topics": []
+    },
     {
       "date": "2026-09-11",
       "stats": {
