@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.20.0] — 2026-09-13
+
 ### Added
 
 - **AGENTS.md 套件清单一致性测试(第 17 套件 tests/agents-consistency.test.ts)**——命令表的「N suites (a, b, …)」钉到实际 `tests/` 目录:套件增删漏更 AGENTS 即 CI 变红。计数十天漂三次(12→v2.18.0 漏更 community-digest→14→16),而 AGENTS.md 每个智能体会话都会加载,过期清单天天误导;自 #33(CHANGELOG 契约门禁)复制形态的第二个 meta 一致性门禁。AGENTS 套件计数 16→17 同步。
@@ -1034,7 +1036,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.19.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.20.0...HEAD
+[2.20.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.19.0...v2.20.0
 [2.19.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.1...v2.19.0
 [2.18.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.18.0...v2.18.1
 [2.18.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.17.0...v2.18.0
