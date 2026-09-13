@@ -33,6 +33,11 @@ AnvilWiki 的版本历史不是功能大杂烩,而是一条主线:**不断把「
 - **选品决策支持**:「哪个游戏值得建站」目前靠学习手册课 7「打分拍板」的人工四关卡,可沉淀为数据脚本(搜索趋势/竞争度抓取)。
 - **管道生成器扩展(继续)**:codes 同步已接入 auto-content.yml(v2.17.0);Trello 导入等更多确定性任务走同一套门禁契约。
 - **可视化编辑层**(社区 issue #21):优先评估现成 git-based CMS 的模板级可选接入(Sveltia/Decap/Keystatic 本地模式——编辑对象就是仓库 Markdown,与纯静态架构天然兼容;注意 OAuth 配置门槛与 content.config.ts 的 schema 双源漂移风险);**不自研本地常驻后台**(CLI+setup.yml 已是两通道同步坑,第三通道是持续税,且偏离 AI 原生定位)——需求热度 n≥3 再启动。✅ 评估已完成(2026-09-08):Sveltia 因不支持 MDX 排除、Decap 平庸不推荐;推荐形态=**Keystatic 独立 admin 站**(不碰主站零 adapter 架构),先决解锁项=Zod schema→CMS 配置生成器(双源变单源)。详见 docs/superpowers/specs/2026-09-08-git-based-cms-evaluation.md。
+- **依赖漏洞分层清理**(外部扫描 issue #37 + 官方 audit 实测 27 条:1 critical/13 high/10 moderate/3 low,2026-09-14 基线):
+  - **A 层(与 Astro 解耦,`pnpm.overrides` 可清 14 条)**:sharp ^0.35.4(libheif/libvips×2 high)、extract-zip ^2.0.2(×2 high)、fast-uri ^3.1.6(×4 high)、fflate ^0.7.5、js-yaml ^4.3.2、svgo 3.x→^3.3.5 与 4.x→^4.1.0(×4)——全是 build 时传递依赖,patch/minor 级,八门禁可完整自证;已具备甲级实现条件,等拍板即可做;
+  - **B 层(需 Astro 5→7,清 ~13 条含 1 critical AVIF RCE)**:全部 astro 系通告修复线在 6.x/7.x——即上面「Astro 6/7 升级」候选;本批给它的升级动机补上了安全维度(critical 评级),静态站实际可利用性低(无运行时图片端点,构建只处理仓库自有图片),但不建议永久背着 critical 评级;
+  - **C 层(独立小项)**:vitest ^4.1.11(×2 moderate,测试栈 major)、esbuild ^0.28.1(low,随 Astro/Vite 升级自然解决);
+  - 勘误:issue #37 把 critical 归到 sharp/libheif 不准确——critical 是 **astro 本体**的 AVIF 优化 RCE(修复于 7.2.8);sharp 另有自己的 libheif high(0.35.4 修)。
 - **Astro 6/7 升级**:Astro 7 已 GA 但 v2.0 刻意锁 5.x(降回归风险);作为独立小版本做 5→6→7 两跳迁移,重点回归 check-content/check-links。
 
 ### 中期(v2.0 方向)——✅ 已随 v2.0.0 交付
