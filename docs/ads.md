@@ -153,6 +153,19 @@ Google 的[广告投放位置政策](https://support.google.com/adsense/answer/1
 - **同意门控(与 AdSense 同门)**:模板的 `AdsterraSlot` 组件在同意横幅激活时(`PUBLIC_GA_ID` 或 `PUBLIC_ADSENSE_CLIENT` 任一非空,即横幅自身的渲染条件)不直接加载 iframe——先挂一个无 `src` 的空框(`data-src` 存真实地址),访客已同意(localStorage 里有 CookieConsent 写入的 `accepted`)或当场点下「同意」(组件派发 `aw:consent-accepted` 事件)后才换成 `src` 开始加载;拒绝或未选择就永不加载,与 GA/AdSense 等 `__awLoadTrackers` 的门控承诺一致。横幅未激活(两个 env 都空,开箱状态)则维持直接加载。注意:上面手写 iframe 的挂法**没有**这层门控,在意合规请把广告位交给 `AdsterraSlot` 组件挂(文章/手册/落地页成对出现的 728×90 + Native 已收敛为 `AdsterraSlotPair`,同意门控由内部 `AdsterraSlot` 自动继承)
 - **移动端 320×50 底部锚位(v2.28.0)**:文章页挂 `MobileAnchorAd`(env `PUBLIC_ADSTERRA_SLOT_STICKY_320X50`),三件套保证不砸阅读体验——①可一键关闭且记忆(localStorage,先例 StickyBanner);②`position: fixed` 零 CLS,显示时给正文加移动端底部内边距,文末内容永不被盖;③与同意门控同门(拒绝/未选连空条都不出)。**顶部粘性仍是有意排除项**(StickyBanner 注释:顶部 320×50 吃掉首屏 ~16%,弹跳驱动)——底部锚位是内容从条上方滚过,阅读流不被打断,这是两者的本质区别
 
+**模板预挂位总清单**(6 单元,均为 env 门控:对应 `PUBLIC_ADSTERRA_SLOT_*` 留空 = 该位零渲染;html 文件也要放进 `public/ads/`,缺文件 iframe 是空框):
+
+| 单元(`public/ads/*.html`) | 尺寸 | 挂载点 |
+|---|---|---|
+| `incontent-728x90` | 728×90(移动端隐藏) | 文章页、手册课页、主落地页(en+zh)、对比页(en+zh)、社群精华(en+zh)——`AdsterraSlotPair` 前置位 |
+| `native-banner` | 响应式 Native(700×240 基准) | 同上成对后置位;另有文档中心三目录页(en+zh)单独挂 |
+| `sticky-320x50` | 320×50 | 文章页底部锚位 `MobileAnchorAd`(可关闭/零 CLS/同意门控,见上条) |
+| `sidebar-160x300` | 160×300 | 手册课页目录下粘性 |
+| `sidebar-160x600` | 160×600 | 手册课页左右页边固定(≥1700px 视口,左右各一) |
+| `sidebar-300x250` | 300×250 | **已建未挂载**(示例单元;需要时用 `<AdsterraSlot name="sidebar-300x250" …/>` 自行挂) |
+
+> fork 清理:这 6 个 html 已入 apply-template 的演示文件清理清单(双通道),初始化后自动移除。
+
 全站生效格式(Popunder / Social Bar 类)是另一条路:这类型才需要把脚本粘进 `src/components/layout/BaseLayout.astro` 的 `<head>`——但**挂 AdSense 的站禁用 Popunder**(见上节红线),Social Bar 流量起来前也别碰,所以正常路径用不到它。
 
 模板自带的 3 个 AdSense 位**不需要任何改动**——它们由 AdSense 的 4 个环境变量控制,和 Adsterra 的 iframe 互不干扰。
