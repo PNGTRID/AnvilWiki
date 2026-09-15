@@ -10,7 +10,7 @@ import {
   resolveEffectiveRoot,
   sitesRegistryPath,
 } from '../src/core/sites.js';
-import { OpsError } from '../src/core/errors.js';
+import { ConfigParseError, OpsError } from '../src/core/errors.js';
 
 function tmpRegistryFile(): string {
   return join(mkdtempSync(join(tmpdir(), 'ops-sites-')), 'sites.toml');
@@ -148,6 +148,19 @@ describe('resolveEffectiveRoot', () => {
   it('returns cwd untouched when no site, no config and no defaultSite', () => {
     const empty = mkdtempSync(join(tmpdir(), 'ops-sites-empty-'));
     expect(resolveEffectiveRoot({ cwd: empty, registryPath: tmpRegistryFile() })).toBe(empty);
+  });
+
+  it('corrupt cwd wrangler.toml propagates loudly instead of falling back to defaultSite', () => {
+    const p = tmpRegistryFile();
+    const registered = tmpSiteDir();
+    saveSitesRegistry({ defaultSite: 'main-wiki', sites: [{ name: 'main-wiki', path: registered }] }, p);
+    // ConfigParseError is NOT an OpsError on purpose: silently redirecting a
+    // write command to another registered site's repo would be the worst
+    // interpretation of "cwd has no config".
+    const corrupt = mkdtempSync(join(tmpdir(), 'ops-sites-corrupt-'));
+    writeFileSync(join(corrupt, 'wrangler.toml'), '[vars\nSITE_URL = "broken"\n');
+    expect(() => resolveEffectiveRoot({ cwd: corrupt, registryPath: p })).toThrow(/wrangler\.toml/);
+    expect(() => resolveEffectiveRoot({ cwd: corrupt, registryPath: p })).toThrow(ConfigParseError);
   });
 });
 

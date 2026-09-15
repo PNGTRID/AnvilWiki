@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { loadSiteConfig } from '../src/core/site.js';
+import { ConfigParseError, OpsError } from '../src/core/errors.js';
 
 function tmpDir(): string {
   return mkdtempSync(join(tmpdir(), 'ops-site-'));
@@ -42,6 +43,22 @@ describe('loadSiteConfig', () => {
   it('no wrangler.toml anywhere = OpsError with fix guidance', () => {
     const dir = tmpDir();
     expect(() => loadSiteConfig(dir)).toThrow(/wrangler\.toml/);
+  });
+
+  it('corrupt wrangler.toml throws ConfigParseError (NOT OpsError) with path + syntax hint', () => {
+    const dir = tmpDir();
+    writeFileSync(join(dir, 'wrangler.toml'), '[vars\nSITE_URL = "broken"\n');
+    try {
+      loadSiteConfig(dir);
+      expect.unreachable('should have thrown');
+    } catch (e) {
+      // NOT OpsError: resolveEffectiveRoot falls back to another registered
+      // site on OpsError — a corrupt config must propagate loudly instead.
+      expect(e).not.toBeInstanceOf(OpsError);
+      expect(e).toBeInstanceOf(ConfigParseError);
+      expect((e as Error).message).toContain(join(dir, 'wrangler.toml'));
+      expect((e as Error).message).toMatch(/wrangler\.toml syntax/i);
+    }
   });
 
   it('falls back to .env when wrangler.toml was deleted (learn-manual setup)', () => {

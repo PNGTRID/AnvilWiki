@@ -18,13 +18,14 @@ import DocsEntry from '~/components/landing/DocsEntry.astro';
 import DevGuide from '~/components/landing/DevGuide.astro';
 import FinalCta from '~/components/landing/FinalCta.astro';
 import Community from '~/components/landing/Community.astro';
+import AdsterraSlot from '~/components/ads/AdsterraSlot.astro';
 import { landingContent } from '~/config/landing';
 import { siteUrl } from '~/config/site';
 
 const t = landingContent.zh;
 const alternates = [
-  { hreflang: 'en', href: `${siteUrl}/landing` },
-  { hreflang: 'zh', href: `${siteUrl}/zh/landing` },
+  { hreflang: 'en', href: `${siteUrl}/landing/` },
+  { hreflang: 'zh', href: `${siteUrl}/zh/landing/` },
 ];
 ---
 
@@ -36,11 +37,13 @@ const alternates = [
     <LandingHero t={t} />
     <SocialProofBar t={t} />
     <FeatureGrid t={t} />
+    <AdsterraSlot name="incontent-728x90" width={728} height={90} hideOnMobile />
     <CommunitySites t={t} />
     <CompareTable t={t} />
     <Showcase t={t} />
     <DocsEntry t={t} />
     <DevGuide t={t} />
+    <AdsterraSlot name="native-banner" width={700} height={240} />
     <FinalCta t={t} />
   </div>
   <Community t={t} />

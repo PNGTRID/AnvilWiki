@@ -9,6 +9,13 @@
 # Trigger: Actions → Release anvilwiki-ops → Run workflow, or push a tag
 # starting with "ops-v". Tests and build run before the publish — a red gate
 # means nothing is published.
+#
+# Publish approval: the job targets the "npm" GitHub Environment (required
+# reviewer = repo owner, configured repo-side). This is load-bearing, not
+# ceremony: branch protection does NOT cover tags, so without the environment
+# anyone with write access could tag an arbitrary commit and publish it with
+# valid OIDC provenance. The workflow itself adds a second layer — the tagged
+# commit must be an ancestor of main (see the guard steps below).
 
 name: Release anvilwiki-ops
 
@@ -28,12 +35,21 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Required-reviewer gate (the environment is created/managed repo-side,
+    # not by this file). A tag push waits for owner approval in the Actions
+    # UI before any step runs — the front door against tag-triggered
+    # unreviewed publishes; the ancestry guard below is the back stop.
+    environment: npm
     timeout-minutes: 15
     defaults:
       run:
         working-directory: tools/anvil-ops
     steps:
+      # fetch-depth: 0 — the ancestry guard below needs origin/main locally,
+      # which the default shallow clone does not contain.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
 
       # Tag↔version guard: pushing ops-v1.0.2 while package.json says 1.0.3
       # would otherwise publish the wrong version with correct provenance.
@@ -45,6 +61,19 @@ jobs:
           PKG_VERSION=$(node -p "require('./tools/anvil-ops/package.json').version")
           if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
             echo "::error::tag ops-v$TAG_VERSION does not match tools/anvil-ops/package.json version $PKG_VERSION"
+            exit 1
+          fi
+
+      # Tag↔main guard: branch protection does not cover tags, so the only
+      # thing standing between a write-access user and npm is this check —
+      # the tagged commit must actually sit on main (i.e. code that went
+      # through review/CI), not an arbitrary side commit.
+      - name: Verify tagged commit is on main
+        if: ${{ github.ref_type == 'tag' }}
+        working-directory: .
+        run: |
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::tag $GITHUB_REF_NAME points at $GITHUB_SHA, which is not on main — refusing to publish unreviewed code"
             exit 1
           fi
 

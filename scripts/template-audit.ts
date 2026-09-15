@@ -29,6 +29,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { walkFiles } from './lib/walk';
 
 const ROOT = process.cwd();
 const read = (p: string) => fs.readFileSync(path.resolve(ROOT, p), 'utf8');
@@ -113,16 +114,6 @@ function stripComments(src: string, isAstro: boolean): string {
     .join('\n');
 }
 
-function walk(dir: string, exts: string[], acc: string[] = []): string[] {
-  if (!fs.existsSync(dir)) return acc;
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, entry.name);
-    if (entry.isDirectory()) walk(p, exts, acc);
-    else if (exts.some((e) => entry.name.endsWith(e))) acc.push(p);
-  }
-  return acc;
-}
-
 console.log('\n🧰 AnvilWiki template health check\n');
 console.log('━'.repeat(60));
 
@@ -132,9 +123,9 @@ console.log('━'.repeat(60));
 console.log('\n1. 代码层纯净度（src/pages | components | lib 无 demo 游戏字符串）');
 check(() => {
   const files = [
-    ...walk(path.resolve(ROOT, 'src/pages'), ['.astro', '.ts', '.js', '.mjs']),
-    ...walk(path.resolve(ROOT, 'src/components'), ['.astro', '.ts', '.js', '.mjs']),
-    ...walk(path.resolve(ROOT, 'src/lib'), ['.astro', '.ts', '.js', '.mjs']),
+    ...walkFiles(path.resolve(ROOT, 'src/pages'), { exts: ['.astro', '.ts', '.js', '.mjs'] }),
+    ...walkFiles(path.resolve(ROOT, 'src/components'), { exts: ['.astro', '.ts', '.js', '.mjs'] }),
+    ...walkFiles(path.resolve(ROOT, 'src/lib'), { exts: ['.astro', '.ts', '.js', '.mjs'] }),
   ];
   let hits = 0;
   for (const file of files) {
@@ -268,15 +259,9 @@ for (const loc of locales.filter((l) => l !== 'en')) {
 }
 
 check(() => {
-  const drafts: string[] = [];
-  (function walkMdx(dir: string) {
-    if (!fs.existsSync(dir)) return;
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const p = path.join(dir, entry.name);
-      if (entry.isDirectory()) walkMdx(p);
-      else if (entry.name.endsWith('.mdx') && /^draft:\s*true\b/m.test(read(REL(p)))) drafts.push(REL(p));
-    }
-  })(contentBase);
+  const drafts = walkFiles(contentBase, { exts: ['.mdx'] })
+    .map(REL)
+    .filter((rel) => /^draft:\s*true\b/m.test(read(rel)));
   if (drafts.length > 0) {
     warn(`${drafts.length} draft:true file${drafts.length === 1 ? '' : 's'} never built — publish (remove draft) or delete before templating: ${drafts.slice(0, 5).join(', ')}${drafts.length > 5 ? ' …' : ''}`);
   } else {
@@ -329,17 +314,9 @@ check(() => {
   // Content-based (not filename-based): a fork may legitimately name its own
   // page "beginner-guide" or "all-codes", but no real article about THEIR
   // game contains the demo game's name. All 7 demo MDX files do.
-  const found: string[] = [];
-  (function walkMdx(dir: string) {
-    if (!fs.existsSync(dir)) return;
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const p = path.join(dir, entry.name);
-      if (entry.isDirectory()) walkMdx(p);
-      else if (entry.name.endsWith('.mdx') && new RegExp(DEMO_GAME_NAME, 'i').test(read(REL(p)))) {
-        found.push(REL(p));
-      }
-    }
-  })(contentBase);
+  const found = walkFiles(contentBase, { exts: ['.mdx'] })
+    .map(REL)
+    .filter((rel) => new RegExp(DEMO_GAME_NAME, 'i').test(read(rel)));
   if (found.length > 0) {
     warn(`demo article content still present — ${found.length} file${found.length === 1 ? '' : 's'} still reference the demo game: ${found.slice(0, 8).join(', ')}${found.length > 8 ? ' …' : ''}. Expected on the demo repo; on a fork it means the content layer wasn't replaced (apply-template "Clear demo content").`);
   } else {

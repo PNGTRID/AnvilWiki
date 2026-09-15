@@ -13,6 +13,7 @@
  */
 import { Icon } from 'astro-icon/components';
 import SidebarAd from '~/components/ads/SidebarAd.astro';
+import AdsterraSlot from '~/components/ads/AdsterraSlot.astro';
 import { type Locale } from '~/i18n/routing';
 import { getUi } from '~/i18n/ui';
 import { getDynamicNavigation } from '~/lib/navigation';
@@ -82,5 +83,6 @@ const groups = await getDynamicNavigation(locale, nav);
 
     {/* Sidebar ads — hidden in compact mode (when sharing space with TOC) */}
     {!compact && <SidebarAd />}
+    {!compact && <AdsterraSlot name="sidebar-300x250" width={300} height={250} />}
   </div>
 </div>

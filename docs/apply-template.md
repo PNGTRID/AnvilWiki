@@ -165,6 +165,8 @@ export const locales = ['en', 'ja'] as const;
 // → 改成你需要的语言，如 ['en', 'ja', 'ru', 'es']
 ```
 
+> `pnpm apply-template` 的 Locales 问题接受 BCP-47 地区标签（如 `en,zh-tw,pt-br`，小写、连字符分段），生成代码会正确处理连字符；格式非法（如 `1abc`、`zh tw`）会响亮报错退出。`pnpm new-locale` 暂只支持两字母码，追加带地区标签的语言请手改 routing.ts/ui.ts（参照上两节）。
+
 ### ui.ts
 
 每加一个语言，需要在 ui.ts 注册 import：

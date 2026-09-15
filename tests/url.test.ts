@@ -115,4 +115,13 @@ describe('languageAlternates', () => {
     expect(alts).toHaveLength(1);
     expect(alts[0].hreflang).toBe('ja');
   });
+
+  it('shares one domain-assembly with absoluteUrl — same path+locale, identical href', () => {
+    // languageAlternates receives already-localized paths (its buildPath
+    // returns localizePath output) while absoluteUrl localizes internally;
+    // both must join the domain through the same single helper so the
+    // `${siteUrl}${path}` construction can't drift between them.
+    const alts = languageAlternates((loc) => localizePath('/faq', loc), ['en', 'ja']);
+    expect(alts.map((a) => a.href)).toEqual([absoluteUrl('/faq', 'en'), absoluteUrl('/faq', 'ja')]);
+  });
 });

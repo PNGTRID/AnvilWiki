@@ -9,6 +9,7 @@
  */
 import { Icon } from 'astro-icon/components';
 import TableOfContents from '~/components/article/TableOfContents.astro';
+import AdsterraSlot from '~/components/ads/AdsterraSlot.astro';
 import { type LandingContent } from '~/config/landing';
 import HandbookNav from '~/components/landing/HandbookNav.astro';
 import {
@@ -118,6 +119,10 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
         <slot />
       </div>
 
+      {/* End-of-chapter ads — banner after the prose (desktop; fixed 728
+          creatives clip on phones), responsive native after prev/next. */}
+      <AdsterraSlot name="incontent-728x90" width={728} height={90} hideOnMobile />
+
       <!-- Chapter footer: prev / next within the same manual + edit link -->
       <footer data-pagefind-ignore class="mt-12 border-t border-border pt-6">
         <div class="grid gap-3 sm:grid-cols-2">
@@ -169,11 +174,30 @@ const updated = chapter.data.updated?.toLocaleDateString(locale === 'zh' ? 'zh-C
           </a>
         </div>
       </footer>
+
+      {/* Responsive native — fills any width, so it also covers mobile */}
+      <AdsterraSlot name="native-banner" width={700} height={240} />
     </article>
 
-    {/* Right: on-page TOC (sticky) */}
+    {/* Right: on-page TOC (sticky) + rail ad in the same sticky stack —
+        a free-scrolling sibling would slide under the pinned TOC card. */}
     <aside class="hidden lg:block">
-      <TableOfContents headings={headings} heading={t.handbook.onThisPageLabel} desktopAt="lg" />
+      <div class="sticky top-20 space-y-6">
+        <TableOfContents headings={headings} heading={t.handbook.onThisPageLabel} desktopAt="lg" />
+        <AdsterraSlot name="sidebar-160x300" width={160} height={300} />
+      </div>
     </aside>
+  </div>
+
+  {/* Wide-screen gutter rails: the empty margins flanking the max-w-7xl
+      column on ≥1700px viewports (1280 content + 2×160 rail + margins).
+      Fixed = always in view while scrolling — the entire point of a rail;
+      hidden below the breakpoint so they can never overlap content or
+      trigger horizontal scrollbars. */}
+  <div class="fixed left-6 top-1/2 hidden -translate-y-1/2 min-[1700px]:block">
+    <AdsterraSlot name="sidebar-160x600" width={160} height={600} />
+  </div>
+  <div class="fixed right-6 top-1/2 hidden -translate-y-1/2 min-[1700px]:block">
+    <AdsterraSlot name="sidebar-160x600" width={160} height={600} />
   </div>
 </section>

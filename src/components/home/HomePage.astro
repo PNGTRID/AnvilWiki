@@ -25,7 +25,7 @@ import ExploreModules from '~/components/home/ExploreModules.astro';
 import { site } from '~/config/site';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { type Locale } from '~/i18n/routing';
-import { getUi } from '~/i18n/ui';
+import { getUi, type HomeUi } from '~/i18n/ui';
 import { getRecentEntries, parseEntryId } from '~/lib/content';
 import { localizePath, listPath, detailPath } from '~/lib/url';
 
@@ -37,8 +37,12 @@ interface Props {
 }
 const { locale, jsonLd = [], alternates = [] } = Astro.props;
 const ui = getUi(locale);
-const home = ui.home as any;
-const shared = ui.shared as unknown as Record<string, any>;
+// Typed straight from en.json (HomeUi) — no `as any`: a renamed key now
+// fails typecheck instead of silently blanking the block (check-i18n only
+// compares locale↔en, not component↔en; tests/home-ui.test.ts pins the
+// access surface at the JSON level too).
+const home = ui.home;
+const shared = ui.shared;
 
 const recent = await getRecentEntries(locale, 6);
 
@@ -49,15 +53,17 @@ const meta = {
   title: home.meta?.title ?? site.name,
   description: home.meta?.description ?? site.description,
 };
-const hero = home.hero ?? {};
-// Shape-only defaults: getUi() deep-merges over en.json, so titles/labels are
-// guaranteed present — no hardcoded English fallbacks (UI text lives in the
-// locale JSON per the template's own rule).
-const updates = home.updates ?? {};
-const start = home.start ?? { cards: [] };
-const popular = home.popular ?? { quickLinks: [] };
-const explore = home.explore ?? { modules: [] };
-const closingCta = home.closingCta ?? {};
+// Section namespaces come from en.json verbatim (getUi deep-merges non-en
+// locales over en), so every key is guaranteed present — no per-section
+// `{ cards: [] }`-style fallbacks and no hardcoded English anywhere. A key
+// missing from en.json itself is a build-time typecheck failure, not a
+// blanked section at runtime.
+const hero: HomeUi['hero'] = home.hero;
+const updates: HomeUi['updates'] = home.updates;
+const start: HomeUi['start'] = home.start;
+const popular: HomeUi['popular'] = home.popular;
+const explore: HomeUi['explore'] = home.explore;
+const closingCta: HomeUi['closingCta'] = home.closingCta;
 
 // QuickLink may be a string or { label, href } — normalize for the sidebar list.
 type QuickLink = string | { label: string; href: string };

@@ -2,7 +2,7 @@
 
 Ops toolkit for [AnvilWiki](https://github.com/PNGTRID/AnvilWiki) fork sites. Run from your fork's repo root.
 
-> Status: 1.0.1 on npm. Commands: `doctor`, `metrics`, `audit`, `insights`, `submit`, `sites` (multi-site registry), `mcp` (stdio MCP server). Works with or without wrangler.toml (falls back to `.env` SITE_URL / PUBLIC_CF_BEACON_TOKEN).
+> Status: 1.0.2 on npm. Commands: `doctor`, `metrics`, `audit`, `insights`, `submit`, `sites` (multi-site registry), `mcp` (stdio MCP server). Works with or without wrangler.toml (falls back to `.env` SITE_URL / PUBLIC_CF_BEACON_TOKEN).
 
 ## Usage
 

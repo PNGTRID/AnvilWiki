@@ -17,7 +17,8 @@
 
 ZCode 会话自动连接本机 `wechat` MCP（`~/.zcode/cli/config.json` → stdio `/Users/yuanruiqin/wechat-mcp/.venv/bin/python -m wechat_mcp.server`，11 个工具）。群聊工具：
 
-- `get_chat_history {chat, limit, start_date?, end_date?}`：群名模糊匹配「Anvil_Wiki交流群」。⚠️ 结果**最新在前**；`start_date` 是下限、`end_date` 是上限。增量抓取：`start_date` 填 JSON 里 `daily[0].date`（最老一天）即可覆盖全部未入库消息，记得与已有日期去重。
+- `get_chat_history {chat, limit, start_date?, end_date?}`：⚠️ **chat 标识一律用 wxid `45733356479@chatroom`**——群名 2026-09-13 已由「Anvil_Wiki交流群」改为「Anvil.Wiki交流群」，按旧名模糊匹配会报「找不到聊天对象」，wxid 改名免疫。结果**最新在前**；`start_date` 是下限、`end_date` 是上限。增量抓取：`start_date` 填 JSON 里 `updated` 字段即可覆盖全部未入库消息，记得与已有日期去重。
+- 已知故障路径（2026-09-13 实证）：① MCP 工具 30 秒超时（冷启动全库同步慢）→ 重试一次；仍超时改用本地驱动脚本 `python3 ~/.zcode/scripts/wechat_driver.py call get_chat_history '<args>' > reports/community-digest/raw-<日期>.json`（同一服务代码路径；/tmp 下的副本会被系统清理，以 `~/.zcode/scripts/` 为准）；② 报「找不到聊天对象」→ 先调 `force_sync` 工具强制同步再查（返回 `key_may_be_stale: false` 即数据底座正常）。
 - `get_group_stats {group, days}`：可选，用于页面外的活跃度观察。
 - 若 MCP 不可用（服务挂了/微信未登录），**本轮响亮失败并跳过**，禁止凭空编造内容。
 

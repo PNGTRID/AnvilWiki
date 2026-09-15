@@ -36,6 +36,74 @@ export function hslToHex(h: number, s: number, l: number): string {
   return `#${f(0)}${f(8)}${f(4)}`;
 }
 
+/**
+ * Inverse of hslToHex for user-supplied hex (#rgb / #rrggbb, case-insensitive).
+ * Returns null on malformed input — CLI callers own the friendly error + exit.
+ * Keep the math byte-equivalent with the copy that used to live inline in
+ * scripts/apply-template.ts: its output feeds globals.css and the PWA manifest,
+ * and a rounding change would visibly shift every fork's theme color.
+ */
+export function hexToHsl(hex: string): BrandHsl | null {
+  let h = hex.replace('#', '').toLowerCase();
+  if (/^[0-9a-f]{6}$/.test(h)) {
+    // already expanded
+  } else if (/^[0-9a-f]{3}$/.test(h)) {
+    h = h
+      .split('')
+      .map((c) => c + c)
+      .join('');
+  } else {
+    return null;
+  }
+  const r = parseInt(h.slice(0, 2), 16) / 255;
+  const g = parseInt(h.slice(2, 4), 16) / 255;
+  const b = parseInt(h.slice(4, 6), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  let s = 0;
+  let hue = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        hue = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        hue = (b - r) / d + 2;
+        break;
+      default:
+        hue = (r - g) / d + 4;
+    }
+    hue *= 60;
+  }
+  return { h: Math.round(hue), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
+/**
+ * Splice `image: '<path>'` into MDX frontmatter text (pure — file IO lives in
+ * the script). Preserves the file's EOL style so a CRLF page doesn't come out
+ * with mixed line endings, which `pnpm sync-codes` loudly rejects. Returns
+ * null when there's no frontmatter or an image is already wired.
+ */
+export function spliceImageIntoFrontmatter(src: string, imageRelPath: string): string | null {
+  const fmRe = /^---\r?\n([\s\S]*?)\r?\n---/;
+  const m = src.match(fmRe);
+  if (!m || /^image:/m.test(m[1])) return null;
+  const block = m[1];
+  const eol = block.includes('\r\n') ? '\r\n' : '\n';
+  const line = `image: '${imageRelPath}'`;
+  // [^\r\n] keeps the anchor line's own terminator out of the capture — `.*`
+  // would swallow a CR on CRLF files and double it when splicing with \r\n.
+  const newBlock = /^category:[^\r\n]*$/m.test(block)
+    ? block.replace(/^(category:[^\r\n]*)/m, `$1${eol}${line}`)
+    : /^description:[^\r\n]*$/m.test(block)
+      ? block.replace(/^(description:[^\r\n]*)/m, `$1${eol}${line}`)
+      : `${block}${eol}${line}`;
+  return src.replace(fmRe, `---${eol}${newBlock}${eol}---`);
+}
+
 const CJK_RE = /[\u{3040}-\u{30ff}\u{31f0}-\u{31ff}\u{3400}-\u{4dbf}\u{4e00}-\u{9fff}\u{f900}-\u{faff}]/u;
 const KANA_RE = /[\u{3040}-\u{30ff}]/u;
 

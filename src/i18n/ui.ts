@@ -58,6 +58,23 @@ export function getUi(locale: string): typeof en {
   return deepMerge(en as Record<string, unknown>, locMessages) as typeof en;
 }
 
+/** The homepage `home` namespace (drives HomePage + the /faq pages). */
+export type HomeUi = typeof en.home;
+/** The `shared` namespace (cross-page labels). */
+export type SharedUi = typeof en.shared;
+
+/**
+ * The homepage FAQ namespace (`home.faq`) for a locale — the single source
+ * both /faq routes render from. Deduplicated from two page-level copies that
+ * each carried a hardcoded English fallback masking key drift; typed against
+ * en.json instead, so a renamed `home.faq` key fails typecheck (and
+ * tests/home-ui.test.ts) rather than silently rendering an empty page.
+ * ja and future locales inherit en values via getUi()'s deep-merge.
+ */
+export function getHomeFaq(locale: string): HomeUi['faq'] {
+  return getUi(locale).home.faq;
+}
+
 /** Translation function: t('nav.bosses') → localized string. */
 export function t(locale: string, key: string): unknown {
   const ui = getUi(locale);

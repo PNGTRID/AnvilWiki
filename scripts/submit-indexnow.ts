@@ -133,4 +133,7 @@ async function main() {
   if (failed) process.exit(1);
 }
 
-main();
+main().catch((err) => {
+  console.error('\n❌', err.message);
+  process.exit(1);
+});

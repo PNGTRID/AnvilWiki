@@ -21,10 +21,18 @@ import {
   DEMO_COVERS,
   DEMO_GALLERY_IMAGES,
   DEMO_PUBLIC_FILES,
+  buildLocaleLabels,
+  buildUiImports,
+  buildUiMessagesEntries,
   isDemoLocaleContent,
+  isLocaleCode,
+  KNOWN_LOCALE_LABELS,
+  localeIdent,
+  localeKey,
   rewriteLocaleJson,
   rewriteSiteTs,
   rewriteWranglerVars,
+  UI_IMPORT_BLOCK_RE,
   type SkinInput,
 } from '../scripts/lib/apply-rewrites';
 
@@ -172,11 +180,14 @@ describe('demo asset inventories stay in sync with setup.yml (drift has shipped 
   test('every demo file is listed in the "Clear demo content" rm list — and nothing else', () => {
     const yml = readFileSync(join(repoRoot, '.github/workflows/setup.yml'), 'utf8');
     const listed = new Set(yml.match(/[\w-]+\.(?:png|html)/g) || []);
+    // DEMO_PUBLIC_FILES entries may carry a public/ subdirectory (ads/*.html);
+    // the yml regex captures basenames, so compare basename to basename.
+    const basename = (f: string) => f.split('/').pop()!;
     const demo = new Set([
       ...DEMO_COVERS,
       ...DEMO_GALLERY_IMAGES,
       ...DEMO_ARTICLE_IMAGES,
-      ...DEMO_PUBLIC_FILES,
+      ...DEMO_PUBLIC_FILES.map(basename),
     ]);
     for (const name of demo) {
       expect(listed.has(name), `${name} missing from setup.yml rm list`).toBe(true);
@@ -269,6 +280,67 @@ describe('rewriteSiteTs (quote/backslash-safe, $-expansion-proof site.ts rewriti
 
   test('no site block → null (caller aborts, file untouched)', () => {
     expect(rewriteSiteTs('nothing here', makeInput())).toBeNull();
+  });
+});
+
+describe('hyphen locales (zh-tw / pt-br) generate legal TypeScript', () => {
+  test('ui.ts imports: camelCase binding, real hyphenated file path', () => {
+    expect(buildUiImports(['en', 'zh-tw'])).toBe(
+      "import en from '~/locales/en.json';\nimport zhTw from '~/locales/zh-tw.json';",
+    );
+    expect(buildUiImports(['pt-br'])).toBe("import ptBr from '~/locales/pt-br.json';");
+  });
+
+  test('ui.ts messages entries: hyphen keys quoted, plain keys stay bare', () => {
+    expect(buildUiMessagesEntries(['en', 'zh-tw'])).toBe(
+      '  en: en as Record<string, unknown>,\n  "zh-tw": zhTw as Record<string, unknown>,',
+    );
+  });
+
+  test('routing labels: hyphen keys quoted (a bare `zh-tw:` parses as subtraction)', () => {
+    // Joined with ',\n' — the caller wraps the block and adds the trailing comma.
+    expect(buildLocaleLabels(['en', 'zh-tw'])).toBe("  en: 'English',\n  \"zh-tw\": 'zh-tw'");
+  });
+
+  test('plain locales keep the exact pre-hyphen-support output shape (byte-identical)', () => {
+    expect(buildUiImports(['en', 'ja'])).toBe(
+      "import en from '~/locales/en.json';\nimport ja from '~/locales/ja.json';",
+    );
+    expect(buildUiMessagesEntries(['en'])).toBe('  en: en as Record<string, unknown>,');
+    expect(buildLocaleLabels(['en'])).toBe("  en: 'English'");
+    expect(localeKey('en')).toBe('en');
+    expect(localeIdent('en')).toBe('en');
+  });
+
+  test('localeIdent camel-cases every hyphen subtag', () => {
+    expect(localeIdent('zh-tw')).toBe('zhTw');
+    expect(localeIdent('pt-br')).toBe('ptBr');
+  });
+
+  test('locale validation accepts en/ja/zh-tw/pt-br, rejects 1abc / zh--tw / "zh tw"', () => {
+    for (const ok of ['en', 'ja', 'zh-tw', 'pt-br']) {
+      expect(isLocaleCode(ok), ok).toBe(true);
+    }
+    for (const bad of ['1abc', 'zh--tw', 'zh tw', '', 'zh_tw', 'ZH-TW', '-tw', 'en-']) {
+      expect(isLocaleCode(bad), JSON.stringify(bad)).toBe(false);
+    }
+  });
+
+  test('the ui.ts import-block regex re-matches previously-rewritten hyphen imports (re-run safety)', () => {
+    // Before the [\w-]+ widening, `zh-tw.json` in the path matched nothing and
+    // a re-run aborted with ❌ "Could not rewrite locale imports".
+    const rewritten =
+      "import en from '~/locales/en.json';\nimport zhTw from '~/locales/zh-tw.json';\n\nimport { defaultLocale } from './routing';";
+    expect(UI_IMPORT_BLOCK_RE.test(rewritten)).toBe(true);
+    expect(rewritten.replace(UI_IMPORT_BLOCK_RE, () => `${buildUiImports(['en', 'zh-tw'])}\n`)).toBe(
+      "import en from '~/locales/en.json';\nimport zhTw from '~/locales/zh-tw.json';\n\nimport { defaultLocale } from './routing';",
+    );
+  });
+
+  test('KNOWN_LOCALE_LABELS still covers the plain locales (routing labels unchanged)', () => {
+    expect(KNOWN_LOCALE_LABELS.en).toBe('English');
+    expect(KNOWN_LOCALE_LABELS.ja).toBe('日本語');
+    expect(KNOWN_LOCALE_LABELS.zh).toBe('中文');
   });
 });
 

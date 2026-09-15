@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { runDoctor, formatDoctor } from '../src/core/doctor.js';
 import type { GscClient } from '../src/core/providers/gsc.js';
 import type { queryCloudflare } from '../src/core/providers/cloudflare.js';
+import { OpsError } from '../src/core/errors.js';
 
 function tmpSite(
   dotenv: string,
@@ -69,6 +70,41 @@ describe('runDoctor', () => {
     const access = r.checks.find((c) => c.name === 'gsc-access')!;
     expect(access.ok).toBe(false);
     expect(access.fix).toMatch(/Users and permissions/);
+  });
+
+  it('gsc-access preserves the per-status OpsError fix (e.g. 429 wait)', async () => {
+    const dir = tmpSite(`GSC_SERVICE_ACCOUNT_JSON=${JSON.stringify({ client_email: 'e@x', private_key: 'k' })}\n`);
+    const rateLimited: GscClient = {
+      async query() {
+        throw new Error('not used');
+      },
+      async listAccessibleSites() {
+        throw new OpsError('Google Search Console API error 429: quota exceeded', 'Rate limited by Google — wait a minute and re-run.');
+      },
+    };
+    const r = await runDoctor({ cwd: dir, deps: { ghVersion: ghOk, gscClient: rateLimited } });
+    const access = r.checks.find((c) => c.name === 'gsc-access')!;
+    expect(access.ok).toBe(false);
+    expect(access.detail).toContain('wait a minute');
+    // The precise fix already rides in detail — the generic key text must NOT override it.
+    expect(access.fix).toBeUndefined();
+  });
+
+  it('gsc-access keeps the generic key guidance for non-OpsError failures', async () => {
+    const dir = tmpSite(`GSC_SERVICE_ACCOUNT_JSON=${JSON.stringify({ client_email: 'e@x', private_key: 'k' })}\n`);
+    const broken: GscClient = {
+      async query() {
+        throw new Error('not used');
+      },
+      async listAccessibleSites() {
+        throw new Error('socket hang up');
+      },
+    };
+    const r = await runDoctor({ cwd: dir, deps: { ghVersion: ghOk, gscClient: broken } });
+    const access = r.checks.find((c) => c.name === 'gsc-access')!;
+    expect(access.ok).toBe(false);
+    expect(access.detail).toContain('socket hang up');
+    expect(access.fix).toMatch(/fresh key/);
   });
 
   it('formatDoctor renders markdown with per-check status', async () => {

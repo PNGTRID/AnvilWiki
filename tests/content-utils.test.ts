@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseEntryId, isPossiblyOutdated, selectRelatedEntries, STALE_AFTER_DAYS } from '~/lib/content-utils';
+import { parseEntryId, isPossiblyOutdated, selectRelatedEntries, estimateReadMinutes, STALE_AFTER_DAYS } from '~/lib/content-utils';
 
 describe('parseEntryId', () => {
   it('parses a simple id into locale/category/slug', () => {
@@ -64,6 +64,33 @@ describe('isPossiblyOutdated', () => {
     // Published recently but lastModified is ancient → outdated (data bug,
     // but the function must honor the explicit field).
     expect(isPossiblyOutdated('tier-list', stale, fresh, now)).toBe(true);
+  });
+});
+
+describe('estimateReadMinutes', () => {
+  it('counts CJK text by characters (400/min), not whitespace-split words', () => {
+    // 800 space-free CJK chars → exactly 2 minutes. Word-counting the same
+    // body would give 1 "word" — the distinction the CJK branch exists for.
+    expect(estimateReadMinutes('焰'.repeat(800), 'ja')).toBe(2);
+    expect(estimateReadMinutes('焔'.repeat(399), 'ja')).toBe(1);
+    // Whitespace is stripped before counting (MDX source has line breaks).
+    expect(estimateReadMinutes(`焰`.repeat(400) + '\n\n' + '焔'.repeat(400), 'ja')).toBe(2);
+  });
+
+  it('counts space-separated text by words (200/min), minimum 1', () => {
+    expect(estimateReadMinutes(Array(400).fill('word').join(' '), 'en')).toBe(2);
+    expect(estimateReadMinutes(Array(201).fill('word').join(' '), 'en')).toBe(2);
+    expect(estimateReadMinutes('one two three', 'en')).toBe(1);
+    // Empty body still reads as 1 minute, never 0 or NaN.
+    expect(estimateReadMinutes('', 'en')).toBe(1);
+  });
+
+  it('derives CJK membership from the primary subtag — zh-TW still counts as CJK', () => {
+    // 800 CJK chars: 2 minutes on the character branch, 1 if (wrongly) word-based.
+    expect(estimateReadMinutes('常'.repeat(800), 'zh-TW')).toBe(2);
+    expect(estimateReadMinutes('常'.repeat(800), 'zh')).toBe(2);
+    // A regional form of a non-CJK locale stays on the word branch.
+    expect(estimateReadMinutes(Array(400).fill('word').join(' '), 'en-US')).toBe(2);
   });
 });
 

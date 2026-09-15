@@ -24,29 +24,20 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { readDefaultLocale } from './lib/routing-flags';
+import { walkFiles } from './lib/walk';
 
 const ROOT = process.cwd();
 const BASE = path.resolve(ROOT, 'src/content/wiki');
 
 // Parsed from routing.ts (NOT hardcoded) so forks that change the default
 // locale keep this rule honest.
-const DEFAULT_LOCALE =
-  fs.readFileSync(path.resolve(ROOT, 'src/i18n/routing.ts'), 'utf8').match(
-    /export const defaultLocale(?:: Locale)? = '([a-z-]+)'/,
-  )?.[1] ?? 'en';
+const DEFAULT_LOCALE = readDefaultLocale(ROOT);
 
 // Asset paths are locale-less by design (public/ is shared) — rule 5 skips them.
 const ASSET_RE = /\.(png|webp|jpe?g|gif|svg|ico|json|xml|txt|css|js|woff2?|avif|mp4)$/i;
 
-const files: string[] = [];
-(function walk(dir: string) {
-  if (!fs.existsSync(dir)) return;
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, entry.name);
-    if (entry.isDirectory()) walk(p);
-    else if (entry.name.endsWith('.mdx')) files.push(p);
-  }
-})(BASE);
+const files = walkFiles(BASE, { exts: ['.mdx'] });
 
 let errorCount = 0;
 const error = (file: string, line: number, msg: string) => {

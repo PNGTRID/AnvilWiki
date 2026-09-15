@@ -4,7 +4,8 @@
 # Safe-to-automate, non-interactive steps only:
 #   1. Reset wrangler.toml [vars] to your domain (SITE_URL) + clear demo Giscus values
 #   2. Remove the project landing page (fork users don't need it)
-#   3. Optionally clear the demo game content (default: yes)
+#   3. Optionally clear ALL wiki articles (default: yes — the demo game's
+#      articles now; YOUR OWN articles if you ever re-run after publishing)
 #   4. Open a PR with the changes for you to review
 #
 # What this does NOT do (run `pnpm apply-template` locally for these):
@@ -22,7 +23,7 @@ on:
         required: true
         default: 'https://your-domain.wiki'
       clear_demo_content:
-        description: 'Delete the demo game articles (Anvil Quest) so your site starts clean'
+        description: 'Delete ALL wiki articles under src/content/wiki (the demo game now; YOUR OWN articles if you re-run after publishing)'
         required: false
         default: 'true'
 
@@ -43,12 +44,26 @@ jobs:
         run: |
           python3 - <<'EOF'
           import os, re
-          # Normalize: strip any protocol/host casing issues, force https://.
-          # Astro's `site` config REQUIRES a valid URL — a bare domain would
-          # crash the build only at deploy time, so fix it here.
-          raw = os.environ['RAW_SITE_URL'].strip().rstrip('/')
-          url = re.sub(r'^https?://', '', raw)
+          from urllib.parse import urlparse
+          # Normalize: strip any leading scheme (http(s)://) AND any following
+          # slash/backslash run, then force https://. The old ^https?:// pattern
+          # missed backslash forms (https:\\mygame.wiki), and the value later
+          # flowed into a re.subn REPLACEMENT string where a single backslash
+          # raises `re.error: bad escape` and kills the whole run.
+          raw = os.environ['RAW_SITE_URL'].strip().rstrip('/\\')
+          # Case-insensitive: "HTTPS://" is the same scheme and must strip too.
+          url = re.sub(r'^(https?:)?[/\\]+', '', raw, flags=re.IGNORECASE)
           url = f'https://{url}'
+          # Validate BEFORE writing: Astro's `site` config needs a real URL —
+          # garbage must fail HERE with plain guidance, not at deploy time.
+          # Quotes are rejected too: one in the value would break the TOML
+          # line and the double-quoted PR-body string further down.
+          parsed = urlparse(url)
+          if parsed.scheme not in ('http', 'https') or not parsed.netloc or re.search(r'[\\\s\'"]', url):
+              raise SystemExit(
+                  f'❌ "{url}" is not a usable site URL — expected something like mygame.wiki '
+                  'or https://mygame.wiki. Fix the site_url input and re-run.'
+              )
           p = 'wrangler.toml'
           s = open(p).read()
           new_vars = '''[vars]
@@ -73,13 +88,17 @@ jobs:
           #PUBLIC_GA_ID = ""
           #PUBLIC_GSC_VERIFICATION = ""'''
           new_vars = new_vars.replace('__SITE_URL__', url)
-          s2, n = re.subn(r'\[vars\][\s\S]*?(?=\n*\[|\s*$)', new_vars, s)
-          if n == 0:
+          # Plain string splicing, NOT re.subn: the replacement now embeds the
+          # user-supplied URL, and re.subn treats backslashes in a replacement
+          # as escapes (a trailing `\` → re.error). search + slicing keeps the
+          # exact same match semantics with zero escape processing.
+          m = re.search(r'\[vars\][\s\S]*?(?=\n*\[|\s*$)', s)
+          if m is None:
               # [vars] is a structural invariant of the template — a silent
               # no-op rewrite here would leave the fork on demo values with
               # a misleading success status.
               raise SystemExit('❌ wrangler.toml [vars] rewrite matched nothing — template drift?')
-          open(p, 'w').write(s2)
+          open(p, 'w').write(s[:m.start()] + new_vars + s[m.end():])
           EOF
 
       - name: Read normalized SITE_URL
@@ -97,9 +116,9 @@ jobs:
       - name: Clear demo content and demo author
         if: ${{ inputs.clear_demo_content != 'false' }}
         run: |
-          # Remove demo game articles (keep directory structure) + the demo
-          # author registry entry, so no "Anvil Quest" / "Forge Master Kael"
-          # residue ships with the fork. Demo artwork is removed BY NAME —
+          # 🚨 Deletes ALL .mdx articles under src/content/wiki — the demo game's
+          # articles on a FIRST run, YOUR OWN published articles on a RE-RUN.
+          # Directory structure is kept. Demo artwork is removed BY NAME —
           # never a wildcard or a whole directory (public/images/articles/ is
           # where fork authors put their own inline images). Keep this list in
           # sync with DEMO_COVERS / DEMO_GALLERY_IMAGES / DEMO_ARTICLE_IMAGES /
@@ -123,7 +142,13 @@ jobs:
                 src/assets/covers/en-guides-forging-guide.png \
                 src/assets/covers/en-items-emberforged-armor-set.png \
                 src/assets/covers/en-items-forging-materials-guide.png \
-                public/google8362d9398114b66b.html
+                public/google8362d9398114b66b.html \
+                public/ads/sticky-320x50.html \
+                public/ads/sidebar-300x250.html \
+                public/ads/sidebar-160x300.html \
+                public/ads/sidebar-160x600.html \
+                public/ads/incontent-728x90.html \
+                public/ads/native-banner.html
           python3 - <<'EOF'
           import re
           p = 'src/config/authors.ts'
@@ -182,4 +207,6 @@ jobs:
             || echo "PR already exists — leaving the existing one open."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SITE_URL_INPUT: ${{ inputs.site_url }}
+          # The NORMALIZED url (steps.vars), not the raw input — keeps shell
+          # metacharacters and stray backslashes out of the PR body text.
+          SITE_URL_INPUT: ${{ steps.vars.outputs.site_url }}

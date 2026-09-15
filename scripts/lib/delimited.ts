@@ -5,6 +5,10 @@
  * quote instead of silently swallowing the file tail.
  */
 export function parseDelimited(text: string): { rows: string[][]; unterminatedQuote: boolean } {
+  // Excel's "CSV UTF-8" export prefixes the file with U+FEFF. Left in place,
+  // the first header cell becomes "\uFEFFlocale" and the column lookup returns
+  // -1 — rows then silently default to the wrong locale. Strip it up front.
+  if (text.charCodeAt(0) === 0xfeff) text = text.slice(1);
   const firstLine = text.slice(0, text.indexOf('\n') === -1 ? text.length : text.indexOf('\n'));
   const delim = firstLine.includes('\t') && !firstLine.includes(',') ? '\t' : ',';
   const rows: string[][] = [];

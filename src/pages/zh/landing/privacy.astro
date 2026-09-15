@@ -1,0 +1,71 @@
+---
+/**
+ * 隐私政策中文版 (/zh/landing/privacy) — zh 落地层专属法律页，供 zh 同意横幅
+ * 的「隐私政策」链接指向（wiki 层 /privacy-policy/ 按 PRD 是英文正文，中文
+ * 访客读不通）。正文忠实镜像 LegalContent.astro 的 privacy-policy 英文版
+ * （GA consent 门控 / AdSense / Cloudflare / giscus / YouTube 披露一一对应）。
+ * 随整个 landing 层被 apply-template 清理（LANDING_PATHS 含 src/pages/zh/landing）。
+ */
+import LandingLayout from '~/components/landing/LandingLayout.astro';
+import { site } from '~/config/site';
+
+const LAST_UPDATED = '2026-09-14';
+---
+
+<LandingLayout
+  locale="zh"
+  pageTitle={`隐私政策 — ${site.name}`}
+  pageDescription={`${site.name}（anvil.wiki）的隐私政策：我们收集哪些信息、第三方服务（Google Analytics、Google AdSense、Adsterra、Cloudflare）如何处理数据、以及你在浏览器里可以做哪些控制。`}
+  togglePath="/privacy-policy/"
+>
+  <article class="mx-auto max-w-3xl px-4 py-12">
+    <p class="text-muted-foreground">
+      本隐私政策说明 {site.name}（下称「本站」）在你访问本网站时如何处理相关信息。
+    </p>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold">我们收集哪些信息</h2>
+    <p>
+      本站是静态网站，无需注册账号，也不要求你提交个人信息；我们不会直接收集或存储你的个人数据。
+    </p>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold">第三方服务</h2>
+    <p>我们使用以下第三方服务，它们可能按各自的隐私政策收集信息：</p>
+    <ul class="mt-3 list-disc space-y-3 pl-6">
+      <li>
+        <strong>广告合作伙伴</strong>（如 Google AdSense、Adsterra）——可能使用 Cookie
+        展示相关广告。你可以通过浏览器设置退出个性化广告。
+      </li>
+      <li>
+        <strong>流量统计</strong>（Google Analytics、Cloudflare Web Analytics）——GA
+        可能收集匿名化的使用数据（页面浏览量、大致位置等），基于 Cookie，且只在你点击同意横幅的「同意」后才会加载；Cloudflare Web Analytics
+        不使用 Cookie，只收集聚合的页面浏览数据。
+      </li>
+      <li>
+        <strong>Cloudflare</strong>——本站的托管服务商，可能为安全与性能目的处理基本请求数据。
+      </li>
+      <li>
+        <strong>评论</strong>（giscus，可选启用）——评论功能启用时，giscus.app
+        会加载内嵌的 GitHub
+        视图；浏览该区域即会向该服务暴露你的 IP 地址与浏览器信息，登录并发表评论由 GitHub 按其自身隐私政策处理。
+      </li>
+      <li>
+        <strong>嵌入视频</strong>（YouTube）——含视频的页面会从 i.ytimg.com
+        加载缩略图；你点击播放后才会加载 youtube-nocookie.com 的播放器。在你交互之前，不会写入任何 YouTube Cookie。
+      </li>
+    </ul>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold">Cookie</h2>
+    <p>
+      部分第三方服务会写入 Cookie。你可以通过浏览器设置管理 Cookie；禁用 Cookie
+      可能影响广告个性化，但不会影响你访问本站内容。
+    </p>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold">儿童隐私</h2>
+    <p>本站不面向 13 岁以下儿童，也不会有意收集儿童的信息。</p>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold">政策的变更</h2>
+    <p>本政策可能不时更新，变更将在本页面发布。</p>
+
+    <p class="mt-10 text-sm text-muted-foreground">最后更新：{LAST_UPDATED}。</p>
+  </article>
+</LandingLayout>

@@ -11,7 +11,7 @@
  */
 
 /** Keep in sync with package.json "version" (used by the announcement bar). */
-export const PROJECT_VERSION = '2.23.0';
+export const PROJECT_VERSION = '2.25.0';
 
 export type LandingLocale = 'en' | 'zh';
 
@@ -357,7 +357,7 @@ const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `AnvilWiki template update log (v${PROJECT_VERSION}): platform refresh — Astro 5→7 migration, every dependency security advisory cleared (audit findings 27→0), plus a deterministic-sort fix. Zero fork migration: merge upstream and pnpm install as usual. This bar tracks template releases — details & full changelog on GitHub Releases.`,
+    text: `AnvilWiki template update log (v${PROJECT_VERSION}): full 3-dimension code review landed — 29 findings fixed: apply-template now supports hyphen locales (zh-tw, pt-br), CSV parsing tolerates Excel's BOM, landing-layer SEO links all carry trailing slashes, CI/npm publishing hardened (ops releases now need owner approval), anvil-ops 1.0.2. Zero fork migration: merge upstream and pnpm install as usual. This bar tracks template releases — details & full changelog on GitHub Releases.`,
     href: RELEASES,
     dismissLabel: 'Dismiss announcement',
   },
@@ -612,7 +612,7 @@ pnpm install && pnpm dev`,
       primaryLabel: 'View the demo',
       primaryHref: '/',
       secondaryLabel: 'Get started',
-      secondaryHref: '/landing#docs',
+      secondaryHref: '/landing/#docs',
     },
   },
   communityHighlights: {
@@ -870,19 +870,19 @@ const zh: LandingContent = {
   title: 'AnvilWiki — 开源游戏 Wiki 模板 + AI 内容工作流',
   // 同意横幅 — zh 不是 wiki locale（UI JSON 只有 en/ja），BaseLayout 的兜底是
   // 英文文案 + /zh/privacy-policy/（不存在，404）。经 LandingLayout 整组下传；
-  // 隐私链接暂指英文法律页（站内无中文法律页）。
+  // 隐私链接指向 zh 落地层自带的中文隐私政策页（src/pages/zh/landing/privacy.astro）。
   consent: {
     title: 'Cookie',
     text: '本站为免费运营，使用 Cookie 进行流量统计与广告展示。',
     accept: '同意',
     decline: '拒绝',
     privacyLabel: '隐私政策',
-    privacyHref: '/privacy-policy/',
+    privacyHref: '/zh/landing/privacy/',
   },
   description:
     '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
   announcement: {
-    text: `AnvilWiki 模板更新日志（v${PROJECT_VERSION}）：平台升级——Astro 5→7 两跳迁移，依赖安全通告全部清零（audit 27→0），另修同日期文章的排序漂移。fork 常规 merge 零迁移，照常 pnpm install 即可。本条为模板发版通告，非站点故障；详情与完整变更见 GitHub Releases。`,
+    text: `AnvilWiki 模板更新日志（v${PROJECT_VERSION}）：全项目三维代码审查落地——29 项发现全修：apply-template 支持连字符 locale（zh-tw/pt-br）、CSV 解析兼容 Excel BOM、landing 层 SEO 链接收口尾斜杠、CI/npm 发布加固（ops 发版自此需 owner 审批）、anvil-ops 1.0.2。fork 常规 merge 零迁移，照常 pnpm install 即可。本条为模板发版通告，非站点故障；详情与完整变更见 GitHub Releases。`,
     href: RELEASES,
     dismissLabel: '关闭公告',
   },
@@ -1109,7 +1109,7 @@ pnpm install && pnpm dev`,
       primaryLabel: '查看 Demo',
       primaryHref: '/',
       secondaryLabel: '快速开始',
-      secondaryHref: '/zh/landing#docs',
+      secondaryHref: '/zh/landing/#docs',
     },
   },
   communityHighlights: {
@@ -1359,4 +1359,11 @@ pnpm install && pnpm dev`,
 export const landingContent: Record<LandingLocale, LandingContent> = { en, zh };
 
 /** Landing-page routes per locale (for language switching + hreflang). */
-export const landingPath = (locale: LandingLocale) => (locale === 'en' ? '/landing' : `/zh/landing`);
+/**
+ * Landing root URL for a landing locale. trailingSlash:'always' — every
+ * internal link must end "/" or each visit 308s once (see lib/url.ts).
+ * Consumed by LandingLayout for the logo href and the language-switcher
+ * fallback, so the slash lives here rather than at the call sites.
+ */
+export const landingPath = (locale: LandingLocale) =>
+  locale === 'en' ? '/landing/' : `/zh/landing/`;

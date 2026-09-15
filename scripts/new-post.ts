@@ -14,6 +14,7 @@ import * as fs from 'node:fs';
 import { todayIso } from './lib/today';
 import * as path from 'node:path';
 import { createLinePrompt } from './lib/prompt';
+import { readLocales } from './lib/routing-flags';
 
 const CONTENT_BASE = path.resolve(process.cwd(), 'src/content/wiki');
 
@@ -21,6 +22,7 @@ const CONTENT_BASE = path.resolve(process.cwd(), 'src/content/wiki');
 // We avoid importing the .ts directly (would need tsx loader chaining) and
 // instead read the file as text — simple and robust. Parse failures must be
 // loud: a silent fallback list would prompt against the wrong vocabulary.
+// (Locales come from the shared scripts/lib/routing-flags.ts.)
 function readCategories(): string[] {
   const src = fs.readFileSync(path.resolve(process.cwd(), 'src/config/navigation.ts'), 'utf8');
   const keys = Array.from(src.matchAll(/key:\s*['"]([^'"]+)['"]/g)).map((m) => m[1]);
@@ -29,16 +31,6 @@ function readCategories(): string[] {
     process.exit(1);
   }
   return keys;
-}
-
-function readLocales(): string[] {
-  const src = fs.readFileSync(path.resolve(process.cwd(), 'src/i18n/routing.ts'), 'utf8');
-  const match = src.match(/locales\s*=\s*\[([^\]]+)\]/);
-  if (!match) {
-    console.error('❌ Could not parse locales from src/i18n/routing.ts.');
-    process.exit(1);
-  }
-  return Array.from(match[1].matchAll(/['"]([^'"]+)['"]/g)).map((m) => m[1]);
 }
 
 /** Unicode-aware slug: keeps letters/numbers of ANY script (CJK included) so

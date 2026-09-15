@@ -7,9 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Adsterra 广告接入（demo anvil.wiki 已上线）**——注册 Adsterra publisher（anvil.wiki 过审，站点 ID 6052774），6 个广告单元全建（Banner 300×250 / 728×90 / 320×50 / 160×300 / 160×600 + Native Banner，未勾 Popunder/Social Bar/Smartlink——与 AdSense 共存红线+体验取舍）。接入按 docs/ads.md 「独立文件 + iframe 隔离」权威模式：新组件 `AdsterraSlot.astro`（env 门控 `PUBLIC_ADSTERRA_SLOT_<NAME>`，空=不渲染，与 AdSense 槽同契约；iframe sandbox 四权限、绝不加 `allow-top-navigation` 防创意劫持；`hideOnMobile` 选项——固定尺寸创意在窄屏 iframe 内被裁切，移动端只出响应式 Native）。demo 挂载：wiki 文章页（`incontent-728x90` + 文末 `native-banner`，18 页）+ **手册课页**（HandbookChapter：正文后 728×90、文末 Native、目录下粘性 160×300、≥1700px 视口左右页边固定 160×600 竖幅——左右页边空槽只在超宽屏存在，fixed 恒在视野=竖幅的全部价值，断点以下隐藏永不重叠内容/不触发横向滚动条；目录+广告包进同一 `sticky top-20` 容器，防自由滚动的兄弟节点滑到已钉住的 TOC 卡下面）+ **主落地页 en/zh**（FeatureGrid 后 728×90 桌面位 + FinalCta 前 Native）+ **社群精华/对比页 en/zh**（内容顶部 728×90 桌面位 + 底部 Native）+ **文档中心三目录页 en/zh**（hub/learn/dev 仅底部 Native，纯导航页保持克制；隐私政策页有意不挂——法律/信任页放广告伤信任）；`public/ads/*.html` 六个单元页就绪（320×50 为待挂备件——移动 sticky 是模板有意排除项，StickyBanner 注释载明 bounce 理由，挂载权留给站长）。fork 安全：`public/ads/*.html` 六文件入 `DEMO_PUBLIC_FILES` 双通道清理（setup.yml rm 清单同步，apply-template.test.ts 契约测试改 basename 归一对比），`rewriteWranglerVars` 模板块补 6 条注释态 Adsterra 变量（fork 用户的 [vars] 整段重写本就抹掉 demo 值），`.env.example` 补全变量说明，法律页（LegalContent 英文版+zh 中文隐私页）广告合作伙伴披露补 Adsterra。八门禁绿（test 231，check-links 11515 全通，build 带 Adsterra 变量实测 iframe 落地 dist）。
+
+## [2.25.0] — 2026-09-14
+
+全项目三维代码审查（正确性/可维护性/安全性）修复批：29 项发现全修（2 高 + 13 中 + 14 低），五路并行深审 ~2 万行后逐条复核落地。新增 3 个测试套件（`routing-flags` / `landing-paths` / `home-ui`），套件清单 17→20，test 188→231。
+
 ### Fixed
 
-- **landing zh 同意横幅本地化 + 隐私链接 404 修复（GA4/广告开启前置）**——zh 是落地页专属语言（wiki UI JSON 只有 en/ja），BaseLayout 推导的同意横幅在 zh 页面拿的是英文兜底文案 + `/zh/privacy-policy/`（不存在的路由，404）。此前 GA/广告 env 为空、横幅根本不渲染，缺陷不可见；一旦填 `PUBLIC_GA_ID` 开启统计（或开广告）即现形。修复三处：BaseLayout 新增可选 `consent` 覆盖 prop（labels+隐私链接整组，并给 fallback 推导加真实 wiki locale 收敛——landing-only htmlLang 的隐私链接回落 defaultLocale，不再派生出死链）；`landing.ts` zh 块补中文文案（Cookie 标题/「本站为免费运营，使用 Cookie 进行流量统计与广告展示。」/同意/拒绝/隐私政策——隐私链接暂指英文法律页 `/privacy-policy/`，站内无中文法律页）；`LandingLayout` 一处下传即覆盖全部 zh 页面（落地页/comparison/community/docs 全走 LandingLayout）。en/ja 路径零变化（en 派生文案与覆盖等价故不填，ja wiki locale 原生走 JSON）。
+- **apply-template 连字符 locale 断站根治**——`zh-TW`/`pt-BR` 等合法 BCP-47 标签经 slugify（保留连字符）后被裸插进 `LOCALE_LABELS` 键与 ui.ts import 语句位（生成 `zh-tw:` 减法表达式与 `import zh-tw` 非法标识符），fork 首次 build/`astro check` 必炸且报错离根因极远；生成器纯函数下沉 `scripts/lib/apply-rewrites.ts`（`localeIdent` camelCase 绑定 + 对象键按需引号化，en/ja 输出字节不变），`importBlockRe` 路径段放宽 `[\w-]+` 保重跑匹配，locale 格式响亮校验（违规 ❌ 列出值+格式+exit 1，interactive/--answers 同路径）+8 条新测试。`pnpm new-locale` 暂仍限两字母码（apply-template.md 已注明）。
+- **CSV/TSV 解析剥 UTF-8 BOM**——Excel「CSV UTF-8」导出（Windows 新手主通道）表头首列变 `\uFEFFlocale`，`colIndex` 返回 -1 后所有行 locale 静默按空值合并进 en 页再 fan-out（bulk-new-posts 同病），只有一排易漏的 ℹ️ 提示；`parseDelimited` 入口剥除+2 条 BOM 测试，content-pipeline.md 同步。
+- **landing 语言自动跳转脚本生产环境死代码复活**——`isRoot` 精确比较 `/landing` 在 `trailingSlash: 'always'` 下永不命中（浏览器 pathname 恒带斜杠），偏好记忆+zh 自动跳转+爬虫排除三段逻辑从未在生产跑过；改正则容忍尾斜杠+三处 `location.replace` 目标带斜杠。
+- **landing 层 SEO 门面尾斜杠全量收口**——6 个 landing 页 hreflang/x-default+docs 六页+privacy `togglePath`+`landingPath()`（logo/语言切换兜底 href 消费）此前全裸无斜杠，每次点击/每簇爬取多一跳 308，违背 `lib/url.ts` 自述契约且 check-content（只查正文内链）拦不住；全量归一+新套件 `landing-paths` 6 条契约防回退。
+- **HomePage `as any` 打穿根治**——`ui.home`/`shared` 主动弃类型后 en.json 键改名=首页区块静默消失且全门禁绿（check-i18n 只比对 locale↔en 不比对组件↔en）；`HomeUi`/`SharedUi` 显式类型导出+`getHomeFaq` 助手+新套件 `home-ui` 契约测试扫描组件 `home.*` 访问必须存在于 en.json（键改名自此 CI 变红）。
+- **FAQ 硬编码英文兜底清除**——faq 双页逐字重复的 `(ui.home as any)?.faq ?? { title: 'FAQ' }` 与 ArticlePage `?? 'Codes FAQ'`/`?? 'FAQ'` 违反「UI 文案全走 JSON」且恰好掩盖键漂移；改用 `shared.faqTitle`/`shared.codesFaqTitle`（en/ja 已有），取数下沉单一助手。
+- **gen-covers Windows 两连修**——①`path.relative` 反斜杠未归一：win32 上 `locale`/`coverFilename` 按 `/` 切分全失效，`writeFileSync` 指向不存在的子目录 ENOENT，且发生在下载 16MB 字体+渲染之后每篇必炸；②`wireFrontmatter` 对 CRLF 页写出混合 EOL（随后被 sync-codes 的响亮检查永久拒绝）且非原子写。现路径归一+拼接逻辑下沉 `lib/covers.ts` 纯函数 `spliceImageIntoFrontmatter`（CRLF 页保持统一 EOL，顺带根除 `.*` 吞 `\r` 双写隐患）+同目录 tmp+rename 原子写；`gen-covers --all` 实跑缓存全命中、产物字节零漂移。
+- **apply-template hex↔HSL 双实现收口**——本地 `hexToHsl`/`hslToHex` 与 `lib/covers.ts` 并存，舍入规则一旦分叉，apply-template 写进 globals.css 的主题色与 gen-assets/gen-covers 派生的 favicon/封面色出现肉眼色差且难定位；改 import 单源（数学 verbatim 移植+4 值钉测）。
+- **transpile-pagefind 复合 @media prelude 漏降级（潜伏）**——旧实现只降级第一个括号组，`(hover: hover) and (width >= 768px)` 形态的区间语法漏网直达旧内核——正是老内核加固要防的事故形态（当前 src 无复合条件，属潜伏）；改捕获整个 prelude 逐括号组降级，当前输入字节级零漂移（指纹哈希不变），契约测试 5 条（从真实上线脚本动态 import 钉）。
+- **apply-template / setup.yml 重跑删除口径诚实化**——「Clear demo content?」删的是 `src/content/wiki` 下全部 MDX（含用户自写文章），提示语只说 demo 文件，与 locale JSON 的内容感知保护不对称；提示补重跑警告+现存量文章计数；setup.yml `clear_demo_content`（`find -delete` 全部 MDX 默认 true 永久留在 fork Actions 页）描述同批诚实化。
+- **setup.yml SITE_URL 反斜杠加固**——`https:\x` 形态归一化遗漏（产出 `https://https:\x` 垃圾 canonical）+反斜杠进 `re.subn` 替换串炸 `re.error` 或写坏 TOML 部署期才炸；归一化改 `^(https?:)?[/\\]+`+写前 `urlparse` 校验（scheme/netloc/非法字符拒绝，人话报错）+替换串改字符串切片拼接（用户文本不再进 replacement）。
+- **shortName 默认值双空格**——`split(' ')` 对连续空格产出 `undefined` 字符（"SundefinedAE"）静默进 PWA manifest；改 `/\s+/` 切分+空段兜底。
+- **content.config.ts 注释纠错**——glob loader 的 id 注释声称「不带扩展名」与实际相反（id 含 `.mdx`，见 AGENTS gotcha #1），误导后来者删 `parseEntryId` 剥离逻辑致全站 entry 解析崩；改正并指向消费侧。
+- **anvil-ops submit 中止善后**——staged-secrets/commit 失败两条中止路径不回滚（残留在 `ops/submit-*` 分支+index 已 add），分钟级分支名+「re-run」指引自相矛盾（同分钟重跑必撞 already exists、其 fix 又指回 re-run 死循环）；`unwindBranch` 切回原分支+删临时分支（失败被报告而非吞掉），撞名错误带精确恢复命令；4 条失败路径测试（含真 git 集成）。
+- **anvil-ops GSC 错误指引存活**——insights AIO probe 丢弃 fix/doctor gsc-access 一刀切「re-run with a fresh key」覆盖精准 fix（对 429 限流主动误导，违反「GSC HTTP 错误带修复指引」契约）；OpsError 时 `message+Fix:` 拼接（cf-access 同款），泛化文案仅非 OpsError；3 条测试。
+- **anvil-ops HTTP 超时**——CF GraphQL fetch 与 GSC gaxios 请求无显式超时（最坏挂 undici 默认 300s，MCP 客户端通常 60s 已取消）；统一 30s（`AbortSignal.timeout` / gaxios `timeout`）。
+- **anvil-ops wrangler.toml 损坏报错**——metrics/audit/submit 路径裸抛 smol-toml SyntaxError 无指引；新 `ConfigParseError`（**非 OpsError**，保 `resolveEffectiveRoot` 损坏回落 default site 契约）带文件路径+「检查 wrangler.toml 语法」提示。
+- **anvil-ops `--save` CSV 数据卫生**——`metrics --import-aio --save` 归档落 `<仓库根>/ops/`，不在 .gitignore，会被后续 submit 的 `git add -A` 卷进公开 PR（GSC 表现数据入库）；根 .gitignore 补 `ops/`。
+- **engines 地板对齐**——`>=22.0.0` 与 pnpm 11 实际要求的 ≥22.13 矛盾（Node 22.0–22.12 用户满足 engines 却被 pnpm 拒，报错不指向仓库声明）；改 `>=22.13.0`。
+
+### Added
+
+- **脚本共享库收敛**——新 `scripts/lib/routing-flags.ts`（routing.ts 解析六处正则收口：check-config/check-i18n/check-content/bulk-new-posts/new-post/sync-codes；失败一律 ❌+exit 1，check-content 的静默回退 `'en'` 根除）+新 `scripts/lib/walk.ts`（递归 walker 六份复制收口，template-audit 内部三份含，行为逐字节保持——check-content/check-config 前后输出逐字相同）；`refresh-audit` 的 `STALE_CATEGORIES`/`STALE_AFTER_DAYS` 改 import content-utils 单源（审计口径=页面横幅口径）；`flattdefaultKeys`→`flattenKeys` 纯改名；submit-indexnow/gen-assets 补 `main().catch` 友好兜底（对齐五个兄弟脚本）。
+- **release-ops 发布双门**——publish job 加 `environment: npm`（GitHub Environment 已建，owner required reviewer——**此后 ops-v* 发布与手动 dispatch 都会在 Actions UI 挂起等 owner 批准**）+checkout `fetch-depth: 0`+tag commit main 祖先守卫（`merge-base --is-ancestor`，堵「任意 commit 打 tag 绕过 main 审查直接 OIDC 发布」口子：分支保护不覆盖 tag）；5 条新契约测试钉（含 environment 字段与守卫位置）。
+- **_headers 安全头补齐**——`Strict-Transport-Security: max-age=31536000`（刻意无 includeSubDomains：主域可能有本站不控制的兄弟子域，且 HSTS 一旦被浏览器缓存无法快速回滚；pages.dev 拿不到 zone 级 HSTS，`_headers` 是唯一途径）+`Permissions-Policy: camera=(), microphone=(), geolocation=()`（对 AdSense/giscus/GA4 零影响）；CSP 评估后有意不上（AdSense 脚本+giscus/YouTube iframe 需按 fork 定制白名单，严格 CSP 会静默弄挂模板用户页面）。
+- **src 站点清理**——TrendingNow 死组件删除（零引用，~55 行不可达代码）；`absoluteUrl` 收口 `siteAbsolute` 单一组装点（languageAlternates 同源）；阅读时长估算下沉 `estimateReadMinutes` 进 content-utils 可测化（幽灵 `zh`/`ko` 语言表移除，按主子标签判定 CJK，3 条测试）；`src/lib/content.ts` 补 re-export。
+
+## [2.24.0] — 2026-09-14
+
+### Fixed
+
+- **landing zh 同意横幅本地化 + 隐私链接 404 修复（GA4/广告开启前置）**——zh 是落地页专属语言（wiki UI JSON 只有 en/ja），BaseLayout 推导的同意横幅在 zh 页面拿的是英文兜底文案 + `/zh/privacy-policy/`（不存在的路由，404）。此前 GA/广告 env 为空、横幅根本不渲染，缺陷不可见；一旦填 `PUBLIC_GA_ID` 开启统计（或开广告）即现形。修复三处：BaseLayout 新增可选 `consent` 覆盖 prop（labels+隐私链接整组，并给 fallback 推导加真实 wiki locale 收敛——landing-only htmlLang 的隐私链接回落 defaultLocale，不再派生出死链）；`landing.ts` zh 块补中文文案（Cookie 标题/「本站为免费运营，使用 Cookie 进行流量统计与广告展示。」/同意/拒绝/隐私政策）；`LandingLayout` 一处下传即覆盖全部 zh 页面（落地页/comparison/community/docs 全走 LandingLayout）。en/ja 路径零变化（en 派生文案与覆盖等价故不填，ja wiki locale 原生走 JSON）。
+- **zh 落地层补中文隐私政策页 `/zh/landing/privacy/`**——上条修复时隐私链接暂指英文法律页（wiki 层法律页正文按 PRD 保持英文），中文访客读不通；本条在 zh landing 层新增中文隐私政策页（正文忠实镜像 `LegalContent.astro` privacy-policy 英文版：GA consent 门控 / AdSense / Cloudflare / giscus / YouTube 披露一一对应），横幅链接随之切到 `/zh/landing/privacy/`。页面位于 `src/pages/zh/landing/`（LANDING_PATHS 目录内），fork 双通道（apply-template CLI + setup.yml）自动清理，en/ja 零变化。
+
+### Changed
+
+- **demo 站 anvil.wiki 接入 GA4**——GA 媒体资源建于 PicBoil 账号（属性 554090475 / 网站数据流 15775651036），衡量 ID `G-X10CG7N6P6` 填入 `wrangler.toml` `[vars]`（该文件存在时是 CF Pages env 唯一真相源）。同意横幅门控实测：未点「同意」零加载（dataLayer 不存在、零请求），点「Accept」后 gtag 200 + `g/collect` page_view 204，GA 实时报告见活跃用户；zh 页同意持久化后回访不再弹横幅。fork 用户不受影响（apply-template/setup.yml 双通道仍写 `#PUBLIC_GA_ID = ""` 注释占位，demo 值不继承）。
 
 ## [2.23.0] — 2026-09-14
 
@@ -1076,7 +1120,9 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.23.0...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.25.0...HEAD
+[2.25.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.24.0...v2.25.0
+[2.24.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.23.0...v2.24.0
 [2.23.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.22.0...v2.23.0
 [2.22.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.21.0...v2.22.0
 [2.21.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.20.0...v2.21.0

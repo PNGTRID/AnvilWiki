@@ -32,6 +32,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { readLocales } from './lib/routing-flags';
 
 const ROOT = process.cwd();
 const read = (p: string) => fs.readFileSync(path.resolve(ROOT, p), 'utf8');
@@ -51,15 +52,9 @@ const navSrc = read('src/config/navigation.ts');
 const navKeys = Array.from(navSrc.matchAll(/key: '([^']+)'/g)).map((m) => m[1]);
 
 // ---------------------------------------------------------------------------
-// 2. Parse routing.ts locales
+// 2. Parse routing.ts locales (shared reader in scripts/lib/routing-flags.ts)
 // ---------------------------------------------------------------------------
-const routingSrc = read('src/i18n/routing.ts');
-const localesMatch = routingSrc.match(/export const locales = \[([^\]]+)\] as const;/);
-if (!localesMatch) {
-  err('Could not parse `locales` array in src/i18n/routing.ts');
-  process.exit(1);
-}
-const routingLocales = Array.from(localesMatch[1].matchAll(/'([^']+)'/g)).map((m) => m[1]);
+const routingLocales = readLocales(ROOT);
 
 // ---------------------------------------------------------------------------
 // 3. Load en.json

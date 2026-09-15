@@ -255,4 +255,7 @@ async function main() {
   console.log('\n✅ Done. favicon.ico is intentionally left as-is (see script header).\n');
 }
 
-main();
+main().catch((err) => {
+  console.error('\n❌', err.message);
+  process.exit(1);
+});

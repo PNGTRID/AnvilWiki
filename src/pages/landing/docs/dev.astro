@@ -4,6 +4,7 @@
  */
 import { getCollection } from 'astro:content';
 import LandingLayout from '~/components/landing/LandingLayout.astro';
+import AdsterraSlot from '~/components/ads/AdsterraSlot.astro';
 import HandbookManualList from '~/components/landing/HandbookManualList.astro';
 import { landingContent } from '~/config/landing';
 import { siteUrl } from '~/config/site';
@@ -13,8 +14,8 @@ const t = landingContent.en;
 const chapters = chaptersForLocale(await getCollection('handbook'), 'en');
 
 const alternates = [
-  { hreflang: 'en', href: `${siteUrl}/landing/docs/dev` },
-  { hreflang: 'zh', href: `${siteUrl}/zh/landing/docs/dev` },
+  { hreflang: 'en', href: `${siteUrl}/landing/docs/dev/` },
+  { hreflang: 'zh', href: `${siteUrl}/zh/landing/docs/dev/` },
 ];
 ---
 
@@ -23,8 +24,9 @@ const alternates = [
   alternates={alternates}
   pageTitle={`${t.handbook.manuals.dev.label} | AnvilWiki Docs`}
   pageDescription={t.handbook.manuals.dev.description}
-  togglePath="/zh/landing/docs/dev"
+  togglePath="/zh/landing/docs/dev/"
   search
 >
   <HandbookManualList manual="dev" chapters={chapters} locale="en" t={t} />
+  <AdsterraSlot name="native-banner" width={700} height={240} />
 </LandingLayout>

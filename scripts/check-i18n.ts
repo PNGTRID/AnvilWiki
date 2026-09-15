@@ -27,6 +27,8 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { readDefaultLocale, readLocales } from './lib/routing-flags';
+import { walkFiles } from './lib/walk';
 
 const ROOT = process.cwd();
 const STRICT = process.argv.includes('--strict');
@@ -34,53 +36,37 @@ const STRICT_UI = process.argv.includes('--strict-ui');
 const CONTENT_BASE = path.resolve(ROOT, 'src/content/wiki');
 const LOCALES_DIR = path.resolve(ROOT, 'src/locales');
 
-// --- Locales from routing.ts (regex-read, same convention as check-config) ---
-const routingSrc = fs.readFileSync(path.resolve(ROOT, 'src/i18n/routing.ts'), 'utf8');
-const localesMatch = routingSrc.match(/export const locales = \[([^\]]*)\] as const;/);
-if (!localesMatch) {
-  console.error('❌ Could not read locales from src/i18n/routing.ts');
-  process.exit(1);
-}
-const locales = localesMatch[1]
-  .split(',')
-  .map((l) => l.trim().replace(/['"]/g, ''))
-  .filter(Boolean);
+// --- Locales from routing.ts (shared reader in scripts/lib/routing-flags.ts) ---
+const locales = readLocales(ROOT);
 // Read the REAL default locale — assuming locales[0] would drift when a fork
 // reorders the array (apply-template guarantees 'en' exists, not that it's first).
-const defaultMatch = routingSrc.match(/export const defaultLocale: Locale = '([^']+)';/);
-if (!defaultMatch || !locales.includes(defaultMatch[1])) {
-  console.error('❌ Could not read defaultLocale from src/i18n/routing.ts');
+const defaultLocale = readDefaultLocale(ROOT);
+if (!locales.includes(defaultLocale)) {
+  console.error(
+    `❌ defaultLocale "${defaultLocale}" from src/i18n/routing.ts is not in the locales array (${locales.join(', ')})`,
+  );
   process.exit(1);
 }
-const defaultLocale = defaultMatch[1];
 
 /** All MDX paths under a locale dir, relative like "bosses/emberfang.mdx". */
 function articleMap(locale: string): Map<string, string> {
   const map = new Map<string, string>();
   const dir = path.join(CONTENT_BASE, locale);
-  if (!fs.existsSync(dir)) return map;
-  const walk = (d: string) => {
-    for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
-      const p = path.join(d, entry.name);
-      if (entry.isDirectory()) walk(p);
-      else if (entry.name.endsWith('.mdx')) {
-        // Drafts are dev-only; don't report them as missing translations.
-        const fm = fs.readFileSync(p, 'utf8').split('---')[1] ?? '';
-        if (/^draft:\s*true\s*$/m.test(fm)) continue;
-        map.set(path.relative(dir, p), entry.name.replace(/\.mdx$/, ''));
-      }
-    }
-  };
-  walk(dir);
+  for (const p of walkFiles(dir, { exts: ['.mdx'] })) {
+    // Drafts are dev-only; don't report them as missing translations.
+    const fm = fs.readFileSync(p, 'utf8').split('---')[1] ?? '';
+    if (/^draft:\s*true\s*$/m.test(fm)) continue;
+    map.set(path.relative(dir, p), path.basename(p, '.mdx'));
+  }
   return map;
 }
 
 /** Flatten a JSON object into dot-paths ("shared.bossCard.hp"). */
-function flattdefaultKeys(obj: unknown, prefix = ''): string[] {
+function flattenKeys(obj: unknown, prefix = ''): string[] {
   if (typeof obj !== 'object' || obj === null) return [];
   return Object.entries(obj as Record<string, unknown>).flatMap(([k, v]) =>
     typeof v === 'object' && v !== null && !Array.isArray(v)
-      ? flattdefaultKeys(v, prefix ? `${prefix}.${k}` : k)
+      ? flattenKeys(v, prefix ? `${prefix}.${k}` : k)
       : [prefix ? `${prefix}.${k}` : k],
   );
 }
@@ -92,7 +78,7 @@ console.log(`\n🌐 i18n coverage report — default locale: ${defaultLocale}\n`
 
 const defaultArticles = articleMap(defaultLocale);
 const defaultJson = JSON.parse(fs.readFileSync(path.join(LOCALES_DIR, `${defaultLocale}.json`), 'utf8'));
-const defaultKeys = new Set(flattdefaultKeys(defaultJson));
+const defaultKeys = new Set(flattenKeys(defaultJson));
 
 // Compare every NON-default locale against the default — never assume the
 // default is locales[0] (apply-template only guarantees it exists, not that
@@ -134,7 +120,7 @@ for (const locale of locales.filter((l) => l !== defaultLocale)) {
     continue;
   }
   const locKeys = new Set(
-    flattdefaultKeys(JSON.parse(fs.readFileSync(locJsonPath, 'utf8'))),
+    flattenKeys(JSON.parse(fs.readFileSync(locJsonPath, 'utf8'))),
   );
   const missingKeys = [...defaultKeys].filter((k) => !locKeys.has(k)).sort();
   const coverageKeys =

@@ -1,12 +1,23 @@
 # Cloudflare Pages headers — https://developers.cloudflare.com/pages/configuration/headers/
 #
 # Security + Lighthouse Best Practices headers applied to all responses.
+#
+# HSTS is set here (not in zone settings) because pages.dev subdomains cannot
+# get zone-level HSTS — _headers is the only vehicle. includeSubDomains is
+# deliberately omitted: the apex domain may host sibling subdomains this site
+# does not control, and an HSTS pin (unlike a header) cannot be rolled back
+# quickly once browsers cache the max-age.
+# No Content-Security-Policy either: AdSense scripts + giscus/YouTube iframes
+# need per-fork allowlists, and one new vendor would silently break every
+# page for template users — the stable subset below never fights monetization.
 
 /*
   Cross-Origin-Opener-Policy: same-origin
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
 
 # Hashed build assets (CSS/JS/fonts) never change — cache immutably for a year.
 # Returning visitors get instant repeat loads (helps LCP on revisit).

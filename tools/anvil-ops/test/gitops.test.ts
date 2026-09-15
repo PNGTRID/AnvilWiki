@@ -67,6 +67,68 @@ describe('submit orchestration', () => {
   });
 });
 
+describe('submit failure cleanup', () => {
+  it('staged-secrets abort: switches back to the original branch and deletes the temp branch', async () => {
+    const run = scriptedRun((c) => {
+      if (c.args[0] === 'status') return { ...ok, stdout: 'M file.mdx\n' };
+      if (c.args[0] === 'rev-parse') return { ...ok, stdout: 'main\n' };
+      if (c.args[0] === 'diff') return { ...ok, stdout: '.env\n' };
+      return ok;
+    });
+    await expect(submit({ cwd: tmpRepo(), run })).rejects.toMatchObject({ name: 'OpsError' });
+    const calls = run.calls;
+    const diffIdx = calls.findIndex((c) => c.args[0] === 'diff');
+    const backIdx = calls.findIndex((c) => c.cmd === 'git' && c.args[0] === 'checkout' && c.args[1] === 'main');
+    const delIdx = calls.findIndex((c) => c.cmd === 'git' && c.args[0] === 'branch' && c.args[1] === '-D');
+    expect(backIdx).toBeGreaterThan(diffIdx);
+    expect(delIdx).toBeGreaterThan(backIdx);
+    expect(delIdx).toBeGreaterThan(-1);
+    expect(calls.some((c) => c.args[0] === 'commit')).toBe(false);
+    expect(calls.some((c) => c.args[0] === 'push')).toBe(false);
+  });
+
+  it('staged-secrets abort reports (not swallows) cleanup failures', async () => {
+    const run = scriptedRun((c) => {
+      if (c.args[0] === 'status') return { ...ok, stdout: 'M file.mdx\n' };
+      if (c.args[0] === 'rev-parse') return { ...ok, stdout: 'main\n' };
+      if (c.args[0] === 'diff') return { ...ok, stdout: '.env\n' };
+      if (c.args[0] === 'checkout' && c.args[1] === 'main') return { status: 1, stdout: '', stderr: 'cannot switch' };
+      if (c.args[0] === 'branch') return { status: 1, stdout: '', stderr: 'cannot delete' };
+      return ok;
+    });
+    const err: OpsError = await submit({ cwd: tmpRepo(), run }).then(
+      () => {
+        throw new Error('should have thrown');
+      },
+      (e) => e,
+    );
+    expect(err.name).toBe('OpsError');
+    expect(err.message).toMatch(/could not switch back to main/);
+    expect(err.message).toMatch(/could not delete ops\/submit-/);
+  });
+
+  it('branch name collision: error carries the exact recovery command, no state change', async () => {
+    const run = scriptedRun((c) => {
+      if (c.args[0] === 'status') return { ...ok, stdout: 'M file.mdx\n' };
+      if (c.args[0] === 'rev-parse') return { ...ok, stdout: 'main\n' };
+      if (c.args[0] === 'checkout' && c.args[1] === '-b') {
+        return { status: 1, stdout: '', stderr: "fatal: a branch named 'ops/submit-20260914-1010' already exists" };
+      }
+      return ok;
+    });
+    const err: OpsError = await submit({ cwd: tmpRepo(), run }).then(
+      () => {
+        throw new Error('should have thrown');
+      },
+      (e) => e,
+    );
+    expect(err).toBeInstanceOf(OpsError);
+    expect(err.fix).toMatch(/git branch -D ops\/submit-\d{8}-\d{4}/);
+    expect(run.calls.some((c) => c.args[0] === 'add')).toBe(false);
+    expect(run.calls.some((c) => c.args[0] === 'branch')).toBe(false);
+  });
+});
+
 describe('submit integration (real git, local bare origin)', () => {
   it('creates branch, commits, pushes to origin; gh is faked', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'ops-gitops-'));
@@ -93,5 +155,34 @@ describe('submit integration (real git, local bare origin)', () => {
     expect(r.prUrl).toContain('pull/1');
     const branches = execSync(`git --git-dir="${origin}" branch --list`).toString();
     expect(branches).toContain(r.branch);
+  });
+
+  it('secrets abort restores the original branch and removes the temp branch (real git)', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ops-gitops-abort-'));
+    const origin = join(dir, 'origin.git');
+    const work = join(dir, 'work');
+    execSync(`git init -q -b main "${origin}" --bare`);
+    execSync(`git init -q -b main "${work}"`);
+    execSync(`git -C "${work}" config user.email t@t.t`);
+    execSync(`git -C "${work}" config user.name t`);
+    execSync(`git -C "${work}" remote add origin "${origin}"`);
+    writeFileSync(join(work, 'wrangler.toml'), '[vars]\nSITE_URL = "https://x.com"\n');
+    execSync(`git -C "${work}" add -A`);
+    execSync(`git -C "${work}" commit -q -m init`);
+
+    // Untracked article (the submission) + an un-ignored .env that `git add -A`
+    // will stage — the safety net must abort and fully unwind.
+    writeFileSync(join(work, 'new-article.mdx'), '---\ntitle: T\n---\nbody\n');
+    writeFileSync(join(work, '.env'), 'SECRET=1\n');
+
+    const mixedRun: RunFn = (cmd, args, opts2) => {
+      if (cmd === 'gh') return { status: 0, stdout: '', stderr: '' };
+      if (cmd === 'pnpm') return ok; // skip real validation in this git-flow test
+      return defaultRun(cmd, args, opts2);
+    };
+
+    await expect(submit({ cwd: work, title: 'secrets abort', run: mixedRun })).rejects.toMatchObject({ name: 'OpsError' });
+    expect(execSync(`git -C "${work}" rev-parse --abbrev-ref HEAD`).toString().trim()).toBe('main');
+    expect(execSync(`git -C "${work}" branch --list`).toString()).not.toContain('ops/submit-');
   });
 });

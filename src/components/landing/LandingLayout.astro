@@ -85,6 +85,11 @@ const description = pageDescription ?? t.description;
       Scoped to the landing ROOT pages only — redirecting someone away from
       /landing/docs/<chapter> would drop the chapter they were reading (the
       docs center has its own per-page language toggle).
+      Trailing-slash tolerant: the site builds with trailingSlash:'always', so
+      the browser always sees '/landing/' and '/zh/landing/' — the exact-string
+      check that used to live here never matched and the whole block was dead
+      code in production. Redirect targets carry the slash too, so the fix
+      doesn't just add a 308 hop.
       Crawlers are excluded from the auto-detect branch: headless renderers
       follow JS redirects, which would turn /landing into a conditional
       redirect for zh-locale crawlbots and muddy the canonical/hreflang
@@ -93,19 +98,19 @@ const description = pageDescription ?? t.description;
     (() => {
       try {
         const stored = localStorage.getItem('landing-lang');
-        const isRoot = location.pathname === '/landing' || location.pathname === '/zh/landing';
+        const isRoot = /^\/(zh\/)?landing\/?$/.test(location.pathname);
         if (!isRoot) return;
         const isZhPage = location.pathname.startsWith('/zh/');
         const isBot = /bot|crawler|spider|crawl|slurp|bingpreview|lighthouse/i.test(
           navigator.userAgent,
         );
         if (stored === 'en' && isZhPage) {
-          location.replace('/landing');
+          location.replace('/landing/');
         } else if (stored === 'zh' && !isZhPage) {
-          location.replace('/zh/landing');
+          location.replace('/zh/landing/');
         } else if (!stored && !isZhPage && !isBot) {
           const lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-          if (lang.startsWith('zh')) location.replace('/zh/landing');
+          if (lang.startsWith('zh')) location.replace('/zh/landing/');
         }
       } catch (e) {
         /* storage unavailable — keep the current page */

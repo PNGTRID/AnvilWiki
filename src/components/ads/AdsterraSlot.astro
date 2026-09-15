@@ -1,0 +1,72 @@
+---
+/**
+ * AdsterraSlot — an Adsterra ad unit mounted in a sandboxed iframe.
+ *
+ * Adsterra banner scripts all configure themselves through the shared
+ * `window.atOptions` global, so two units inlined on one page clobber each
+ * other (slot B renders with slot A's config). Every unit therefore lives in
+ * its own static html file under `public/ads/` — `<name>.html`, holding
+ * exactly the snippet from the Adsterra dashboard (Ad Units → GET CODE) —
+ * and this component mounts it in an iframe. The sandbox deliberately omits
+ * `allow-top-navigation`: some mobile creatives try to navigate the whole
+ * page away, and this permission is what stops that. Full rationale:
+ * docs/ads.md 「广告位怎么挂（独立文件 + iframe 隔离）」.
+ *
+ * Gated on PUBLIC_ADSTERRA_SLOT_<NAME> (name upper-cased, hyphens become
+ * underscores — `sidebar-300x250` → `PUBLIC_ADSTERRA_SLOT_SIDEBAR_300X250`).
+ * Empty = nothing rendered, the same env contract as the AdSense slots. The
+ * html file itself is not build inputs — also create it in `public/ads/` or
+ * the iframe 404s as an empty box.
+ */
+interface Props {
+  /** Slot name = html filename stem under public/ads/ (e.g. `sidebar-300x250`). */
+  name: string;
+  /** Creative width in px — keep in sync with the unit's Adsterra size. */
+  width: number;
+  /** Creative height in px — keep in sync with the unit's Adsterra size. */
+  height: number;
+  /** Set to `false` to hide the "Advertisement" label (labels default on). */
+  label?: boolean;
+  /**
+   * Hide below md (fixed-size creatives clip inside a narrower iframe —
+   * a 728 creative in a ~375px viewport shows ~47% and an inner scrollbar).
+   * Pair a hideOnMobile banner with the responsive native-banner, which
+   * fills any width. Same pattern as StickyBanner's `hidden md:block`.
+   */
+  hideOnMobile?: boolean;
+}
+
+import { getUi } from '~/i18n/ui';
+import { isLocale } from '~/i18n/routing';
+
+const { name, width, height, label = true, hideOnMobile = false } = Astro.props;
+const envKey = `PUBLIC_ADSTERRA_SLOT_${name.replace(/-/g, '_').toUpperCase()}`;
+const show = !!import.meta.env[envKey];
+const current = Astro.currentLocale;
+const sharedStrings =
+  current && isLocale(current)
+    ? ((getUi(current).shared ?? {}) as unknown as Record<string, string>)
+    : {};
+const adLabel = sharedStrings.adLabel ?? 'Advertisement';
+---
+{
+  show && (
+    <div
+      class:list={[
+        'my-8 flex-col items-center justify-center',
+        hideOnMobile ? 'hidden md:flex' : 'flex',
+      ]}
+    >
+      {label && (
+        <span class="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">{adLabel}</span>
+      )}
+      <iframe
+        src={`/ads/${name}.html`}
+        style={`width:100%;max-width:${width}px;height:${height}px;border:0`}
+        loading="lazy"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        title="Advertisement"
+      />
+    </div>
+  )
+}

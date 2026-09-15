@@ -6,7 +6,9 @@
  * mutations: it only reports. The workflow turns the report into an issue
  * for the maintainer; fixing content stays a human/AI-session decision.
  *
- * Rules (mirror STALE_* in src/i18n/content.ts, kept in sync manually):
+ * Rules (STALE_* thresholds live in src/lib/content-utils.ts — the same
+ * source that drives the on-page outdated banner, so the audit and the page
+ * can never disagree):
  *   - STALE categories (bosses, tier-list) older than 90 days → P1
  *   - codes articles older than 7 days → P0 (players assume daily updates)
  *   - codes articles older than 30 days → P0 + "likely contains dead codes"
@@ -21,14 +23,13 @@
 
 import * as fs from 'node:fs';
 import { todayIso } from './lib/today';
+import { STALE_AFTER_DAYS, STALE_CATEGORIES } from '~/lib/content-utils';
+import { walkFiles } from './lib/walk';
 import * as path from 'node:path';
 
 const ROOT = process.cwd();
 const BASE = path.resolve(ROOT, 'src/content/wiki');
 
-// Keep in sync with src/i18n/content.ts.
-const STALE_CATEGORIES = ['bosses', 'tier-list'];
-const STALE_AFTER_DAYS = 90;
 const CODES_WARN_DAYS = 7;
 const CODES_CRITICAL_DAYS = 30;
 
@@ -40,15 +41,7 @@ interface Item {
   reason: string;
 }
 
-const files: string[] = [];
-(function walk(dir: string) {
-  if (!fs.existsSync(dir)) return;
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, entry.name);
-    if (entry.isDirectory()) walk(p);
-    else if (entry.name.endsWith('.mdx')) files.push(p);
-  }
-})(BASE);
+const files = walkFiles(BASE, { exts: ['.mdx'] });
 
 const items: Item[] = [];
 const now = Date.now();

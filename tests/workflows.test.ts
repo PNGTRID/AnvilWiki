@@ -17,16 +17,31 @@
  *   5. The freshness audit stays upstream-only and issue-only (never a PR).
  *   6. setup.yml proves the fork-initialized tree builds BEFORE opening its
  *      destructive PR (GITHUB_TOKEN PRs don't trigger CI).
+ *   7. release-ops.yml cannot publish unreviewed code from a bare tag: the
+ *      publish job requires the "npm" Environment (owner approval) and the
+ *      workflow itself proves the tagged commit sits on main (branch
+ *      protection does not cover tags).
+ *   8. The postbuild range-media lowering downgrades EVERY parenthesized
+ *      group of an @media prelude — pinned against the real shipping
+ *      script (imported, not copied) so it cannot drift.
  */
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 import { expect, test, describe } from 'vitest';
 import { parse } from 'yaml';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const readWorkflow = (rel: string): unknown =>
   parse(readFileSync(join(root, rel), 'utf8')) as unknown;
+
+// Imported (not re-implemented) so the lowering contract below is pinned
+// against the exact code that postbuild ships. The script's main-module
+// guard keeps this import side-effect-free — this line existing is itself
+// the pin for that guard.
+const { lowerRangeMedia } = (await import(
+  pathToFileURL(join(root, 'scripts/transpile-pagefind.mjs')).href
+)) as { lowerRangeMedia: (s: string) => string };
 
 const GATES = '.github/actions/gates/action.yml';
 const CI = '.github/workflows/ci.yml';
@@ -58,7 +73,10 @@ interface Step {
 type Workflow = {
   on?: Record<string, unknown>;
   permissions?: Record<string, string>;
-  jobs?: Record<string, { steps?: Step[]; timeout?: number; if?: string }>;
+  jobs?: Record<
+    string,
+    { steps?: Step[]; timeout?: number; if?: string; environment?: string }
+  >;
 };
 
 describe('shared gates composite action', () => {
@@ -238,5 +256,60 @@ describe('freshness audit stays read-only', () => {
     const wf = readWorkflow(AUDIT) as Workflow;
     expect(wf.jobs?.audit?.if).toContain('github.repository');
     expect(wf.permissions).toEqual({ contents: 'read', issues: 'write' });
+  });
+});
+
+describe('release-ops publish cannot run from an unreviewed tag', () => {
+  const wf = readWorkflow(RELEASE_OPS) as Workflow;
+  const steps = wf.jobs?.publish?.steps ?? [];
+
+  test('publish job requires the npm environment (owner approval)', () => {
+    // Branch protection does not cover tags: without an environment gate,
+    // anyone with write access could tag an arbitrary commit and publish it
+    // with valid OIDC provenance. The environment (required reviewer) is the
+    // front door; the workflow-side guards below are the back stop.
+    expect(wf.jobs?.publish?.environment).toBe('npm');
+  });
+
+  test('tag guard: full history checkout + tagged commit must sit on main', () => {
+    // fetch-depth: 0 — the ancestry check needs origin/main locally, which
+    // the default shallow clone does not contain.
+    const checkout = steps.find((s) => s.uses?.startsWith('actions/checkout'));
+    expect(checkout?.with?.['fetch-depth']).toBe(0);
+    const guard = steps.find((s) => /merge-base --is-ancestor/.test(s.run ?? ''));
+    expect(guard?.if).toContain("github.ref_type == 'tag'");
+    expect(guard?.run).toContain('exit 1');
+    // The guard must sit between checkout and npm publish — a check that
+    // runs after the publish protects nothing.
+    const guardIdx = steps.findIndex((s) => s === guard);
+    const publishIdx = steps.findIndex((s) => (s.run ?? '') === 'npm publish');
+    expect(guardIdx).toBeGreaterThan(-1);
+    expect(publishIdx).toBeGreaterThan(guardIdx);
+  });
+});
+
+describe('transpile-pagefind range-media lowering covers whole preludes', () => {
+  // Pre-2023 kernels (old X5, Safari <16.4) drop a media rule at parse time
+  // if ANY condition uses range syntax — so a first-group-only matcher that
+  // rewrote `(width >= 640px)` but leaked `(hover: hover) and (width >= …)`
+  // guarded nothing exactly where it matters. Pin the whole-prelude shape.
+  test('compound preludes: EVERY parenthesized group gets lowered', () => {
+    expect(lowerRangeMedia('@media (hover: hover) and (width >= 768px) { .x { color: red } }')).toBe(
+      '@media(hover: hover) and (min-width:768px) { .x { color: red } }',
+    );
+  });
+
+  test('simple preludes keep the historic byte-exact output', () => {
+    // The paren-leading output shape (space collapsed, operator + trailing
+    // spaces swallowed by the colon) predates the compound fix — today's
+    // dist inputs must not shift by one byte.
+    expect(lowerRangeMedia('@media (width>=640px){.x{}}')).toBe('@media(min-width:640px){.x{}}');
+    expect(lowerRangeMedia('@media (height <= 100vh) { .x {} }')).toBe(
+      '@media(max-height:100vh) { .x {} }',
+    );
+    // No range syntax → untouched; the guard's value is zero drift.
+    expect(lowerRangeMedia('@media (max-width: 768px) { .x {} }')).toBe(
+      '@media (max-width: 768px) { .x {} }',
+    );
   });
 });

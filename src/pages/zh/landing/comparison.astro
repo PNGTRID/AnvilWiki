@@ -6,14 +6,15 @@
  * 被 apply-template 清理。
  */
 import LandingLayout from '~/components/landing/LandingLayout.astro';
+import AdsterraSlot from '~/components/ads/AdsterraSlot.astro';
 import ComparisonPage from '~/components/landing/ComparisonPage.astro';
 import { landingContent } from '~/config/landing';
 import { siteUrl } from '~/config/site';
 
 const t = landingContent.zh;
 const alternates = [
-  { hreflang: 'en', href: `${siteUrl}/landing/comparison` },
-  { hreflang: 'zh', href: `${siteUrl}/zh/landing/comparison` },
+  { hreflang: 'en', href: `${siteUrl}/landing/comparison/` },
+  { hreflang: 'zh', href: `${siteUrl}/zh/landing/comparison/` },
 ];
 ---
 
@@ -22,7 +23,9 @@ const alternates = [
   alternates={alternates}
   pageTitle={t.comparisonPage.title}
   pageDescription={t.comparisonPage.subtitle}
-  togglePath="/landing/comparison"
+  togglePath="/landing/comparison/"
 >
+  <AdsterraSlot name="incontent-728x90" width={728} height={90} hideOnMobile />
   <ComparisonPage t={t} />
+  <AdsterraSlot name="native-banner" width={700} height={240} />
 </LandingLayout>

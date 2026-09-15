@@ -6,6 +6,7 @@
  * landing layer by apply-template (lives under src/pages/landing/).
  */
 import LandingLayout from '~/components/landing/LandingLayout.astro';
+import AdsterraSlot from '~/components/ads/AdsterraSlot.astro';
 import CommunityHighlights from '~/components/landing/CommunityHighlights.astro';
 import Community from '~/components/landing/Community.astro';
 import { landingContent } from '~/config/landing';
@@ -13,8 +14,8 @@ import { siteUrl } from '~/config/site';
 
 const t = landingContent.en;
 const alternates = [
-  { hreflang: 'en', href: `${siteUrl}/landing/community` },
-  { hreflang: 'zh', href: `${siteUrl}/zh/landing/community` },
+  { hreflang: 'en', href: `${siteUrl}/landing/community/` },
+  { hreflang: 'zh', href: `${siteUrl}/zh/landing/community/` },
 ];
 ---
 
@@ -23,10 +24,12 @@ const alternates = [
   alternates={alternates}
   pageTitle={t.communityHighlights.title}
   pageDescription={t.communityHighlights.subtitle}
-  togglePath="/zh/landing/community"
+  togglePath="/zh/landing/community/"
   wide
 >
+  <AdsterraSlot name="incontent-728x90" width={728} height={90} hideOnMobile />
   <CommunityHighlights t={t} />
+  <AdsterraSlot name="native-banner" width={700} height={240} />
   <!-- Floating WeChat QR — the page copy points at the bottom-right QR, so
        this page mounts the float itself (landing index does the same). -->
   <Community t={t} />

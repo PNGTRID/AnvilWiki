@@ -37,6 +37,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { todayIso } from './lib/today';
+import { readLocales } from './lib/routing-flags';
 import {
   fanOutLocales,
   mergeCodes,
@@ -77,16 +78,8 @@ const LOCALE_FILTER = (() => {
   return list;
 })();
 
-// Same config-reading helper as bulk-new-posts.ts (regex-read, no imports).
-function readLocales(): string[] {
-  const src = fs.readFileSync(path.resolve(ROOT, 'src/i18n/routing.ts'), 'utf8');
-  const match = src.match(/locales\s*=\s*\[([^\]]+)\]/);
-  if (!match) {
-    console.error('❌ Could not parse locales from src/i18n/routing.ts (expected `locales = [\'…\']`).');
-    process.exit(1);
-  }
-  return Array.from(match[1].matchAll(/['"]([^'"]+)['"]/g)).map((m) => m[1]);
-}
+// Locales come from the shared scripts/lib/routing-flags.ts (same
+// regex-read, loud-on-failure contract bulk-new-posts.ts uses).
 
 function findInputFile(): string | null {
   const isFlag = (a: string) => a.startsWith('--') || a === '-n';
@@ -139,7 +132,7 @@ the same page. Pages must already exist — sync never creates or deletes.`);
 }
 
 if (LOCALE_FILTER) {
-  const locales = readLocales();
+  const locales = readLocales(ROOT);
   const unknown = LOCALE_FILTER.filter((l) => !locales.includes(l));
   if (unknown.length > 0) {
     console.error(`❌ --locales: unknown locale(s) ${unknown.join(', ')} (routing.ts has: ${locales.join(', ')})`);
@@ -147,7 +140,7 @@ if (LOCALE_FILTER) {
   }
 }
 
-const locales = readLocales();
+const locales = readLocales(ROOT);
 const raw = fs.readFileSync(path.resolve(ROOT, inputFile), 'utf8');
 const { rows, errors, notes } = parseCodesCsv(raw, locales);
 

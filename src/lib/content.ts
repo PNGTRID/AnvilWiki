@@ -27,6 +27,7 @@ export {
   parseEntryId,
   isPossiblyOutdated,
   selectRelatedEntries,
+  estimateReadMinutes,
   STALE_AFTER_DAYS,
   STALE_CATEGORIES,
 } from '~/lib/content-utils';

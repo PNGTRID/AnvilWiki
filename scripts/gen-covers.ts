@@ -25,7 +25,7 @@
  * article has no `image:` yet): inserts `image: '<relative path>'` after the
  * `category:` line so the Zod image() helper picks the PNG up on next build.
  */
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import satori from 'satori';
@@ -38,6 +38,7 @@ import {
   parseBrandHsl,
   pickCjkScript,
   pickFontSize,
+  spliceImageIntoFrontmatter,
   stableHash,
   stripEmoji,
   subsetText,
@@ -105,7 +106,12 @@ function collectArticles(): Article[] {
   return listMdxFiles(CONTENT_DIR).map((absPath) => {
     const src = readFileSync(absPath, 'utf8');
     const fm = src.split('---')[1] ?? '';
-    const rel = relative(CONTENT_DIR, absPath).replace(/\.mdx$/, '');
+    // Normalize win32 separators before splitting: path.relative yields
+    // backslashes there, and locale/coverFilename both split on '/'.
+    const rel = relative(CONTENT_DIR, absPath)
+      .split('\\')
+      .join('/')
+      .replace(/\.mdx$/, '');
     const [locale] = rel.split('/');
     return {
       id: rel,
@@ -306,17 +312,13 @@ async function renderCover(article: Article, brandHex: string, brandDeepHex: str
 
 function wireFrontmatter(mdxPath: string, imageRelPath: string): boolean {
   const src = readFileSync(mdxPath, 'utf8');
-  const fmRe = /^---\r?\n([\s\S]*?)\r?\n---/;
-  const m = src.match(fmRe);
-  if (!m || /^image:/m.test(m[1])) return false;
-  const block = m[1];
-  const line = `image: '${imageRelPath}'`;
-  const newBlock = /^category:.*$/m.test(block)
-    ? block.replace(/^(category:.*)$/m, `$1\n${line}`)
-    : /^description:.*$/m.test(block)
-      ? block.replace(/^(description:.*)$/m, `$1\n${line}`)
-      : `${block}\n${line}`;
-  writeFileSync(mdxPath, src.replace(fmRe, `---\n${newBlock}\n---`), 'utf8');
+  const updated = spliceImageIntoFrontmatter(src, imageRelPath);
+  if (updated === null) return false;
+  // Atomic replace (same dir + rename): a crash mid-write must never leave a
+  // truncated MDX behind — same contract as sync-codes.
+  const tmpPath = `${mdxPath}.tmp`;
+  writeFileSync(tmpPath, updated, 'utf8');
+  renameSync(tmpPath, mdxPath);
   return true;
 }
 

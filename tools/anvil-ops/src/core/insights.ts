@@ -237,7 +237,14 @@ export async function collectInsights(opts: {
           totals: { clicks: 0, impressions: 0 },
           experimental: true,
           note: 'experimental: Google does not commit to exposing AI_OVERVIEWS via the searchAppearance filter — numbers are directional, not contractual.',
-          error: e instanceof Error ? e.message || e.name : String(e),
+          // Keep the per-status OpsError fix (403 share / 429 retry / 401
+          // re-key) — e.message alone would drop the actionable guidance.
+          error:
+            e instanceof OpsError
+              ? `${e.message} Fix: ${e.fix}`
+              : e instanceof Error
+                ? e.message || e.name
+                : String(e),
         };
       }
     }

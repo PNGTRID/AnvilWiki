@@ -34,6 +34,7 @@
 
 import * as fs from 'node:fs';
 import { todayIso } from './lib/today';
+import { hexToHsl as hexToHslPure, hslToHex } from '~/lib/covers';
 import * as path from 'node:path';
 import { createLinePrompt, type LinePrompt } from './lib/prompt';
 import {
@@ -42,11 +43,17 @@ import {
   DEMO_GALLERY_IMAGES,
   DEMO_LOCALES,
   DEMO_PUBLIC_FILES,
+  buildLocaleLabels,
+  buildUiImports,
+  buildUiMessagesEntries,
   isDemoLocaleContent,
+  isLocaleCode,
   rewriteLocaleJson,
   rewriteSiteTs as rewriteSiteTsBlock,
   rewriteWranglerVars,
   slugify,
+  tsEscape,
+  UI_IMPORT_BLOCK_RE,
   type SkinInput,
 } from './lib/apply-rewrites';
 
@@ -110,62 +117,18 @@ const write = (p: string, content: string) => {
   fs.writeFileSync(path.resolve(ROOT, p), content, 'utf8');
 };
 
-/** Convert #rrggbb → "H S% L%" (space-separated, no hsl() wrapper, as globals.css expects). */
+/** #rgb/#rrggbb → HSL with the CLI's friendly validation over the shared lib helper. */
 function hexToHsl(hex: string): { h: number; s: number; l: number } {
-  const m = hex.replace('#', '').match(/^([0-9a-f]{6}|[0-9a-f]{3})$/i);
-  if (!m) {
+  const c = hexToHslPure(hex);
+  if (!c) {
     console.error(`❌ Invalid hex color "${hex}". Expected #rgb or #rrggbb.`);
     process.exit(1);
   }
-  let h = m[1];
-  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
-  const r = parseInt(h.slice(0, 2), 16) / 255;
-  const g = parseInt(h.slice(2, 4), 16) / 255;
-  const b = parseInt(h.slice(4, 6), 16) / 255;
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  const l = (max + min) / 2;
-  let s = 0;
-  let hue = 0;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r:
-        hue = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        hue = (b - r) / d + 2;
-        break;
-      default:
-        hue = (r - g) / d + 4;
-    }
-    hue *= 60;
-  }
-  return {
-    h: Math.round(hue),
-    s: Math.round(s * 100),
-    l: Math.round(l * 100),
-  };
+  return c;
 }
 
 const hslStr = (c: { h: number; s: number; l: number }, lOffset: number) =>
   `${c.h} ${c.s}% ${Math.max(0, Math.min(100, c.l + lOffset))}%`;
-
-/** HSL → #rrggbb (for manifest theme_color). */
-function hslToHex(h: number, s: number, l: number): string {
-  s /= 100;
-  l /= 100;
-  const k = (n: number) => (n + h / 30) % 12;
-  const a = s * Math.min(l, 1 - l);
-  const f = (n: number) => {
-    const v = l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-    return Math.round(v * 255)
-      .toString(16)
-      .padStart(2, '0');
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
-}
 
 /** Dim a string for dry-run output (ANSI escape; no chalk dependency). */
 const dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
@@ -289,24 +252,12 @@ function rewriteRoutingTs(input: SkinInput): string {
   const src = read(filePath);
   // Escape for a single-quoted TS literal: locale keys come from user input
   // (slugify's `|| raw` fallback can pass unusual characters through).
-  const ts = (s: string) => s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  const ts = tsEscape;
   const locs = input.locales.map((l) => `'${ts(l)}'`).join(', ');
   const newArray = `export const locales = [${locs}] as const;`;
-  // Build LOCALE_LABELS with English defaults for unknown locales.
-  const KNOWN: Record<string, string> = {
-    en: 'English',
-    ja: '日本語',
-    zh: '中文',
-    ko: '한국어',
-    es: 'Español',
-    pt: 'Português',
-    ru: 'Русский',
-    fr: 'Français',
-    de: 'Deutsch',
-  };
-  const labels = input.locales
-    .map((l) => `  ${l}: '${ts(KNOWN[l] ?? l)}'`)
-    .join(',\n');
+  // Build LOCALE_LABELS with English defaults for unknown locales. Hyphen
+  // locales (zh-tw) get quoted keys — a bare `zh-tw:` parses as subtraction.
+  const labels = buildLocaleLabels(input.locales);
   const newLabels = `export const LOCALE_LABELS: Record<Locale, string> = {\n${labels},\n};`;
   const localesRe = /export const locales = \[[\s\S]*?\] as const;/;
   const labelsRe = /export const LOCALE_LABELS: Record<Locale, string> = \{[\s\S]*?\};/;
@@ -323,18 +274,16 @@ function rewriteUiTs(input: SkinInput): string {
   const filePath = 'src/i18n/ui.ts';
   const src = read(filePath);
   // Two separate edits:
-  //   (a) the contiguous block of `import <loc> from '~/locales/<loc>.json';` lines
+  //   (a) the contiguous block of `import <ident> from '~/locales/<locale>.json';` lines
   //   (b) the `const messages = { ... }` map entries
   // The `import { defaultLocale, ... } from './routing'` line sits between them
-  // and must NOT be touched.
-  const imports = input.locales
-    .map((l) => `import ${l} from '~/locales/${l}.json';`)
-    .join('\n');
-  const messagesEntries = input.locales
-    .map((l) => `  ${l}: ${l} as Record<string, unknown>,`)
-    .join('\n');
-  // (a) locale-JSON import block: one or more `import X from '~/locales/X.json';` lines.
-  const importBlockRe = /(?:import \w+ from '~\/locales\/\w+\.json';\n)+/;
+  // and must NOT be touched. Both blocks come from lib/apply-rewrites.ts:
+  // hyphen locales (zh-tw) need camelCase import bindings (zhTw) and quoted
+  // object keys, and the block regex must re-match previously-rewritten files.
+  const imports = buildUiImports(input.locales);
+  const messagesEntries = buildUiMessagesEntries(input.locales);
+  // (a) locale-JSON import block: one or more import lines.
+  const importBlockRe = UI_IMPORT_BLOCK_RE;
   // (b) messages map: from `const messages` through the closing `};`.
   const messagesRe = /const messages: Record<Locale, Record<string, unknown>> = \{[\s\S]*?\};/;
   if (!importBlockRe.test(src) || !messagesRe.test(src)) {
@@ -365,6 +314,27 @@ function rewriteManifest(input: SkinInput): string {
   const c = hexToHsl(input.themeHex);
   obj.theme_color = hslToHex(c.h, c.s, c.l);
   return JSON.stringify(obj, null, 2) + '\n';
+}
+
+/**
+ * Count every .mdx/.md article under src/content/wiki/ (all locales). Shown
+ * before the "Clear demo content?" question: on a re-run this number is the
+ * user's OWN article count, not the demo's — the prompt must not pretend
+ * otherwise.
+ */
+function countWikiArticles(): number {
+  const base = path.resolve(ROOT, 'src/content/wiki');
+  if (!fs.existsSync(base)) return 0;
+  let count = 0;
+  const walk = (dir: string) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(p);
+      else if (entry.name.endsWith('.mdx') || entry.name.endsWith('.md')) count++;
+    }
+  };
+  walk(base);
+  return count;
 }
 
 function clearDemoContent(categories: { key: string }[]) {
@@ -553,7 +523,16 @@ async function main() {
   console.log('Game identity');
   console.log('━'.repeat(60));
   const gameName = await ask(rl, 'Full game name', 'Anvil Quest');
-  const shortNameDefault = gameName.split(' ').map((w) => w[0]).join('').slice(0, 4).toUpperCase() + ' Wiki';
+  // Collapse whitespace runs first: split(' ') on a double-spaced name yields
+  // empty words whose w[0] is undefined — the default spelled "UNDE Wiki".
+  const shortNameDefault =
+    gameName
+      .trim()
+      .split(/\s+/)
+      .map((w) => w[0] ?? '')
+      .join('')
+      .slice(0, 4)
+      .toUpperCase() + ' Wiki';
   const shortName = await ask(rl, 'Short name (PWA / mobile)', shortNameDefault);
   const domain = await ask(rl, 'Domain (no protocol)', 'anvilwiki.pages.dev');
   const tagline = await ask(rl, 'Hero tagline', `Your home for everything ${gameName}`);
@@ -599,6 +578,20 @@ async function main() {
   }
   // Dedupe.
   const uniqueLocales = Array.from(new Set(locales));
+  // Hyphen locales (zh-tw, pt-br) are fully supported — but only well-formed
+  // lowercase codes can be safely injected into the generated routing.ts/ui.ts
+  // (see localeKey/localeIdent in lib/apply-rewrites.ts). Fail LOUDLY before
+  // any prompt completes or file is touched, in both interactive and
+  // --answers modes (the repo's established pattern for bad input).
+  const badLocales = uniqueLocales.filter((l) => !isLocaleCode(l));
+  if (badLocales.length > 0) {
+    console.error(
+      `❌ Invalid locale code(s): ${badLocales.map((l) => JSON.stringify(l)).join(', ')}`,
+    );
+    console.error('   Accepted format: lowercase, starting with a letter — "en", "ja",');
+    console.error('   "zh-tw", "pt-br" (letters/digits, hyphen-separated subtags of 2-8).');
+    process.exit(1);
+  }
 
   console.log('\n' + '━'.repeat(60));
   console.log('Content categories (comma-separated keys, lowercase)');
@@ -634,8 +627,11 @@ async function main() {
     console.log('\n' + '━'.repeat(60));
     console.log('⚠️  CONTENT LAYER');
     console.log('━'.repeat(60));
-    console.log('   This will DELETE all demo MDX files under src/content/wiki/*/.');
+    const articleCount = countWikiArticles();
+    console.log(`   This deletes EVERY .mdx/.md article under src/content/wiki/ — ${articleCount} found right now.`);
     console.log('   Directory structure is preserved for you to drop in new content.');
+    console.log('   ⚠️  On a RE-RUN this deletes ALL articles in src/content/wiki/ — including ones YOU wrote.');
+    console.log('   Demo translations in locales get content-checked, articles do not.');
     clearContent = await askBool(rl, 'Clear demo content?', false);
   }
 

@@ -94,11 +94,20 @@ export async function runDoctor(opts: { cwd: string; deps?: DoctorDeps }): Promi
         });
       }
     } catch (e) {
+      // Preserve the per-status OpsError fix (403 share / 429 retry / 401
+      // re-key) — the one-size-fits-all key guidance is actively misleading
+      // for e.g. a 429 rate limit. Generic text only for raw errors.
+      const msg =
+        e instanceof OpsError
+          ? `${e.message} Fix: ${e.fix}`
+          : e instanceof Error
+            ? e.message || e.name
+            : String(e) || 'unknown error';
       checks.push({
         name: 'gsc-access',
         ok: false,
-        detail: e instanceof Error ? e.message || e.name : String(e) || 'unknown error',
-        fix: 'Check the service account key and property sharing; re-run with a fresh key from Google Cloud IAM.',
+        detail: msg,
+        fix: e instanceof OpsError ? undefined : 'Check the service account key and property sharing; re-run with a fresh key from Google Cloud IAM.',
       });
     }
   } else {

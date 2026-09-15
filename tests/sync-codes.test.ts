@@ -6,6 +6,7 @@
  * splice must preserve everything outside the codes block / lastModified.
  */
 import { describe, expect, test } from 'vitest';
+import { parseDelimited } from '../scripts/lib/delimited';
 import {
   fanOutLocales,
   mergeCodes,
@@ -277,6 +278,23 @@ describe('schema boundaries', () => {
     const { rows, errors } = parseCodesCsv(csv, LOCALES);
     expect(errors).toEqual([]);
     expect(rows[0]?.expiryDate).toHaveLength(40);
+  });
+});
+
+describe('UTF-8 BOM handling (Excel "CSV UTF-8" exports)', () => {
+  test('parseDelimited strips a leading U+FEFF so header cells are clean', () => {
+    const { rows } = parseDelimited('\uFEFFlocale,slug\ndata,x');
+    expect(rows[0]).toEqual(['locale', 'slug']);
+    expect(rows[1]).toEqual(['data', 'x']);
+  });
+
+  test('parseCodesCsv reads the locale column through a BOM (was: lookup -1 → silent en default)', () => {
+    const { rows, errors, notes } = parseCodesCsv('\uFEFFlocale,slug,code\nja,all-codes,BOMBY', LOCALES);
+    expect(errors).toEqual([]);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ locale: 'ja', slug: 'all-codes', code: 'BOMBY' });
+    // The BOM must route the row to "ja", not fall back to the "en" default.
+    expect(notes.some((n) => n.includes('defaulted to "en"'))).toBe(false);
   });
 });
 

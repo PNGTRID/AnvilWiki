@@ -1,7 +1,11 @@
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { buildInsights, formatInsights, parseStaleCodes, THRESHOLDS } from '../src/core/insights.js';
+import { buildInsights, collectInsights, formatInsights, parseStaleCodes, THRESHOLDS } from '../src/core/insights.js';
 import type { GscQueryResult } from '../src/core/providers/gsc.js';
 import type { CfQueryResult } from '../src/core/providers/cloudflare.js';
+import { OpsError } from '../src/core/errors.js';
 
 const gsc = (rows: GscQueryResult['rows']): GscQueryResult => ({
   rows,
@@ -110,5 +114,35 @@ describe('formatInsights', () => {
       '| P1 | `src/content/wiki/en/bosses/emberfang.mdx` | bosses | 95d | stale 95d |',
     ].join('\n');
     expect(parseStaleCodes(stdout)).toEqual(['src/content/wiki/en/codes/main.mdx']);
+  });
+});
+
+describe('collectInsights AIO probe failure', () => {
+  function tmpSite(): string {
+    const dir = mkdtempSync(join(tmpdir(), 'ops-insights-'));
+    writeFileSync(join(dir, 'wrangler.toml'), '[vars]\nSITE_URL = "https://wiki.example.com"\n');
+    writeFileSync(join(dir, '.env'), `GSC_SERVICE_ACCOUNT_JSON=${JSON.stringify({ client_email: 'e@x', private_key: 'k' })}\n`);
+    return dir;
+  }
+
+  it('keeps the per-status OpsError fix in the surfaced error (probe is never fatal)', async () => {
+    const r = await collectInsights({
+      cwd: tmpSite(),
+      days: 7,
+      run: () => ({ status: 1, stdout: '', stderr: '' }),
+      gscClientFactory: () => ({
+        async query() {
+          return { rows: [], totals: { clicks: 0, impressions: 0, ctr: 0, position: 0 } };
+        },
+        async listAccessibleSites() {
+          return [];
+        },
+        async probeAiOverviews() {
+          throw new OpsError('Google Search Console API error 429: quota exceeded', 'Rate limited by Google — wait a minute and re-run.');
+        },
+      }),
+    });
+    expect(r.aio?.error).toContain('wait a minute');
+    expect(r.aio?.error).toContain('Fix:');
   });
 });

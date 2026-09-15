@@ -21,6 +21,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { walkFiles } from './lib/walk';
 
 const ROOT = process.cwd();
 const DIST = path.resolve(ROOT, 'dist');
@@ -31,14 +32,7 @@ if (!fs.existsSync(DIST)) {
 }
 
 /** Collect every dist HTML file once: path -> URL. */
-const htmlFiles: string[] = [];
-(function walk(dir: string) {
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const p = path.join(dir, entry.name);
-    if (entry.isDirectory()) walk(p);
-    else if (entry.name.endsWith('.html')) htmlFiles.push(p);
-  }
-})(DIST);
+const htmlFiles = walkFiles(DIST, { exts: ['.html'] });
 
 /** Existing site paths (trailingSlash:'always' — both shapes tolerated on
  *  lookup). "/bosses/x" → exists if dist/bosses/x/index.html or

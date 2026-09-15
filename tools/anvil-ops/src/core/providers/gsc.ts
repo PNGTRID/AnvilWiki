@@ -44,6 +44,10 @@ interface GscApiRow {
 
 const GSC_SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
 
+// gaxios default is no timeout — a stuck googleapis.com connection would hang
+// the CLI forever. API calls should fail in tens of seconds, not never.
+const GSC_TIMEOUT_MS = 30_000;
+
 function windowDays(days: number): { startDate: string; endDate: string } {
   const end = new Date();
   end.setUTCDate(end.getUTCDate() - 1); // GSC data lags ~2 days; end at yesterday
@@ -82,7 +86,7 @@ async function gscRequest(
   req: { url: string; method?: 'GET' | 'POST'; data?: unknown },
 ): Promise<unknown> {
   try {
-    const res = await auth.request(req);
+    const res = await auth.request({ ...req, timeout: GSC_TIMEOUT_MS });
     return res.data;
   } catch (e) {
     throw gscHttpError(e);

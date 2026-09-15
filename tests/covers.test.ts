@@ -7,10 +7,12 @@ import { describe, expect, test } from 'vitest';
 import {
   coverFilename,
   hasCjk,
+  hexToHsl,
   hslToHex,
   parseBrandHsl,
   pickCjkScript,
   pickFontSize,
+  spliceImageIntoFrontmatter,
   stableHash,
   stripEmoji,
   subsetText,
@@ -31,6 +33,64 @@ describe('parseBrandHsl / hslToHex', () => {
     expect(hslToHex(0, 100, 50)).toBe('#ff0000');
     expect(hslToHex(0, 0, 100)).toBe('#ffffff');
     expect(hslToHex(0, 0, 0)).toBe('#000000');
+  });
+});
+
+describe('hexToHsl', () => {
+  test('matches the reference values apply-template has always produced', () => {
+    // Pinned against the previous inline implementation in apply-template.ts
+    // (math was ported verbatim) — these feed globals.css + manifest.
+    expect(hexToHsl('#f97316')).toEqual({ h: 25, s: 95, l: 53 });
+    expect(hexToHsl('#ff0000')).toEqual({ h: 0, s: 100, l: 50 });
+    expect(hexToHsl('#000000')).toEqual({ h: 0, s: 0, l: 0 });
+    expect(hexToHsl('#ffffff')).toEqual({ h: 0, s: 0, l: 100 });
+  });
+
+  test('expands #rgb shorthand and accepts uppercase', () => {
+    expect(hexToHsl('#abc')).toEqual(hexToHsl('#aabbcc'));
+    expect(hexToHsl('#F97316')).toEqual(hexToHsl('#f97316'));
+  });
+
+  test('rejects malformed input with null', () => {
+    expect(hexToHsl('nothex')).toBeNull();
+    expect(hexToHsl('#12345')).toBeNull();
+    expect(hexToHsl('#1234g6')).toBeNull();
+    expect(hexToHsl('')).toBeNull();
+  });
+});
+
+describe('spliceImageIntoFrontmatter', () => {
+  test('inserts after category on LF files, byte-identical EOL', () => {
+    const src = "---\ntitle: T\ncategory: bosses\ndescription: D\n---\n\nBody";
+    const out = spliceImageIntoFrontmatter(src, '../../assets/covers/x.png');
+    expect(out).toBe(
+      "---\ntitle: T\ncategory: bosses\nimage: '../../assets/covers/x.png'\ndescription: D\n---\n\nBody",
+    );
+    expect(out!.includes('\r')).toBe(false);
+  });
+
+  test('keeps a CRLF page uniformly CRLF (no mixed EOL, no doubled CR)', () => {
+    const src = '---\r\ntitle: T\r\ncategory: bosses\r\ndescription: D\r\n---\r\n\r\nBody';
+    const out = spliceImageIntoFrontmatter(src, 'c.png');
+    expect(out).toContain("category: bosses\r\nimage: 'c.png'\r\n");
+    expect(out).toContain('\r\n---\r\n');
+    expect(out!.includes('\r\r')).toBe(false);
+    // Uniform CRLF: after removing CRLF pairs, no bare LF remains.
+    expect(out!.replace(/\r\n/g, '').includes('\n')).toBe(false);
+  });
+
+  test('falls back to description, then appends when neither exists', () => {
+    expect(spliceImageIntoFrontmatter('---\ntitle: T\ndescription: D\n---\n', 'c.png')).toBe(
+      "---\ntitle: T\ndescription: D\nimage: 'c.png'\n---\n",
+    );
+    expect(spliceImageIntoFrontmatter('---\ntitle: T\n---\n', 'c.png')).toBe(
+      "---\ntitle: T\nimage: 'c.png'\n---\n",
+    );
+  });
+
+  test('returns null without frontmatter or when an image already exists', () => {
+    expect(spliceImageIntoFrontmatter('no frontmatter here', 'c.png')).toBeNull();
+    expect(spliceImageIntoFrontmatter("---\nimage: a.png\n---\n", 'c.png')).toBeNull();
   });
 });
 

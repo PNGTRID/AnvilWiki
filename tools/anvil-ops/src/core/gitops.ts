@@ -41,9 +41,36 @@ export async function submit(opts: { cwd: string; title?: string; base?: string;
   const branch = `ops/submit-${stamp()}`;
   const git = (args: string[]) => run('git', args, { cwd: opts.cwd });
 
+  // Remember where to unwind to: every abort below must leave the user on
+  // their original branch with no ops/submit-* branch left behind, or a
+  // same-minute re-run would hit "branch already exists" with no way out.
+  const headBranch = git(['rev-parse', '--abbrev-ref', 'HEAD']);
+  const headSha = git(['rev-parse', 'HEAD']);
+  const backTo =
+    headBranch.status === 0 && headBranch.stdout.trim() && headBranch.stdout.trim() !== 'HEAD'
+      ? headBranch.stdout.trim()
+      : headSha.status === 0
+        ? headSha.stdout.trim()
+        : '';
+
+  /** Undo the branch switch (best effort); returns a report of any leftovers. */
+  const unwindBranch = (): string => {
+    const notes: string[] = [];
+    if (backTo) {
+      const back = git(['checkout', backTo]);
+      if (back.status !== 0) notes.push(`could not switch back to ${backTo}: ${(back.stderr || back.stdout).trim()}`);
+    }
+    const del = git(['branch', '-D', branch]);
+    if (del.status !== 0) notes.push(`could not delete ${branch}: ${(del.stderr || del.stdout).trim()}`);
+    return notes.length ? ` Cleanup attempt: ${notes.join('; ')}.` : ' Temporary branch removed; you are back on your original branch.';
+  };
+
   const checkout = git(['checkout', '-b', branch]);
   if (checkout.status !== 0) {
-    throw new OpsError(`git checkout -b ${branch} failed.`, `${checkout.stdout}\n${checkout.stderr}\nFix: resolve the git state (e.g. existing branch name clash) and re-run.`);
+    throw new OpsError(
+      `git checkout -b ${branch} failed.`,
+      `${checkout.stdout}\n${checkout.stderr}\nFix: a leftover branch from an earlier failed submit is the usual cause — delete it with \`git branch -D ${branch}\` (or wait a minute for a fresh timestamp), then re-run submit.`,
+    );
   }
   git(['add', '-A']);
   // Safety net for non-template repos whose .gitignore may not cover .env:
@@ -54,14 +81,16 @@ export async function submit(opts: { cwd: string; title?: string; base?: string;
     .map((l) => l.trim())
     .filter((l) => /(^|\/)\.env($|\.)/.test(l));
   if (stagedSecrets.length > 0) {
+    const cleanup = unwindBranch();
     throw new OpsError(
-      `Refusing to commit env files: ${stagedSecrets.join(', ')}.`,
+      `Refusing to commit env files: ${stagedSecrets.join(', ')}. ${cleanup}`,
       'Add them to .gitignore and unstage (git restore --staged <file>), then re-run submit. Nothing was committed or pushed.',
     );
   }
   const commit = git(['commit', '-m', title]);
   if (commit.status !== 0) {
-    throw new OpsError('git commit failed.', `${commit.stdout}\n${commit.stderr}\nFix: check git user config (user.name/user.email) and re-run.`);
+    const cleanup = unwindBranch();
+    throw new OpsError(`git commit failed. ${cleanup}`, `${commit.stdout}\n${commit.stderr}\nFix: check git user config (user.name/user.email) and re-run. Nothing was committed or pushed.`);
   }
   const push = git(['push', '-u', 'origin', branch]);
   if (push.status !== 0) {

@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { parse } from 'dotenv';
 import { parse as parseToml } from 'smol-toml';
-import { OpsError } from './errors.js';
+import { ConfigParseError, OpsError } from './errors.js';
 
 export interface SiteConfig {
   root: string;
@@ -46,9 +46,17 @@ export function loadSiteConfig(startDir: string): SiteConfig {
   const dotenvCandidates: string[] = [];
   for (let i = 0; i < 10; i++) {
     if (existsSync(join(dir, 'wrangler.toml'))) {
-      const parsed = parseToml(readFileSync(join(dir, 'wrangler.toml'), 'utf8')) as {
-        vars?: Record<string, string>;
-      };
+      const tomlPath = join(dir, 'wrangler.toml');
+      // A raw smol-toml SyntaxError surfaces as a bare "Error: ..." with no
+      // path or hint on every metrics/audit/submit path. Deliberately NOT an
+      // OpsError (see ConfigParseError): a corrupt config must propagate, not
+      // fall back to another registered site.
+      let parsed: { vars?: Record<string, string> };
+      try {
+        parsed = parseToml(readFileSync(tomlPath, 'utf8')) as { vars?: Record<string, string> };
+      } catch (e) {
+        throw new ConfigParseError(tomlPath, e);
+      }
       return fromVars(parsed.vars ?? {}, dir);
     }
     dotenvCandidates.push(dir);

@@ -35,6 +35,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { isBlankOrComment, parseDelimited } from './lib/delimited';
+import { readLocales } from './lib/routing-flags';
 import { todayIso } from './lib/today';
 
 const ROOT = process.cwd();
@@ -57,7 +58,8 @@ interface Row {
   description: string;
 }
 
-// Same config-reading helpers as new-post.ts (regex-read, no imports).
+// Config-reading helper for categories (regex-read, no imports — same idiom
+// as new-post.ts). Locales come from the shared scripts/lib/routing-flags.ts.
 // A silent fallback list would validate rows against the WRONG vocabulary if
 // the source format drifts — parse failures must be loud, not papered over.
 function readCategories(): string[] {
@@ -68,16 +70,6 @@ function readCategories(): string[] {
     process.exit(1);
   }
   return keys;
-}
-
-function readLocales(): string[] {
-  const src = fs.readFileSync(path.resolve(ROOT, 'src/i18n/routing.ts'), 'utf8');
-  const match = src.match(/locales\s*=\s*\[([^\]]+)\]/);
-  if (!match) {
-    console.error('❌ Could not parse locales from src/i18n/routing.ts (expected `locales = [\'…\']`).');
-    process.exit(1);
-  }
-  return Array.from(match[1].matchAll(/['"]([^'"]+)['"]/g)).map((m) => m[1]);
 }
 
 /** Unicode-aware slug: keeps letters/numbers of ANY script (CJK included) so
@@ -148,7 +140,7 @@ the production build until you flip draft off.`);
   process.exit(NO_INPUT_IS_ERROR || REQUIRE_OUTPUT ? 1 : 0);
 }
 
-const locales = readLocales();
+const locales = readLocales(ROOT);
 const categories = readCategories();
 const raw = fs.readFileSync(path.resolve(ROOT, inputFile), 'utf8');
 const { rows: table, unterminatedQuote } = parseDelimited(raw);

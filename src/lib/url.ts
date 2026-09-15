@@ -21,9 +21,18 @@ export function localizePath(path: string, locale: Locale): string {
   return `/${locale}${slashed}`;
 }
 
+/**
+ * Join the site domain onto an ALREADY-localized path — the single assembly
+ * point for `${siteUrl}${path}` (absoluteUrl and languageAlternates both
+ * delegate here, so domain-prefixing can't drift between them).
+ */
+function siteAbsolute(localizedPath: string): string {
+  return `${siteUrl}${localizedPath}`;
+}
+
 /** Build an absolute URL (with domain) for a path + locale. */
 export function absoluteUrl(path: string, locale: Locale): string {
-  return `${siteUrl}${localizePath(path, locale)}`;
+  return siteAbsolute(localizePath(path, locale));
 }
 
 /** Home URL for a locale. */
@@ -63,6 +72,10 @@ export function recentPath(locale: Locale): string {
  * Generate hreflang alternates for an article/category page.
  * Returns a list suitable for injection as <link rel="alternate"> tags.
  * x-default is NOT included here — BaseLayout derives it from the alternates.
+ * Input contract differs from absoluteUrl(): `buildPath` must return an
+ * ALREADY-localized path (callers pass localizePath/detailPath output), so
+ * no second locale-prefix/slash pass happens here — domain joining itself
+ * is shared via siteAbsolute().
  */
 export function languageAlternates(
   buildPath: (locale: Locale) => string,
@@ -70,7 +83,7 @@ export function languageAlternates(
 ): Array<{ hreflang: string; href: string }> {
   return locales.map((loc) => ({
     hreflang: loc,
-    href: `${siteUrl}${buildPath(loc)}`,
+    href: siteAbsolute(buildPath(loc)),
   }));
 }
 
