@@ -5,6 +5,7 @@
  */
 import { getCollection } from 'astro:content';
 import LandingLayout from '~/components/landing/LandingLayout.astro';
+import AdsterraSlot from '~/components/ads/AdsterraSlot.astro';
 import HandbookManualList from '~/components/landing/HandbookManualList.astro';
 import { landingContent } from '~/config/landing';
 import { siteUrl } from '~/config/site';
@@ -28,4 +29,5 @@ const alternates = [
   search
 >
   <HandbookManualList manual="learn" chapters={chapters} locale="en" t={t} />
+  <AdsterraSlot name="native-banner" width={700} height={240} />
 </LandingLayout>
