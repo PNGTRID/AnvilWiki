@@ -23,7 +23,6 @@ jobs:
       github.event.workflow_run.head_branch == 'main' &&
       vars.SITE_URL != '' &&
       vars.INDEXNOW_KEY != ''
-    continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -54,3 +53,4 @@ jobs:
         run: >-
           pnpm submit-indexnow -- --site "$SITE_URL"
           --wait-for-deploy "$DEPLOY_SHA" --wait-for-key
+          --wait-seconds 150

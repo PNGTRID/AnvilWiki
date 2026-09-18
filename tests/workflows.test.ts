@@ -177,11 +177,17 @@ describe('IndexNow production automation contract', () => {
   });
 
   test('is non-blocking and waits for the deployed matching key before submit', () => {
-    expect(job?.['continue-on-error']).toBe(true);
+    // No job-level continue-on-error: this is an independent workflow_run —
+    // failures already cannot block CI, and continue-on-error would only
+    // repaint real misconfigurations (e.g. var set, CF env missing) green.
+    expect(job?.['continue-on-error']).toBeFalsy();
     const submit = steps.find((step) => /submit-indexnow/.test(step.run ?? ''));
     expect(submit?.run).toContain('--site "$SITE_URL"');
     expect(submit?.run).toContain('--wait-for-deploy "$DEPLOY_SHA"');
     expect(submit?.run).toContain('--wait-for-key');
+    // The deploy wait and key wait share one budget — keep the total inside
+    // the job's timeout-minutes: 10 (checkout + install take the rest).
+    expect(submit?.run).toContain('--wait-seconds 150');
     expect(submit?.env).toEqual({
       SITE_URL: '${{ vars.SITE_URL }}',
       INDEXNOW_KEY: '${{ vars.INDEXNOW_KEY }}',

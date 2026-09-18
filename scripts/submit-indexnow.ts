@@ -346,7 +346,9 @@ async function main(): Promise<void> {
     console.log(
       found
         ? `[IndexNow] Key source: ${found.source}`
-        : '[IndexNow] No key configured; a real local run would generate one.',
+        : siteOrigin
+          ? '[IndexNow] No key configured; a real production run would fail — set INDEXNOW_KEY.'
+          : '[IndexNow] No key configured; a real local run would generate one.',
     );
     return;
   }

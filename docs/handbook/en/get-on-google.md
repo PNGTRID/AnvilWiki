@@ -6,7 +6,7 @@ order: 19
 stage: "Launch & Get Indexed"
 icon: lucide:search
 tldr: "Indexing is where traffic begins: only after Google shelves your pages in its library can you rank, and only rankings bring traffic. Do three things today: register Search Console (GSC — one environment variable proves ownership), submit the auto-generated sitemap, and click Request indexing for your 5 to 10 most important URLs. Bing and the AI engines take care of themselves — no work needed. On day 3 to 7, return to the weekly-ops lesson for your first data review."
-updated: 2026-08-29
+updated: 2026-09-18
 ---
 
 ## Where you are, and what this lesson solves
@@ -49,6 +49,7 @@ Two more things happen automatically — no action from you: **once you buy your
 ### Step 4: Push your whole site with IndexNow
 
 **What it is**: a free protocol that lets you tell Bing and other search engines "come crawl these URLs" — no waiting for their crawlers to wander in.
+**Recommended first**: set the `INDEXNOW_KEY` variable (and `SITE_URL`) as described in the deployment guide — after that, every successful CI run on `main` submits the production sitemap automatically. The manual command below stays available as a one-off top-up.
 **How to do it**: this template ships a command for it, `pnpm submit-indexnow` (run it in the project root). It reads the sitemap you just built and pushes every URL on the site in one shot. The first run generates a key file, `public/<key>.txt` — commit that file, deploy once, then run the command again and the push is done.
 **When to run it**: after each new batch of pages is deployed. It takes seconds.
 **One note**: Google doesn't take part in IndexNow (it only listens to the GSC flow), so this mainly speeds up Bing and the other engines; on the Google side, Steps 2 and 3 above are what matter.
