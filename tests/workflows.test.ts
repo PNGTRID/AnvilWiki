@@ -32,6 +32,9 @@
  *   8. The postbuild range-media lowering downgrades EVERY parenthesized
  *      group of an @media prelude — pinned against the real shipping
  *      script (imported, not copied) so it cannot drift.
+ *   9. IndexNow stays opt-in and production-safe: only a successful main
+ *      push CI can submit, both repo variables must exist, and submission
+ *      waits for the matching deployed key before calling IndexNow.
  */
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -57,7 +60,8 @@ const AUTO = '.github/workflows/auto-content.yml';
 const AUDIT = '.github/workflows/content-pipeline.yml';
 const RELEASE_OPS = '.github/workflows/release-ops.yml';
 const SETUP = '.github/workflows/setup.yml';
-const ALL_WORKFLOWS = [CI, AUTO, AUDIT, RELEASE_OPS, SETUP];
+const INDEXNOW = '.github/workflows/indexnow.yml';
+const ALL_WORKFLOWS = [CI, AUTO, AUDIT, RELEASE_OPS, SETUP, INDEXNOW];
 
 const EIGHT_GATES = [
   'pnpm lint',
@@ -84,7 +88,13 @@ type Workflow = {
   concurrency?: { group?: string; 'cancel-in-progress'?: boolean };
   jobs?: Record<
     string,
-    { steps?: Step[]; timeout?: number; if?: string; environment?: string }
+    {
+      steps?: Step[];
+      timeout?: number;
+      if?: string;
+      environment?: string;
+      'continue-on-error'?: boolean;
+    }
   >;
 };
 
@@ -140,6 +150,40 @@ describe('ci.yml uses the shared gates + runs the ops toolkit', () => {
     expect(job).toBeDefined();
     const e2e = job?.steps?.find((s) => /test:e2e/.test(s.run ?? ''));
     expect(e2e?.run).toContain('pnpm test:e2e');
+  });
+});
+
+describe('IndexNow production automation contract', () => {
+  const wf = readWorkflow(INDEXNOW) as Workflow;
+  const job = wf.jobs?.submit;
+  const steps = job?.steps ?? [];
+
+  test('runs only after the CI workflow completes', () => {
+    const trigger = (wf.on?.workflow_run ?? {}) as {
+      workflows?: string[];
+      types?: string[];
+    };
+    expect(Object.keys(wf.on ?? {})).toEqual(['workflow_run']);
+    expect(trigger.workflows).toEqual(['CI']);
+    expect(trigger.types).toEqual(['completed']);
+  });
+
+  test('requires successful main push CI plus SITE_URL and INDEXNOW_KEY repo vars', () => {
+    expect(job?.if).toContain("github.event.workflow_run.conclusion == 'success'");
+    expect(job?.if).toContain("github.event.workflow_run.event == 'push'");
+    expect(job?.if).toContain("github.event.workflow_run.head_branch == 'main'");
+    expect(job?.if).toContain("vars.SITE_URL != ''");
+    expect(job?.if).toContain("vars.INDEXNOW_KEY != ''");
+  });
+
+  test('is non-blocking and waits for the deployed matching key before submit', () => {
+    expect(job?.['continue-on-error']).toBe(true);
+    const submit = steps.find((step) => /submit-indexnow/.test(step.run ?? ''));
+    expect(submit?.run).toContain('--site "$SITE_URL" --wait-for-key');
+    expect(submit?.env).toEqual({
+      SITE_URL: '${{ vars.SITE_URL }}',
+      INDEXNOW_KEY: '${{ vars.INDEXNOW_KEY }}',
+    });
   });
 });
 
