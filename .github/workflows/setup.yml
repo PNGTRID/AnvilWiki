@@ -150,10 +150,9 @@ jobs:
           # own inline images). The .mdx articles themselves are cleared by the
           # content-aware script below (single-sourced with apply-template's
           # "Clear demo content?" via scripts/lib/apply-rewrites.ts — a re-run
-          # keeps anything the forker wrote). Keep this list in sync with
-          # DEMO_COVERS / DEMO_GALLERY_IMAGES / DEMO_ARTICLE_IMAGES /
-          # DEMO_PUBLIC_FILES in scripts/lib/apply-rewrites.ts — pinned by
-          # tests/apply-template.test.ts.
+          # keeps anything the forker wrote). Keep this image list in sync with
+          # DEMO_COVERS / DEMO_GALLERY_IMAGES / DEMO_ARTICLE_IMAGES in
+          # scripts/lib/apply-rewrites.ts — pinned by tests/apply-template.test.ts.
           rm -f src/assets/gallery/beginner-class-picks.png \
                 src/assets/gallery/beginner-route.png \
                 src/assets/gallery/emberfang-arena.png \
@@ -170,14 +169,7 @@ jobs:
                 src/assets/covers/en-bosses-frostbound-monarch.png \
                 src/assets/covers/en-guides-forging-guide.png \
                 src/assets/covers/en-items-emberforged-armor-set.png \
-                src/assets/covers/en-items-forging-materials-guide.png \
-                public/google8362d9398114b66b.html \
-                public/ads/sticky-320x50.html \
-                public/ads/sidebar-300x250.html \
-                public/ads/sidebar-160x300.html \
-                public/ads/sidebar-160x600.html \
-                public/ads/incontent-728x90.html \
-                public/ads/native-banner.html
+                src/assets/covers/en-items-forging-materials-guide.png
           python3 - <<'EOF'
           import re
           p = 'src/config/authors.ts'
@@ -213,6 +205,10 @@ jobs:
       # node_modules) and BEFORE build: demo articles carry demo categories the
       # rewritten navigation no longer declares — the build validates the
       # CLEARED tree, exactly what the fork will ship.
+      - name: Clear demo public config (content-aware)
+        if: ${{ inputs.clear_demo_content != 'false' }}
+        run: pnpm exec tsx scripts/clear-demo-public.ts
+
       - name: Clear demo articles (content-aware)
         if: ${{ inputs.clear_demo_content != 'false' }}
         run: pnpm exec tsx scripts/clear-demo-content.ts

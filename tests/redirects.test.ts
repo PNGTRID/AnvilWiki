@@ -130,7 +130,10 @@ describe('public/_redirects (renamed handbook lesson slugs)', () => {
     expect(landingStep).toContain('public/_redirects');
     // It rides the unconditional landing step, not the demo-content step —
     // forks never serve /landing/docs regardless of clear_demo_content.
-    const demoStep = yml.split('\n').find((line) => line.includes('public/google8362'));
+    const demoStep = yml
+      .split('\n')
+      .find((line) => line.includes('scripts/clear-demo-public.ts'));
+    expect(demoStep, 'content-aware demo public cleanup step').toBeDefined();
     expect(demoStep).not.toContain('public/_redirects');
   });
 });

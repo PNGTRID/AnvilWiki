@@ -32,6 +32,15 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const rootSiteConfig = readFileSync(join(root, 'src/config/site.ts'), 'utf8');
+const isDemoTemplate =
+  /export const site:[\s\S]*?name:\s*['"]Anvil Quest Wiki['"][\s\S]*?domain:\s*['"]anvil\.wiki['"]/.test(
+    rootSiteConfig,
+  );
+if (!isDemoTemplate) {
+  console.log('ℹ️  Configured fork detected — demo conversion E2E is not applicable; skipping.');
+  process.exit(0);
+}
 const preset = process.env.PRESET === 'guides' ? 'guides' : 'codes';
 const keep = process.env.KEEP === '1';
 const scratch = mkdtempSync(join(tmpdir(), 'anvilwiki-e2e-'));

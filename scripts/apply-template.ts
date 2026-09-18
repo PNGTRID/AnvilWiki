@@ -46,6 +46,7 @@ import {
   DEMO_GALLERY_IMAGES,
   DEMO_LOCALES,
   DEMO_PUBLIC_FILES,
+  isDemoPublicFileContent,
   buildLocaleLabels,
   buildUiImports,
   buildUiMessagesEntries,
@@ -464,10 +465,11 @@ function clearDemoAssets() {
   // token filename and is never touched.
   for (const file of DEMO_PUBLIC_FILES) {
     const p = path.resolve(ROOT, 'public', file);
-    if (fs.existsSync(p)) {
-      if (!DRY_RUN) fs.unlinkSync(p);
-      removed++;
-    }
+    if (!fs.existsSync(p)) continue;
+    const source = fs.readFileSync(p, 'utf8');
+    if (!isDemoPublicFileContent(file, source)) continue;
+    if (!DRY_RUN) fs.unlinkSync(p);
+    removed++;
   }
   return removed;
 }

@@ -1063,7 +1063,7 @@ const show = !!(client && slot);
 - **`AdsterraSlot.astro`**：每个单元一个独立文件 `public/ads/<name>.html`（Adsterra 后台拿到的 snippet），组件以 sandbox iframe 挂载——`allow-scripts allow-same-origin allow-popups allow-forms`，**有意省略 `allow-top-navigation`**（部分移动端创意会尝试整页跳转）。诚实边界：`allow-same-origin` 与 `allow-scripts` 同开是素材渲染的硬前提，此时 sandbox 是布局隔离而非对抗恶意创意的硬边界，真隔离需独立域名——载明于组件 docstring 与 `docs/ads.md`「诚实的边界」。
 - **env 门控与 AdSense 同契约**：`PUBLIC_ADSTERRA_SLOT_<NAME>`（`<NAME>` = html 文件名大写、连字符转下划线，如 `sidebar-300x250` → `SIDEBAR_300X250`）为空该位零渲染。`hideOnMobile` 的固定尺寸创意在移动端隐藏、只出响应式 Native；加载经同意门控（与 GA/AdSense 同门，拒绝/未选永不加载）。
 - **`MobileAnchorAd.astro`（v2.28.0）**：文章页底部 320×50 fixed 锚位（env `PUBLIC_ADSTERRA_SLOT_STICKY_320X50`），可关闭且记忆、零 CLS（显示时给移动端 body 加底部内边距，文末内容不被盖，含 iOS safe-area 补偿）。顶部粘性位是有意排除项——决策记录见 `StickyBanner.astro` 注释与 `docs/ads.md`。
-- **fork 安全**：`public/ads/*.html` 六个演示文件入 `DEMO_PUBLIC_FILES` 双通道清理（`setup.yml` rm 清单 + 契约测试），apply-template 后零残留、dist 零广告 iframe。demo 站 6 个预挂位逐槽清单与接入教程见 `docs/ads.md`「模板预挂位总清单」；env 全表见[附录 A.2](#a2-广告google-adsense)。
+- **fork 安全**：`public/ads/*.html` 六个演示文件入 `DEMO_PUBLIC_FILES`，但清理判定以文件内的 **demo unit key** 为准，而不是仅凭文件名；本地 `apply-template` 与 Actions `clear-demo-public.ts` 共用同一判定，重跑不会删掉 fork 已替换成自己 snippet 的同名广告页，`template-audit` 也只对仍携带 demo key 的文件告警。demo 站 6 个预挂位逐槽清单与接入教程见 `docs/ads.md`「模板预挂位总清单」；env 全表见[附录 A.2](#a2-广告google-adsense)。
 
 ---
 
