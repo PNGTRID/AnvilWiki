@@ -1,0 +1,53 @@
+name: IndexNow
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  submit:
+    # Optional by default: forks that do not configure both repository
+    # variables pay zero runtime cost. Only successful PUSH builds on main
+    # can notify IndexNow; pull-request CI never submits URLs.
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      vars.SITE_URL != '' &&
+      vars.INDEXNOW_KEY != ''
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 11.1.1
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Submit production sitemap to IndexNow
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          INDEXNOW_KEY: ${{ vars.INDEXNOW_KEY }}
+        run: pnpm submit-indexnow -- --site "$SITE_URL" --wait-for-key
