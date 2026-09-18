@@ -17,6 +17,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
 import {
+  DEMO_ADSTERRA_UNIT_MARKERS,
   DEMO_ARTICLE_IMAGES,
   DEMO_COVERS,
   DEMO_DOMAINS,
@@ -30,6 +31,7 @@ import {
   classifyWikiArticles,
   isDemoArticleContent,
   isDemoLocaleContent,
+  isDemoPublicFileContent,
   isDemoSiteTsIdentity,
   isLocaleCode,
   KNOWN_LOCALE_LABELS,
@@ -314,27 +316,51 @@ describe('rewriteLocaleJson (P3: no unchosen-category leak, re-run labels kept)'
 });
 
 describe('demo asset inventories stay in sync with setup.yml (drift has shipped before)', () => {
-  test('every demo file is listed in the "Clear demo content" rm list — and nothing else', () => {
+  test('image inventories stay in the setup rm list; public config uses the content-aware script', () => {
     const yml = readFileSync(join(repoRoot, '.github/workflows/setup.yml'), 'utf8');
-    const listed = new Set(yml.match(/[\w-]+\.(?:png|html)/g) || []);
-    // DEMO_PUBLIC_FILES entries may carry a public/ subdirectory (ads/*.html);
-    // the yml regex captures basenames, so compare basename to basename.
-    const basename = (f: string) => f.split('/').pop()!;
-    const demo = new Set([
+    const listed = new Set(yml.match(/[\w-]+\.png/g) || []);
+    const demoImages = new Set([
       ...DEMO_COVERS,
       ...DEMO_GALLERY_IMAGES,
       ...DEMO_ARTICLE_IMAGES,
-      ...DEMO_PUBLIC_FILES.map(basename),
     ]);
-    for (const name of demo) {
+    for (const name of demoImages) {
       expect(listed.has(name), `${name} missing from setup.yml rm list`).toBe(true);
     }
-    expect([...listed].sort()).toEqual([...demo].sort());
-    // The wholesale rm -rf of demo image dirs must never come back — the
-    // directories hold fork users' own images (docs/content-format.md sends
-    // them to public/images/articles/).
+    expect([...listed].sort()).toEqual([...demoImages].sort());
+    expect(yml).toContain('scripts/clear-demo-public.ts');
+    const script = readFileSync(join(repoRoot, 'scripts/clear-demo-public.ts'), 'utf8');
+    expect(script).toContain("from './lib/apply-rewrites'");
+    expect(script).toContain('isDemoPublicFileContent');
+    for (const rel of DEMO_PUBLIC_FILES) {
+      expect(yml).not.toContain(`public/${rel}`);
+    }
     expect(yml).not.toMatch(/rm -rf src\/assets\/gallery/);
     expect(yml).not.toMatch(/rm -rf public\/images\/articles/);
+  });
+
+  test('demo public-file detection is content-aware for Adsterra units', () => {
+    for (const [rel, marker] of Object.entries(DEMO_ADSTERRA_UNIT_MARKERS)) {
+      expect(isDemoPublicFileContent(rel, `before ${marker} after`), rel).toBe(true);
+      expect(isDemoPublicFileContent(rel, 'user-owned-ad-unit-key'), rel).toBe(false);
+    }
+    expect(
+      isDemoPublicFileContent('google8362d9398114b66b.html', 'verification token'),
+    ).toBe(true);
+  });
+
+  test('every demo public file is covered by the content registry (no silent-keep holes)', () => {
+    for (const rel of DEMO_PUBLIC_FILES) {
+      if (rel === 'google8362d9398114b66b.html') continue;
+      expect(DEMO_ADSTERRA_UNIT_MARKERS, `${rel} has no demo unit marker`).toHaveProperty(rel);
+    }
+    // Registry keys must match the shipped demo unit files — a regenerated
+    // demo key without updating the registry would silently keep demo
+    // residue in forks (isDemoPublicFileContent defaults to keep).
+    for (const [rel, marker] of Object.entries(DEMO_ADSTERRA_UNIT_MARKERS)) {
+      const source = readFileSync(join(repoRoot, 'public', rel), 'utf8');
+      expect(source, rel).toContain(marker);
+    }
   });
 
   test('the inventories do not overlap', () => {

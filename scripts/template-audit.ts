@@ -35,6 +35,7 @@ import {
   DEMO_DOMAINS,
   DEMO_GALLERY_IMAGES,
   DEMO_PUBLIC_FILES,
+  isDemoPublicFileContent,
 } from './lib/apply-rewrites';
 import { walkFiles } from './lib/walk';
 
@@ -308,9 +309,11 @@ check(() => {
   // DEMO's ad-unit keys (config, not template content), so a fork must not
   // inherit them. apply-template's clearDemoAssets and setup.yml delete them;
   // this check catches repos that predate those lists or missed the step.
-  const found = DEMO_PUBLIC_FILES.filter((f) => exists(path.join('public', f))).map(
-    (f) => `public/${f}`,
-  );
+  const found = DEMO_PUBLIC_FILES.filter((f) => {
+    const rel = path.join('public', f);
+    if (!exists(rel)) return false;
+    return isDemoPublicFileContent(f, read(rel));
+  }).map((f) => `public/${f}`);
   if (found.length > 0) {
     warn(`demo public/ files still present (${found.length}): ${found.join(', ')} — deleted by apply-template / setup.yml; on a fork they leak demo ad-unit keys.`);
   } else {

@@ -161,6 +161,8 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | [Mortal Shell II Wiki](https://mortalshell2.space/) | Mortal Shell II | Shell、武器、Boss、地点、物品与 Open Beta 攻略 |
 | [Sephiria Builds](https://sephiriabuilds.xyz/) | Sephiria | 动作肉鸽 Sephiria 的 build 数据库——带版本戳的武器强度榜与证据分级的 build 攻略 |
 | [Resonance Wiki](https://resonanceplaguetale.wiki/) | Resonance: A Plague Tale Legacy | 全章节流程攻略、全部收集品位置、奖杯路线图、谜题解法与技能推荐 |
+| [Warhounds Wiki](https://warhounds.org/) | Warhounds | 基于来源核验的职业、战斗、基地管理、装备、任务与当前版本攻略 |
+| [Sandustry.top](https://sandustry.top/) | Sandustry | 配方、机器、生产链、世界种子、故障排查与抢先体验版本信息 |
 
 提 PR 在 `src/config/landing.ts` 的 `COMMUNITY_SITES` 追加一条即可——官网([/landing](https://anvil.wiki/landing) 与 [/zh/landing](https://anvil.wiki/zh/landing))的「Built with AnvilWiki」区块会自动展示。
 
@@ -297,6 +299,8 @@ Real sites built with AnvilWiki (in submission order):
 | [Mortal Shell II Wiki](https://mortalshell2.space/) | Mortal Shell II | Guides for Shells, weapons, bosses, locations, items, and the Open Beta |
 | [Sephiria Builds](https://sephiriabuilds.xyz/) | Sephiria | Build database for the action roguelite Sephiria: patch-stamped weapon tier lists and evidence-graded build guides |
 | [Resonance Wiki](https://resonanceplaguetale.wiki/) | Resonance: A Plague Tale Legacy | Full chapter walkthrough, all collectible locations, trophy roadmap, puzzle solutions, and skill picks |
+| [Warhounds Wiki](https://warhounds.org/) | Warhounds | Source-checked guides for classes, combat, base management, equipment, missions, and current patch status |
+| [Sandustry.top](https://sandustry.top/) | Sandustry | Recipes, machines, production chains, world seeds, troubleshooting, and Early Access status |
 
 Built a site? Open a PR appending an entry to `COMMUNITY_SITES` in `src/config/landing.ts` — it will show up in the "Built with AnvilWiki" section on the [landing page](https://anvil.wiki/landing).
 

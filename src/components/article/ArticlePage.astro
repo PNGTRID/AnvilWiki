@@ -140,7 +140,12 @@ const jsonLd = [
   }),
   // One VideoObject per embedded video — Google Video search eligibility.
   ...(entry.data.videos ?? []).map((videoId: string) =>
-    videoObjectJsonLd({ videoId, title: entry.data.title, uploadDate: entry.data.date }),
+    videoObjectJsonLd({
+      videoId,
+      title: entry.data.title,
+      description: entry.data.description,
+      uploadDate: entry.data.date,
+    }),
   ),
   // One ImageObject per gallery image — Google Images eligibility.
   ...entry.data.gallery.map((g: { image: { src: string }; caption?: string; alt?: string }) =>

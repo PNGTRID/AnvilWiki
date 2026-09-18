@@ -749,13 +749,33 @@ export const DEMO_ARTICLE_IMAGES = [
 ];
 
 /**
- * Upstream-owned domain-ops tokens at the public/ root — search-console
- * verification for the DEMO property itself. Deleted by exact name: a fork
- * verifying their own property generates a different random token filename,
- * so this can never collide with user work. Keep in sync with the "Clear
- * demo content" step in .github/workflows/setup.yml — pinned by
- * tests/apply-template.test.ts.
+ * Demo Adsterra unit-key registry — the unique demo unit key embedded in
+ * each public/ads/<name>.html. Classification is content-aware, NOT
+ * filename-based: a fork that keeps the standard filenames but pastes its
+ * own ad snippets (per docs/ads.md) must survive reruns of apply-template
+ * and the setup.yml cleanup (real-fork report: a same-named unit holding
+ * user ad code used to be deleted as demo residue). A file counts as demo
+ * only while it still contains the demo key below.
  */
+export const DEMO_ADSTERRA_UNIT_MARKERS: Record<string, string> = {
+  'ads/sticky-320x50.html': 'e2ad36227bacdad94a4bfe6a9a6d3dac',
+  'ads/sidebar-300x250.html': '72f65aae2e14988904cffe17cfe697e2',
+  'ads/sidebar-160x300.html': '89fabda9f10bc13544cae84f0211d77c',
+  'ads/sidebar-160x600.html': 'fba4ed072bed8749c56ebcf099b30f0e',
+  'ads/incontent-728x90.html': 'e0dce7760389a360cba34b93333ea2d0',
+  'ads/native-banner.html': '8fabf9ea9ed2d89cba2ff9888f939c26',
+};
+
+export function isDemoPublicFileContent(rel: string, source: string): boolean {
+  // Upstream-owned domain-ops token at the public/ root — search-console
+  // verification for the DEMO property itself. Deleted by exact name: a fork
+  // verifying their own property generates a different random token
+  // filename, so this can never collide with user work.
+  const marker = DEMO_ADSTERRA_UNIT_MARKERS[rel];
+  if (marker) return source.includes(marker);
+  return rel === 'google8362d9398114b66b.html';
+}
+
 export const DEMO_PUBLIC_FILES = [
   'google8362d9398114b66b.html',
   // Demo Adsterra unit pages (public/ads/<name>.html) — the demo's ad-unit

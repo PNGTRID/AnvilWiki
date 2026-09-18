@@ -166,7 +166,7 @@ Google 的[广告投放位置政策](https://support.google.com/adsense/answer/1
 | `sidebar-160x600` | 160×600 | 手册课页左右页边固定(≥1700px 视口,左右各一) |
 | `sidebar-300x250` | 300×250 | **已建未挂载**(示例单元;需要时用 `<AdsterraSlot name="sidebar-300x250" …/>` 自行挂) |
 
-> fork 清理:这 6 个 html 已入 apply-template 的演示文件清理清单(双通道),初始化后自动移除。
+> fork 清理:这 6 个 html 初始化时按**内容**判定清理——把内容换成你自己的广告代码后,重跑 apply-template 不会被误删;仍含模板 demo 单元 key 的原样文件才会被移除。
 
 全站生效格式(Popunder / Social Bar 类)是另一条路:这类型才需要把脚本粘进 `src/components/layout/BaseLayout.astro` 的 `<head>`——但**挂 AdSense 的站禁用 Popunder**(见上节红线),Social Bar 流量起来前也别碰,所以正常路径用不到它。
 
