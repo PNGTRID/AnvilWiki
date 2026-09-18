@@ -95,7 +95,7 @@ pnpm dev              # dev server, http://localhost:4321
 pnpm build            # includes Content schema validation — fails on bad frontmatter; postbuild indexes Pagefind search
 pnpm typecheck        # astro check (0 errors expected)
 pnpm lint             # ESLint (eslint-plugin-astro)
-pnpm test             # Vitest — 20 suites (url, seo, tags, i18n-smoke, content-utils, handbook, workflows, covers, affiliates, prompt, apply-template, sync-codes, community-digest, today, redirects, changelog, agents-consistency, routing-flags, landing-paths, home-ui)
+pnpm test             # Vitest — 21 suites (url, seo, tags, i18n-smoke, content-utils, handbook, workflows, covers, affiliates, prompt, apply-template, sync-codes, community-digest, today, redirects, changelog, agents-consistency, routing-flags, landing-paths, home-ui, indexnow)
 pnpm test:e2e         # apply-template real-mode E2E (git archive → scratch copy → pipe answers → assert shape → build; CI job e2e-template runs it; tests the COMMITTED tree)
 pnpm check-config     # scripts/check-config.ts — nav/locale 3-place consistency
 pnpm new-locale       # scripts/new-locale.ts — scaffold a new language
@@ -105,7 +105,7 @@ pnpm check-i18n       # scripts/check-i18n.ts — translation coverage report (-
 pnpm check-content    # scripts/check-content.ts — content lint (no H1, heading levels, alt text, trailing-slash + locale-prefix links, ≥3 internal links)
 pnpm gen-covers       # scripts/gen-covers.ts — generate 1200×675 og:image covers from titles (brand colors from globals.css; CJK via Noto subset)
 pnpm gen-assets       # scripts/gen-assets.ts — regenerate favicon set + hero.webp + manifest theme_color from the live brand color (same filenames, zero code changes)
-pnpm submit-indexnow  # scripts/submit-indexnow.ts — push all dist/ sitemap URLs to IndexNow (run after build+deploy; first run generates the key file)
+pnpm submit-indexnow  # scripts/submit-indexnow.ts — manual IndexNow fallback (local dist/ or --site production); INDEXNOW_KEY enables env-backed ownership + automatic post-CI submission
 pnpm template-audit   # scripts/template-audit.ts — template health check (code purity / rebrand leftovers / health score)
 pnpm bulk-new-posts   # scripts/bulk-new-posts.ts — batch-create draft MDX from a new-posts.csv keyword list (--dry-run preview)
 pnpm sync-codes       # scripts/sync-codes.ts — batch-apply a codes-sync.csv into codes pages' frontmatter codes array (add/expire; --dry-run preview)
