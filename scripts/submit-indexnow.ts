@@ -6,8 +6,9 @@
  *
  * Two modes:
  *   1. Local build (default): read URLs from dist/sitemap-index.xml.
- *   2. Production: --site https://example.com reads the deployed sitemap and
- *      can --wait-for-key so a Pages deployment finishes before submission.
+ *   2. Production: --site https://example.com reads the deployed sitemap.
+ *      Automation adds --wait-for-deploy <sha> + --wait-for-key so a Pages
+ *      deployment is proven live before submission.
  *
  * Key precedence:
  *   1. INDEXNOW_KEY environment variable (recommended for template forks).
@@ -19,6 +20,7 @@
  *   pnpm submit-indexnow
  *   pnpm submit-indexnow -- --dry-run
  *   pnpm submit-indexnow -- --site https://example.com --wait-for-key
+ *   pnpm submit-indexnow -- --site https://example.com --wait-for-deploy <sha> --wait-for-key
  */
 
 import * as crypto from 'node:crypto';
@@ -357,6 +359,11 @@ async function main(): Promise<void> {
           );
         })()
       : generateLocalKey());
+
+  if (keyInfo.source === 'generated') {
+    console.log('[IndexNow] First run stops here: deploy the new public key file, then rerun.');
+    return;
+  }
 
   const key = keyInfo.key;
   const sitemapOrigin = new URL(urls[0]).origin;
