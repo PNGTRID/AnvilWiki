@@ -46,7 +46,7 @@ if (!client) return null;   // 变量空着 = 这个组件整个消失
 | `INDEXNOW_KEY` | IndexNow 所有权 + 生产 sitemap 自动通知 | 不生成 key 文件，自动 IndexNow workflow 不运行 |
 | `PUBLIC_SPONSOR_URL` / `_IMAGE_URL` | 赞助卡片 | 赞助卡不显示 |
 
-\`INDEXNOW_KEY\` 是上表唯一不是 UI 渲染开关的变量：它属于构建/运营链路。配置后 postbuild 会生成 \`/<key>.txt\`；再把同一个值和 \`SITE_URL\` 配到 GitHub Actions Repository Variables，就会启用 CI 后自动 IndexNow 推送。一次性配置步骤见 \`docs/deployment.md\`。
+`INDEXNOW_KEY` 是上表唯一不是 UI 渲染开关的变量：它属于构建/运营链路。配置后 postbuild 会生成 `/<key>.txt`；再把同一个值和 `SITE_URL` 配到 GitHub Actions Repository Variables，就会启用 CI 后自动 IndexNow 推送。一次性配置步骤见 `docs/deployment.md`。
 
 统计三件套(GA4 / Cloudflare Web Analytics / Clarity)的选型对比与逐步接入教程,见[学习手册「接广告」一课](/zh/landing/docs/enable-ads)「可选:评论和统计」一节;GSC(站长后台)的完整接入教程在[让 Google 认识你](/zh/landing/docs/get-on-google)。
 
