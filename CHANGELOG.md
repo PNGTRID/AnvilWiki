@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **IndexNow 环境变量化 + 成功 CI 后自动推送（opt-in）**：新增 `INDEXNOW_KEY` 配置，postbuild 仅在该值存在时生成 `dist/<key>.txt` 所有权文件；新增独立 `.github/workflows/indexnow.yml`，只在 `main` 的 push CI 成功后、且 GitHub Actions repository variables 同时配置 `SITE_URL` / `INDEXNOW_KEY` 时运行，等待 Cloudflare Pages 上相同 key 文件真实可达后读取**生产 sitemap**提交，PR CI 永不推送且 IndexNow 失败不阻断主 CI。默认空值保持模板零外部请求。
+
+### Changed
+
+- **`pnpm submit-indexnow` 升级为双模式**：保留原 `dist/` 手工模式和已有 `public/<key>.txt` 兼容路径，同时支持 `INDEXNOW_KEY`、`--site <origin>`、`--wait-for-key`、429/5xx 重试；key 校验按 IndexNow 协议接受 8–128 位 `A-Z/a-z/0-9/-`，生产模式不会临时生成新 key。模板初始化 / apply-template 的 wrangler `[vars]` 重写同步加入并保留 `INDEXNOW_KEY`。
+
+
 ## [2.32.0] — 2026-09-17
 
 ### Added
