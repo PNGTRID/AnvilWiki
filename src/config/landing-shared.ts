@@ -125,5 +125,4 @@ export const COMMUNITY_SITES: {
     descriptionZh:
       'Warhounds 的独立战术策略 wiki——基于来源核验的职业、战斗、基地管理、装备、任务与当前版本攻略。',
   },
-
 ];
