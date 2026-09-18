@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **VideoObject JSON-LD 补 Google 必填字段 `description`（GSC 视频结构化数据问题根因）**：`lib/seo.ts` 的 `videoObjectJsonLd` 此前只发 name/thumbnailUrl/uploadDate/embedUrl，而 Google 视频结构化数据四必填字段是 name/**description**/thumbnailUrl/uploadDate——fork 站点凡文章带 `videos` frontmatter，GSC 即报「未填写字段 "description"」（非严重，但视频富结果资格受阻，2026-09-18 用户生产报障）。修复：函数签名加 `description`，ArticlePage 以文章 frontmatter `description`（schema 必填 40–165 字符恒存在）传入——与 `title` 取文章标题同一模式（`videos` frontmatter 是裸 ID 列表无逐视频元数据）；tests/tags.test.ts 契约钉住 description 字段。
+
 ## [2.32.0] — 2026-09-17
 
 ### Added
