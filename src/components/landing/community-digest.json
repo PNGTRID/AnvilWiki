@@ -1512,54 +1512,6 @@
           "title": "广告 lazyload 的曝光陷阱与 Clarity 验证法",
           "source": "大鹏用 Clarity 录屏发现白豆腐块后的优化复盘"
         }
-      ],
-      "unresolved": [
-        {
-          "q": "门槛低又比较不流氓的广告联盟求推荐？（陈涛，开放问题；与 09-14『什么平台稳妥』同源）",
-          "by": "陈涛"
-        }
-      ],
-      "feedbackItems": [
-        {
-          "text": "小黑龙提交了 PR（1 workflow awaiting approval），主理人答应晚上看——待处理",
-          "sentiment": "neutral",
-          "by": "小黑龙"
-        }
-      ],
-      "activeMembers": [
-        {
-          "name": "大鹏",
-          "did": "AdSense『低价值内容』被拒复盘+广告 lazyload 优化+工具站养站防老论+12 广告争议打法"
-        },
-        {
-          "name": "誓言",
-          "did": "两天连上新站+Adsterra balance 口径答疑"
-        },
-        {
-          "name": "陈涛",
-          "did": "stealanegg 复盘+广告联盟求荐+首提现跟进"
-        },
-        {
-          "name": "小黑龙",
-          "did": "codex 影子封禁预警+提交 PR+站点回暖数据"
-        },
-        {
-          "name": "淡烟微雨，静数秋天",
-          "did": "分享 PingPong 收款渠道与追税风险提醒"
-        }
-      ],
-      "newcomers": [],
-      "sentiment": [
-        {
-          "signal": "模板口碑持续发酵",
-          "evidence": "大鹏: 在这个群里我学到了很多，比我自己折腾摸索快多了 / 誓言: 连续上新站",
-          "tone": "pos"
-        },
-        {
-          "signal": "共创实锤：小黑龙的 PR 进入待审队列",
-          "evidence": "小黑龙: 1 workflow awaiting approval → 袁锐钦Ruiqin: 好的，我晚上看下",
-          "tone": "pos"
-        }
       ]
     },
     {
@@ -1605,42 +1557,6 @@
         {
           "title": "用开源模板做 AI 工具教程站的搜索红利",
           "source": "主理人提议+Ben 的实证"
-        }
-      ],
-      "unresolved": [],
-      "feedbackItems": [],
-      "activeMembers": [
-        {
-          "name": "袁锐钦Ruiqin",
-          "did": "negato.app 全自动上站展示+AdSense 共存四条红线+域名第一波内容后续+自动化运营第三天"
-        },
-        {
-          "name": "大鹏",
-          "did": "12 广告争议打法+收益 0.12 刀+感谢模板"
-        },
-        {
-          "name": "陈涛",
-          "did": "stealanegg 词复盘（4 天量站废）"
-        },
-        {
-          "name": "Ben",
-          "did": "实证教程站吃搜索流量（Claude Code/Codex 一波）"
-        },
-        {
-          "name": "frank",
-          "did": "分享 GA4/GSC/Clarity 聚合看板 SOP"
-        },
-        {
-          "name": "杨俊",
-          "did": "AdSense 申请条件系列追问"
-        }
-      ],
-      "newcomers": [],
-      "sentiment": [
-        {
-          "signal": "群昵称刀数接龙成为社群仪式（0.02→0.12 互相激励）",
-          "evidence": "袁锐钦Ruiqin: 0.02 了！ / 大鹏: 我也更新一下我的刀 / 李良: 0.12 刀",
-          "tone": "pos"
         }
       ]
     },
