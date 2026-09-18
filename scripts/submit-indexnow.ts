@@ -44,6 +44,7 @@ const POLL_INTERVAL_MS = 5_000;
 interface CliOptions {
   dryRun: boolean;
   site: string | null;
+  waitForDeploy: string | null;
   waitForKey: boolean;
   waitSeconds: number;
 }
@@ -58,6 +59,7 @@ function usage(): string {
     'Options:',
     '  --site <origin>       Read the deployed sitemap instead of dist/.',
     '  --wait-for-key        Wait for the production key file before submit.',
+    '  --wait-for-deploy <sha> Wait until Cloudflare serves this exact Git SHA.',
     '  --wait-seconds <n>    Max wait time (default: 300).',
     '  --dry-run             Print URLs without sending an IndexNow request.',
   ].join('\n');
@@ -67,6 +69,7 @@ function parseArgs(argv: string[]): CliOptions {
   const options: CliOptions = {
     dryRun: false,
     site: null,
+    waitForDeploy: null,
     waitForKey: false,
     waitSeconds: DEFAULT_WAIT_SECONDS,
   };
@@ -75,6 +78,7 @@ function parseArgs(argv: string[]): CliOptions {
     const arg = argv[index];
     if (arg === '--dry-run') options.dryRun = true;
     else if (arg === '--wait-for-key') options.waitForKey = true;
+    else if (arg === '--wait-for-deploy') options.waitForDeploy = argv[++index] ?? null;
     else if (arg === '--site') options.site = argv[++index] ?? null;
     else if (arg === '--wait-seconds') {
       const raw = argv[++index];
@@ -91,8 +95,11 @@ function parseArgs(argv: string[]): CliOptions {
     }
   }
 
-  if (options.waitForKey && !options.site) {
-    throw new Error('--wait-for-key requires --site <origin>.');
+  if ((options.waitForKey || options.waitForDeploy) && !options.site) {
+    throw new Error('--wait-for-key/--wait-for-deploy require --site <origin>.');
+  }
+  if (options.waitForDeploy && !/^[0-9a-f]{40}$/i.test(options.waitForDeploy)) {
+    throw new Error('--wait-for-deploy requires a 40-character Git SHA.');
   }
 
   return options;
@@ -226,6 +233,36 @@ function assertSingleHost(urls: string[]): string {
   return host;
 }
 
+async function deployedCommit(siteOrigin: string): Promise<string | null> {
+  try {
+    const value = (
+      await fetchText(`${siteOrigin}/.well-known/anvilwiki-deploy.txt`)
+    ).trim();
+    return /^[0-9a-f]{40}$/i.test(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+async function waitForDeployment(
+  siteOrigin: string,
+  expectedSha: string,
+  waitSeconds: number,
+): Promise<void> {
+  const deadline = Date.now() + waitSeconds * 1_000;
+
+  while (true) {
+    const liveSha = await deployedCommit(siteOrigin);
+    if (liveSha?.toLowerCase() === expectedSha.toLowerCase()) return;
+    if (Date.now() >= deadline) {
+      throw new Error(
+        `Production deployment did not reach ${expectedSha} within ${waitSeconds}s (live: ${liveSha ?? 'unavailable'}).`,
+      );
+    }
+    await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+  }
+}
+
 async function keyIsLive(siteOrigin: string, key: string): Promise<boolean> {
   try {
     const body = (await fetchText(`${siteOrigin}/${indexNowKeyFileName(key)}`)).trim();
@@ -284,6 +321,14 @@ async function submitBatch(
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
   const siteOrigin = options.site ? normalizeSiteOrigin(options.site) : null;
+
+  if (siteOrigin && options.waitForDeploy) {
+    console.log(
+      `[IndexNow] Waiting for production deployment ${options.waitForDeploy}…`,
+    );
+    await waitForDeployment(siteOrigin, options.waitForDeploy, options.waitSeconds);
+  }
+
   const urls = siteOrigin ? await collectRemoteUrls(siteOrigin) : collectLocalUrls();
   const host = assertSingleHost(urls);
 
