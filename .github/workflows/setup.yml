@@ -69,6 +69,8 @@ jobs:
           new_vars = '''[vars]
           # Site (must include https:// protocol — Astro validates this as a URL)
           SITE_URL = "__SITE_URL__"
+          # IndexNow ownership key — blank = disabled; set the same value in GitHub Actions vars.
+          #INDEXNOW_KEY = ""
           # Giscus comments — blank = disabled until you fill your own values.
           PUBLIC_GISCUS_REPO = ""
           PUBLIC_GISCUS_REPO_ID = ""
