@@ -5,7 +5,7 @@ manual: dev
 order: 3
 icon: lucide:plug
 tldr: "每个可选功能(广告/评论/统计/赞助卡)都是同一个套路:组件读自己的环境变量,空着就整个不渲染——所以什么都不填网站干干净净,想开哪个填哪个,互不影响。变量填在 Cloudflare 网页(推荐)或仓库的 wrangler.toml(进阶:它在,网页设置就全部无效,连 NODE_VERSION 都要写进它的 [vars])。"
-updated: 2026-08-26
+updated: 2026-09-18
 ---
 
 ## 你现在在哪,这章解决什么
@@ -43,7 +43,10 @@ if (!client) return null;   // 变量空着 = 这个组件整个消失
 | `PUBLIC_GA_ID` | Google Analytics 4 | 不加载 GA |
 | `PUBLIC_CF_BEACON_TOKEN` | Cloudflare 自带统计(无 cookie) | 不加载 |
 | `PUBLIC_GSC_VERIFICATION` | Google 站长后台验证码 | 不输出验证标签 |
+| `INDEXNOW_KEY` | IndexNow 所有权 + 生产 sitemap 自动通知 | 不生成 key 文件，自动 IndexNow workflow 不运行 |
 | `PUBLIC_SPONSOR_URL` / `_IMAGE_URL` | 赞助卡片 | 赞助卡不显示 |
+
+\`INDEXNOW_KEY\` 是上表唯一不是 UI 渲染开关的变量：它属于构建/运营链路。配置后 postbuild 会生成 \`/<key>.txt\`；再把同一个值和 \`SITE_URL\` 配到 GitHub Actions Repository Variables，就会启用 CI 后自动 IndexNow 推送。一次性配置步骤见 \`docs/deployment.md\`。
 
 统计三件套(GA4 / Cloudflare Web Analytics / Clarity)的选型对比与逐步接入教程,见[学习手册「接广告」一课](/zh/landing/docs/enable-ads)「可选:评论和统计」一节;GSC(站长后台)的完整接入教程在[让 Google 认识你](/zh/landing/docs/get-on-google)。
 
