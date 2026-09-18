@@ -33,10 +33,11 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const rootSiteConfig = readFileSync(join(root, 'src/config/site.ts'), 'utf8');
+// Field-order independent on purpose: pinning name-before-domain would make
+// this guard silently pass (exit 0) if site.ts ever reorders its fields.
 const isDemoTemplate =
-  /export const site:[\s\S]*?name:\s*['"]Anvil Quest Wiki['"][\s\S]*?domain:\s*['"]anvil\.wiki['"]/.test(
-    rootSiteConfig,
-  );
+  /name:\s*['"]Anvil Quest Wiki['"]/.test(rootSiteConfig) &&
+  /domain:\s*['"]anvil\.wiki['"]/.test(rootSiteConfig);
 if (!isDemoTemplate) {
   console.log('ℹ️  Configured fork detected — demo conversion E2E is not applicable; skipping.');
   process.exit(0);

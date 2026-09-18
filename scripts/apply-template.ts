@@ -459,10 +459,11 @@ function clearDemoAssets() {
       }
     }
   }
-  // Upstream's own domain-ops tokens at the public/ root (search-console
-  // verification for the demo property) — dead weight in a fork. By exact
-  // name only: a fork verifying their own property uses a different random
-  // token filename and is never touched.
+  // Demo public files, classified by content: a demo Adsterra unit is
+  // removed only while it still carries the demo unit key, so a fork that
+  // pasted its own snippets into the standard filenames (docs/ads.md)
+  // survives reruns. The demo GSC token is the one exact-name exception —
+  // a fork's own token filename can never collide.
   for (const file of DEMO_PUBLIC_FILES) {
     const p = path.resolve(ROOT, 'public', file);
     if (!fs.existsSync(p)) continue;

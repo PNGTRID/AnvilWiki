@@ -349,6 +349,20 @@ describe('demo asset inventories stay in sync with setup.yml (drift has shipped 
     ).toBe(true);
   });
 
+  test('every demo public file is covered by the content registry (no silent-keep holes)', () => {
+    for (const rel of DEMO_PUBLIC_FILES) {
+      if (rel === 'google8362d9398114b66b.html') continue;
+      expect(DEMO_ADSTERRA_UNIT_MARKERS, `${rel} has no demo unit marker`).toHaveProperty(rel);
+    }
+    // Registry keys must match the shipped demo unit files — a regenerated
+    // demo key without updating the registry would silently keep demo
+    // residue in forks (isDemoPublicFileContent defaults to keep).
+    for (const [rel, marker] of Object.entries(DEMO_ADSTERRA_UNIT_MARKERS)) {
+      const source = readFileSync(join(repoRoot, 'public', rel), 'utf8');
+      expect(source, rel).toContain(marker);
+    }
+  });
+
   test('the inventories do not overlap', () => {
     const all = [
       ...DEMO_COVERS,

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **fork 重跑保留自有广告单元(`public/ads/*.html` 改内容感知判定)**:demo 判定从按文件名改为按内容——文件仍含模板 demo 单元 key 才判 demo(注册表单源 `DEMO_ADSTERRA_UNIT_MARKERS`,六单元逐一核对),根治真实 fork(sandustry.top)保留标准文件名、粘贴自有广告代码后被重跑清理误删 + `template-audit` 误报残留;`setup.yml` 的 rm 清单改调新脚本 `scripts/clear-demo-public.ts`(与 apply-template 经 `isDemoPublicFileContent` 单源同规则,支持 `--dry-run`),E2E 在已配置 fork 上自动跳过;契约测试钉「清单条目 ↔ 注册表」双向覆盖。
 - **VideoObject JSON-LD 补 Google 必填字段 `description`（GSC 视频结构化数据问题根因）**：`lib/seo.ts` 的 `videoObjectJsonLd` 此前只发 name/thumbnailUrl/uploadDate/embedUrl，而 Google 视频结构化数据四必填字段是 name/**description**/thumbnailUrl/uploadDate——fork 站点凡文章带 `videos` frontmatter，GSC 即报「未填写字段 "description"」（非严重，但视频富结果资格受阻，2026-09-18 用户生产报障）。修复：函数签名加 `description`，ArticlePage 以文章 frontmatter `description`（schema 必填 40–165 字符恒存在）传入——与 `title` 取文章标题同一模式（`videos` frontmatter 是裸 ID 列表无逐视频元数据）；tests/tags.test.ts 契约钉住 description 字段。
 
 ## [2.32.0] — 2026-09-17
