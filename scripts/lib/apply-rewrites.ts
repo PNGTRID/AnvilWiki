@@ -583,6 +583,14 @@ const WRANGLER_VARS_TEMPLATE: VarSpec[] = [
     comments: ['Site (must include https:// protocol — Astro validates this as a URL)'],
   },
   {
+    key: 'INDEXNOW_KEY',
+    comments: [
+      'IndexNow ownership key — optional; 8-128 A-Z/a-z/0-9/- characters.',
+      'Use the same value as the GitHub Actions repository variable INDEXNOW_KEY.',
+    ],
+    commented: true,
+  },
+  {
     key: 'PUBLIC_GISCUS_REPO',
     comments: [
       'Giscus comments — blank = comments disabled until you fill your own values.',
