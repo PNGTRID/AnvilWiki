@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import {
   extractSitemapLocs,
@@ -38,5 +39,17 @@ describe('IndexNow protocol helpers', () => {
     expect(isAcceptedIndexNowStatus(200)).toBe(true);
     expect(isAcceptedIndexNowStatus(202)).toBe(true);
     expect(isAcceptedIndexNowStatus(403)).toBe(false);
+  });
+
+
+  test('postbuild emits both ownership and Cloudflare deployment markers when configured', () => {
+    const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as {
+      scripts: Record<string, string>;
+    };
+    const writer = readFileSync('scripts/write-indexnow-key.ts', 'utf8');
+    expect(pkg.scripts.postbuild).toContain('scripts/write-indexnow-key.ts');
+    expect(writer).toContain('CF_PAGES_COMMIT_SHA');
+    expect(writer).toContain('.well-known');
+    expect(writer).toContain('anvilwiki-deploy.txt');
   });
 });
