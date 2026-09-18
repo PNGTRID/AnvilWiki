@@ -50,4 +50,7 @@ jobs:
         env:
           SITE_URL: ${{ vars.SITE_URL }}
           INDEXNOW_KEY: ${{ vars.INDEXNOW_KEY }}
-        run: pnpm submit-indexnow -- --site "$SITE_URL" --wait-for-key
+          DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: >-
+          pnpm submit-indexnow -- --site "$SITE_URL"
+          --wait-for-deploy "$DEPLOY_SHA" --wait-for-key
