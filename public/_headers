@@ -38,6 +38,12 @@
 /pagefind/*
   Cache-Control: public, max-age=0, must-revalidate
 
+# Deployment synchronization marker used by the optional IndexNow workflow.
+# Never cache it: the workflow must observe the exact commit that Pages serves.
+/.well-known/anvilwiki-deploy.txt
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
 # Ad unit pages (public/ads/*.html) exist only to be iframed by this same
 # site — restrict who may frame them. Scoped to /ads/* on purpose: a
 # site-wide CSP stays out (see the note at the top), this only fences the
