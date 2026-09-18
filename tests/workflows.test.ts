@@ -179,10 +179,13 @@ describe('IndexNow production automation contract', () => {
   test('is non-blocking and waits for the deployed matching key before submit', () => {
     expect(job?.['continue-on-error']).toBe(true);
     const submit = steps.find((step) => /submit-indexnow/.test(step.run ?? ''));
-    expect(submit?.run).toContain('--site "$SITE_URL" --wait-for-key');
+    expect(submit?.run).toContain('--site "$SITE_URL"');
+    expect(submit?.run).toContain('--wait-for-deploy "$DEPLOY_SHA"');
+    expect(submit?.run).toContain('--wait-for-key');
     expect(submit?.env).toEqual({
       SITE_URL: '${{ vars.SITE_URL }}',
       INDEXNOW_KEY: '${{ vars.INDEXNOW_KEY }}',
+      DEPLOY_SHA: '${{ github.event.workflow_run.head_sha }}',
     });
   });
 });
