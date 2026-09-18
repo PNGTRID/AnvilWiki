@@ -46,7 +46,7 @@ Where to fill them in: pick one — the **Cloudflare dashboard** (Settings → V
 | `INDEXNOW_KEY` | IndexNow ownership + automatic production-sitemap notification | No key file; automatic IndexNow workflow stays off |
 | `PUBLIC_SPONSOR_URL` / `_IMAGE_URL` | Sponsor card | Sponsor card doesn't show |
 
-\`INDEXNOW_KEY\` is the one exception to the UI-render pattern above: it is a build/ops toggle. When set, postbuild emits \`/<key>.txt\`; configure the same value plus \`SITE_URL\` as GitHub Actions repository variables to enable the post-CI IndexNow workflow. See \`docs/deployment.md\` for the one-time setup.
+`INDEXNOW_KEY` is the one exception to the UI-render pattern above: it is a build/ops toggle. When set, postbuild emits `/<key>.txt`; configure the same value plus `SITE_URL` as GitHub Actions repository variables to enable the post-CI IndexNow workflow. See `docs/deployment.md` for the one-time setup.
 
 For the choosing table and step-by-step setup of the three analytics tools (GA4 / Cloudflare Web Analytics / Clarity), see [the Turn On Ads lesson of the Learning Manual](/landing/docs/enable-ads), section "Optional: comments and analytics"; the full GSC walkthrough lives in [Get on Google](/landing/docs/get-on-google).
 
