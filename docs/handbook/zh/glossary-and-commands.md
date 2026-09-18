@@ -6,7 +6,7 @@ order: 32
 stage: "附录"
 icon: lucide:book-marked
 tldr: "两部分:①术语表——各课词卡按主题归拢(SEO 类/站务类/变现类/工程类);②命令速查——pnpm 命令按场景分组:写作(new-post/bulk-new-posts/sync-codes)、质检(check-content/check-links/build)、配置(check-config/apply-template/new-locale)、运营(refresh-audit/submit-indexnow)、资产(gen-covers/gen-assets)。每条一句话说明,忘了细节先来这里。"
-updated: 2026-09-06
+updated: 2026-09-18
 ---
 
 ## 术语表(按主题归拢)
@@ -87,7 +87,7 @@ pnpm template-audit     # 模板健康度(复制站前必跑)
 
 ```bash
 pnpm refresh-audit      # 保鲜审计,自报过期页
-pnpm submit-indexnow    # 全站 URL 推给 IndexNow(部署后跑)
+pnpm submit-indexnow    # IndexNow 手工检查/补推;配好环境变量后 main CI 成功会自动推送
 pnpm gen-covers         # 生成 og:image 封面(1200×675)
 pnpm gen-assets         # 按主题色重生成全套图标+首页图
 ```
