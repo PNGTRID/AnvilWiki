@@ -41,6 +41,10 @@ describe('IndexNow protocol helpers', () => {
     expect(isAcceptedIndexNowStatus(403)).toBe(false);
   });
 
+  test('CLI tolerates pnpm 11 forwarding the standalone script separator', () => {
+    const cli = readFileSync('scripts/submit-indexnow.ts', 'utf8');
+    expect(cli).toContain("if (arg === '--') continue;");
+  });
 
   test('postbuild emits both ownership and Cloudflare deployment markers when configured', () => {
     const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as {
