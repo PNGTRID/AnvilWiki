@@ -314,6 +314,8 @@ curl -I https://<你的域名>/privacy-policy/
 
    `pnpm build` 的 postbuild 会据此生成 `dist/<key>.txt`，所以生产站会出现 `https://你的域名/<key>.txt`。空值时不生成任何文件。
 
+   在 Cloudflare Pages 的 Git 构建里，同一步还会利用平台提供的 `CF_PAGES_COMMIT_SHA` 生成 `dist/.well-known/anvilwiki-deploy.txt`。这个小文件不进 sitemap，只用于让 GitHub Actions 判断**当前 commit 是否真的已经部署**；否则 key 文件早就存在时，自动任务可能在新部署完成前误读旧 sitemap。
+
 3. **在 GitHub 仓库配置 Actions Variables**（Settings → Secrets and variables → Actions → Variables）：
 
    ```text
@@ -325,8 +327,8 @@ curl -I https://<你的域名>/privacy-policy/
 
 4. 以后 `main` 的 push 通过 CI 后，`.github/workflows/indexnow.yml` 会自动：
    - 确认这是成功的 main push（PR CI 不推送）；
-   - 等待生产站 `/<key>.txt` 与配置值匹配，避免跑在 Cloudflare Pages 部署之前；
-   - 从生产域名读取 sitemap，只提交生产 URL；
+   - 等待生产站 `/.well-known/anvilwiki-deploy.txt` 变成当前 Git commit，再校验 `/<key>.txt`，不会误读上一次部署；
+   - 从生产域名读取 sitemap，只提交已经真正上线的生产 URL；
    - 对 429 / 5xx 做短暂重试。
    
    IndexNow 是变更通知，不等于保证抓取或收录；Google Search Console / sitemap 仍是独立链路。
