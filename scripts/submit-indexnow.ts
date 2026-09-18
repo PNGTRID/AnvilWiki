@@ -26,6 +26,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {
   extractSitemapLocs,
+  INDEXNOW_KEY_RE,
   indexNowKeyFileName,
   isAcceptedIndexNowStatus,
   normalizeIndexNowKey,
@@ -186,8 +187,8 @@ function detectCommittedKey(): { key: string; file: string } | null {
 
   for (const name of fs.readdirSync(PUBLIC_DIR)) {
     if (!name.endsWith('.txt')) continue;
-    const key = normalizeIndexNowKey(name.slice(0, -4));
-    if (!key) continue;
+    const key = name.slice(0, -4);
+    if (!INDEXNOW_KEY_RE.test(key)) continue;
 
     const content = fs.readFileSync(path.join(PUBLIC_DIR, name), 'utf8').trim();
     if (content === key) return { key, file: name };
@@ -313,7 +314,8 @@ async function main(): Promise<void> {
       : generateLocalKey());
 
   const key = keyInfo.key;
-  const keyLocation = `https://${host}/${indexNowKeyFileName(key)}`;
+  const sitemapOrigin = new URL(urls[0]).origin;
+  const keyLocation = `${sitemapOrigin}/${indexNowKeyFileName(key)}`;
 
   if (siteOrigin) {
     if (options.waitForKey) {
