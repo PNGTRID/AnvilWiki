@@ -33,7 +33,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "postbuild": "pagefind --site dist && node scripts/transpile-pagefind.mjs",
+    "postbuild": "pagefind --site dist && node scripts/transpile-pagefind.mjs && tsx scripts/write-indexnow-key.ts",
     "preview": "astro preview",
     "check": "astro check",
     "typecheck": "astro check",
