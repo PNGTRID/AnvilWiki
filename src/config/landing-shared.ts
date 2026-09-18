@@ -125,5 +125,4 @@ export const COMMUNITY_SITES: {
     descriptionZh:
       'Sandustry 的独立工厂自动化攻略站——配方、机器、生产链、世界种子、故障排查与抢先体验版本信息。',
   },
-
 ];
