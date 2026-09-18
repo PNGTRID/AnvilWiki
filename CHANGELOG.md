@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **IndexNow 环境变量化 + 成功 CI 后自动推送（opt-in）**：新增 `INDEXNOW_KEY` 配置，postbuild 仅在该值存在时生成 `dist/<key>.txt` 所有权文件；新增独立 `.github/workflows/indexnow.yml`，只在 `main` 的 push CI 成功后、且 GitHub Actions repository variables 同时配置 `SITE_URL` / `INDEXNOW_KEY` 时运行，等待 Cloudflare Pages 上相同 key 文件真实可达后读取**生产 sitemap**提交，PR CI 永不推送且 IndexNow 失败不阻断主 CI。默认空值保持模板零外部请求。
+- **IndexNow 环境变量化 + 成功 CI 后自动推送（opt-in）**：新增 `INDEXNOW_KEY` 配置，postbuild 仅在该值存在时生成 `dist/<key>.txt` 所有权文件；新增独立 `.github/workflows/indexnow.yml`，只在 `main` 的 push CI 成功后、且 GitHub Actions repository variables 同时配置 `SITE_URL` / `INDEXNOW_KEY` 时运行，等待 Cloudflare Pages 的 `/.well-known/anvilwiki-deploy.txt` 匹配当前 commit 后再校验相同 key 文件，并读取**生产 sitemap**提交，PR CI 永不推送且 IndexNow 失败不阻断主 CI。默认空值保持模板零外部请求。
 
 ### Changed
 
