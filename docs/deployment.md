@@ -224,6 +224,7 @@ Dashboard（方案 C）在 Pages → **Settings** → **Environment variables** 
 | 变量                        | 必填 | 说明                                                   |
 | --------------------------- | ---- | ------------------------------------------------------ |
 | `SITE_URL`                  | ✅   | 站点绝对 URL（含 `https://`，无尾斜杠），影响 sitemap/og:image/robots |
+| `INDEXNOW_KEY`              | 可选 | IndexNow 所有权 key；配置后构建输出 `/<key>.txt`，并可启用 GitHub Actions 自动推送 |
 | `NODE_VERSION`              | ✅   | 固定 `22`（pnpm 11 要求 ≥22.13）                       |
 | `PUBLIC_ADSENSE_CLIENT`      | 可选 | AdSense Publisher ID（`ca-pub-XXXXXXXXXXXXXXXX`）      |
 | `PUBLIC_ADSENSE_SLOT_STICKY` | 可选 | Sticky 粘顶横幅 slot ID                                |
@@ -293,7 +294,57 @@ curl -I https://<你的域名>/privacy-policy/
 
 3. **主动推送收录**：
    - **Cloudflare Crawler Hints**：Cloudflare 控制台 → 你的域名 → Caching → Crawler Hints 打开（免费，一行配置，让 Cloudflare 主动告诉谷歌你的内容更新了）
-   - **IndexNow 一键推送**：本仓库自带 `pnpm submit-indexnow`——构建部署后运行，它读取 `dist/` 的 sitemap 把全站 URL 主动推给 IndexNow（必应等搜索引擎）。首次运行会自动生成密钥文件 `public/<key>.txt`：把它提交并部署一次，再跑一遍命令即完成推送
+   - **IndexNow 自动推送（可选）**：推荐配置一次 `INDEXNOW_KEY`，之后每次 `main` 的 push CI 成功后由独立 workflow 等生产 key 文件上线，再读取**生产 sitemap**批量通知 IndexNow。未配置时完全不运行；`pnpm submit-indexnow` 仍保留作手工补推。
+
+#### IndexNow：推荐的一次性配置
+
+模板原本已经提供 `pnpm submit-indexnow` 手工命令。现在推荐把 key 配成环境变量，让所有 fork 都能用同一套「构建所有权文件 → 部署完成 → 自动推生产 sitemap」流程，而不用把每个站的随机 key 文件提交进模板。
+
+1. **生成一个站点自己的 key**（生成一次后长期复用，不要每次部署旋转）：
+
+   ```bash
+   openssl rand -hex 16
+   ```
+
+   IndexNow key 允许 8–128 位 `A-Z / a-z / 0-9 / -`。上面的命令只是生成一个符合规则的 32 位十六进制值。
+
+2. **把同一个 `INDEXNOW_KEY` 交给 Cloudflare 生产构建**：
+   - 保留 `wrangler.toml`：在 `[vars]` 中取消 `#INDEXNOW_KEY = ""` 的注释并填值。
+   - 已删除 `wrangler.toml`：在 Cloudflare Pages → Settings → Variables and Secrets 中新增 `INDEXNOW_KEY`。
+
+   `pnpm build` 的 postbuild 会据此生成 `dist/<key>.txt`，所以生产站会出现 `https://你的域名/<key>.txt`。空值时不生成任何文件。
+
+3. **在 GitHub 仓库配置 Actions Variables**（Settings → Secrets and variables → Actions → Variables）：
+
+   ```text
+   SITE_URL=https://你的域名
+   INDEXNOW_KEY=与 Cloudflare 完全相同的值
+   ```
+
+   这里故意用 Repository **Variables** 而不是把 key 写死进 workflow；每个 fork 都有自己的站点域名和 key。
+
+4. 以后 `main` 的 push 通过 CI 后，`.github/workflows/indexnow.yml` 会自动：
+   - 确认这是成功的 main push（PR CI 不推送）；
+   - 等待生产站 `/<key>.txt` 与配置值匹配，避免跑在 Cloudflare Pages 部署之前；
+   - 从生产域名读取 sitemap，只提交生产 URL；
+   - 对 429 / 5xx 做短暂重试。
+   
+   IndexNow 是变更通知，不等于保证抓取或收录；Google Search Console / sitemap 仍是独立链路。
+
+需要手工检查而不发送请求：
+
+```bash
+pnpm build
+INDEXNOW_KEY=你的key pnpm submit-indexnow -- --dry-run
+```
+
+需要手工补推已经上线的生产站：
+
+```bash
+INDEXNOW_KEY=你的key pnpm submit-indexnow -- --site https://你的域名 --wait-for-key
+```
+
+旧站如果已经有合法的 `public/<key>.txt`，手工命令仍会兼容读取；迁移到环境变量后无需再新增第二个 key。
 
 ### 性能验证
 
