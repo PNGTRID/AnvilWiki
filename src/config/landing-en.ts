@@ -18,7 +18,7 @@ export const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `AnvilWiki template update log (v${PROJECT_VERSION}): audit round 22 hardening — no high-confidence risks found across the day's changes. Two dev-facing refinements: the init workflow's python contract tests now skip cleanly (with a stated reason) on machines without python3 instead of failing, and home-preset link substitution stays on one page when one category feeds several slots. Forks: merge upstream and pnpm install as usual. This bar tracks template releases — details & full changelog on GitHub Releases.`,
+    text: `AnvilWiki template update log (v${PROJECT_VERSION}): audit round 23 — no high-confidence runtime risks in the day's changes. Trust fixes: the demo codes page body no longer describes expired codes as working (en+ja now match the four active codes end to end), the homepage codes module lists the full active set, and a new test suite fails CI when a freshness batch rotates codes without updating both surfaces. Forks: merge upstream and pnpm install as usual. This bar tracks template releases — details & full changelog on GitHub Releases.`,
     href: RELEASES,
     dismissLabel: 'Dismiss announcement',
   },

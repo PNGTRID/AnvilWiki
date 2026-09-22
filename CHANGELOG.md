@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.35.2] — 2026-09-22
+
+### Fixed
+
+- **demo codes 页正文与 frontmatter 自相矛盾根治**（第 23 轮 24h 只读风险审计发现①，中）：6622d58（#42，09-15）把 ANVIL-DAWN 按到期日翻过期时未同步正文，en/ja 正文首段自此宣称「三码有效含 ANVIL-DAWN（9月15日到期）」、验证日停在 2026-09-07，奖励表与序盤/中盤/周回三实例及兑换第 4 步仍以现在时推荐 FORGE-2026/EMBERBORN/ANVIL-DAWN 三个已过期码；18a99c1 摘要改「四码」后同页互斥升级。过期码被宣传为可用 = v2.35.0 中-2（首页高亮）同缺陷家族的正文面残留，四轮保鲜 CI 全绿实证无门禁可拦。现 en/ja 正文首段/兑换第 4 步/奖励表过期行/三实例/来源模式节全部对齐 frontmatter 四码口径：过期码过去时+年度复刻框架（与页内「historically returns each year」设定自洽），验证日 2026-09-22。
+- **首页 codes 高亮补齐第四个 active 码**（发现②，信息级）：en/ja.json `home.explore` badge-list 仍是 22 轮对齐时的三码，HEARTHFIRE-2026 缺席——高亮集落后于 codes 页 active 集，且 refresh-audit 只查「过期标 Active」「未知 label+过期日期」两个方向，缺席方向无检查。现两语言各补 HEARTHFIRE-2026（detail/expiry 逐字取自各语言 codes 页 frontmatter），恢复中-2 的「高亮集==active 集」对齐契约。
+
+### Added
+
+- **`tests/codes-consistency.test.ts`（第 22 套件）**：①home explore badge-list 高亮标签集 == codes 页 frontmatter active 集（en/ja 双向集合相等）——「保鲜批只轮换 codes 页不动首页高亮」从纯纪律变 CI 红灯；②codes 页正文验证日句（en "full test history for this pass is …"／ja「今回の検証日は…」）必须等于 frontmatter lastModified——「保鲜批只动 frontmatter 不动正文」同型漂移变红灯。两条契约均无时钟依赖不 flaky；验证日句缺席时优雅跳过、在而不可解析则红（对齐 refresh-audit 退化检查先例）。AGENTS 套件清单 21→22 同步。
+
 ## [2.35.1] — 2026-09-21
 
 ### Fixed
@@ -1302,7 +1313,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.35.1...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.35.2...HEAD
+[2.35.2]: https://github.com/PNGTRID/AnvilWiki/compare/v2.35.1...v2.35.2
 [2.35.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.35.0...v2.35.1
 [2.35.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.34.0...v2.35.0
 [2.34.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.33.1...v2.34.0
