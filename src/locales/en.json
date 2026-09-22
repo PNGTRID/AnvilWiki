@@ -224,6 +224,11 @@
           "displayType": "badge-list",
           "highlights": [
             {
+              "label": "HEARTHFIRE-2026",
+              "detail": "+600 Gold · expires Oct 31",
+              "badge": "Active"
+            },
+            {
               "label": "EMBERFALL-2026",
               "detail": "+400 Gold · expires Sep 30",
               "badge": "Active"
