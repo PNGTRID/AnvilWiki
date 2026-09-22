@@ -1,11 +1,44 @@
 {
   "schemaVersion": 2,
-  "updated": "2026-09-20",
+  "updated": "2026-09-22",
   "since": "2026-08-16",
   "categories": [
     {
       "id": "gold",
       "items": [
+        {
+          "date": "09-22",
+          "title": "Silent Hill Townfall 案例：埋点内卷、关键词变体与后发先至",
+          "detail": "大鹏发现 silenthill-townfall.wiki 是群友杨俊的站（谷歌趋势上涨中），引出全群大讨论：①大部分攻略站什么游戏都提前埋点（游戏刚有资讯就有单页面试探长尾词，用 .online/.guid 便宜域名拼概率）②关键词变体陷阱——「Silent Hill Townfall」少打一个空格就是另外一个词（光影世界因此发现自己监控机制的漏洞并修复）③主站关键词第一页被大站+官方占满，只能打长尾词 ④光影世界提出「后发先至」：SEO 搞得好排名可以追上来干首页 ⑤差异化方向：游戏工具/游戏卡牌/iframe 嵌套有门槛不好打。",
+          "tags": [
+            "SEO",
+            "关键词",
+            "内卷"
+          ],
+          "attrib": "大鹏"
+        },
+        {
+          "date": "09-22",
+          "title": "新案例：20 号加谷歌广告代码后 Adsterra 立刻被限制",
+          "detail": "杨俊实测：20 号加了谷歌广告代码并提交审核，21/22 号 Adsterra 后台就没了两天数据，申诉还被限制了账号功能。主理人对照自己模板账号仍有收益、另一个站已 30 刀，判断是平台风控误伤，并给出策略：『不要急，多注册一个账号用』『一个不行我们就换三个』，并表示这几天整理各广告平台做个对照。另附提现手续费银行对照：建行入汇无手续费、招行 5 刀、欧元无手续费。",
+          "tags": [
+            "Adsterra",
+            "AdSense",
+            "风控"
+          ],
+          "attrib": "杨俊"
+        },
+        {
+          "date": "09-21",
+          "title": "sandbox iframe 广告零曝光：七项排查清单+三步定位法",
+          "detail": "针对群友 sandbox 广告零曝光的权威排查清单（按概率排序）：①env 变量没生效（fork 最高频坑：wrangler.toml 的 PUBLIC_ADSTERRA_SLOT_* 为空连 iframe 都不渲染，dashboard 改无效、必须 push 部署）②广告 html 404（fork 初始化清了 demo 文件需重建）③广告格式不能塞 iframe（Social Bar/Popunder/Direct Link 必须顶层运行）④手写 iframe 手法错误 ⑤平台审核中 ⑥同意横幅没点 ⑦流量预期。三步定位：view-source 搜 /ads/ → 开 /ads/xxx.html → F12 看 invoke.js 请求。",
+          "tags": [
+            "sandbox",
+            "Adsterra",
+            "排查"
+          ],
+          "attrib": "袁锐钦Ruiqin"
+        },
         {
           "date": "09-20",
           "title": "新打法：游戏资源上传 R2 拉停留时长",
@@ -706,6 +739,12 @@
       "id": "qa",
       "items": [
         {
+          "date": "09-22",
+          "q": "外链自动发效果好还是手动发？",
+          "a": "正常都是手动居多；有效果的外链大多是付费的，免费的比较少。反机器人验证太多，自动发成功率极低。",
+          "attrib": "关东"
+        },
+        {
           "date": "09-20",
           "q": "新站建了 4 天，sitemap 有发现但未编入索引、0 曝光？",
           "a": "先在 GSC 点请求编入，有时候是 GSC 卡了、数据也不是实时的；新游戏（10 月才上线）搜索量本来就还没起来，词是需要时间的。另：一天新增 5 个站会引起 GSC 更谨慎的观察。",
@@ -1058,6 +1097,21 @@
       "id": "news",
       "items": [
         {
+          "date": "09-22",
+          "title": "Token 榜新增时间维度展示",
+          "detail": "Token 消耗报告增加具体时间显示，鼠标悬停到当天可显示当天具体消耗；矩阵等待动画编辑器（dot-motion-builder）已有人基于分享做出成品。"
+        },
+        {
+          "date": "09-21",
+          "title": "ZCode 宣布开源",
+          "detail": "主理人群内官宣 ZCode 开源：github.com/zai-org/ZCode。社群日常使用的 AI 编码工具走向开源。"
+        },
+        {
+          "date": "09-21",
+          "title": "Token 榜上线 Devin 支持（当天闭环）",
+          "detail": "小黑龙反馈 Token 榜对 Devin 的数据收集不对（自己这两天用 Devin 没统计进去），李木子补充统计工具自动升级不生效；主理人当场确认并加上的，18:06 宣布支持已上线。顺带科普：Devin Desktop 3.10.31 底层是 VS Code，SWE-2 模型基于 kimi-k3 后训练、免费用到 10 月中旬。"
+        },
+        {
           "date": "09-19",
           "title": "社区预告：项目管理+每日 SOP 功能",
           "detail": "主理人宣布社区将增加项目管理，后续补充常用 SOP——目标是『大家只要用模版，就知道每天需要做什么事情，然后可以直接让 agent 去读取每日需要完成的任务』。原准备单独做的产品决定合并进社区。"
@@ -1231,6 +1285,26 @@
     }
   ],
   "daily": [
+    {
+      "date": "2026-09-22",
+      "summary": "Silent Hill Townfall 案例引出游戏 wiki 埋点内卷与关键词变体大讨论（后发先至论）；杨俊加谷歌代码后 Adsterra 被限制的新案例；Token 榜时间维度上线。",
+      "topics": [
+        "SilentHill",
+        "关键词变体",
+        "Adsterra风控",
+        "Token榜"
+      ]
+    },
+    {
+      "date": "2026-09-21",
+      "summary": "主理人输出 sandbox 广告零曝光七项排查清单；ZCode 宣布开源；Token 榜 Devin 统计问题当天反馈当天修复。",
+      "topics": [
+        "sandbox排查",
+        "ZCode开源",
+        "Token榜",
+        "Devin"
+      ]
+    },
     {
       "date": "2026-09-20",
       "summary": "新人叶勇（哥飞社群一年没动手）进群被全群鞭策引出社群价值大讨论；R2 托游戏资源新打法、关键词理解论与外链 ROI 账；Adsterra 困局续集（主理人也 3 天 0 收益）。",
@@ -1581,6 +1655,87 @@
     }
   ],
   "reports": [
+    {
+      "date": "2026-09-22",
+      "stats": {
+        "messages": 190,
+        "speakers": 24,
+        "peakHour": "11:00-12:00",
+        "heat": "爆量"
+      },
+      "quotes": [
+        {
+          "text": "要追求后发先至。SEO 搞得好，后面排名一样可以追上来干首页",
+          "by": "光影世界"
+        },
+        {
+          "text": "等你发现流量稍有抬头的时候，这个词已经有一堆同行提前占坑了",
+          "by": "大鹏"
+        }
+      ],
+      "takeaways": [
+        "游戏 wiki 埋点内卷现状：游戏刚有资讯就有同行用便宜域名（.online/.guid）建单页面试探长尾词，拼概率",
+        "关键词变体陷阱：『Silent Hill Townfall』少打一个空格就是另一个词——监控与选词都要考虑变体",
+        "主关键词第一页被大站+官方占满时，只能打长尾词；但谷歌对不翻页也算曝光",
+        "找新词的逻辑是需求＞供给；游戏工具/卡牌/iframe 嵌套是有门槛的差异化方向",
+        "加谷歌广告代码后 Adsterra 可能立刻风控限制（杨俊新案例）；应对=多注册一个账号备用、平台多手准备",
+        "提现手续费银行对照：建行入汇无手续费、招行 5 刀、欧元路径无手续费"
+      ],
+      "qa": [
+        {
+          "q": "外链自动发效果好还是手动发？",
+          "a": "正常都是手动居多；有效果的外链大多是付费的，免费的成功率低（反机器人太多）",
+          "by": "关东"
+        }
+      ],
+      "resources": [],
+      "faq": [],
+      "topics": [
+        {
+          "title": "关键词变体陷阱：少一个空格就是另一个词",
+          "source": "Silent Hill Townfall 分词导致监控漏报的实操案例"
+        },
+        {
+          "title": "游戏 wiki 内卷时代的后发先至",
+          "source": "大鹏的行业埋点观察与光影世界的反命题"
+        }
+      ]
+    },
+    {
+      "date": "2026-09-21",
+      "stats": {
+        "messages": 72,
+        "speakers": 14,
+        "peakHour": "09:00-10:00",
+        "heat": "活跃"
+      },
+      "quotes": [],
+      "takeaways": [
+        "sandbox iframe 广告零曝光七项排查：env 变量/html 404/格式不适配 iframe/手写手法/平台审核/同意横幅/流量预期，三步定位法（view-source→开 html→F12）",
+        "sandbox 本身能正常跑广告（demo 站即 Banner+Native 塞 sandbox 实证），『隔离导致零曝光』大概率是挂载链路断了",
+        "AdSense 与其他广告网络共存是 Google 明确允许的；Popunder 是唯一硬性违规"
+      ],
+      "qa": [],
+      "resources": [
+        {
+          "title": "Devin Desktop",
+          "note": "编程工具（底层 VS Code），SWE-2 模型基于 kimi-k3 后训练、免费用到 10 月中旬",
+          "by": "小黑龙"
+        },
+        {
+          "title": "muse-spark-1.3-contributor",
+          "note": "Meta 旗下模型，opencode 调用量第 2；速度极快、质量 62 分，适合挂长任务采集清洗数据（有群友 7 天 15 亿 token）",
+          "by": "李木子（会员送 1）"
+        }
+      ],
+      "faq": [],
+      "topics": [
+        {
+          "title": "sandbox 广告零曝光的七项排查清单",
+          "source": "群友 sandbox 零曝光求助，主理人输出权威排查路径"
+        }
+      ]
+    },
     {
       "date": "2026-09-20",
       "stats": {
