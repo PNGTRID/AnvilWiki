@@ -43,10 +43,10 @@ Where to fill them in: pick one — the **Cloudflare dashboard** (Settings → V
 | `PUBLIC_GA_ID` | Google Analytics 4 | GA not loaded |
 | `PUBLIC_CF_BEACON_TOKEN` | Cloudflare's built-in analytics (no cookies) | Not loaded |
 | `PUBLIC_GSC_VERIFICATION` | Google Search Console verification code | No verification tag emitted |
-| `INDEXNOW_KEY` | IndexNow ownership + automatic production-sitemap notification | No key file; automatic IndexNow workflow stays off |
+| `INDEXNOW_KEY` | Legacy IndexNow key override for existing sites | New forks normally use committed `.indexnow-key`; leave this empty |
 | `PUBLIC_SPONSOR_URL` / `_IMAGE_URL` | Sponsor card | Sponsor card doesn't show |
 
-`INDEXNOW_KEY` is the one exception to the UI-render pattern above: it is a build/ops toggle. When set, postbuild emits `/<key>.txt`; configure the same value plus `SITE_URL` as GitHub Actions repository variables to enable the post-CI IndexNow workflow. See `docs/deployment.md` for the one-time setup.
+IndexNow no longer needs an environment variable on a normally initialized fork. `Initialize AnvilWiki` / `pnpm apply-template` creates `.indexnow-key` once; postbuild emits `/<key>.txt`, and the post-CI workflow reads the same committed file. `INDEXNOW_KEY` remains only as a compatibility override for existing env-backed sites. See `docs/deployment.md` for details.
 
 For the choosing table and step-by-step setup of the three analytics tools (GA4 / Cloudflare Web Analytics / Clarity), see [the Turn On Ads lesson of the Learning Manual](/landing/docs/enable-ads), section "Optional: comments and analytics"; the full GSC walkthrough lives in [Get on Google](/landing/docs/get-on-google).
 

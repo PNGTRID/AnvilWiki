@@ -45,7 +45,8 @@
 | demo Adsterra 单元页 | `public/ads/*.html` 中模板自带的 6 个 demo 单元 | **按内容里的 demo unit key 判定，不再只看文件名**；如果你已经把同名文件换成自己的 Adsterra snippet，重跑 `apply-template` / Initialize workflow 会保留它们 |
 | 项目官网 | `src/components/landing/`、`src/config/landing*.ts`（v2.31.1 起为门面 landing.ts + types/shared/en/zh 四模块）、`src/pages/landing*`（含站内文档中心 /landing/docs）、`src/pages/zh/landing*`（中文官网）、`public/images/showcase/`、`public/images/wechat-qr.jpg`、`public/_redirects`（手册旧 slug 301 重定向，只有 demo 的 /landing/docs 路由用得到） | fork 站不需要 AnvilWiki 项目自述页；`docs/handbook/` **markdown 源保留**当参考文档，只删路由 |
 | 官网回链 | `src/config/project.ts` 的 `landingLinkEnabled` 翻为 `false` | 页面 header 的"返回官网"按钮随删随关 |
-| demo 凭据 | `wrangler.toml` `[vars]` 重写：`SITE_URL` 换成你的域名，仍是 demo 占位的 Giscus/Sponsor/CF Analytics 键清空，AdSense/Adsterra 等可选槽留注释位。**重跑安全（value-aware）**：你已手改的值会被识别并原样保留（解析兼容行尾内联注释、单引号/双引号字面量与裸标量——`KEY = 42` 这类数字/布尔按字面保留、重写为双引号字符串），只有未改动的 demo 占位才重置 | 不重置的话，你站的评论区会指回官方仓库的 Discussions |
+| demo 凭据 | `wrangler.toml` `[vars]` 重写：`SITE_URL` 换成你的域名，仍是 demo 占位的 Giscus/Sponsor/CF Analytics/旧式 IndexNow env 键清空，AdSense/Adsterra 等可选槽留注释位。**重跑安全（value-aware）**：你已手改的值会被识别并原样保留（解析兼容行尾内联注释、单引号/双引号字面量与裸标量——`KEY = 42` 这类数字/布尔按字面保留、重写为双引号字符串），只有未改动的 demo 占位才重置 | 不重置的话，你站的评论区/统计等会继续指向 demo 配置 |
+| IndexNow 站点 key | 仓库根 `.indexnow-key` | 首次真实运行自动生成 64 位十六进制 key；重跑原样复用。key 按 IndexNow 协议本来就会公开为 `/<key>.txt`，不是 secret；build 和自动提交共同读取它，免 Cloudflare/GitHub 双份环境变量配置 |
 | demo 作者 | `src/config/authors.ts` 里 `// DEMO` 标记的作者条目 | 否则 Person JSON-LD 会引用虚构作者 |
 
 **保留不删（有意设计）**：favicon/hero 图等二进制资产（CLI 生成不了，脚手架下一步指引你手动换）；`docs/handbook/` 手册源码。
@@ -293,7 +294,8 @@ tags: ["boss", "guide"]
 □ hero 图是真实图片（非占位）
 □ 所有 MDX frontmatter 通过 Zod schema（pnpm build 不报错）
 □ sitemap URL 全部返回 200（pnpm check-sitemap）
-□ SITE_URL 环境变量已配（含 https:// 协议，改 wrangler.toml 或 dashboard —— 注意 wrangler.toml 存在时会接管 dashboard，见 [deployment.md](./deployment.md)）
+□ SITE_URL 已配（含 https:// 协议，改 wrangler.toml 或 dashboard —— 注意 wrangler.toml 存在时会接管 dashboard，见 [deployment.md](./deployment.md)）
+□ `.indexnow-key` 已由 apply-template 自动生成（无需另配 INDEXNOW_KEY；`pnpm build` 会生成对应 `dist/<key>.txt`）
 ```
 
 ---

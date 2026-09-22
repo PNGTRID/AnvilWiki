@@ -87,7 +87,7 @@ pnpm template-audit     # template health (mandatory before cloning)
 
 ```bash
 pnpm refresh-audit      # freshness audit; the site reports its own stale pages
-pnpm submit-indexnow    # manual IndexNow check/push; env-configured sites submit automatically after successful main CI
+pnpm submit-indexnow    # manual IndexNow check/push; initialized forks auto-submit after successful main CI
 pnpm gen-covers         # generate og:image covers (1200×675)
 pnpm gen-assets         # regenerate the icon set + homepage image from the theme color
 ```

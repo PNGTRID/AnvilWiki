@@ -14,15 +14,13 @@ concurrency:
 
 jobs:
   submit:
-    # Optional by default: forks that do not configure both repository
-    # variables pay zero runtime cost. Only successful PUSH builds on main
-    # can notify IndexNow; pull-request CI never submits URLs.
+    # Only successful PUSH builds on main can notify IndexNow; pull-request
+    # CI never submits URLs. Uninitialized forks stop after checkout/config
+    # detection, before installing dependencies or making external requests.
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_branch == 'main' &&
-      vars.SITE_URL != '' &&
-      vars.INDEXNOW_KEY != ''
+      github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -30,24 +28,68 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
+      - name: Detect IndexNow configuration
+        id: config
+        env:
+          LEGACY_SITE_URL: ${{ vars.SITE_URL }}
+          LEGACY_INDEXNOW_KEY: ${{ vars.INDEXNOW_KEY }}
+        run: |
+          set -euo pipefail
+          site_url=""
+          if [ -f wrangler.toml ]; then
+            site_url="$(sed -nE 's/^[[:space:]]*SITE_URL[[:space:]]*=[[:space:]]*"([^"]+)".*$/\1/p' wrangler.toml | head -n 1)"
+          fi
+          if [ -z "$site_url" ] && [ -f src/config/site.ts ]; then
+            domain="$(sed -nE "s/^[[:space:]]*domain:[[:space:]]*'([^']+)'.*$/\\1/p" src/config/site.ts | head -n 1)"
+            if [ -n "$domain" ]; then site_url="https://$domain"; fi
+          fi
+          if [ -z "$site_url" ]; then site_url="$LEGACY_SITE_URL"; fi
+
+          if [ -s .indexnow-key ]; then
+            key_source=file
+          elif [ -n "$LEGACY_INDEXNOW_KEY" ]; then
+            key_source=env
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "[IndexNow] Disabled: no .indexnow-key or legacy INDEXNOW_KEY repository variable."
+            exit 0
+          fi
+
+          if [ -z "$site_url" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "[IndexNow] Disabled: site URL is absent from repository config and legacy variables."
+            exit 0
+          fi
+
+          {
+            echo "enabled=true"
+            echo "site_url=$site_url"
+            echo "key_source=$key_source"
+          } >> "$GITHUB_OUTPUT"
+          echo "[IndexNow] Enabled (key source: $key_source)."
+
       - name: Setup pnpm
+        if: steps.config.outputs.enabled == 'true'
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6
         with:
           version: 11.1.1
           run_install: false
 
       - name: Setup Node
+        if: steps.config.outputs.enabled == 'true'
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
 
       - name: Install dependencies
+        if: steps.config.outputs.enabled == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Submit production sitemap to IndexNow
+        if: steps.config.outputs.enabled == 'true'
         env:
-          SITE_URL: ${{ vars.SITE_URL }}
+          SITE_URL: ${{ steps.config.outputs.site_url }}
           INDEXNOW_KEY: ${{ vars.INDEXNOW_KEY }}
           DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
         run: >-

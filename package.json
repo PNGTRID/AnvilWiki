@@ -50,6 +50,7 @@
     "sync-codes": "tsx scripts/sync-codes.ts",
     "gen-covers": "tsx scripts/gen-covers.ts",
     "gen-assets": "tsx scripts/gen-assets.ts",
+    "init-indexnow-key": "tsx scripts/init-indexnow-key.ts",
     "submit-indexnow": "tsx scripts/submit-indexnow.ts",
     "template-audit": "tsx scripts/template-audit.ts",
     "new-locale": "tsx scripts/new-locale.ts",

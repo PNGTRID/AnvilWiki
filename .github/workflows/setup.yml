@@ -3,11 +3,12 @@
 # Run this ONCE from your fork's Actions tab ("Initialize AnvilWiki" → Run workflow).
 # Safe-to-automate, non-interactive steps only:
 #   1. Reset wrangler.toml [vars] to your domain (SITE_URL) + clear demo Giscus values
-#   2. Remove the project landing page (fork users don't need it)
-#   3. Optionally clear demo wiki articles (default: yes — content-aware:
+#   2. Generate one stable .indexnow-key (re-runs reuse it; no env setup needed)
+#   3. Remove the project landing page (fork users don't need it)
+#   4. Optionally clear demo wiki articles (default: yes — content-aware:
 #      demo-marked articles are deleted; YOUR OWN articles survive a re-run
 #      and are reported one by one)
-#   4. Open a PR with the changes for you to review
+#   5. Open a PR with the changes for you to review
 #
 # What this does NOT do (run `pnpm apply-template` locally for these):
 #   game name / theme color / locales / homepage copy — see docs/apply-template.md.
@@ -70,7 +71,7 @@ jobs:
           new_vars = '''[vars]
           # Site (must include https:// protocol — Astro validates this as a URL)
           SITE_URL = "__SITE_URL__"
-          # IndexNow ownership key — blank = disabled; set the same value in GitHub Actions vars.
+          # Legacy IndexNow override — new forks use .indexnow-key automatically.
           #INDEXNOW_KEY = ""
           # Giscus comments — blank = disabled until you fill your own values.
           PUBLIC_GISCUS_REPO = ""
@@ -313,6 +314,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Initialize stable IndexNow key
+        run: |
+          # A workflow re-run can happen before the previous init PR is merged.
+          # In that case main still has no .indexnow-key, so recover the key
+          # from the existing init branch before calling the idempotent helper.
+          if [ ! -e .indexnow-key ]; then
+            git fetch origin chore/init-from-template:refs/remotes/origin/chore/init-from-template 2>/dev/null || true
+            if git show origin/chore/init-from-template:.indexnow-key > /tmp/anvilwiki-indexnow-key 2>/dev/null; then
+              mv /tmp/anvilwiki-indexnow-key .indexnow-key
+              echo "[IndexNow] Recovered .indexnow-key from the existing init branch."
+            else
+              rm -f /tmp/anvilwiki-indexnow-key
+            fi
+          fi
+          pnpm init-indexnow-key
+
       # Content-aware demo article clearing (single-sourced with apply-template
       # via scripts/lib/apply-rewrites.ts). Must run AFTER install (tsx needs
       # node_modules) and BEFORE build: demo articles carry demo categories the
@@ -357,7 +374,7 @@ jobs:
             echo "PR already exists — leaving the existing one open."
           else
             gh pr create --title "Initialize AnvilWiki for your game" \
-              --body "Automated by the Initialize AnvilWiki workflow. wrangler.toml [vars] reset to ${SITE_URL_INPUT} (demo Giscus cleared); project landing page removed. Next: run pnpm apply-template locally for game name / theme / locales, then connect Cloudflare Pages (docs/deployment.md)."
+              --body "Automated by the Initialize AnvilWiki workflow. wrangler.toml [vars] reset to ${SITE_URL_INPUT} (demo Giscus cleared); stable .indexnow-key generated; project landing page removed. Next: run pnpm apply-template locally for game name / theme / locales, then connect Cloudflare Pages (docs/deployment.md)."
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

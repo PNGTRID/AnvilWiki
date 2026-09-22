@@ -224,7 +224,7 @@ Dashboard（方案 C）在 Pages → **Settings** → **Environment variables** 
 | 变量                        | 必填 | 说明                                                   |
 | --------------------------- | ---- | ------------------------------------------------------ |
 | `SITE_URL`                  | ✅   | 站点绝对 URL（含 `https://`，无尾斜杠），影响 sitemap/og:image/robots |
-| `INDEXNOW_KEY`              | 可选 | IndexNow 所有权 key；配置后构建输出 `/<key>.txt`，并可启用 GitHub Actions 自动推送 |
+| `INDEXNOW_KEY`              | 兼容 | 旧站的 IndexNow key 环境变量覆盖；新 fork 初始化时自动生成 `.indexnow-key`，无需配置 |
 | `NODE_VERSION`              | ✅   | 固定 `22`（pnpm 11 要求 ≥22.13）                       |
 | `PUBLIC_ADSENSE_CLIENT`      | 可选 | AdSense Publisher ID（`ca-pub-XXXXXXXXXXXXXXXX`）      |
 | `PUBLIC_ADSENSE_SLOT_STICKY` | 可选 | Sticky 粘顶横幅 slot ID                                |
@@ -294,63 +294,54 @@ curl -I https://<你的域名>/privacy-policy/
 
 3. **主动推送收录**：
    - **Cloudflare Crawler Hints**：Cloudflare 控制台 → 你的域名 → Caching → Crawler Hints 打开（免费，一行配置，让 Cloudflare 主动告诉谷歌你的内容更新了）
-   - **IndexNow 自动推送（可选）**：推荐配置一次 `INDEXNOW_KEY`，之后每次 `main` 的 push CI 成功后由独立 workflow 等生产 key 文件上线，再读取**生产 sitemap**批量通知 IndexNow。未配置时完全不运行；`pnpm submit-indexnow` 仍保留作手工补推。
+   - **IndexNow 自动推送（初始化后零配置）**：`Initialize AnvilWiki` 或本地 `pnpm apply-template` 会为每个 fork 生成一次稳定的 `.indexnow-key`。之后每次 `main` 的 push CI 成功，独立 workflow 会等当前生产部署和 key 文件上线，再读取**生产 sitemap**批量通知 IndexNow；不需要再给 Cloudflare / GitHub 各配一份 `INDEXNOW_KEY`。
 
-#### IndexNow：推荐的一次性配置
+#### IndexNow：新 fork 默认零配置
 
-模板原本已经提供 `pnpm submit-indexnow` 手工命令。现在推荐把 key 配成环境变量，让所有 fork 都能用同一套「构建所有权文件 → 部署完成 → 自动推生产 sitemap」流程，而不用把每个站的随机 key 文件提交进模板。
+新 fork 不需要再手工生成 key，也不需要分别去 Cloudflare 和 GitHub 配 `INDEXNOW_KEY`。模板把 IndexNow 的站点身份固定成仓库根目录的 `.indexnow-key`：
 
-1. **生成一个站点自己的 key**（生成一次后长期复用，不要每次部署旋转）：
+1. **初始化时只生成一次**
+   - 网页端：运行 **Initialize AnvilWiki**，初始化 PR 会自动带上 `.indexnow-key`。
+   - 本地：运行 `pnpm apply-template`，脚本会在文件不存在时自动生成。
+   - 两个入口都使用同一套「存在就复用」规则，重跑不会轮换 key。
 
-   ```bash
-   openssl rand -hex 16
-   ```
+   这个 key **不是秘密**：IndexNow 协议本来就要求把它以 `/<key>.txt` 公开在站点上。提交 `.indexnow-key` 的目的，是让构建和 GitHub Actions 共享同一个明确来源，而不是再扫描 `public/*.txt` 猜哪个文件是 key。
 
-   IndexNow key 允许 8–128 位 `A-Z / a-z / 0-9 / -`。上面的命令只是生成一个符合规则的 32 位十六进制值。
+2. **构建自动发布所有权文件**
 
-2. **把同一个 `INDEXNOW_KEY` 交给 Cloudflare 生产构建**：
-   - 保留 `wrangler.toml`：在 `[vars]` 中取消 `#INDEXNOW_KEY = ""` 的注释并填值。
-   - 已删除 `wrangler.toml`：在 Cloudflare Pages → Settings → Variables and Secrets 中新增 `INDEXNOW_KEY`。
+   `pnpm build` 的 postbuild 会优先读取 `.indexnow-key`，并输出 `dist/<key>.txt`。存量站如果还在使用 `INDEXNOW_KEY` / 本地 `.env`，仍然可以继续使用，作为向后兼容通道。
 
-   `pnpm build` 的 postbuild 会据此生成 `dist/<key>.txt`，所以生产站会出现 `https://你的域名/<key>.txt`。空值时不生成任何文件。
+   Cloudflare Pages 构建还会利用平台提供的 `CF_PAGES_COMMIT_SHA` 生成 `dist/.well-known/anvilwiki-deploy.txt`。这个文件不进 sitemap，只用于证明**当前 Git commit 已经真正上线**，避免自动任务误读上一次部署的 sitemap。
 
-   在 Cloudflare Pages 的 Git 构建里，同一步还会利用平台提供的 `CF_PAGES_COMMIT_SHA` 生成 `dist/.well-known/anvilwiki-deploy.txt`。这个小文件不进 sitemap，只用于让 GitHub Actions 判断**当前 commit 是否真的已经部署**；否则 key 文件早就存在时，自动任务可能在新部署完成前误读旧 sitemap。
+3. **GitHub Actions 自动找配置，不要求 Repository Variables**
 
-3. **在 GitHub 仓库配置 Actions Variables**（Settings → Secrets and variables → Actions → Variables）：
+   `.github/workflows/indexnow.yml` 在成功的 `main` push CI 后会：
+   - 优先读取仓库里的 `.indexnow-key`；没有时才兼容旧的 `INDEXNOW_KEY` Repository Variable；
+   - 站点地址优先从 `wrangler.toml` 读取，其次从 `src/config/site.ts` 的 `domain` 推导；只有仓库配置无法解析时才兼容旧的 `SITE_URL` Repository Variable；
+   - 如果 key 或站点地址都找不到，在 checkout/检测阶段就退出，不安装依赖，也不发送 IndexNow 请求；
+   - 等生产站 `/.well-known/anvilwiki-deploy.txt` 匹配当前 commit，再校验 `/<key>.txt`；
+   - 读取生产 sitemap，只提交已经真正上线的 URL，并对 429 / 5xx 做短暂重试。
 
-   ```text
-   SITE_URL=https://你的域名
-   INDEXNOW_KEY=与 Cloudflare 完全相同的值
-   ```
+   所以按正常初始化流程创建的新站，**IndexNow 不需要任何额外环境变量配置**。IndexNow 只是变更通知，不保证抓取或收录；Google Search Console / sitemap 仍是独立链路。
 
-   这里故意用 Repository **Variables** 而不是把 key 写死进 workflow；每个 fork 都有自己的站点域名和 key。
+**旧站兼容**：已经使用 `INDEXNOW_KEY` 的站不需要立刻迁移，环境变量和本地 `.env` 仍然有效。迁移时可以运行一次 `pnpm init-indexnow-key` 生成仓库文件，确认部署正常后再删除旧环境变量。
 
-4. 以后 `main` 的 push 通过 CI 后，`.github/workflows/indexnow.yml` 会自动：
-   - 确认这是成功的 main push（PR CI 不推送）；
-   - 等待生产站 `/.well-known/anvilwiki-deploy.txt` 变成当前 Git commit，再校验 `/<key>.txt`，不会误读上一次部署；
-   - 从生产域名读取 sitemap，只提交已经真正上线的生产 URL；
-   - 对 429 / 5xx 做短暂重试。
-   
-   IndexNow 是变更通知，不等于保证抓取或收录；Google Search Console / sitemap 仍是独立链路。
-
-**key 轮换**：`INDEXNOW_KEY` 的活跃副本共三处——Cloudflare 生产构建（`wrangler.toml` 的 `[vars]`，或 dashboard Variables）、GitHub 仓库 Actions variable、本地 `.env`（手工命令会自动读取 `.env`，无需手动 export）。轮换时三处必须同步更新：Cloudflare 侧与 Actions variable 任一侧漏改，自动推送都会因「等不到对应 `<key>.txt` 上线」响亮失败（有重试与超时，不会静默提交）；本地 `.env` 漏改只影响手工命令。
-
-**轮换第四处：已部署的旧 key 文件本身。** 旧 key 的 `<key>.txt` 只要还挂在你的域名根路径，旧 key 就是一天有效的所有权凭据——而它早已随提交进入 git 历史，等于永久公开。轮换（或从旧版「手工生成 key 文件」流程迁移到环境变量）时，必须把 `public/<key>.txt` 一并删除并部署；模板已不再携带任何 key 文件，本条只影响曾用旧流程提交过 key 文件的存量站。
+**key 轮换**：正常情况下不用轮换。如果确实需要换 key，删除 `.indexnow-key` 后运行 `pnpm init-indexnow-key`，提交新文件并部署即可。旧版曾提交到 `public/<key>.txt` 的站，还应删除那个旧文件；只要旧 `/<key>.txt` 仍在线，旧 key 就仍可用于该域名。
 
 需要手工检查而不发送请求：
 
 ```bash
 pnpm build
-INDEXNOW_KEY=你的key pnpm submit-indexnow -- --dry-run
+pnpm submit-indexnow -- --dry-run
 ```
 
 需要手工补推已经上线的生产站：
 
 ```bash
-INDEXNOW_KEY=你的key pnpm submit-indexnow -- --site https://你的域名 --wait-for-key
+pnpm submit-indexnow -- --site https://你的域名 --wait-for-key
 ```
 
-手工命令要求已配置 `INDEXNOW_KEY`（环境变量或项目根目录 `.env`，与生产构建同一个值）。旧版的「运行时自动生成 `public/<key>.txt` 并扫描已有 key 文件」兼容通道已在 v2.34.0 移除——扫描 public/ 会捡到过期或他站的 key 文件（第 21 轮审计实证：demo 旧 key 文件曾被本地运行静默选中）；生成式流程早已被环境变量流程取代。
+这两个命令会直接读取 `.indexnow-key`；存量站没有该文件时才回退到旧的 `INDEXNOW_KEY` / `.env`。v2.34.0 删除的 `public/*.txt` 扫描通道**不会恢复**——第 21 轮审计已经实证这种模糊扫描可能静默捡到 demo 或过期 key。
 
 ### 性能验证
 

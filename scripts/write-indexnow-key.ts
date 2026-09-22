@@ -1,25 +1,26 @@
 /**
  * Emit the IndexNow ownership file into dist/ during postbuild.
  *
- * INDEXNOW_KEY is intentionally a build-time variable: every fork/site gets
- * its own key without committing a generated <key>.txt file to the template.
- * When unset, this script is a no-op and the default template stays clean.
+ * New forks read the stable committed .indexnow-key generated during template
+ * initialization. Existing sites may keep using INDEXNOW_KEY / local .env as a
+ * backward-compatible fallback. No key source means IndexNow stays disabled.
  */
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { indexNowKeyFileName, loadLocalEnv, normalizeIndexNowKey } from './lib/indexnow';
+import {
+  indexNowKeyFileName,
+  loadLocalEnv,
+  resolveIndexNowKey,
+} from './lib/indexnow';
 
 const dist = path.resolve(process.cwd(), 'dist');
 
-// tsx does not read .env (unlike astro/Vite) — without this loader the
-// documented "local .env" copy of INDEXNOW_KEY never reached the postbuild
-// emission and only real CI/Cloudflare builds emitted the key file.
 loadLocalEnv();
-const key = normalizeIndexNowKey(process.env.INDEXNOW_KEY);
+const found = resolveIndexNowKey();
 
-if (!key) {
-  console.log('[IndexNow] INDEXNOW_KEY not configured; key file emission skipped.');
+if (!found) {
+  console.log('[IndexNow] No .indexnow-key or legacy INDEXNOW_KEY configured; key file emission skipped.');
   process.exit(0);
 }
 
@@ -27,15 +28,14 @@ if (!fs.existsSync(dist)) {
   throw new Error('dist/ does not exist; write-indexnow-key must run after the Astro build.');
 }
 
-const filename = indexNowKeyFileName(key);
+const filename = indexNowKeyFileName(found.key);
 const target = path.join(dist, filename);
-fs.writeFileSync(target, key, 'utf8');
-console.log(`[IndexNow] Wrote dist/${filename}`);
+fs.writeFileSync(target, found.key, 'utf8');
+console.log(`[IndexNow] Wrote dist/${filename} (source: ${found.source})`);
 
 // Cloudflare Pages exposes the Git commit SHA to the production build. Publish
 // it as a tiny no-sitemap marker so the post-CI workflow can distinguish the
 // NEW deployment from the previous one before reading the production sitemap.
-// Without this, an already-live key file would make every later run race Pages.
 const commitSha = process.env.CF_PAGES_COMMIT_SHA?.trim();
 if (commitSha) {
   if (!/^[0-9a-f]{40}$/i.test(commitSha)) {

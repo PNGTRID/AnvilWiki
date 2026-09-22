@@ -10,13 +10,12 @@
  *      Automation adds --wait-for-deploy <sha> + --wait-for-key so a Pages
  *      deployment is proven live before submission.
  *
- * Key: INDEXNOW_KEY environment variable, required in BOTH modes. A local
- * .env file is loaded automatically (tsx does not read .env on its own);
- * real environment values win over .env. There is deliberately NO key-file
- * fallback: scanning public/*.txt made a local run adopt whatever committed
- * key file it found — audit round 21 caught that path submitting under the
- * demo site's retired key, and the generate-and-commit flow it served was
- * superseded by the env-backed flow (v2.33.0).
+ * Key source:
+ *   1. .indexnow-key generated once during fork initialization (new default).
+ *   2. Legacy INDEXNOW_KEY environment variable / local .env (compatibility).
+ *
+ * There is deliberately NO public/*.txt scanning fallback: audit round 21
+ * proved that ambiguous scan could silently adopt a retired demo-site key.
  *
  * Usage:
  *   pnpm submit-indexnow
@@ -32,7 +31,7 @@ import {
   indexNowKeyFileName,
   isAcceptedIndexNowStatus,
   loadLocalEnv,
-  normalizeIndexNowKey,
+  resolveIndexNowKey,
   normalizeSiteOrigin,
 } from './lib/indexnow';
 
@@ -191,12 +190,6 @@ async function collectRemoteUrls(siteOrigin: string): Promise<string[]> {
   return [...urls].sort();
 }
 
-/** Resolve the ownership key from the environment (env vars + local .env). */
-function configuredKey(): { key: string; source: 'env' } | null {
-  const envKey = normalizeIndexNowKey(process.env.INDEXNOW_KEY);
-  return envKey ? { key: envKey, source: 'env' } : null;
-}
-
 function assertSingleHost(urls: string[]): string {
   if (urls.length === 0) throw new Error('No URLs found in sitemap — nothing to push.');
 
@@ -253,7 +246,7 @@ async function waitForLiveKey(siteOrigin: string, key: string, waitSeconds: numb
     if (await keyIsLive(siteOrigin, key)) return;
     if (Date.now() >= deadline) {
       throw new Error(
-        `IndexNow key file is not live at ${siteOrigin}/${indexNowKeyFileName(key)} after ${waitSeconds}s. Configure INDEXNOW_KEY in the production build and redeploy.`,
+        `IndexNow key file is not live at ${siteOrigin}/${indexNowKeyFileName(key)} after ${waitSeconds}s. Ensure .indexnow-key (or legacy INDEXNOW_KEY) is available to the production build and redeploy.`,
       );
     }
     await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
@@ -311,25 +304,22 @@ async function main(): Promise<void> {
     `[IndexNow] ${siteOrigin ? 'production' : 'local build'} sitemap: ${urls.length} URL(s), host ${host}`,
   );
 
-  const found = configuredKey();
+  const found = resolveIndexNowKey(ROOT);
 
   if (options.dryRun) {
     for (const url of urls) console.log(url);
     console.log(
       found
         ? `[IndexNow] Key source: ${found.source}`
-        : '[IndexNow] No INDEXNOW_KEY configured (environment or .env) — a real run would fail. See docs/deployment.md.',
+        : '[IndexNow] No .indexnow-key or legacy INDEXNOW_KEY configured — a real run would fail. Run template initialization or see docs/deployment.md.',
     );
     return;
   }
 
   if (!found) {
     throw new Error(
-      'INDEXNOW_KEY is not configured (environment or local .env). ' +
-        (siteOrigin
-          ? 'Production mode requires the same key the production build deploys.'
-          : 'Set it to the key your build emits at /<key>.txt — the old generate-and-commit flow was removed in v2.34.0.') +
-        ' See docs/deployment.md.',
+      'No IndexNow key is configured. New forks should run Initialize AnvilWiki or pnpm apply-template once to create .indexnow-key. ' +
+        'Existing sites may keep using legacy INDEXNOW_KEY / .env. See docs/deployment.md.',
     );
   }
 
@@ -343,7 +333,7 @@ async function main(): Promise<void> {
       await waitForLiveKey(siteOrigin, key, options.waitSeconds);
     } else if (!(await keyIsLive(siteOrigin, key))) {
       throw new Error(
-        `IndexNow key file is not live at ${keyLocation}. Deploy the build with the same INDEXNOW_KEY first.`,
+        `IndexNow key file is not live at ${keyLocation}. Deploy the build with the same .indexnow-key (or legacy INDEXNOW_KEY) first.`,
       );
     }
   }
