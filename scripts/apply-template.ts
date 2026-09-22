@@ -37,6 +37,7 @@ import { todayIso } from './lib/today';
 import { hexToHsl as hexToHslPure, hslToHex } from '~/lib/covers';
 import * as path from 'node:path';
 import { createLinePrompt, type LinePrompt } from './lib/prompt';
+import { ensureRepositoryIndexNowKey, loadLocalEnv } from './lib/indexnow';
 import { containsControlChar } from './lib/delimited';
 import { walkDirs, walkFiles } from './lib/walk';
 import {
@@ -796,6 +797,7 @@ async function main() {
   console.log(`     - src/locales/{${uniqueLocales.join(',')}}.json`);
   console.log('     - public/manifest.json');
   console.log('     - wrangler.toml ([vars] reset to your domain, demo Giscus cleared)');
+  console.log('     - .indexnow-key (generated once if this site does not have one)');
 
   if (!DRY_RUN) {
     const proceed = await askBool(rl, '\nProceed with these changes?', false);
@@ -907,6 +909,16 @@ async function main() {
   if (wrangler !== null) {
     write('wrangler.toml', wrangler);
     console.log('   ✅ wrangler.toml ([vars] reset — demo Giscus config cleared)');
+  }
+
+  if (!DRY_RUN) {
+    loadLocalEnv();
+    const indexNow = ensureRepositoryIndexNowKey(ROOT);
+    console.log(
+      indexNow.created
+        ? `   ✅ .indexnow-key (${indexNow.source === 'generated' ? 'generated once for this site' : 'migrated from existing config'})`
+        : '   ✅ .indexnow-key (existing site key preserved)',
+    );
   }
 
   // Reset the demo author registry so fork sites don't inherit demo authors.

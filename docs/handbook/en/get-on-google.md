@@ -49,8 +49,8 @@ Two more things happen automatically — no action from you: **once you buy your
 ### Step 4: Push your whole site with IndexNow
 
 **What it is**: a free protocol that lets you tell Bing and other search engines "come crawl these URLs" — no waiting for their crawlers to wander in.
-**Recommended first**: set the `INDEXNOW_KEY` variable (and `SITE_URL`) as described in the deployment guide — after that, every successful CI run on `main` submits the production sitemap automatically. The manual command below stays available as a one-off top-up.
-**How to do it**: this template ships a command for it, `pnpm submit-indexnow` (run it in the project root). It reads the sitemap you just built and pushes every URL on the site in one shot. It needs `INDEXNOW_KEY` set first (environment or the project's `.env` — same value your production build uses; the deployment guide has the one-time setup), and your build must have run so the key file exists in `dist/`.
+**Recommended first**: run the normal site initialization. `Initialize AnvilWiki` or `pnpm apply-template` creates `.indexnow-key` once; every successful CI run on `main` can then submit the production sitemap automatically without extra IndexNow variables.
+**How to do it**: for a manual top-up, run `pnpm build` and then `pnpm submit-indexnow`. The command reads the sitemap and the repository-backed key. For an already deployed site, use `pnpm submit-indexnow -- --site-from-config --wait-for-key`.
 **When to run it**: after each new batch of pages is deployed. It takes seconds.
 **One note**: Google doesn't take part in IndexNow (it only listens to the GSC flow), so this mainly speeds up Bing and the other engines; on the Google side, Steps 2 and 3 above are what matter.
 

@@ -87,7 +87,7 @@ pnpm template-audit     # 模板健康度(复制站前必跑)
 
 ```bash
 pnpm refresh-audit      # 保鲜审计,自报过期页
-pnpm submit-indexnow    # IndexNow 手工检查/补推;配好环境变量后 main CI 成功会自动推送
+pnpm submit-indexnow    # IndexNow 手工检查/补推;站点初始化后 main CI 成功会自动推送
 pnpm gen-covers         # 生成 og:image 封面(1200×675)
 pnpm gen-assets         # 按主题色重生成全套图标+首页图
 ```

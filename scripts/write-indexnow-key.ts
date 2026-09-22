@@ -1,25 +1,24 @@
 /**
  * Emit the IndexNow ownership file into dist/ during postbuild.
  *
- * INDEXNOW_KEY is intentionally a build-time variable: every fork/site gets
- * its own key without committing a generated <key>.txt file to the template.
- * When unset, this script is a no-op and the default template stays clean.
+ * New forks keep one stable site key in .indexnow-key. Legacy INDEXNOW_KEY
+ * remains supported for existing sites, but build-time code never invents or
+ * rotates a key: generation belongs only to explicit site initialization.
  */
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { indexNowKeyFileName, loadLocalEnv, normalizeIndexNowKey } from './lib/indexnow';
+import { indexNowKeyFileName, loadLocalEnv, resolveIndexNowKey } from './lib/indexnow';
 
-const dist = path.resolve(process.cwd(), 'dist');
+const root = process.cwd();
+const dist = path.resolve(root, 'dist');
 
-// tsx does not read .env (unlike astro/Vite) — without this loader the
-// documented "local .env" copy of INDEXNOW_KEY never reached the postbuild
-// emission and only real CI/Cloudflare builds emitted the key file.
 loadLocalEnv();
-const key = normalizeIndexNowKey(process.env.INDEXNOW_KEY);
+const resolved = resolveIndexNowKey(root);
+const key = resolved?.key;
 
 if (!key) {
-  console.log('[IndexNow] INDEXNOW_KEY not configured; key file emission skipped.');
+  console.log('[IndexNow] No .indexnow-key or legacy INDEXNOW_KEY configured; key file emission skipped.');
   process.exit(0);
 }
 

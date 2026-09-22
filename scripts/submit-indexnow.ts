@@ -4,19 +4,15 @@
  * Push sitemap URLs to IndexNow (https://indexnow.org) — Bing & other
  * participating search engines. Google is not part of IndexNow.
  *
- * Two modes:
+ * Modes:
  *   1. Local build (default): read URLs from dist/sitemap-index.xml.
  *   2. Production: --site https://example.com reads the deployed sitemap.
- *      Automation adds --wait-for-deploy <sha> + --wait-for-key so a Pages
- *      deployment is proven live before submission.
+ *   3. Automation: --site-from-config resolves SITE_URL from repository config.
  *
- * Key: INDEXNOW_KEY environment variable, required in BOTH modes. A local
- * .env file is loaded automatically (tsx does not read .env on its own);
- * real environment values win over .env. There is deliberately NO key-file
- * fallback: scanning public/*.txt made a local run adopt whatever committed
- * key file it found — audit round 21 caught that path submitting under the
- * demo site's retired key, and the generate-and-commit flow it served was
- * superseded by the env-backed flow (v2.33.0).
+ * Key source: .indexnow-key for initialized forks, with INDEXNOW_KEY kept only
+ * as a legacy compatibility source. There is deliberately NO public/*.txt
+ * scanning and no submit-time generation: one stable key is created during
+ * explicit site initialization and reused until the maintainer rotates it.
  *
  * Usage:
  *   pnpm submit-indexnow
@@ -27,13 +23,15 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { siteUrl as configuredSiteUrl } from '../src/config/site';
 import {
   extractSitemapLocs,
   indexNowKeyFileName,
   isAcceptedIndexNowStatus,
   loadLocalEnv,
-  normalizeIndexNowKey,
   normalizeSiteOrigin,
+  resolveIndexNowKey,
+  resolveRepositorySiteOrigin,
 } from './lib/indexnow';
 
 const ROOT = process.cwd();
@@ -46,6 +44,7 @@ const POLL_INTERVAL_MS = 5_000;
 interface CliOptions {
   dryRun: boolean;
   site: string | null;
+  siteFromConfig: boolean;
   waitForDeploy: string | null;
   waitForKey: boolean;
   waitSeconds: number;
@@ -57,9 +56,11 @@ function usage(): string {
     '  pnpm submit-indexnow',
     '  pnpm submit-indexnow -- --dry-run',
     '  pnpm submit-indexnow -- --site https://example.com --wait-for-key',
+    '  pnpm submit-indexnow -- --site-from-config --wait-for-key',
     '',
     'Options:',
     '  --site <origin>       Read the deployed sitemap instead of dist/.',
+    '  --site-from-config    Resolve production origin from SITE_URL/wrangler/site.ts.',
     '  --wait-for-key        Wait for the production key file before submit.',
     '  --wait-for-deploy <sha> Wait until Cloudflare serves this exact Git SHA.',
     '  --wait-seconds <n>    Max wait time (default: 300).',
@@ -71,6 +72,7 @@ function parseArgs(argv: string[]): CliOptions {
   const options: CliOptions = {
     dryRun: false,
     site: null,
+    siteFromConfig: false,
     waitForDeploy: null,
     waitForKey: false,
     waitSeconds: DEFAULT_WAIT_SECONDS,
@@ -81,6 +83,7 @@ function parseArgs(argv: string[]): CliOptions {
     if (arg === '--') continue;
     if (arg === '--dry-run') options.dryRun = true;
     else if (arg === '--wait-for-key') options.waitForKey = true;
+    else if (arg === '--site-from-config') options.siteFromConfig = true;
     else if (arg === '--wait-for-deploy') options.waitForDeploy = argv[++index] ?? null;
     else if (arg === '--site') options.site = argv[++index] ?? null;
     else if (arg === '--wait-seconds') {
@@ -98,8 +101,11 @@ function parseArgs(argv: string[]): CliOptions {
     }
   }
 
-  if ((options.waitForKey || options.waitForDeploy) && !options.site) {
-    throw new Error('--wait-for-key/--wait-for-deploy require --site <origin>.');
+  if (options.site && options.siteFromConfig) {
+    throw new Error('Use either --site <origin> or --site-from-config, not both.');
+  }
+  if ((options.waitForKey || options.waitForDeploy) && !options.site && !options.siteFromConfig) {
+    throw new Error('--wait-for-key/--wait-for-deploy require --site <origin> or --site-from-config.');
   }
   if (options.waitForDeploy && !/^[0-9a-f]{40}$/i.test(options.waitForDeploy)) {
     throw new Error('--wait-for-deploy requires a 40-character Git SHA.');
@@ -191,12 +197,6 @@ async function collectRemoteUrls(siteOrigin: string): Promise<string[]> {
   return [...urls].sort();
 }
 
-/** Resolve the ownership key from the environment (env vars + local .env). */
-function configuredKey(): { key: string; source: 'env' } | null {
-  const envKey = normalizeIndexNowKey(process.env.INDEXNOW_KEY);
-  return envKey ? { key: envKey, source: 'env' } : null;
-}
-
 function assertSingleHost(urls: string[]): string {
   if (urls.length === 0) throw new Error('No URLs found in sitemap — nothing to push.');
 
@@ -253,7 +253,7 @@ async function waitForLiveKey(siteOrigin: string, key: string, waitSeconds: numb
     if (await keyIsLive(siteOrigin, key)) return;
     if (Date.now() >= deadline) {
       throw new Error(
-        `IndexNow key file is not live at ${siteOrigin}/${indexNowKeyFileName(key)} after ${waitSeconds}s. Configure INDEXNOW_KEY in the production build and redeploy.`,
+        `IndexNow key file is not live at ${siteOrigin}/${indexNowKeyFileName(key)} after ${waitSeconds}s. Ensure .indexnow-key (or the legacy INDEXNOW_KEY) is deployed and redeploy.`,
       );
     }
     await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
@@ -295,7 +295,11 @@ async function submitBatch(
 async function main(): Promise<void> {
   loadLocalEnv();
   const options = parseArgs(process.argv.slice(2));
-  const siteOrigin = options.site ? normalizeSiteOrigin(options.site) : null;
+  const siteOrigin = options.site
+    ? normalizeSiteOrigin(options.site)
+    : options.siteFromConfig
+      ? resolveRepositorySiteOrigin(ROOT, configuredSiteUrl)
+      : null;
 
   if (siteOrigin && options.waitForDeploy) {
     console.log(
@@ -311,25 +315,21 @@ async function main(): Promise<void> {
     `[IndexNow] ${siteOrigin ? 'production' : 'local build'} sitemap: ${urls.length} URL(s), host ${host}`,
   );
 
-  const found = configuredKey();
+  const found = resolveIndexNowKey(ROOT);
 
   if (options.dryRun) {
     for (const url of urls) console.log(url);
     console.log(
       found
         ? `[IndexNow] Key source: ${found.source}`
-        : '[IndexNow] No INDEXNOW_KEY configured (environment or .env) — a real run would fail. See docs/deployment.md.',
+        : '[IndexNow] No .indexnow-key or legacy INDEXNOW_KEY configured — a real run would fail. Run site initialization first.',
     );
     return;
   }
 
   if (!found) {
     throw new Error(
-      'INDEXNOW_KEY is not configured (environment or local .env). ' +
-        (siteOrigin
-          ? 'Production mode requires the same key the production build deploys.'
-          : 'Set it to the key your build emits at /<key>.txt — the old generate-and-commit flow was removed in v2.34.0.') +
-        ' See docs/deployment.md.',
+      'IndexNow key is not configured. Run Initialize AnvilWiki or pnpm apply-template to create .indexnow-key; legacy INDEXNOW_KEY remains supported for existing sites.',
     );
   }
 
@@ -343,7 +343,7 @@ async function main(): Promise<void> {
       await waitForLiveKey(siteOrigin, key, options.waitSeconds);
     } else if (!(await keyIsLive(siteOrigin, key))) {
       throw new Error(
-        `IndexNow key file is not live at ${keyLocation}. Deploy the build with the same INDEXNOW_KEY first.`,
+        `IndexNow key file is not live at ${keyLocation}. Deploy the build with the same .indexnow-key (or legacy INDEXNOW_KEY) first.`,
       );
     }
   }

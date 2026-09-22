@@ -1482,7 +1482,7 @@ describe('sitemap', () => {
 | `PUBLIC_GA_ID` | Google Analytics ID（如 `G-XXXXXXXX`；有 cookie，经同意横幅门控） |
 | `PUBLIC_CF_BEACON_TOKEN` | Cloudflare Web Analytics beacon token（无 cookie，不需同意横幅） |
 | `PUBLIC_GSC_VERIFICATION` | Google Search Console 验证 token |
-| `INDEXNOW_KEY` | IndexNow 所有权 key（可选；postbuild 输出 `/<key>.txt`，与 GitHub Actions 同值时启用自动生产 sitemap 推送） |
+| `.indexnow-key` | IndexNow 所有权 key（初始化时自动生成一次并提交；postbuild 输出 `/<key>.txt`，CI 后自动读取同一仓库 key 推送生产 sitemap） |
 | `PUBLIC_SPONSOR_URL` | 赞助/捐赠卡链接（空 = 不渲染） |
 | `PUBLIC_SPONSOR_IMAGE_URL` | 赞助卡二维码/横幅图（空 = 只显示文字卡） |
 | `PUBLIC_GISCUS_REPO` | Giscus 仓库（`owner/repo`，4 个必填项之一） |
@@ -1516,6 +1516,7 @@ PUBLIC_ADSTERRA_SLOT_SIDEBAR_160X600=
 PUBLIC_GA_ID=
 PUBLIC_CF_BEACON_TOKEN=
 PUBLIC_GSC_VERIFICATION=
+# IndexNow 新站由 .indexnow-key 自动管理；仅旧站迁移时保留此兼容项
 INDEXNOW_KEY=
 
 # 赞助卡（可选）

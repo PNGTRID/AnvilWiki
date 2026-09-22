@@ -14,15 +14,12 @@ concurrency:
 
 jobs:
   submit:
-    # Optional by default: forks that do not configure both repository
-    # variables pay zero runtime cost. Only successful PUSH builds on main
-    # can notify IndexNow; pull-request CI never submits URLs.
+    # Only successful PUSH builds on main can notify IndexNow; pull-request
+    # CI never submits URLs. Uninitialized forks stop after checkout.
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_branch == 'main' &&
-      vars.SITE_URL != '' &&
-      vars.INDEXNOW_KEY != ''
+      github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -30,27 +27,48 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
+      - name: Detect IndexNow configuration
+        id: config
+        env:
+          LEGACY_INDEXNOW_KEY: ${{ vars.INDEXNOW_KEY }}
+        shell: bash
+        run: |
+          if [[ -s .indexnow-key ]]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "source=repo" >> "$GITHUB_OUTPUT"
+          elif [[ -n "$LEGACY_INDEXNOW_KEY" ]]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "source=legacy" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "source=disabled" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup pnpm
+        if: steps.config.outputs.enabled == 'true'
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6
         with:
           version: 11.1.1
           run_install: false
 
       - name: Setup Node
+        if: steps.config.outputs.enabled == 'true'
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
 
       - name: Install dependencies
+        if: steps.config.outputs.enabled == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Submit production sitemap to IndexNow
+        if: steps.config.outputs.enabled == 'true'
         env:
-          SITE_URL: ${{ vars.SITE_URL }}
-          INDEXNOW_KEY: ${{ vars.INDEXNOW_KEY }}
+          SITE_URL: ${{ steps.config.outputs.source == 'legacy' && vars.SITE_URL || '' }}
+          INDEXNOW_KEY: ${{ steps.config.outputs.source == 'legacy' && vars.INDEXNOW_KEY || '' }}
           DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
         run: >-
-          pnpm submit-indexnow -- --site "$SITE_URL"
+          pnpm submit-indexnow -- --site-from-config
           --wait-for-deploy "$DEPLOY_SHA" --wait-for-key
           --wait-seconds 150

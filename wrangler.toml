@@ -36,8 +36,8 @@ pages_build_output_dir = "dist"
 [vars]
 # Site (must include https:// protocol — Astro validates this as a URL)
 SITE_URL = "https://anvil.wiki"
-# IndexNow ownership key (optional; blank = no key file / no automatic submission)
-# Set the same value in GitHub Actions repository variable INDEXNOW_KEY.
+# Legacy IndexNow key for the anvil.wiki demo deployment.
+# New initialized forks use repository file .indexnow-key and need no variable.
 INDEXNOW_KEY = "736d8608fdec899849d382dffdaf4dda78605ffe0f40e2f1dbb57c7390341bed"
 # Giscus comments (DEMO — anvil.wiki points at PNGTRID/AnvilWiki Discussions)
 PUBLIC_GISCUS_REPO = "PNGTRID/AnvilWiki"

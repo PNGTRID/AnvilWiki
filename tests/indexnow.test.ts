@@ -3,12 +3,17 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import {
+  ensureRepositoryIndexNowKey,
   extractSitemapLocs,
+  INDEXNOW_REPO_KEY_FILE,
   indexNowKeyFileName,
   isAcceptedIndexNowStatus,
   loadLocalEnv,
   normalizeIndexNowKey,
   normalizeSiteOrigin,
+  readRepositoryIndexNowKey,
+  resolveIndexNowKey,
+  resolveRepositorySiteOrigin,
 } from '../scripts/lib/indexnow';
 
 describe('IndexNow protocol helpers', () => {
@@ -61,7 +66,53 @@ describe('IndexNow protocol helpers', () => {
   });
 });
 
-describe('local .env loading (the documented "local .env" rotation copy must actually be read)', () => {
+describe('repository-backed IndexNow key', () => {
+  test('initialization generates once and reruns preserve the same key', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'idx-repo-'));
+    const first = ensureRepositoryIndexNowKey(dir, undefined);
+    const second = ensureRepositoryIndexNowKey(dir, undefined);
+
+    expect(first.created).toBe(true);
+    expect(first.source).toBe('generated');
+    expect(first.key).toMatch(/^[a-f0-9]{32}$/);
+    expect(second).toEqual({ key: first.key, created: false, source: 'repo' });
+    expect(readFileSync(join(dir, INDEXNOW_REPO_KEY_FILE), 'utf8').trim()).toBe(first.key);
+  });
+
+  test('initialization migrates a legacy key instead of rotating it', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'idx-migrate-'));
+    const result = ensureRepositoryIndexNowKey(dir, 'LegacyKey-123456');
+
+    expect(result).toEqual({
+      key: 'LegacyKey-123456',
+      created: true,
+      source: 'env-migrated',
+    });
+    expect(readRepositoryIndexNowKey(dir)).toBe('LegacyKey-123456');
+  });
+
+  test('repo and legacy keys may agree but never silently disagree', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'idx-drift-'));
+    writeFileSync(join(dir, INDEXNOW_REPO_KEY_FILE), 'StableKey-123456\n');
+
+    expect(resolveIndexNowKey(dir, 'StableKey-123456')).toEqual({
+      key: 'StableKey-123456',
+      source: 'repo+env',
+    });
+    expect(() => resolveIndexNowKey(dir, 'DifferentKey-123456')).toThrow(/disagree/);
+  });
+
+  test('production origin resolves from repo config without a GitHub variable', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'idx-site-'));
+    writeFileSync(join(dir, 'wrangler.toml'), '[vars]\nSITE_URL = "https://wiki.example.test"\n');
+
+    expect(resolveRepositorySiteOrigin(dir, 'https://fallback.example.test', undefined)).toBe(
+      'https://wiki.example.test',
+    );
+  });
+});
+
+describe('local .env loading (legacy compatibility)', () => {
   test('fills process.env from a file without clobbering existing values', () => {
     const dir = mkdtempSync(join(tmpdir(), 'idx-env-'));
     const envPath = join(dir, '.env');
@@ -82,17 +133,20 @@ describe('local .env loading (the documented "local .env" rotation copy must act
   });
 });
 
-describe('submit-indexnow key-source contract (audit round 21)', () => {
+describe('submit-indexnow key-source contract', () => {
   const cli = readFileSync('scripts/submit-indexnow.ts', 'utf8');
+  const writer = readFileSync('scripts/write-indexnow-key.ts', 'utf8');
 
-  test('no public/ key-file fallback and no key generation — env (or local .env) only', () => {
-    // The retired fallback scanned public/*.txt and a local run adopted
-    // whatever committed key file it found — the demo's retired key rode
-    // into forks and even back into demo submissions. Both escape hatches
-    // are gone; the single source is INDEXNOW_KEY (env, filled from .env by
-    // loadLocalEnv under tsx).
+  test('never scans public/*.txt and never generates during submit/build', () => {
     expect(cli).not.toContain('detectCommittedKey');
-    expect(cli).not.toContain('generateLocalKey');
-    expect(cli).toContain('loadLocalEnv()');
+    expect(cli).not.toContain('randomBytes');
+    expect(writer).not.toContain('randomBytes');
+    expect(cli).toContain('resolveIndexNowKey(ROOT)');
+    expect(writer).toContain('resolveIndexNowKey(root)');
+  });
+
+  test('production automation can resolve the site from repository config', () => {
+    expect(cli).toContain('--site-from-config');
+    expect(cli).toContain('resolveRepositorySiteOrigin(ROOT, configuredSiteUrl)');
   });
 });

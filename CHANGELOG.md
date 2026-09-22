@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **IndexNow 初始化零环境变量主路径**：新 fork 运行 `Initialize AnvilWiki` 或 `pnpm apply-template` 时生成一次仓库根目录 `.indexnow-key`，以后重复初始化保持原 key；postbuild 与自动提交 workflow 共用同一文件。普通 commit/build/deploy/submit 不生成或轮换 key。
+- **IndexNow 仓库配置回归测试**：覆盖首次生成、重跑稳定、旧 `INDEXNOW_KEY` 迁移、repo/env 冲突响亮失败、仓库 SITE_URL 解析，以及真实 apply-template E2E 的「生成一次→重跑不变→build 产出 `dist/<key>.txt`」。
+
+### Changed
+
+- **自动 IndexNow workflow 不再要求新 fork 手工配置 GitHub Actions `SITE_URL` / `INDEXNOW_KEY`**：main push CI 成功后先 checkout 精确 commit，优先检测 `.indexnow-key`，从仓库配置解析生产域名并等待同 commit 的 Pages 部署标记后提交生产 sitemap。未初始化模板 checkout 后即跳过；旧 repository variables 继续作为兼容 fallback。
+- **存量站平滑迁移**：旧 `INDEXNOW_KEY`（wrangler / Actions variable / 本地 `.env`）继续可用；初始化会迁移同一个值而不是偷偷换 key。若 `.indexnow-key` 与旧配置同时存在但不一致，build/submit 直接失败，避免重新引入 v2.34.0 已解决的多 key 漂移问题。仍不恢复 `public/*.txt` 扫描。
+
 ## [2.35.2] — 2026-09-22
 
 ### Fixed

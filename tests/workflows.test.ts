@@ -170,31 +170,52 @@ describe('IndexNow production automation contract', () => {
     expect(trigger.types).toEqual(['completed']);
   });
 
-  test('requires successful main push CI plus SITE_URL and INDEXNOW_KEY repo vars', () => {
+  test('requires successful main push CI but not repository variables', () => {
     expect(job?.if).toContain("github.event.workflow_run.conclusion == 'success'");
     expect(job?.if).toContain("github.event.workflow_run.event == 'push'");
     expect(job?.if).toContain("github.event.workflow_run.head_branch == 'main'");
-    expect(job?.if).toContain("vars.SITE_URL != ''");
-    expect(job?.if).toContain("vars.INDEXNOW_KEY != ''");
+    expect(job?.if).not.toContain('vars.SITE_URL');
+    expect(job?.if).not.toContain('vars.INDEXNOW_KEY');
   });
 
-  test('is non-blocking and waits for the deployed matching key before submit', () => {
-    // No job-level continue-on-error: this is an independent workflow_run —
-    // failures already cannot block CI, and continue-on-error would only
-    // repaint real misconfigurations (e.g. var set, CF env missing) green.
+  test('prefers the repository key and keeps legacy variables as fallback only', () => {
+    const detect = steps.find((step) => step.name === 'Detect IndexNow configuration');
+    expect(detect?.run).toContain('-s .indexnow-key');
+    expect(detect?.run).toContain('LEGACY_INDEXNOW_KEY');
+    expect(detect?.env?.LEGACY_INDEXNOW_KEY).toBe('${{ vars.INDEXNOW_KEY }}');
+
+    for (const name of ['Setup pnpm', 'Setup Node', 'Install dependencies']) {
+      expect(steps.find((step) => step.name === name)?.if).toBe(
+        "steps.config.outputs.enabled == 'true'",
+      );
+    }
+  });
+
+  test('is non-blocking and resolves production config from the checked-out repo', () => {
     expect(job?.['continue-on-error']).toBeFalsy();
     const submit = steps.find((step) => /submit-indexnow/.test(step.run ?? ''));
-    expect(submit?.run).toContain('--site "$SITE_URL"');
+    expect(submit?.if).toBe("steps.config.outputs.enabled == 'true'");
+    expect(submit?.run).toContain('--site-from-config');
     expect(submit?.run).toContain('--wait-for-deploy "$DEPLOY_SHA"');
     expect(submit?.run).toContain('--wait-for-key');
-    // The deploy wait and key wait share one budget — keep the total inside
-    // the job's timeout-minutes: 10 (checkout + install take the rest).
     expect(submit?.run).toContain('--wait-seconds 150');
     expect(submit?.env).toEqual({
-      SITE_URL: '${{ vars.SITE_URL }}',
-      INDEXNOW_KEY: '${{ vars.INDEXNOW_KEY }}',
+      SITE_URL: "${{ steps.config.outputs.source == 'legacy' && vars.SITE_URL || '' }}",
+      INDEXNOW_KEY:
+        "${{ steps.config.outputs.source == 'legacy' && vars.INDEXNOW_KEY || '' }}",
       DEPLOY_SHA: '${{ github.event.workflow_run.head_sha }}',
     });
+  });
+
+  test('Initialize AnvilWiki creates the stable repository key before build', () => {
+    const setup = readWorkflow(SETUP) as Workflow;
+    const setupSteps = setup.jobs?.setup?.steps ?? [];
+    const ensure = setupSteps.find((step) => step.name === 'Ensure stable IndexNow key');
+    const build = setupSteps.findIndex((step) => step.name === 'Build (verify the initialized tree is not broken)');
+
+    expect(ensure?.run).toContain('scripts/init-indexnow-key.ts');
+    expect(ensure?.env?.INDEXNOW_KEY).toBe('${{ vars.INDEXNOW_KEY }}');
+    expect(setupSteps.findIndex((step) => step === ensure)).toBeLessThan(build);
   });
 });
 

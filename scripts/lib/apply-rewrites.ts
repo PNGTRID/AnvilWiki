@@ -681,8 +681,8 @@ const WRANGLER_VARS_TEMPLATE: VarSpec[] = [
   {
     key: 'INDEXNOW_KEY',
     comments: [
-      'IndexNow ownership key — optional; 8-128 A-Z/a-z/0-9/- characters.',
-      'Use the same value as the GitHub Actions repository variable INDEXNOW_KEY.',
+      'Legacy IndexNow key — new initialized forks use .indexnow-key automatically.',
+      'Keep only for migration/compatibility; when both exist they must match.',
     ],
     commented: true,
   },

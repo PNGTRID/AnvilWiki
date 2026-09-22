@@ -70,7 +70,7 @@ jobs:
           new_vars = '''[vars]
           # Site (must include https:// protocol — Astro validates this as a URL)
           SITE_URL = "__SITE_URL__"
-          # IndexNow ownership key — blank = disabled; set the same value in GitHub Actions vars.
+          # Legacy IndexNow slot — new initialized forks use .indexnow-key automatically.
           #INDEXNOW_KEY = ""
           # Giscus comments — blank = disabled until you fill your own values.
           PUBLIC_GISCUS_REPO = ""
@@ -312,6 +312,11 @@ jobs:
       # on the fork's first Cloudflare Pages build.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Ensure stable IndexNow key
+        env:
+          INDEXNOW_KEY: ${{ vars.INDEXNOW_KEY }}
+        run: pnpm exec tsx scripts/init-indexnow-key.ts
 
       # Content-aware demo article clearing (single-sourced with apply-template
       # via scripts/lib/apply-rewrites.ts). Must run AFTER install (tsx needs

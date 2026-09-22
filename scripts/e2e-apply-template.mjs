@@ -147,6 +147,15 @@ if (projectTs.includes('landingLinkEnabled = true')) {
 if (existsSync(join(scratch, 'public', '39a73e7c4264b418baa6757d20446910.txt'))) {
   fail('retired demo IndexNow key file still present — DEMO_PUBLIC_FILES regression');
 }
+const indexNowKeyPath = join(scratch, '.indexnow-key');
+if (!existsSync(indexNowKeyPath)) {
+  fail('.indexnow-key was not created by apply-template initialization');
+}
+const initialIndexNowKey = readFileSync(indexNowKeyPath, 'utf8').trim();
+if (!/^[A-Za-z0-9-]{8,128}$/.test(initialIndexNowKey)) {
+  fail('.indexnow-key is not a valid IndexNow key');
+}
+console.log('  ✅ .indexnow-key created once during initialization');
 const en = JSON.parse(readFileSync(join(scratch, 'src/locales/en.json'), 'utf8'));
 const checks = [
   ['home.meta.title is a string', typeof en.home?.meta?.title === 'string'],
@@ -276,7 +285,12 @@ if (existsSync(demoLeftover)) {
 if (!/NOT demo content/.test((rerun.stdout || '') + (rerun.stderr || ''))) {
   fail('re-run did not warn about kept non-demo articles');
 }
+const rerunIndexNowKey = readFileSync(indexNowKeyPath, 'utf8').trim();
+if (rerunIndexNowKey !== initialIndexNowKey) {
+  fail('apply-template re-run rotated .indexnow-key — site key must remain stable');
+}
 console.log('  ✅ user-authored article survived the re-run; demo-authored leftover was cleared');
+console.log('  ✅ .indexnow-key remained byte-stable across the re-run');
 // Heed the warning like a user would, so the gates below see a clean state.
 rmSync(join(scratch, 'src/locales/ko.json'));
 rmSync(join(scratch, 'src/locales/ja.json'));
@@ -284,6 +298,14 @@ rmSync(join(scratch, 'src/locales/ja.json'));
 // 5. The fork's first build must succeed.
 step("pnpm build (the fork's first build must succeed)");
 execSync('pnpm build', { cwd: scratch, stdio: 'inherit', shell: win });
+const builtIndexNowKey = join(scratch, 'dist', `${initialIndexNowKey}.txt`);
+if (!existsSync(builtIndexNowKey)) {
+  fail('postbuild did not emit dist/<key>.txt from .indexnow-key');
+} else if (readFileSync(builtIndexNowKey, 'utf8').trim() !== initialIndexNowKey) {
+  fail('postbuild emitted an IndexNow ownership file with the wrong content');
+} else {
+  console.log('  ✅ postbuild emitted the repository-backed IndexNow ownership file');
+}
 
 // 5.5 The fork's first check-config run must be green — a fresh fork with a
 // red consistency gate is a day-one trap (empty nav broke this in v2.6.0).
