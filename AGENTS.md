@@ -105,7 +105,8 @@ pnpm check-i18n       # scripts/check-i18n.ts — translation coverage report (-
 pnpm check-content    # scripts/check-content.ts — content lint (no H1, heading levels, alt text, trailing-slash + locale-prefix links, ≥3 internal links, category = directory rule 7)
 pnpm gen-covers       # scripts/gen-covers.ts — generate 1200×675 og:image covers from titles (brand colors from globals.css; CJK via Noto subset)
 pnpm gen-assets       # scripts/gen-assets.ts — regenerate favicon set + hero.webp + manifest theme_color from the live brand color (same filenames, zero code changes)
-pnpm submit-indexnow  # scripts/submit-indexnow.ts — manual IndexNow top-up (local dist/ or --site production); requires INDEXNOW_KEY (env or .env, auto-loaded) — the old public/ fallback & key generation were removed in v2.34.0
+pnpm init-indexnow-key # scripts/init-indexnow-key.ts — create/reuse the stable public .indexnow-key (normally called by initialization; useful for legacy migration/intentional rotation)
+pnpm submit-indexnow  # scripts/submit-indexnow.ts — manual IndexNow top-up (local dist/ or --site production); initialized forks read .indexnow-key automatically, legacy INDEXNOW_KEY/.env still works; public/*.txt scanning stays removed
 pnpm template-audit   # scripts/template-audit.ts — template health check (code purity / rebrand leftovers / health score)
 pnpm bulk-new-posts   # scripts/bulk-new-posts.ts — batch-create draft MDX from a new-posts.csv keyword list (--dry-run preview)
 pnpm sync-codes       # scripts/sync-codes.ts — batch-apply a codes-sync.csv into codes pages' frontmatter codes array (add/expire; --dry-run preview)

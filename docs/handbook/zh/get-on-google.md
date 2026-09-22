@@ -49,8 +49,8 @@ updated: 2026-09-18
 ### 第 4 步:用 IndexNow 把全站网址推一遍
 
 **做什么**:IndexNow 是一个免费协议,你主动把网址告诉必应等搜索引擎「来抓」,不用干等爬虫。
-**推荐先做**:按部署指南配置 `INDEXNOW_KEY` 变量(连同 `SITE_URL`)——之后每次 `main` 的 CI 成功,都会自动提交生产 sitemap。下面的手工命令保留着,当一次性补推的备选。
-**怎么做**:本模板自带命令 `pnpm submit-indexnow`(在项目根目录跑),它读取刚构建的 sitemap,把全站网址一次性推送。运行前需要先配好 `INDEXNOW_KEY`(环境变量或项目根目录 `.env`,与生产构建同一个值;一次性配置见部署指南),并且 `pnpm build` 跑过(key 文件随构建生成在 `dist/`)。
+**推荐先做**:不用额外配置——`Initialize AnvilWiki` 或 `pnpm apply-template` 会为这个 fork 生成一次稳定的 `.indexnow-key`。之后每次 `main` 的 CI 成功,都会自动提交生产 sitemap。下面的手工命令保留着,当一次性补推的备选。
+**怎么做**:本模板自带命令 `pnpm submit-indexnow`(在项目根目录跑),它读取刚构建的 sitemap,把全站网址一次性推送。正常初始化的新 fork 会自动读取 `.indexnow-key`;旧的环境变量方案仍兼容 `INDEXNOW_KEY` / `.env`。先跑过 `pnpm build`,让所有权文件生成到 `dist/`。
 **何时跑**:每次新增一批页面部署之后跑一遍,几秒钟的事。
 **提示**:谷歌不参加 IndexNow(它只认 GSC 那一套),这个主要加速必应/其他引擎;谷歌侧靠上面第 2、3 步。
 

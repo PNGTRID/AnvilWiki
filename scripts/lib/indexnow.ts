@@ -2,23 +2,27 @@
  * Shared IndexNow helpers.
  *
  * The protocol allows 8-128 characters from A-Z / a-z / 0-9 / "-".
- * Keep validation in one place so build-time key emission and submission
- * cannot silently disagree.
+ * New forks keep one generated key in .indexnow-key. The legacy
+ * INDEXNOW_KEY environment variable remains a fallback for existing sites.
  */
 
+import * as crypto from 'node:crypto';
+import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 export const INDEXNOW_KEY_RE = /^[A-Za-z0-9-]{8,128}$/;
+export const INDEXNOW_KEY_PATH = '.indexnow-key';
+
+export type IndexNowKeySource = 'file' | 'env';
+
+export interface IndexNowKeyInfo {
+  key: string;
+  source: IndexNowKeySource;
+}
 
 /**
- * Load a local .env file into process.env. submit-indexnow and
- * write-indexnow-key run under tsx, which — unlike `astro build` (Vite) —
- * does NOT read .env: before this loader, the "local .env" copy of
- * INDEXNOW_KEY documented since v2.33.0 was dead config, and a local
- * submit-indexnow run silently fell back to whatever public/<key>.txt it
- * found. Existing process.env values win (CI/Actions vars are never
- * clobbered); a missing file is a no-op; a malformed file warns instead of
- * failing (the value may still arrive from the real environment).
+ * Load a local .env file into process.env for backward compatibility.
+ * Existing process.env values win; a missing file is a no-op.
  */
 export function loadLocalEnv(filePath = '.env'): void {
   try {
@@ -36,7 +40,7 @@ export function normalizeIndexNowKey(raw: string | undefined | null): string | n
   if (!value) return null;
   if (!INDEXNOW_KEY_RE.test(value)) {
     throw new Error(
-      'INDEXNOW_KEY must be 8-128 characters using only A-Z, a-z, 0-9, or "-".',
+      'IndexNow key must be 8-128 characters using only A-Z, a-z, 0-9, or "-".',
     );
   }
   return value;
@@ -46,6 +50,57 @@ export function indexNowKeyFileName(key: string): string {
   const normalized = normalizeIndexNowKey(key);
   if (!normalized) throw new Error('IndexNow key cannot be empty.');
   return `${normalized}.txt`;
+}
+
+/** Read the explicit repository key file. Missing is fine; empty/invalid is not. */
+export function readIndexNowKeyFile(root = process.cwd()): string | null {
+  const file = path.resolve(root, INDEXNOW_KEY_PATH);
+  let raw: string;
+  try {
+    raw = fs.readFileSync(file, 'utf8');
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null;
+    throw error;
+  }
+
+  const key = normalizeIndexNowKey(raw);
+  if (!key) {
+    throw new Error(`${INDEXNOW_KEY_PATH} exists but is empty.`);
+  }
+  return key;
+}
+
+/**
+ * Resolve one key source only: the explicit repository file first, then the
+ * legacy env/.env value. Deliberately never scans public/*.txt.
+ */
+export function resolveIndexNowKey(root = process.cwd()): IndexNowKeyInfo | null {
+  const fileKey = readIndexNowKeyFile(root);
+  if (fileKey) return { key: fileKey, source: 'file' };
+
+  const envKey = normalizeIndexNowKey(process.env.INDEXNOW_KEY);
+  return envKey ? { key: envKey, source: 'env' } : null;
+}
+
+/**
+ * Create a stable per-site key exactly once. Re-runs reuse the existing file.
+ * The key is public by IndexNow protocol design; committing this file is safe.
+ */
+export function ensureIndexNowKey(root = process.cwd()): { key: string; created: boolean } {
+  const existing = readIndexNowKeyFile(root);
+  if (existing) return { key: existing, created: false };
+
+  const key = crypto.randomBytes(32).toString('hex');
+  const file = path.resolve(root, INDEXNOW_KEY_PATH);
+  try {
+    fs.writeFileSync(file, `${key}\n`, { encoding: 'utf8', flag: 'wx' });
+    return { key, created: true };
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+    const raced = readIndexNowKeyFile(root);
+    if (!raced) throw error;
+    return { key: raced, created: false };
+  }
 }
 
 export function decodeXmlEntities(value: string): string {

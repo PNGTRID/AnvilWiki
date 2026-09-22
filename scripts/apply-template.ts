@@ -39,6 +39,7 @@ import * as path from 'node:path';
 import { createLinePrompt, type LinePrompt } from './lib/prompt';
 import { containsControlChar } from './lib/delimited';
 import { walkDirs, walkFiles } from './lib/walk';
+import { ensureIndexNowKey, INDEXNOW_KEY_PATH } from './lib/indexnow';
 import {
   DEMO_ARTICLE_IMAGES,
   DEMO_COVERS,
@@ -796,6 +797,7 @@ async function main() {
   console.log(`     - src/locales/{${uniqueLocales.join(',')}}.json`);
   console.log('     - public/manifest.json');
   console.log('     - wrangler.toml ([vars] reset to your domain, demo Giscus cleared)');
+  console.log(`     - ${INDEXNOW_KEY_PATH} (generated once if missing; reused on re-runs)`);
 
   if (!DRY_RUN) {
     const proceed = await askBool(rl, '\nProceed with these changes?', false);
@@ -907,6 +909,21 @@ async function main() {
   if (wrangler !== null) {
     write('wrangler.toml', wrangler);
     console.log('   ✅ wrangler.toml ([vars] reset — demo Giscus config cleared)');
+  }
+
+  if (DRY_RUN) {
+    console.log(
+      fs.existsSync(path.resolve(ROOT, INDEXNOW_KEY_PATH))
+        ? `   ♻️  Would keep existing ${INDEXNOW_KEY_PATH}`
+        : `   🔑 Would generate ${INDEXNOW_KEY_PATH} once for zero-config IndexNow`,
+    );
+  } else {
+    const indexNow = ensureIndexNowKey(ROOT);
+    console.log(
+      indexNow.created
+        ? `   🔑 Generated ${INDEXNOW_KEY_PATH} (stable public IndexNow key)`
+        : `   ♻️  Reusing existing ${INDEXNOW_KEY_PATH}`,
+    );
   }
 
   // Reset the demo author registry so fork sites don't inherit demo authors.

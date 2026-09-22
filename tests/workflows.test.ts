@@ -33,8 +33,9 @@
  *      group of an @media prelude — pinned against the real shipping
  *      script (imported, not copied) so it cannot drift.
  *   9. IndexNow stays opt-in and production-safe: only a successful main
- *      push CI can submit, both repo variables must exist, and submission
- *      waits for the matching deployed key before calling IndexNow.
+ *      push CI can submit; initialized forks may use their committed stable
+ *      key with SITE_URL from wrangler.toml, while repo vars remain a legacy
+ *      fallback; submission still waits for the matching deployed key.
  */
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -170,12 +171,26 @@ describe('IndexNow production automation contract', () => {
     expect(trigger.types).toEqual(['completed']);
   });
 
-  test('requires successful main push CI plus SITE_URL and INDEXNOW_KEY repo vars', () => {
+  test('requires successful main push CI but does not require repository variables', () => {
     expect(job?.if).toContain("github.event.workflow_run.conclusion == 'success'");
     expect(job?.if).toContain("github.event.workflow_run.event == 'push'");
     expect(job?.if).toContain("github.event.workflow_run.head_branch == 'main'");
-    expect(job?.if).toContain("vars.SITE_URL != ''");
-    expect(job?.if).toContain("vars.INDEXNOW_KEY != ''");
+    expect(job?.if).not.toContain('vars.SITE_URL');
+    expect(job?.if).not.toContain('vars.INDEXNOW_KEY');
+
+    const detect = steps.find((step) => step.name === 'Detect IndexNow configuration');
+    expect(detect?.run).toContain('[ -s .indexnow-key ]');
+    expect(detect?.run).toContain('wrangler.toml');
+    expect(detect?.run).toContain('src/config/site.ts');
+    expect(detect?.run).toContain('enabled=false');
+    expect(detect?.env).toEqual({
+      LEGACY_SITE_URL: '${{ vars.SITE_URL }}',
+      LEGACY_INDEXNOW_KEY: '${{ vars.INDEXNOW_KEY }}',
+    });
+
+    for (const name of ['Setup pnpm', 'Setup Node', 'Install dependencies', 'Submit production sitemap to IndexNow']) {
+      expect(steps.find((step) => step.name === name)?.if).toBe("steps.config.outputs.enabled == 'true'");
+    }
   });
 
   test('is non-blocking and waits for the deployed matching key before submit', () => {
@@ -191,7 +206,7 @@ describe('IndexNow production automation contract', () => {
     // the job's timeout-minutes: 10 (checkout + install take the rest).
     expect(submit?.run).toContain('--wait-seconds 150');
     expect(submit?.env).toEqual({
-      SITE_URL: '${{ vars.SITE_URL }}',
+      SITE_URL: '${{ steps.config.outputs.site_url }}',
       INDEXNOW_KEY: '${{ vars.INDEXNOW_KEY }}',
       DEPLOY_SHA: '${{ github.event.workflow_run.head_sha }}',
     });
@@ -308,9 +323,14 @@ describe('setup.yml verifies the fork tree before its destructive PR', () => {
     // the fork's first Cloudflare Pages build with zero CI signal.
     const wf = readWorkflow(SETUP) as Workflow;
     const steps = wf.jobs?.setup?.steps ?? [];
+    const keyIdx = steps.findIndex((s) => /pnpm init-indexnow-key/.test(s.run ?? ''));
     const buildIdx = steps.findIndex((s) => /pnpm build/.test(s.run ?? ''));
     const prIdx = steps.findIndex((s) => /gh pr create/.test(s.run ?? ''));
-    expect(buildIdx, 'setup.yml must run pnpm build before opening the init PR').toBeGreaterThan(-1);
+    expect(keyIdx, 'setup.yml must initialize .indexnow-key').toBeGreaterThan(-1);
+    const keyStep = steps[keyIdx]?.run ?? '';
+    expect(keyStep).toContain('origin/chore/init-from-template:.indexnow-key');
+    expect(keyStep).toContain('pnpm init-indexnow-key');
+    expect(buildIdx, 'setup.yml must run pnpm build before opening the init PR').toBeGreaterThan(keyIdx);
     expect(prIdx).toBeGreaterThan(buildIdx);
   });
 });

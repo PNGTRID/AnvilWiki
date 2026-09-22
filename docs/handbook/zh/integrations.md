@@ -43,10 +43,10 @@ if (!client) return null;   // 变量空着 = 这个组件整个消失
 | `PUBLIC_GA_ID` | Google Analytics 4 | 不加载 GA |
 | `PUBLIC_CF_BEACON_TOKEN` | Cloudflare 自带统计(无 cookie) | 不加载 |
 | `PUBLIC_GSC_VERIFICATION` | Google 站长后台验证码 | 不输出验证标签 |
-| `INDEXNOW_KEY` | IndexNow 所有权 + 生产 sitemap 自动通知 | 不生成 key 文件，自动 IndexNow workflow 不运行 |
+| `INDEXNOW_KEY` | 旧站 IndexNow key 的兼容覆盖 | 新 fork 默认使用仓库里的 `.indexnow-key`，这里留空 |
 | `PUBLIC_SPONSOR_URL` / `_IMAGE_URL` | 赞助卡片 | 赞助卡不显示 |
 
-`INDEXNOW_KEY` 是上表唯一不是 UI 渲染开关的变量：它属于构建/运营链路。配置后 postbuild 会生成 `/<key>.txt`；再把同一个值和 `SITE_URL` 配到 GitHub Actions Repository Variables，就会启用 CI 后自动 IndexNow 推送。一次性配置步骤见 `docs/deployment.md`。
+正常初始化的新 fork 已经不需要给 IndexNow 配环境变量：`Initialize AnvilWiki` / `pnpm apply-template` 会一次性生成 `.indexnow-key`，postbuild 据此生成 `/<key>.txt`，CI 后的自动推送也读取同一份仓库文件。`INDEXNOW_KEY` 只保留给旧的环境变量方案兼容使用，详见 `docs/deployment.md`。
 
 统计三件套(GA4 / Cloudflare Web Analytics / Clarity)的选型对比与逐步接入教程,见[学习手册「接广告」一课](/zh/landing/docs/enable-ads)「可选:评论和统计」一节;GSC(站长后台)的完整接入教程在[让 Google 认识你](/zh/landing/docs/get-on-google)。
 
