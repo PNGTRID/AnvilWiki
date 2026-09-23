@@ -6,7 +6,7 @@ order: 22
 stage: "Monetize & Operate"
 icon: lucide:dollar-sign
 tldr: "Timing first: no switch before rankings settle. Self-check (own domain, 15-20 pages, built-in legal pages), then /anvil-adsense-audit item by item — no submitting with open Blockers. After approval fill PUBLIC_ADSENSE_CLIENT plus three slot IDs and redeploy; same day, start the payout tasks. Weeks 1-2 at zero revenue is normal."
-updated: 2026-09-17
+updated: 2026-09-22
 ---
 
 ## A true scene first
@@ -19,7 +19,7 @@ The panels have numbers, and with them the temptation: flip the ad slots on and 
 - **A core query has touched the top two pages**: the ranking floor exists, so ad dilution can't hurt you.
 - **Weekly publishing continued past the first release**: ads amplify existing traffic; they don't replace it.
 
-The full timing checklist, the ads-platform landscape (Adsterra, Mediavine, NitroPay and gaming verticals as traffic grows) live in the repo doc [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md). Adsterra itself is the zero-threshold fallback (a revenue floor while AdSense is rejected or pending): <a href="https://beta.publishers.adsterra.com/referral/tF1usSmNwD" rel="sponsored nofollow">sign up via our referral link</a> — Adsterra pays the referral commission to AnvilWiki, at no cost to your earnings; setup steps are in section 3 of that doc.
+The full timing checklist, the ads-platform landscape (Adsterra, Mediavine, NitroPay and gaming verticals as traffic grows) live in the repo doc [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md). Adsterra itself is the zero-threshold fallback (a revenue floor while AdSense is rejected or pending): <a href="https://beta.publishers.adsterra.com/referral/tF1usSmNwD" rel="sponsored nofollow">sign up via our referral link</a> — Adsterra pays the referral commission to AnvilWiki, at no cost to your earnings. Integration has one main path: **standalone file + iframe isolation** — the template's `AdsterraSlot` component does it for you (consent gating included). The compliance conditions you must hold: ads **visible, at native size, one code per slot** (Adsterra's anti-fraud policy targets 1×1 hidden iframes and duplicated/resized codes — not isolation itself). Keep Popunder/Social Bar out of iframes, and a site running AdSense should stay away from Popunder entirely. Details in section 3 of that doc.
 
 ## Step 1: apply to AdSense (self-check first)
 

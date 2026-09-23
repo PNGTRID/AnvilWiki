@@ -6,7 +6,7 @@ order: 22
 stage: "变现与长期经营"
 icon: lucide:dollar-sign
 tldr: "先说时机:排名没稳前别开——有站长开广告后主关键词一路下滑,撤掉才恢复。自查清单过了再申请 AdSense(自有域名/15-20 篇真实内容/法律页模板已内置/check-links 通过),懒人通道 /anvil-adsense-audit 逐项体检,有 Blocker 别交。过审后拿发布商 ID+3 个广告位编号填 PUBLIC_ADSENSE_CLIENT 等 4 个变量,重新部署广告上线;审核当天把下一课的收款三件事办掉。头 1-2 周收入为零正常。"
-updated: 2026-09-17
+updated: 2026-09-22
 ---
 
 ## 先看一个真实场景
@@ -19,7 +19,7 @@ updated: 2026-09-17
 - **核心词进过前两页**:排名的底子有了,广告的稀释才伤不到你。
 - **首版 10-15 篇之后内容还在周更**:广告放大的是已有流量,不能替代它。
 
-完整的时机自查清单、广告平台全景(Adsterra/Mediavine/NitroPay 等游戏垂直网络怎么随流量升级)在仓库文档 [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md)。其中 Adsterra 是零流量门槛的回血位(AdSense 被拒或等待期先挂它):<a href="https://beta.publishers.adsterra.com/referral/tF1usSmNwD" rel="sponsored nofollow">推荐链接注册</a>——通过它注册,Adsterra 会把推荐返佣付给 AnvilWiki,不影响你的收益;接入步骤见该文档第三节。
+完整的时机自查清单、广告平台全景(Adsterra/Mediavine/NitroPay 等游戏垂直网络怎么随流量升级)在仓库文档 [docs/ads.md](https://github.com/PNGTRID/AnvilWiki/blob/main/docs/ads.md)。其中 Adsterra 是零流量门槛的回血位(AdSense 被拒或等待期先挂它):<a href="https://beta.publishers.adsterra.com/referral/tF1usSmNwD" rel="sponsored nofollow">推荐链接注册</a>——通过它注册,Adsterra 会把推荐返佣付给 AnvilWiki,不影响你的收益。接入主路只有一条:**独立文件 + iframe 隔离**——模板的 `AdsterraSlot` 组件已代劳(含同意门控),你要守的合规三条件是广告**可见、按原始尺寸、一份代码一个位**(Adsterra 反欺诈政策打击的是 1×1 隐形 iframe、复制缩放广告码这类刷量,不是隔离本身);Popunder/Social Bar 别塞进 iframe,挂 AdSense 的站更要直接远离 Popunder。细节见该文档第三节。
 
 ## 第一步:申请 AdSense(先自查,别急着交)
 

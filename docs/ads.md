@@ -149,6 +149,7 @@ Google 的[广告投放位置政策](https://support.google.com/adsense/answer/1
 逐参数说清楚为什么这么挂:
 
 - **为什么必须 iframe 隔离**:多个广告位的脚本都用 `window.atOptions` 这个全局变量存配置,直接粘进同一个页面会互相覆盖(串号——A 位拿到 B 位的配置);独立文件各持各的配置,互不干扰
+- **Adsterra 允许这样挂吗(政策边界)**:允许。官方反欺诈政策打击的是「隐形/作弊」三类——1×1 像素隐形 iframe(假装有曝光)、复制或缩放广告码、广告摆在可视视口之外;本节「可见 + 原始尺寸 + 一份代码一个位」的挂法一条不沾(展示型广告渲染时本就自建 iframe,外层再套一层是行业普遍做法)。真正不能进 iframe 的是 **Popunder / Social Bar 这类行为触发型格式**——它们要捕捉主页面的用户交互才能触发,塞进 iframe 要么不响、要么被记无效流量,只能走本节末尾的 head 直贴路
 - **为什么 sandbox 给这四个权限**:`allow-scripts` 广告脚本要跑;`allow-same-origin` 缺了它素材渲染空白(cookie/localStorage 抛异常);`allow-popups allow-forms` 点击交互要用
 - **为什么绝不加 `allow-top-navigation`**:移动端部分创意会试图带着你的整个页面跳走(劫持),这个权限一给就拦不住。劫持的教训同样适用于回报方向:把用户体验砸了,排名迟早还回来
 - **诚实的边界(必读)**:`allow-scripts` + `allow-same-origin` 同开(素材渲染的硬前提,见上条)时,这个 sandbox **不是对抗恶意创意的硬安全边界**——同源素材的脚本可触达父页面 DOM,理论上能绕过沙箱,省略 `allow-top-navigation` 只是导航摩擦而非防线;真隔离要把广告挂到独立源(独立域名)。接受同源挂载的理由:素材由 Adsterra 平台侧投放与审核、贴哪段代码由你自己控制、零成本部署且 fork 可整体清理。若你要挂**不可信来源**的广告代码,请按不可信第三方评估,别套用本节
@@ -168,7 +169,7 @@ Google 的[广告投放位置政策](https://support.google.com/adsense/answer/1
 
 > fork 清理:这 6 个 html 初始化时按**内容**判定清理——把内容换成你自己的广告代码后,重跑 apply-template 不会被误删;仍含模板 demo 单元 key 的原样文件才会被移除。
 
-全站生效格式(Popunder / Social Bar 类)是另一条路:这类型才需要把脚本粘进 `src/components/layout/BaseLayout.astro` 的 `<head>`——但**挂 AdSense 的站禁用 Popunder**(见上节红线),Social Bar 流量起来前也别碰,所以正常路径用不到它。
+全站生效格式(Popunder / Social Bar 类)是另一条路:这类**行为触发型**格式必须直接粘进 `src/components/layout/BaseLayout.astro` 的 `<head>`、不能放进 iframe(要捕捉主页面的用户交互才能触发,见上文政策边界条)——但**挂 AdSense 的站禁用 Popunder**(见上节红线),Social Bar 流量起来前也别碰,所以正常路径用不到它。
 
 模板自带的 3 个 AdSense 位**不需要任何改动**——它们由 AdSense 的 4 个环境变量控制,和 Adsterra 的 iframe 互不干扰。
 
