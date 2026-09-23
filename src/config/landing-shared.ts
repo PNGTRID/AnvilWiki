@@ -12,7 +12,7 @@
 /** Keep in sync with package.json "version" (used by the announcement bar).
  *  Lives on this leaf module (not the landing.ts facade) so the en/zh copy
  *  modules can interpolate it without an import cycle through the facade. */
-export const PROJECT_VERSION = '2.35.2';
+export const PROJECT_VERSION = '2.36.0';
 
 export const RELEASES = 'https://github.com/PNGTRID/AnvilWiki/releases';
 export const FORK_URL = 'https://github.com/PNGTRID/AnvilWiki/fork';

@@ -18,7 +18,7 @@ export const en: LandingContent = {
   description:
     'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
   announcement: {
-    text: `AnvilWiki template update log (v${PROJECT_VERSION}): audit round 23 — no high-confidence runtime risks in the day's changes. Trust fixes: the demo codes page body no longer describes expired codes as working (en+ja now match the four active codes end to end), the homepage codes module lists the full active set, and a new test suite fails CI when a freshness batch rotates codes without updating both surfaces. Forks: merge upstream and pnpm install as usual. This bar tracks template releases — details & full changelog on GitHub Releases.`,
+    text: `AnvilWiki template update log (v${PROJECT_VERSION}): IndexNow is now zero-config for new forks — initialization generates one stable .indexnow-key committed with your repo, and every successful main CI pushes the production sitemap automatically; no more duplicated Cloudflare/GitHub variables (existing env-backed sites keep working unchanged). Docs refresh: Adsterra anti-fraud policy boundaries spelled out (ads visible, native size, one code per slot), plus a scripts-count fix in the PRD. Forks: merge upstream and pnpm install as usual. This bar tracks template releases — details & full changelog on GitHub Releases.`,
     href: RELEASES,
     dismissLabel: 'Dismiss announcement',
   },

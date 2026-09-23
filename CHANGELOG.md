@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.36.0] — 2026-09-23
+
 ### Added
 
 - **IndexNow 新 fork 零环境变量初始化**：`Initialize AnvilWiki` 与本地 `pnpm apply-template` 现在都通过同一个 helper 在仓库根首次生成 `.indexnow-key`（64 位 hex），重跑严格复用；新增 `pnpm init-indexnow-key` 供旧站迁移或明确轮换使用。key 按 IndexNow 协议本来就需要公开为 `/<key>.txt`，因此仓库文件不是 secret。postbuild 与 `pnpm submit-indexnow` 均优先读取这个明确单文件来源，v2.34.0 删除的 `public/*.txt` 模糊扫描与提交时临时生成流程继续保持删除状态。
@@ -15,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **IndexNow 自动 workflow 不再要求新 fork 手工配置两份 Repository/Cloudflare Variables**：成功的 `main` push CI 后先 checkout 并探测配置；key 优先 `.indexnow-key`、旧 `INDEXNOW_KEY` variable 仅作兼容回退，站点地址按 `wrangler.toml` → `src/config/site.ts` → 旧 `SITE_URL` variable 顺序解析，避免遗留 variable 覆盖仓库现值。未初始化/缺配置的 fork 在安装依赖前退出且零 IndexNow 请求；已有 env-backed 站点无需迁移即可继续工作。原有「等待精确 Cloudflare commit → 校验线上 key → 读取生产 sitemap → 429/5xx 重试」安全链保持不变。
 - **IndexNow 文档改为零配置主路径**：deployment、apply-template、学习手册双语 integrations/get-on-google/命令速查、PRD、`.env.example` 与 AGENTS 同步；旧 `INDEXNOW_KEY` 明确降为兼容覆盖，不再作为新站推荐配置。IndexNow 单测新增 3 条（根测试 322→325），真实 apply-template E2E 额外钉住「首次生成 → 重跑不换 key → postbuild 输出同一 `/<key>.txt`」。
+- **文档保鲜批**：docs/ads.md「Adsterra 允许这样挂吗（政策边界）」与手册课 22 enable-ads（en+zh）接入主路改写（合规三条件=广告可见/按原始尺寸/一份代码一个位；Popunder/Social Bar 属行为触发型格式不进 iframe，head 直贴段同步）；PRD §3 架构树运维脚本计数 15→16（`init-indexnow-key` 入枚举，七天文档漂移审计发现、#57 同批漏网）。
 
 ## [2.35.2] — 2026-09-22
 
@@ -1322,7 +1325,8 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 - Docs: PRD (1600+ lines), deployment, apply-template (4-step guide), content-format, seo, ads, migration-from-nextjs
 - Build: 27 pages, typecheck 0 errors
 
-[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.35.2...HEAD
+[Unreleased]: https://github.com/PNGTRID/AnvilWiki/compare/v2.36.0...HEAD
+[2.36.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.35.2...v2.36.0
 [2.35.2]: https://github.com/PNGTRID/AnvilWiki/compare/v2.35.1...v2.35.2
 [2.35.1]: https://github.com/PNGTRID/AnvilWiki/compare/v2.35.0...v2.35.1
 [2.35.0]: https://github.com/PNGTRID/AnvilWiki/compare/v2.34.0...v2.35.0
