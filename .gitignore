@@ -48,5 +48,8 @@ seo-reports/
 # daily ops reports (local automation, never committed)
 reports/
 
+# local tool output (review reports etc.)
+out/
+
 # anvil-ops site-local ops data (metrics --import-aio --save CSV archives) — never swept into a submit PR
 ops/
