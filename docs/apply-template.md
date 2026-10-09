@@ -21,7 +21,7 @@
 | 文章内容 | [src/content/wiki/](#7-mdx-文章) |
 | 广告 key | Cloudflare 环境变量 `PUBLIC_ADSENSE_*`（参考 [Google AdSense](https://adsense.google.com/)） |
 
-> 想自动化基础配置？运行 `pnpm apply-template`，它会交互式引导你完成 site.ts / navigation.ts / globals.css / routing.ts / locales 的修改。脚本化/CI 场景用 `pnpm apply-template --answers answers.json` 非交互驱动（与交互同一问答路径，答案缺失或多余都会响亮报告）。交互界面默认英文，开头会先问一句界面语言（输 `1` 即全程中文提问）；非交互通道可用 `--lang zh` 指定中文，缺省英文——`--answers` 的答案位置序不受语言影响。注意：交互模式下开头的语言提问会消费你输入的第一行——整段粘贴答案文件请直接走 `--answers`，不要在交互模式里粘。
+> 想自动化基础配置？运行 `pnpm apply-template`，它会交互式引导你完成 site.ts / navigation.ts / globals.css / routing.ts / locales 的修改。脚本化/CI 场景用 `pnpm apply-template --answers answers.json` 非交互驱动（与交互同一问答路径，答案缺失或多余都会响亮报告）。交互界面默认英文，开头会先问一句界面语言（输 `1` 即全程中文提问，回车按系统 LANG 推导默认——中文终端默认中文）；非交互通道可用 `--lang zh` 指定中文，缺省英文——`--answers` 的答案位置序不受语言影响。注意：交互模式下开头的语言提问会消费你输入的第一行——整段粘贴答案文件请直接走 `--answers`，不要在交互模式里粘。
 
 ---
 

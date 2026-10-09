@@ -1,12 +1,12 @@
 ---
 title: "Make It Yours: One Command, One Q&A"
-description: "pnpm apply-template asks one question at a time and rewrites every config. Full 15-question answer table, a 2-minute favicon swap, and the acceptance checklist."
+description: "pnpm apply-template asks one question at a time and rewrites every config. Full 18-question answer table, a 2-minute favicon swap, and the acceptance checklist."
 manual: learn
 order: 11
 stage: "Stand It Up"
 icon: lucide:paintbrush
-tldr: "Run pnpm apply-template; it asks one question at a time — answer from the table (unsure? Enter takes the default): full/short name, domain, tagline, description, theme color, locales, categories, 15 in all. Then pnpm check-config shows ✅ and pnpm build runs red-free, with your game name, color, and categories live at localhost:4321. Finally swap the icon: pnpm gen-assets generates a full set, or upload your own at favicon.io. Preview changes first with --dry-run."
-updated: 2026-10-02
+tldr: "Run pnpm apply-template; it asks one question at a time — answer from the table (unsure? Enter takes the default): full/short name, domain, tagline, description, theme color, locales, categories, 18 in all. Then pnpm check-config shows ✅ and pnpm build runs red-free, with your game name, color, and categories live at localhost:4321. Finally swap the icon: pnpm gen-assets generates a full set, or upload your own at favicon.io. Preview changes first with --dry-run."
+updated: 2026-10-07
 ---
 
 ## A true scene first
@@ -20,9 +20,9 @@ The store is copied — still wearing someone else's sign. This lesson swaps the
 
 ### Step 1: run the rebrand command, answer from the table
 
-Type `pnpm apply-template`; it asks question by question, Enter after each; **unsure? Enter takes the default**:
+Type `pnpm apply-template`; it asks question by question (18 in total), Enter after each; **unsure? Enter takes the default**:
 
-> **CLI language**: the command prompts in English by default and opens with a language question ("选择界面语言 / Select CLI language") — answer `1` for a Chinese UI, or skip the question with `pnpm apply-template --lang zh`. Non-interactive runs (`--answers`) never ask and stay English unless `--lang` is passed.
+> **CLI language**: the command prompts in English by default and opens with a language question ("选择界面语言 / Select CLI language") — answer `1` for a Chinese UI, press Enter for the LANG-derived default (Chinese on Chinese-locale systems), or skip the question with `pnpm apply-template --lang zh`. Non-interactive runs (`--answers`) never ask and stay English unless `--lang` is passed.
 
 | It asks | You answer | Why |
 |---|---|---|
@@ -41,6 +41,8 @@ Type `pnpm apply-template`; it asks question by question, Enter after each; **un
 | Clear demo content? | Enter (default no) | Keep sample articles as reference; clear before launch |
 | Homepage preset | Enter (pick 1) | 1 = codes-style homepage (most people), 2 = guides-style, 3 = keep the sample |
 | Remove landing page? | Enter (default yes) | /landing is the template project's own pitch page — your game site doesn't need it |
+
+> The 15-row table above covers 17 of the 18 questions: platform/developer/genre share one row, and a final "Proceed with these changes?" confirm (not listed) ends the run — type `y` to start writing files, Enter aborts safely.
 
 **You'll see**: the command rewrites files one by one, a green ✅ per line, a completion note at the end.
 **Check**: run `pnpm check-config` — it prints "✅ Config is consistent".

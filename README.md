@@ -67,7 +67,7 @@ pnpm install
 pnpm dev            # 打开 http://localhost:4321,能看到 demo 站 = 环境通了
 
 # 3. 一条问答式命令,把 demo 站换成你的游戏(游戏名/主题色/域名/语言…)
-pnpm apply-template
+pnpm apply-template    # 中文界面加 --lang zh
 
 # 4. 把改动推回你的 fork
 git add .
@@ -209,7 +209,7 @@ pnpm install
 pnpm dev            # open http://localhost:4321 — seeing the demo site means your env works
 
 # 3. One guided Q&A command swaps the demo for your game (name/theme/domain/locales…)
-pnpm apply-template
+pnpm apply-template    # add --lang zh for a Chinese UI
 
 # 4. Push the changes back to your fork
 git add .

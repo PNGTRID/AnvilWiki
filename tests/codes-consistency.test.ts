@@ -23,6 +23,12 @@ import { describe, expect, it } from 'vitest';
  *      that a freshness batch moves title/description/summary together. When
  *      a month anchor is present it must equal lastModified's month; absent
  *      anchors degrade to a pass like check 2.
+ *   4. Locale date form: sync-codes fan-out copies the first locale row's
+ *      whole group verbatim, so a codes-sync.csv without an explicit ja row
+ *      drags the en form ('Nov 30') onto the ja page (a1326d3 #79, round 41)
+ *      — 7 of 8 ja expiryDate values were '10月31日'-style before that PR,
+ *      1 silently flipped to English. Non-default locales must not carry an
+ *      English month word; en (the fan-out source) is exempt via skipIf.
  *
  * All checks are clock-free. A missing date sentence degrades to a pass,
  * mirroring refresh-audit's conservative fallback — but an unparseable
@@ -46,6 +52,11 @@ const MONTHS: Record<string, string> = {
   November: '11',
   December: '12',
 };
+
+/** English month-word prefix (abbreviations; full names share the prefix).
+ *  This is the en-page expiryDate form — anything it matches is an en form
+ *  leaking onto a non-default locale via fan-out. */
+const ENGLISH_MONTH_RE = /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/;
 
 interface CodeEntry {
   code: string;
@@ -137,6 +148,15 @@ function monthAnchorOf(line: string, locale: string): string | undefined {
   return m ? `${m[1]}-${m[2].padStart(2, '0')}` : undefined;
 }
 
+function expiryDatesOf(fm: string): string[] {
+  const dates: string[] = [];
+  for (const line of fm.split(/\r?\n/)) {
+    const m = line.match(/^\s+expiryDate:\s*(.+?)\s*$/);
+    if (m) dates.push(m[1].replace(/^['"]|['"]$/g, ''));
+  }
+  return dates;
+}
+
 describe('codes page ↔ home highlights consistency', () => {
   for (const locale of LOCALES) {
     it(`${locale}: home badge-list highlights mirror the codes page active set`, () => {
@@ -175,5 +195,23 @@ describe('codes page ↔ home highlights consistency', () => {
         }
       }
     });
+    it.skipIf(locale === 'en')(`${locale}: expiryDate keeps the locale's own date form (no English month words)`, () => {
+      // en is the fan-out source — its English form is legitimate.
+      const dates = expiryDatesOf(frontmatterOf(readCodesPage(locale)));
+      if (dates.length === 0) return; // nothing to reconcile
+      for (const d of dates) {
+        expect(
+          ENGLISH_MONTH_RE.test(d),
+          `expiryDate "${d}" on the ${locale} page uses an English month form — sync-codes fan-out copies the first locale row's group verbatim; give the CSV an explicit ${locale} row or re-state the date in ${locale} form (round 41: 'Nov 30' landed on the ja page in a1326d3)`,
+        ).toBe(false);
+      }
+    });
   }
+
+  it('gate regex is live (self-guard against an always-false pattern)', () => {
+    expect(ENGLISH_MONTH_RE.test('Nov 30')).toBe(true);
+    expect(ENGLISH_MONTH_RE.test('October 2026')).toBe(true);
+    expect(ENGLISH_MONTH_RE.test('11月30日')).toBe(false);
+    expect(ENGLISH_MONTH_RE.test('2026年6月')).toBe(false);
+  });
 });

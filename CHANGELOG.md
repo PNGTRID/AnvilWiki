@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **第 41 轮 24h 审计深挖修复（codes 保鲜第六轮 ja 页 expiryDate 英文形态孤例 + 门禁）**：#79（a1326d3）把 HEARTHFIRE-2026 延长至 11月30日时，sync-codes fan-out 把首个语言行（en `expiryDate: 'Nov 30'`）的整组值原样复制到无显式 ja 行的 ja 页——ja 页 8 个 expiryDate 中 7 个是『10月31日』式日文形态，唯独该码静默翻成英文『Nov 30』（schema 是 `z.string().max(40)` 自由形态，build/既有三层门禁均不拦；正文『11月30日へ延長』与 frontmatter 同页形态割裂）。现 ja 值改『11月30日』对齐同页形态与高亮 detail；`tests/codes-consistency.test.ts` 新增第四组检查（非默认 locale 的 expiryDate 不得以英文月词开头，en 作为 fan-out 源 skipIf 豁免 + 正则活性自防，无时钟依赖），同族 fan-out 形态回退由纪律变红灯；test 395→398。根治面（codes-sync.csv 给 ja 显式行）在仓外管道 prompt，本门禁为仓内兜底。
+
+- **文档漂移审计修复批（课 11 提问计数对齐 CLI 实况 + 交互默认语言表述补全；零代码变更）**：七天漂移审计发现手册课 11 的「15 题 / 15-question」口径与 CLI 实际不符——`apply-template-i18n` 词典 qGameName…qProceed 共 **18 问**（与 AGENTS「18 项答案」既有口径一致），课 11 对照表 15 行（平台/开发商/类型并作一行、末尾「Proceed?」确认不占行）仅覆盖 17 问（9dc43a9 课诞生即有的旧账，659f96e 窗口内编辑该课时未顺手纠正）；现 zh/en description+tldr 四处计数改 18 问、表格后补「15 行覆盖 17 问 + Proceed 确认（输 `y` 才写文件，回车安全中止）」说明；交互语言提示补「回车按系统 LANG 推导默认」（apply-template.md 导语 + 课 11 en+zh）+ README 快速开始 zh/en 补 `--lang zh` 一句；课 11 `updated` → 2026-10-07。
+
 - **第 37 轮 24h 审计深挖修复（社群日报 summary 条数与 stats 内部矛盾）**：#73（10-04 日报）的 `daily.summary` 写「假期安静日（13 条）」，同日 `report.stats.messages` 是 12（管道自己的 stats 提取文件 `stats-2026-10-04.json` 同为 12；13 系 day 文件含「拍了拍」系统事件的行数）——社群页同一屏幕同时渲染两者（`CommunityHighlights.astro` daily 带 :221 与 stats 卡 :263），公开数据自相矛盾；49 期全量对照仅此一期失配（10-03 前例 2==2）。summary 对齐结构化 stats 改 12，并按 33 轮 codes 月锚点门禁先例新增契约测试：summary 括号内「N 条」出现时必须等于同日 `stats.messages`（缺席优雅跳过 + checker 零命中自防假绿），同族漂移由纪律变红灯；test 394→395。
 
 - **第 36 轮 24h 审计深挖修复（ui.ts 重写区域正则单源化）**：c98602d 新增的契约测试「ui.ts 重写区域外不得引用可剥离 locale 标识符」里，`const messages` 字面量的剥除正则是测试内联副本——与 `rewriteUiTs` 的 `messagesRe`（apply-template.ts）是两份独立文本，界定「区域外」的正确性完全依赖两者逐字节同步，任一侧改动即静默漂移（漏报方向=契约假绿）。现按 `UI_IMPORT_BLOCK_RE` 先例提为 `UI_MESSAGES_BLOCK_RE` 单源导出（lib/apply-rewrites.ts），CLI 与契约测试同源引用，该契约的界定面从此不可漂移；零行为变更。

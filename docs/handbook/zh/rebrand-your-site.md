@@ -1,12 +1,12 @@
 ---
 title: "换成你的游戏:一条命令,一轮问答"
-description: "pnpm apply-template 一条问答式命令:游戏名、域名、主题色、多语言、栏目逐题替换,自动清理 demo 残留。附完整 15 题对照表、换图标两分钟支线和亲眼验收清单。"
+description: "pnpm apply-template 一条问答式命令:游戏名、域名、主题色、多语言、栏目逐题替换,自动清理 demo 残留。附全部 18 问对照表、换图标两分钟支线和亲眼验收清单。"
 manual: learn
 order: 11
 stage: "把站立起来"
 icon: lucide:paintbrush
-tldr: "终端跑 pnpm apply-template,它一题一题问、你照表回答(不知道就回车用默认):游戏全名/短名/域名/标语/简介/主题色/语言/栏目等 15 题。跑完 pnpm check-config 显示 ✅、pnpm build 无红色,localhost:4321 上游戏名、主题色、栏目全是你的。最后换图标:pnpm gen-assets 一键生成,或 favicon.io 上传自制。想先预览改动,加 --dry-run。"
-updated: 2026-10-02
+tldr: "终端跑 pnpm apply-template,它一题一题问、你照表回答(不知道就回车用默认):游戏全名/短名/域名/标语/简介/主题色/语言/栏目等 18 问。跑完 pnpm check-config 显示 ✅、pnpm build 无红色,localhost:4321 上游戏名、主题色、栏目全是你的。最后换图标:pnpm gen-assets 一键生成,或 favicon.io 上传自制。想先预览改动,加 --dry-run。"
+updated: 2026-10-07
 ---
 
 ## 先看一个真实场景
@@ -20,9 +20,9 @@ updated: 2026-10-02
 
 ### 第 1 步:跑换皮命令,照表回答
 
-终端输入 `pnpm apply-template`,它一题一题问,每题答完按回车;**不知道怎么填就回车用默认值**:
+终端输入 `pnpm apply-template`,它一题一题问,共 18 问,每题答完按回车;**不知道怎么填就回车用默认值**:
 
-> **界面语言**:命令默认英文提问,开头会先问一句「选择界面语言 / Select CLI language」——输 `1` 即整程中文;也可以直接 `pnpm apply-template --lang zh` 跳过提问。下表「它问什么」一列保留英文题面,两种界面都能对照着答。
+> **界面语言**:命令默认英文提问,开头会先问一句「选择界面语言 / Select CLI language」——输 `1` 即整程中文,回车按系统 LANG 推导默认(中文系统即默认中文);也可以直接 `pnpm apply-template --lang zh` 跳过提问。下表「它问什么」一列保留英文题面,两种界面都能对照着答。
 
 | 它问什么 | 你填什么 | 为什么 |
 |---|---|---|
@@ -41,6 +41,8 @@ updated: 2026-10-02
 | Clear demo content? | 回车(默认否) | 先留示例文章当参考,上线前再清 |
 | Homepage preset | 回车(选 1) | 1=兑换码型首页(多数人),2=攻略型,3=保留示例 |
 | Remove landing page? | 回车(默认是) | /landing 是模板项目自己的介绍页,你的游戏站用不到,自动删 |
+
+> 表格 15 行覆盖 18 问中的 17 问:平台/开发商/类型三个问题并作一行;最后还有一步「Proceed with these changes?」最终确认(表中未列)——输 `y` 才开始写文件,回车即安全中止。
 
 **你会看到**:命令逐个改写文件,每行前面一个绿色 ✅,最后提示完成。
 **确认做对了**:终端输入 `pnpm check-config`,显示「✅ Config is consistent」。
