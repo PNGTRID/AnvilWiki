@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **第 42 轮 24h 审计深挖修复（社群日报「修复时长」与事实源不符）**：#80（8172383）的 news 标题/详情、`daily.summary`、takeaways 共 4 处把社区登录故障写成「约 2 小时内修复」，但 day 文件时间线是 17:44 小锤报障 → 21:56 群友实测「可以了」≈ 约 4 小时（12 分钟）（18:13 开始修复 → 确认恢复也约 3 小时 43 分），「2 小时」无法从事实源指认。4 处统一改「约 4 小时」；「约 N 小时」散文表述与 day 文件时间戳差的核对存在多种口径（从报障还是从开始修复起算），机械门禁会瞎猜口径误伤，有意不加——管道 prompt 侧准确性，依赖审计抽查。test 398（community-digest 契约 10/10 复跑绿）。
+
 - **第 41 轮 24h 审计深挖修复（codes 保鲜第六轮 ja 页 expiryDate 英文形态孤例 + 门禁）**：#79（a1326d3）把 HEARTHFIRE-2026 延长至 11月30日时，sync-codes fan-out 把首个语言行（en `expiryDate: 'Nov 30'`）的整组值原样复制到无显式 ja 行的 ja 页——ja 页 8 个 expiryDate 中 7 个是『10月31日』式日文形态，唯独该码静默翻成英文『Nov 30』（schema 是 `z.string().max(40)` 自由形态，build/既有三层门禁均不拦；正文『11月30日へ延長』与 frontmatter 同页形态割裂）。现 ja 值改『11月30日』对齐同页形态与高亮 detail；`tests/codes-consistency.test.ts` 新增第四组检查（非默认 locale 的 expiryDate 不得以英文月词开头，en 作为 fan-out 源 skipIf 豁免 + 正则活性自防，无时钟依赖），同族 fan-out 形态回退由纪律变红灯；test 395→398。根治面（codes-sync.csv 给 ja 显式行）在仓外管道 prompt，本门禁为仓内兜底。
 
 - **文档漂移审计修复批（课 11 提问计数对齐 CLI 实况 + 交互默认语言表述补全；零代码变更）**：七天漂移审计发现手册课 11 的「15 题 / 15-question」口径与 CLI 实际不符——`apply-template-i18n` 词典 qGameName…qProceed 共 **18 问**（与 AGENTS「18 项答案」既有口径一致），课 11 对照表 15 行（平台/开发商/类型并作一行、末尾「Proceed?」确认不占行）仅覆盖 17 问（9dc43a9 课诞生即有的旧账，659f96e 窗口内编辑该课时未顺手纠正）；现 zh/en description+tldr 四处计数改 18 问、表格后补「15 行覆盖 17 问 + Proceed 确认（输 `y` 才写文件，回车安全中止）」说明；交互语言提示补「回车按系统 LANG 推导默认」（apply-template.md 导语 + 课 11 en+zh）+ README 快速开始 zh/en 补 `--lang zh` 一句；课 11 `updated` → 2026-10-07。
