@@ -229,6 +229,11 @@
           "displayType": "badge-list",
           "highlights": [
             {
+              "label": "GRATITUDE-2026",
+              "detail": "ゴールド500 · 有効期限 11月30日",
+              "badge": "有効"
+            },
+            {
               "label": "HEARTHFIRE-2026",
               "detail": "ゴールド600 · 有効期限 11月30日(延長)",
               "badge": "有効"
