@@ -54,5 +54,8 @@ out/
 # video-agent-kit plugin bootstrap pointer (regenerated every session)
 .video_agent/
 
+# gstack skill workspace (regenerated on use)
+.gstack/
+
 # anvil-ops site-local ops data (metrics --import-aio --save CSV archives) — never swept into a submit PR
 ops/
