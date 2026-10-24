@@ -95,12 +95,13 @@ pnpm dev              # dev server, http://localhost:4321
 pnpm build            # includes Content schema validation — fails on bad frontmatter; postbuild indexes Pagefind search
 pnpm typecheck        # astro check (0 errors expected)
 pnpm lint             # ESLint (eslint-plugin-astro)
-pnpm test             # Vitest — 24 suites (url, seo, tags, i18n-smoke, content-utils, handbook, workflows, covers, consent, affiliates, prompt, apply-template, sync-codes, community-digest, today, redirects, changelog, agents-consistency, routing-flags, landing-paths, home-ui, indexnow, codes-consistency, content-links)
+pnpm test             # Vitest — 25 suites (url, seo, tags, i18n-smoke, content-utils, handbook, workflows, covers, consent, affiliates, prompt, apply-template, sync-codes, community-digest, today, redirects, changelog, agents-consistency, routing-flags, landing-paths, home-ui, indexnow, codes-consistency, content-links, versions)
 pnpm test:e2e         # apply-template real-mode E2E (git archive → scratch copy → pipe answers → assert shape → build; CI job e2e-template runs it; tests the COMMITTED tree)
 pnpm check-config     # scripts/check-config.ts — nav/locale 3-place consistency
 pnpm new-locale       # scripts/new-locale.ts — scaffold a new language
 pnpm check-sitemap    # scripts/check-sitemap.ts — verify all sitemap URLs return 200
 pnpm check-links      # scripts/check-links.ts — audit dist/ internal links (run after build)
+pnpm check-versions   # scripts/check-versions.ts — version/ops-line/skill-enum sync surfaces (pure lib tested in tests/versions.test.ts, gated via pnpm test)
 pnpm check-i18n       # scripts/check-i18n.ts — translation coverage report (--strict-ui gates missing UI keys; article depth stays report-only by design)
 pnpm check-content    # scripts/check-content.ts — content lint (no H1, heading levels, alt text, trailing-slash + locale-prefix links, ≥3 internal links, category = directory rule 7)
 pnpm gen-covers       # scripts/gen-covers.ts — generate 1200×675 og:image covers from titles (brand colors from globals.css; CJK via Noto subset)

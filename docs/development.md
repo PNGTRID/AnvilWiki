@@ -23,6 +23,7 @@ pnpm test            # vitest 全过(纯函数放 lib/url、lib/seo,可测)
 pnpm build           # Zod schema 校验 + 全站构建
 pnpm check-content   # 内容 lint(改了 MDX 时)
 pnpm check-links     # 内链审计(build 之后,必须跑)
+pnpm check-versions  # 版本五处+ops 版本行+技能枚举一致性(测试已随 pnpm test 门禁,此处一键红绿报告)
 pnpm check-i18n      # 加了 locale JSON key 后,看覆盖率报告
 ```
 
