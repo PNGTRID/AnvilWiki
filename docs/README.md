@@ -44,6 +44,7 @@
 3. apply-template.md      ← 换成你的游戏(或跑 pnpm apply-template)
 4. requirements/ 两张表    ← 产页前备素材:事实来源表 + 对标参考表
    + game-selection.md 首日 10 页 ← 用 AI 直接产页(README「用 AI 直接生成内容」章节)
+   (批量做内页:对 AI 说「按这份关键词清单批量出页」——/anvil-batch-articles 意图归类→清单→统一提示词→全批验收)
 5. deployment.md          ← 部署上线(⚠️ 必读 wrangler.toml 警告);上线 3-7 天做数据复盘
 6. ads.md                 ← 排名稳定了再开广告;AdSense 收款/Adsterra 接入/平台怎么升级(含游戏垂直)
 7. staying-up-to-date.md  ← 上线后回来看:如何跟上游、如何保持新鲜

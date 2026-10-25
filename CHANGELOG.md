@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`pnpm check-versions`——版本/ops 版本行/技能枚举一致性一键检查（check-* 家族第 7 员，PR #105）**：比对逻辑抽纯函数 `scripts/lib/check-versions.ts`（`tests/versions.test.ts` 7 条直测：单面漂移只翻自己那项/枚举缺失定位到面/缺 pattern 报 not-found 不炸/as-of 老化 >35 天只提示不拦），随 `pnpm test` 进 CI——roadmap 版本头、AGENTS Status、ops「semver X.Y.Z」行与 anvil-* 技能枚举四处从无门禁纯纪律项变红灯（changelog.test 先例，CI workflow 零改动）。检查 9 项：package.json↔PROJECT_VERSION↔CHANGELOG 最新段↔roadmap↔AGENTS Status 五处版本 + ops 版本行 + 四同步面技能枚举（README/docs README/PRD/AGENTS）。**首跑即抓到真实漂移**：docs/README.md 六技能枚举缺 `anvil-batch-articles`（v1.18 起从未进 docs README，非丢失属遗漏），已补路径 A 第 4 行批量通道一行。CLI 壳供每日体检输出红绿。
+
 ### Fixed
 
 - **重建第 48/49 轮审计修复批——digest 最高级门禁同义变体枚举+spec 同场归因口径（PR #103）**：第 48/49 轮修复批（test+spec+CHANGELOG 三文件）曾滞留工作树未 commit，后被后续工作树清理吞掉（`grep 破纪录/同场` 全仓零命中，门禁仍钉「历史新高」单字面）；按审计台账重建。`tests/community-digest.test.ts` 最高级对账门禁从「历史新高」单字面扩为变体枚举（历史新高/破纪录/创纪录/史上最高——单字面曾漏两例历史假声明），对账语义改「当日任一数值维度（messages/speakers）等于全量最大」——09-29「新人涌入创纪录：49 人发言」对账 `stats.speakers=49`（全量最大）为真纪录，双维均非最大才判假；活性断言同步新签名并补变体开火+维度豁免两例。spec §7.3 补变体同门口径、§7.2 补条目内他人言论「同场 <名字>」归因形态（attrib 署主要当事人；quotes 标点以 day 原文为准；机械门禁有意不加——day 文件 gitignored 无源可读）。红/绿路径双向自证；数据面（48 轮 JSON 两行、49 轮「同场共鸣」标注）此前已随 #87–#90 管道 PR 闭环，本批只补门禁与口径面。
