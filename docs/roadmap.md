@@ -29,7 +29,7 @@ AnvilWiki 的版本历史不是功能大杂烩,而是一条主线:**不断把「
 按「用户目标函数」排序——玩家做站要的是 选品 → 产能 → 流量 → 变现,v2.0 补强了「产能」(管道/封面)与「运营」(多站/AI 引用)两侧,接下来补两头:
 
 - **邮件订阅**(v2.0 遗留):RSS 已就绪,差订阅表单的模板级支持——涉及第三方服务选型(Buttondown 等)与 double opt-in 合规,做就做干净。
-- **preferred sources 适配**:Google 2026-08-20 刚发布「偏好来源」自定义按钮,等实现方式稳定后评估模板层支持。
+- **preferred sources 适配**:Google 2026-08-20 发布「偏好来源」自定义按钮。✅ **已评估(2026-10-26 凌晨自动化,官方文档+实现调研)**:实现方式已稳定,三形态——①标准 JS(Google 托管 publisher.js 脚本)②高级 JS(ES module 自定义 UI)③**deeplink 纯链接**(`https://google.com/preferences/source?q=<域名>`,零脚本)。模板层推荐形态=③:env 单源读 SITE_URL 域名,零第三方脚本符合开箱契约,footer 小链接形态(fork 零配置)。**挂起原因**:资格门槛无法程序验证——只有域名已出现在 google.com/preferences/source 工具中的才能生效,加按钮不创造资格;且非排名因素,站内放外链有跳出成本。**解锁条件**:用户在 google.com/preferences/source 实测 anvil.wiki/fork 域名是否可被添加(人工动作),确认资格后再做 footer 链接组件(含 i18n en+ja 两键+env 门控)。依据:[官方指南](https://developers.google.com/search/docs/appearance/preferred-sources)、[实现方式调研](https://www.crawlvision.com/blog/google-preferred-sources-custom-buttons-js);2026-05-27 已扩展进 AI Overviews/AI Mode(用户主动订阅直接影响 AI 引用面,AEO 价值真实)。
 - **选品决策支持**:「哪个游戏值得建站」目前靠学习手册课 7「打分拍板」的人工四关卡,可沉淀为数据脚本(搜索趋势/竞争度抓取)。
 - **管道生成器扩展(继续)**:codes 同步已接入 auto-content.yml(v2.17.0);Trello 导入等更多确定性任务走同一套门禁契约。
 - **可视化编辑层**(社区 issue #21):优先评估现成 git-based CMS 的模板级可选接入(Sveltia/Decap/Keystatic 本地模式——编辑对象就是仓库 Markdown,与纯静态架构天然兼容;注意 OAuth 配置门槛与 content.config.ts 的 schema 双源漂移风险);**不自研本地常驻后台**(CLI+setup.yml 已是两通道同步坑,第三通道是持续税,且偏离 AI 原生定位)——需求热度 n≥3 再启动。✅ 评估已完成(2026-09-08):Sveltia 因不支持 MDX 排除、Decap 平庸不推荐;推荐形态=**Keystatic 独立 admin 站**(不碰主站零 adapter 架构),先决解锁项=Zod schema→CMS 配置生成器(双源变单源)。详见 docs/superpowers/specs/2026-09-08-git-based-cms-evaluation.md。
