@@ -229,6 +229,11 @@
           "displayType": "badge-list",
           "highlights": [
             {
+              "label": "HALLOWEEN-2026",
+              "detail": "+300 Gold · expires Nov 8",
+              "badge": "Active"
+            },
+            {
               "label": "ADVENT-2026",
               "detail": "+250 Gold · expires Dec 25",
               "badge": "Active"
