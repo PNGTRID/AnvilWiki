@@ -397,7 +397,7 @@ const wiki = defineCollection({
     }),
 });
 
-export const collections = { wiki, handbook };
+export const collections = { wiki, handbook, tutorials };
 ```
 
 **Content Collections 的优势**：
@@ -605,6 +605,29 @@ export const defaultLocale: Locale = 'en';
 3. `src/content/<locale>/` 下实际存在的目录（无内容也要建空目录）
 
 ---
+
+### 6.3 官网教程集合（tutorials，landing 层）
+
+定义在 `src/content.config.ts`（v2.39.0 起，蓝图 §6.2）：
+
+```typescript
+const tutorials = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/tutorials' }),
+  schema: z.object({
+    title: z.string().max(80),
+    description: z.string().min(40).max(165),
+    order: z.number().int(),          // 阅读顺序，全线唯一
+    updated: z.coerce.date(),         // 必填：en+zh 成对一致（双语铁律 schema 化）
+    tldr: z.string().max(480).optional(), // 40-60 词直答（TL;DR 卡 + AI 引用候选）
+  }),
+});
+```
+
+与 handbook 的关键差异：**教程是官网营销内容，fork 时随 landing 层一起删除**（`src/content/tutorials`
+登记在 LANDING_PATHS / setup.yml rm 行 / e2e 缺席断言三通道）；handbook 有意 survives fork。
+文件位于 `src/content/tutorials/<locale>/<slug>.md`（plain .md），zh 与 en 复用同一 ASCII slug，
+parity 由 `tests/tutorials.test.ts` 钉死。路由：`/landing/tutorials/`（hub）+ `/landing/tutorials/<slug>/`
+（详情，尾部固定三件套：preset Fork CTA → 微信群二维码 → 同题材下一篇），中文版 `/zh/landing/tutorials/…`。
 
 ## 第 7 章 核心模块设计
 
@@ -1074,7 +1097,7 @@ const show = !!(client && slot);
 
 **套用模板** = 把通用 AnvilWiki 模板变成特定游戏的站点。只改配置层和内容层，代码层不动。
 
-完整的配置参考见 [`docs/apply-template.md`](./apply-template.md)——按文件组织，你要改什么就查对应章节。也可用 `pnpm apply-template` CLI 自动完成基础配置。第一个站跑通后、复制下一个站前，用 `pnpm template-audit` 检查模板健康度（见学习手册课 26「复制第二个站」）。
+完整的配置参考见 [`docs/apply-template.md`](./apply-template.md)——按文件组织，你要改什么就查对应章节。也可用 `pnpm apply-template` CLI 自动完成基础配置：CLI 先问一句**站点类型**（qSiteType，`scripts/lib/site-presets.ts` 的 `SITE_PRESETS` 注册表单源）——game-wiki（游戏 wiki，默认）/ coupon-hub（优惠码站）/ tutorial-hub（教程站）——再按类型保留对应 demo 起始内容、写对应语义的 nav/overview/首页文案（locale JSON 键集不变）、校验所选栏目属于该类型的保留集；不选或选 game-wiki 时产物与历史版本逐字节一致。第一个站跑通后、复制下一个站前，用 `pnpm template-audit` 检查模板健康度（见学习手册课 26「复制第二个站」）。
 
 ### 11.2 改动对象与 AnvilWiki 路径对照
 
@@ -1645,6 +1668,7 @@ PUBLIC_GISCUS_MAPPING=pathname
 
 | 日期 | 版本 | 说明 |
 |---|---|---|
+| 2026-11-01 | v2.39.0 | 官网旗舰教程线批：`/landing/tutorials` + `/zh/landing/tutorials` 双语上线——新 tutorials collection（src/content/tutorials，updated 必填）+ lib/landing-tutorials 单源（URL/排序/prevNext/同题材下一篇）+ 路由四件（hreflang 成对、ItemList/Breadcrumb/TechArticle JSON-LD、data-pagefind-body）+ TutorialArticle 尾部三件套（preset Fork CTA→微信群二维码不可移除→同题材下一篇）+ LandingLayout 导航三处 + landing-types 接口 + 首批 6 篇 en+zh 成对（兑换码站/优惠码站/AI 一天建站/教程知识库站/Google 收录/wiki 变现，选题经 anvil-find-keywords SERP 快验）；fork 三通道同步 + 新第 26 套件 tutorials.test.ts 16 条；llms.txt/README/docs README/AGENTS 同步；官网首页同步改「教程优先」门面（hero 换「教建站赚钱」叙事 + DirectionCards 三方向卡 + tutorials hub 按方向分组）；详见 CHANGELOG [2.39.0] |
 | 2026-08-11 | v0.1 | PRD 初稿；技术事实已通过 Astro 官方文档核实 |
 | 2026-08-12 | v0.2 | MVP 全部实现（MVP-0 至 MVP-5 + P0-P3）；更新待验证清单状态 |
 | 2026-08-12 | v0.3 | SEO 章节更新：Schema 状态（§8.6）、FAQ rich results 废弃说明、INP 阈值修正为 ≤ 200ms |

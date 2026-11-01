@@ -2,7 +2,7 @@
 
 > 本页回答两个问题:**这套模板过去按什么方向演化**(帮你判断它的成熟度和侧重),以及**接下来会往哪走**(帮你决定现在入场合不合适)。逐版本的完整变更见 [CHANGELOG](../CHANGELOG.md);正在做什么见 [PRD](./PRD.md) 第 14 章。
 
-> **当前版本:v2.38.0**(2026-10-22 发布)。发版历史与最新版本见 [Releases](https://github.com/PNGTRID/AnvilWiki/releases)。
+> **当前版本:v2.39.0**(2026-11-01 发布)。发版历史与最新版本见 [Releases](https://github.com/PNGTRID/AnvilWiki/releases)。
 
 ## 演化主线:从「建站模板」到「内容经营操作系统」
 
@@ -18,7 +18,8 @@ AnvilWiki 的版本历史不是功能大杂烩,而是一条主线:**不断把「
 | 运营闭环 | v1.14 – v1.16 | 流量数据回流到内容决策 | `anvilwiki-ops` CLI+MCP(GSC/CF 数据,提交走 PR)、社区展示墙、专家团复审修复 |
 | 媒体与规模化 | v1.17 – v1.18 | 补齐媒体示范、把一个站变多个站 | demo 全类型媒体示范、`template-audit` 模板健康检查、`bulk-new-posts` 批量产页、学习手册第 9/10 章 |
 | SEO 进阶 | v1.19 | 对齐 2026 搜索新格局 | 学习手册「SEO 进阶」课(排名 + AI 引用;现拆为课 28 + 课 29)、`docs/seo.md` 收录 2026 Google 官方更新记录、封面图升级为图片搜索入口、本路线图 |
-| **内容经营操作系统(当前)** | **v2.0** | **机器接管「产出与运营」环节** | PR 门控内容管道(auto-content.yml:确定性生成 → 八道门禁前置 → draft PR)、anvilwiki-ops 1.0 多站管理 + AI 引用追踪、`pnpm gen-covers` 封面产能(1200×675 + max-image-preview)、AffiliateSuggestion 建议位 |
+| **内容经营操作系统** | **v2.0** | **机器接管「产出与运营」环节** | PR 门控内容管道(auto-content.yml:确定性生成 → 八道门禁前置 → draft PR)、anvilwiki-ops 1.0 多站管理 + AI 引用追踪、`pnpm gen-covers` 封面产能(1200×675 + max-image-preview)、AffiliateSuggestion 建议位 |
+| **模板泛化与旗舰教程站(当前)** | **v2.39** | **从「游戏 wiki 专用」长出「教大家做各种站」** | `apply-template` 站点类型 Preset(qSiteType:game-wiki 默认/coupon-hub/tutorial-hub,三套 demo 骨架与文案语义,零 breaking)、官网旗舰教程线 `/landing/tutorials` en+zh(首批 6 篇,选题经挖词验证)、官网首页「教程优先」门面(hero 换「教建站赚钱」叙事+「选方向」三卡+tutorials hub 按方向分组) |
 
 一个可以观察到的规律:**每个阶段都在为下一个阶段铺路**——比如三层分离(v1.0)让模板化(v1.18)成为可能,check 工具链(v1.7)让 AI 技能(v1.13)有了验收标准,作者体系(v1.7)在 AI Overviews 时代(2026)变成了引用偏好里的信任信号。
 
@@ -28,6 +29,11 @@ AnvilWiki 的版本历史不是功能大杂烩,而是一条主线:**不断把「
 
 按「用户目标函数」排序——玩家做站要的是 选品 → 产能 → 流量 → 变现,v2.0 补强了「产能」(管道/封面)与「运营」(多站/AI 引用)两侧,接下来补两头:
 
+- **站点类型 Preset 机制 + 官网旗舰教程线** ✅ **已交付(v2.39.0,2026-11-01)**:蓝图 `docs/superpowers/specs/2026-11-01-site-type-presets-flagship-tutorial-design.md`——M1 = apply-template qSiteType 三 preset(game-wiki 默认逐字节零 breaking/coupon-hub/tutorial-hub)+demo 6 篇+文案换皮+E2E 三流程;M2 = `/landing/tutorials` en+zh 教程线(集合/路由/三通道/首批 6 篇);门面批 = 首页改「教程优先」(hero 换叙事+DirectionCards 三方向卡+tutorials hub 按方向分组,tutorialsForPreset 分组+TUTORIAL_META 全注册双契约钉死)。定位依据与后置项见 spec §1/§9。
+- **M3 变现层(后置,spec §9)**:教程线内嵌真实在用工具的联盟链接(`affiliates.ts` 首批 2-3 个)+按挖词数据扩产教程+首个「活案例」数据回填。**触发条件**:真实联盟账号开通(当前未开通,教程线如实不挂联盟链接)或教程线跑出首批流量数据。
+- **排行榜 money page 规范**(后置,spec §9/§1.4):站内 money page 层而非独立站型。**触发条件**:coupon-hub/tutorial-hub preset 出现真实 fork 站并验证 codes 页转化后,再定规范。
+- **目录站付费收录机制**(后置,spec §1.4):**触发条件**:模板泛化(§1.5)落地且出现目录型 fork 需求信号;在此之前不做。
+- **更多站点类型 preset**(后置,spec §9):每新增 preset 的 demo 集控制在 ≤6 篇(spec §11.5 上限)。**触发条件**:现有三型出现真实 showcase 站/社群需求信号,按 §7 飞轮模式复制。
 - **邮件订阅**(v2.0 遗留):RSS 已就绪,差订阅表单的模板级支持——涉及第三方服务选型(Buttondown 等)与 double opt-in 合规,做就做干净。
 - **preferred sources 适配**:Google 2026-08-20 发布「偏好来源」自定义按钮。✅ **已评估(2026-10-26 凌晨自动化,官方文档+实现调研)**:实现方式已稳定,三形态——①标准 JS(Google 托管 publisher.js 脚本)②高级 JS(ES module 自定义 UI)③**deeplink 纯链接**(`https://google.com/preferences/source?q=<域名>`,零脚本)。模板层推荐形态=③:env 单源读 SITE_URL 域名,零第三方脚本符合开箱契约,footer 小链接形态(fork 零配置)。**挂起原因**:资格门槛无法程序验证——只有域名已出现在 google.com/preferences/source 工具中的才能生效,加按钮不创造资格;且非排名因素,站内放外链有跳出成本。**解锁条件**:用户在 google.com/preferences/source 实测 anvil.wiki/fork 域名是否可被添加(人工动作),确认资格后再做 footer 链接组件(含 i18n en+ja 两键+env 门控)。依据:[官方指南](https://developers.google.com/search/docs/appearance/preferred-sources)、[实现方式调研](https://www.crawlvision.com/blog/google-preferred-sources-custom-buttons-js);2026-05-27 已扩展进 AI Overviews/AI Mode(用户主动订阅直接影响 AI 引用面,AEO 价值真实)。
 - **选品决策支持**:「哪个游戏值得建站」目前靠学习手册课 7「打分拍板」的人工四关卡,可沉淀为数据脚本(搜索趋势/竞争度抓取)。
@@ -63,6 +69,6 @@ AnvilWiki 的版本历史不是功能大杂烩,而是一条主线:**不断把「
 
 ## 给 fork 用户的含义
 
-- **方向稳定性**:主线一年未偏——「让个人低成本经营游戏 wiki」没有 pivot 过,你的 fork 不用担心模板方向突变。
+- **方向稳定性**:主线一年未偏——2026-11 起官网定位从「教大家做游戏 wiki」扩展为「教大家做各种内容站」(站点类型 Preset),但模板的 game-wiki 默认与零 breaking 承诺未变:不选类型时一切行为与从前逐字节一致,你的 fork 不用担心模板方向突变。
 - **升级节奏**:语义化版本 + 三层分离,merge 上游通常只动代码层(见 [staying-up-to-date.md](./staying-up-to-date.md))。
 - **参与**:路线优先级欢迎开 issue 讨论;做出成绩的站点欢迎提 PR 上展示墙。
