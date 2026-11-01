@@ -163,6 +163,14 @@ const COUPON_DEMO_FILES = [
   'ja/items/pixelpad-design-tool.mdx',
   'ja/items/cloudnote-notes-app.mdx',
 ];
+
+// Registry lists are locale-relative (they mirror site-presets.ts), but the
+// assertions check the real tree — every use must map through wikiPath or
+// the check is vacuous: an unprefixed path always "passes" expectAbsent (the
+// file never existed at scratch/en/…) and always "fails" expectPresent.
+// (First real e2e run caught exactly that: flow 1's cross-preset assertion
+// passed vacuously while flow 2/3 failed on genuinely-present files.)
+const wikiPath = (p) => `src/content/wiki/${p}`;
 const TUTORIAL_DEMO_FILES = [
   'en/guides/pick-your-niche-tutorial.mdx',
   'en/guides/build-site-with-ai-tutorial.mdx',
@@ -247,7 +255,7 @@ for (const unit of ['sticky-320x50', 'sidebar-300x250', 'sidebar-160x300', 'side
 step('Assert site-preset demos cleared by the game-wiki init');
 expectAbsent(
   scratch,
-  [...COUPON_DEMO_FILES, ...TUTORIAL_DEMO_FILES],
+  [...COUPON_DEMO_FILES, ...TUTORIAL_DEMO_FILES].map(wikiPath),
   'preset demo article still present after a game-wiki fork init — SITE_PRESETS registry layer did not clear it',
 );
 // ...and the historical content-marker layer is untouched (Anvil Quest demos).
@@ -497,14 +505,14 @@ step('Assert coupon-hub fork shape');
 // chosen locales: the ja mirror articles must be gone (locale dimension).
 expectPresent(
   couponScratch,
-  COUPON_DEMO_FILES.filter((p) => p.startsWith('en/')),
+  COUPON_DEMO_FILES.filter((p) => p.startsWith('en/')).map(wikiPath),
   'coupon-hub demo missing after its own init — the chosen preset starting content was not kept',
 );
 expectAbsent(
   couponScratch,
   [
-    ...COUPON_DEMO_FILES.filter((p) => p.startsWith('ja/')),
-    ...TUTORIAL_DEMO_FILES, // other preset → cleared regardless of locale
+    ...COUPON_DEMO_FILES.filter((p) => p.startsWith('ja/')).map(wikiPath),
+    ...TUTORIAL_DEMO_FILES.map(wikiPath), // other preset → cleared regardless of locale
     'src/content/wiki/en/bosses/emberfang.mdx', // Anvil Quest → content rule
   ],
   'unexpected demo residue in the coupon-hub fork',
@@ -564,14 +572,14 @@ runCli(tutorialScratch, 'e2e-answers.json');
 step('Assert tutorial-hub fork shape');
 expectPresent(
   tutorialScratch,
-  TUTORIAL_DEMO_FILES.filter((p) => p.startsWith('en/')),
+  TUTORIAL_DEMO_FILES.filter((p) => p.startsWith('en/')).map(wikiPath),
   'tutorial-hub demo missing after its own init — the chosen preset starting content was not kept',
 );
 expectAbsent(
   tutorialScratch,
   [
-    ...TUTORIAL_DEMO_FILES.filter((p) => p.startsWith('ja/')),
-    ...COUPON_DEMO_FILES, // other preset → cleared regardless of locale
+    ...TUTORIAL_DEMO_FILES.filter((p) => p.startsWith('ja/')).map(wikiPath),
+    ...COUPON_DEMO_FILES.map(wikiPath), // other preset → cleared regardless of locale
     'src/content/wiki/en/bosses/emberfang.mdx', // Anvil Quest → content rule
     'src/content/wiki/en/items', // narrowed set: guides only
     'src/content/wiki/en/codes',

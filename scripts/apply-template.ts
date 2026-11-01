@@ -62,6 +62,7 @@ import {
   buildUiImports,
   buildUiMessagesEntries,
   classifyWikiArticles,
+  coverNamesReferenced,
   isDemoLocaleContent,
   isDemoSiteTsIdentity,
   isLocaleCode,
@@ -476,9 +477,9 @@ function clearDemoContent(
   categories: { key: string }[],
   selectedLocales: string[],
   preset: PresetId,
-): { removed: number; kept: string[] } {
+): { removed: number; kept: string[]; keptSrcs: string[] } {
   const base = path.resolve(ROOT, 'src/content/wiki');
-  if (!fs.existsSync(base)) return { removed: 0, kept: [] };
+  if (!fs.existsSync(base)) return { removed: 0, kept: [], keptSrcs: [] };
   const chosen = new Set(categories.map((c) => c.key));
   const entries = walkFiles(base, { exts: ['.mdx', '.md'] }).map((p) => ({
     rel: path.relative(base, p).split(path.sep).join('/'),
@@ -514,11 +515,22 @@ function clearDemoContent(
   return {
     removed: demo.length,
     kept: kept.map((f) => `src/content/wiki/${f.rel}`),
+    // Raw sources of the kept articles — clearDemoAssets spares the covers
+    // these reference (preset starting content must build).
+    keptSrcs: kept.map((f) => f.src),
   };
 }
 
-function clearDemoAssets() {
+function clearDemoAssets(keptSrcs: readonly string[] = []) {
   let removed = 0;
+  // Covers survive when a KEPT demo article references them: the chosen
+  // preset's starting content ships with covers, and clearing the cover of a
+  // kept article fails the fork's first build (Astro image() → ImageNotFound).
+  // The locale dimension falls out naturally — an unchosen locale's articles
+  // are deleted, so its covers stay unreferenced and clear. Channels below
+  // (gallery/article images/public files) have no kept-article referencing
+  // them in any preset, so they clear unconditionally as before.
+  const spareCovers = coverNamesReferenced(keptSrcs);
   // By-name everywhere, same rule as covers: public/images/articles/ is
   // where content-format.md tells fork authors to drop their own inline
   // card images — a wholesale rm -rf here would destroy that work on a
@@ -538,7 +550,7 @@ function clearDemoAssets() {
   const covers = path.resolve(ROOT, 'src/assets/covers');
   if (fs.existsSync(covers)) {
     for (const file of fs.readdirSync(covers)) {
-      if (DEMO_COVERS.includes(file)) {
+      if (DEMO_COVERS.includes(file) && !spareCovers.has(file)) {
         if (!DRY_RUN) fs.unlinkSync(path.join(covers, file));
         removed++;
       }
@@ -1128,8 +1140,8 @@ async function main() {
   }
 
   if (clearContent) {
-    const { removed, kept } = clearDemoContent(categories, uniqueLocales, skinInput.siteType);
-    const assets = clearDemoAssets();
+    const { removed, kept, keptSrcs } = clearDemoContent(categories, uniqueLocales, skinInput.siteType);
+    const assets = clearDemoAssets(keptSrcs);
     console.log(T.clearedArticles(removed, DRY_RUN));
     console.log(T.clearedAssets(assets, DRY_RUN));
     if (kept.length > 0) {

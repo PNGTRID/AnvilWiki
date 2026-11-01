@@ -39,6 +39,7 @@ import {
   isLocaleCode,
   isPlaceholderOverviewDesc,
   KNOWN_LOCALE_LABELS,
+  coverNamesReferenced,
   localeIdent,
   localeKey,
   parseSiteTsIdentity,
@@ -1963,5 +1964,26 @@ describe('placeholder codes convention (refresh-audit freshness skip)', () => {
     // No codes entries at all → not a placeholder page (never skip silently).
     expect(isPlaceholderCodesFrontmatter('title: Deals')).toBe(false);
     expect(DEMO_CODE_PLACEHOLDER_PREFIX).toBe('DEMO-');
+  });
+});
+
+describe('coverNamesReferenced (preset demo covers survive with their articles)', () => {
+  test('extracts cover filenames from frontmatter image values', () => {
+    const src = [
+      '---',
+      "title: 'x'",
+      "image: '../../../../assets/covers/en-codes-pixelpad-codes.png'",
+      '---',
+      'body mentions src/assets/covers/ja-codes-cloudnote-codes.png inline too',
+    ].join('\n');
+    const names = coverNamesReferenced([src]);
+    expect(names.has('en-codes-pixelpad-codes.png')).toBe(true);
+    expect(names.has('ja-codes-cloudnote-codes.png')).toBe(true);
+    expect(names.size).toBe(2);
+  });
+
+  test('empty input → empty set (game-wiki fork clears every registered cover)', () => {
+    expect(coverNamesReferenced([]).size).toBe(0);
+    expect(coverNamesReferenced(['no covers here']).size).toBe(0);
   });
 });

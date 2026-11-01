@@ -1481,6 +1481,25 @@ export function classifyWikiArticles(
 }
 
 /**
+ * Cover filenames referenced by the given article sources (frontmatter
+ * `image:` values pointing into src/assets/covers/). Pure — the caller feeds
+ * classifyWikiArticles' kept list so asset clearing can SPARE every cover a
+ * surviving demo article references: preset starting content carries covers,
+ * and a kept article whose cover was cleared fails the fork's first build
+ * (Astro image() → ImageNotFound). Over-matching only spares an orphan file,
+ * so the regex errs inclusive on purpose.
+ */
+export function coverNamesReferenced(srcs: readonly string[]): Set<string> {
+  const names = new Set<string>();
+  for (const src of srcs) {
+    for (const m of src.matchAll(/assets\/covers\/([A-Za-z0-9][A-Za-z0-9._-]*)/g)) {
+      names.add(m[1]);
+    }
+  }
+  return names;
+}
+
+/**
  * The demo-author block regex apply-template runs against
  * src/config/authors.ts — extracted from the CLI so the contract test can pin
  * it against the REAL file (and against setup.yml's inline python copy: the
