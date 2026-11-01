@@ -264,7 +264,7 @@ jobs:
           # the deleted ~/config/landing and breaks the fork's build.
           # NEVER add src/components/RootGateway.astro here — index.astro
           # statically imports it; deleting it breaks the fork's build.
-          rm -rf src/components/landing src/config/landing.ts src/config/landing-types.ts src/config/landing-shared.ts src/config/landing-en.ts src/config/landing-zh.ts src/config/landing-templates.ts src/pages/landing.astro src/pages/demo.astro src/pages/landing src/pages/zh/landing.astro src/pages/zh/landing public/images/showcase public/images/wechat-qr.jpg public/_redirects
+          rm -rf src/components/landing src/config/landing.ts src/config/landing-types.ts src/config/landing-shared.ts src/config/landing-en.ts src/config/landing-zh.ts src/config/landing-templates.ts src/pages/landing.astro src/pages/demo.astro src/pages/landing src/pages/zh/landing.astro src/pages/zh/landing src/pages/landing/tutorials.astro src/pages/landing/tutorials src/pages/zh/landing/tutorials.astro src/pages/zh/landing/tutorials src/content/tutorials public/images/showcase public/images/wechat-qr.jpg public/_redirects
           sed -i.bak 's/landingLinkEnabled = true/landingLinkEnabled = false/' src/config/project.ts && rm -f src/config/project.ts.bak
           # The flip must never be a silent no-op (audit round 21): a drifted
           # pattern would leave fork nav pointing at the deleted /landing/
@@ -299,7 +299,27 @@ jobs:
                 src/assets/covers/en-bosses-frostbound-monarch.png \
                 src/assets/covers/en-guides-forging-guide.png \
                 src/assets/covers/en-items-emberforged-armor-set.png \
-                src/assets/covers/en-items-forging-materials-guide.png
+                src/assets/covers/en-items-forging-materials-guide.png \
+                src/assets/covers/en-codes-pixelpad-codes.png \
+                src/assets/covers/en-codes-cloudnote-codes.png \
+                src/assets/covers/en-guides-black-friday-deals-guide.png \
+                src/assets/covers/en-guides-saas-discount-stacking-guide.png \
+                src/assets/covers/en-items-pixelpad-design-tool.png \
+                src/assets/covers/en-items-cloudnote-notes-app.png \
+                src/assets/covers/ja-codes-pixelpad-codes.png \
+                src/assets/covers/ja-codes-cloudnote-codes.png \
+                src/assets/covers/ja-guides-black-friday-deals-guide.png \
+                src/assets/covers/ja-guides-saas-discount-stacking-guide.png \
+                src/assets/covers/ja-items-pixelpad-design-tool.png \
+                src/assets/covers/ja-items-cloudnote-notes-app.png \
+                src/assets/covers/en-guides-pick-your-niche-tutorial.png \
+                src/assets/covers/en-guides-build-site-with-ai-tutorial.png \
+                src/assets/covers/en-guides-content-workflow-tutorial.png \
+                src/assets/covers/en-guides-monetize-site-tutorial.png \
+                src/assets/covers/ja-guides-pick-your-niche-tutorial.png \
+                src/assets/covers/ja-guides-build-site-with-ai-tutorial.png \
+                src/assets/covers/ja-guides-content-workflow-tutorial.png \
+                src/assets/covers/ja-guides-monetize-site-tutorial.png
           python3 - <<'EOF'
           import re
           p = 'src/config/authors.ts'

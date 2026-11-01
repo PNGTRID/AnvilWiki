@@ -1,0 +1,74 @@
+---
+title: 'CloudNote: Notes App - Plans, Pricing, and Coupon Codes'
+description: 'What CloudNote is, what Plus and Business cost in 2026, which coupon codes currently apply, and who the notes-first subscription fits - the full tool card.'
+category: 'items'
+tool:
+  tagline: 'Notes-first SaaS: unlimited notes free on two devices; Plus unlocks devices, full history, and integrations.'
+  pricing: 'Free · Plus $6/mo · Business $12/seat/mo'
+  url: 'https://www.cloudnote.example/'
+image: '../../../../assets/covers/en-items-cloudnote-notes-app.png'
+date: 2026-11-01
+lastModified: 2026-11-01
+tags: ['items', 'affiliate', 'saas-coupon']
+summary: 'CloudNote is a fictional notes-first SaaS with a free tier, a 6-dollar Plus plan, and a 12-dollar Business plan. This tool card covers what each plan includes, which coupons currently apply, who the app fits, and how the affiliate suggestion slot at the end of this page is configured.'
+faq:
+  - question: 'Is CloudNote free?'
+    answer: 'Yes — the Basic tier is unlimited notes on two devices with 60-day version history. Plus adds unlimited devices, full history, and integrations; Business adds shared workspaces and admin controls.'
+  - question: 'What is the cheapest way to pay for CloudNote Plus?'
+    answer: 'Yearly billing plus a coupon. The Black Friday code DEMO-CYBER40 takes 40% off the yearly Plus price through December 1 — see the current codes page for the full active list.'
+  - question: 'Can students use CloudNote for free?'
+    answer: 'Verified students get six months of Plus free through the standing DEMO-STUDENT program code on the codes page. The grant replaces promotional coupons rather than stacking with them.'
+  - question: 'Is this page sponsored by CloudNote?'
+    answer: 'No. This is a template demo page for a fictional brand. The suggestion slot at the end renders only when a site owner configures real affiliate picks in src/config/affiliates.ts — nothing renders by default.'
+---
+
+CloudNote is the notes-app half of this site's working example: a fictional notes-first SaaS, written up here as a complete **tool card** — the entity-page format for "what is X, what does it cost, and is there a coupon" searches. The card covers the product surface, the 2026 plans, the live coupons, and who it fits. Everything below describes the fictional demo brand; the page structure is what you reuse for a real product.
+
+## What is CloudNote?
+
+CloudNote is a structured notes app: notebooks and tags, bidirectional links between notes, web clipping, and full-text search that actually finds things. The design bet is that notes outlive apps — export is open-format and history is versioned. Four surfaces matter in practice:
+
+1. **Notes and links** — markdown-friendly editing with backlinks, so research notes connect instead of piling up.
+2. **Sync** — instant across devices; Basic limits you to two, which is the main reason people outgrow the free tier.
+3. **Clipping** — a browser extension that saves articles into your notebook with the source URL preserved.
+4. **Shared workspaces** — on Business, team notebooks with roles and admin export.
+
+## CloudNote plans and pricing (2026)
+
+| Plan | Price | What you get |
+| --- | --- | --- |
+| Basic | $0 | Unlimited notes, 2 devices, 60-day history |
+| Plus | $6/mo or $60/yr | Unlimited devices, full history, clipping, integrations |
+| Business | $12/seat/mo | Everything in Plus plus shared workspaces and admin controls |
+
+As everywhere on this site, the yearly cycle is the built-in discount layer, and coupons are the second layer: the live list on our [CloudNote coupon codes](/codes/cloudnote-codes/) page currently carries a 40%-off-yearly seasonal code and a 30%-off any-cycle code. The layering rules — what combines, in what order — are in the [SaaS discount stacking guide](/guides/saas-discount-stacking-guide/).
+
+## Who CloudNote is for — and when to pick something else
+
+**A good fit when:** your notes are reference material you will search for years — research, meeting archives, a personal wiki. The versioned history and open export make it a safe long-term home.
+
+**Look elsewhere when:** you mainly sketch and present rather than write — the design-tool subscription on this site fits that job better (see the [PixelPad design tool](/items/pixelpad-design-tool/) card, with its own [coupon page](/codes/pixelpad-codes/)). And if your note-taking lives inside documents, a writing-suite subscription may beat a standalone notes app entirely.
+
+## About the suggestion slot at the end of this page
+
+Pages like this one end with an optional **affiliate suggestion card** — the monetization slot for tool-entity content. On this template it is config-gated and ships empty, so nothing renders until a site owner adds picks. The wiring, for anyone reusing this page format:
+
+```ts
+// src/config/affiliates.ts — empty array = the slot renders nothing
+export const affiliates = {
+  suggestions: [
+    {
+      url: 'https://www.cloudnote.example/',
+      title: 'Try CloudNote Plus',
+      description: 'The notes app covered on this page.',
+      categories: ['items'],
+    },
+  ],
+};
+```
+
+Three things the slot handles automatically: the link gets `rel="sponsored nofollow noopener"`, a localized sponsored-disclosure label, and a max of two cards per page. Never hardcode affiliate links into article bodies — the config file is the single place to swap picks, and empty stays render-nothing (the same out-of-box contract as ads and comments).
+
+## Where to go from here
+
+Two adjacent pages complete the picture: the live [coupon list](/codes/cloudnote-codes/) with expiry dates and official sources, and the seasonal calendar in the [Black Friday SaaS deals guide](/guides/black-friday-deals-guide/). This card is the demo of the `items` category as a tool-library page — the format carries over unchanged to real products, with your own pricing table, your own verified coupons, and your own configured suggestions.

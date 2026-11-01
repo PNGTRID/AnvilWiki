@@ -1,0 +1,73 @@
+---
+title: 'PixelPad: Browser Design Tool - Plans, Pricing, and Coupons'
+description: 'What PixelPad is, what each plan costs in 2026, which coupon codes currently apply, and who the browser design tool actually fits - the full tool card.'
+category: 'items'
+tool:
+  tagline: 'Browser-based design tool: layer editor, brand kits, template library — zero install.'
+  pricing: 'Free · Pro $12/mo ($120/yr) · Team $24/seat/mo'
+  url: 'https://www.pixelpad.example/'
+image: '../../../../assets/covers/en-items-pixelpad-design-tool.png'
+date: 2026-11-01
+lastModified: 2026-11-01
+tags: ['items', 'affiliate', 'saas-coupon']
+summary: 'PixelPad is a browser-based design tool with a free tier, a 12-dollar monthly Pro plan, and a 24-dollar Team plan. This card covers what each plan includes, which coupons currently apply, who the tool fits, and how the affiliate suggestion slot at the end of pages like this one is configured.'
+faq:
+  - question: 'Is PixelPad free to use?'
+    answer: 'Yes — the Free tier covers three active projects with core editing tools and community templates. Paid work (custom fonts, brand kits, unlimited projects) starts on Pro.'
+  - question: 'What is the cheapest way to pay for PixelPad Pro?'
+    answer: 'Annual billing plus a coupon. Yearly billing already includes two free months, and codes like DEMO-PAD20 cut a further 20% off that yearly price — see the current codes page for what is active.'
+  - question: 'Does PixelPad work offline?'
+    answer: 'No. It is browser-first by design: files live in the cloud and every feature runs in the tab. A native offline mode is the most requested gap in its roadmap.'
+  - question: 'Is this page sponsored by PixelPad?'
+    answer: 'No. This is a template demo page for a fictional brand. The suggestion slot at the end renders only when a site owner configures real affiliate picks in src/config/affiliates.ts — nothing renders here by default.'
+---
+
+PixelPad is the design-tool half of this site's working example: a fictional browser-based design app, written up here as a complete **tool card** — the entity-page format sites use when a product (not a game character or a boss) is the thing people search for. The card covers what the tool is, what each plan costs, which coupons currently apply, and who it fits. Everything below describes the fictional demo brand; the page structure is what you reuse for a real product.
+
+## What is PixelPad?
+
+PixelPad is a browser-based graphic design tool in the Canva/Figma neighborhood: templates for social posts and decks, a layer-based editor, team libraries, and one-click exports. The pitch is zero install — files live in the cloud, the editor runs in a tab, and sharing is a link. Three product surfaces matter in practice:
+
+1. **The editor** — layer-based canvas with the standard toolset (text, shapes, images, masks) and a template library for the usual formats.
+2. **Brand kits** — on Pro, stored fonts, palettes, and logos that snap into any template. The feature that decides most upgrades.
+3. **Team spaces** — on Team, shared libraries, comment threads, and per-seat permissions.
+
+## PixelPad plans and pricing (2026)
+
+| Plan | Price | What you get |
+| --- | --- | --- |
+| Free | $0 | 3 active projects, core editor, community templates |
+| Pro | $12/mo or $120/yr | Unlimited projects, brand kits, premium templates, export options |
+| Team | $24/seat/mo | Everything in Pro plus shared libraries and permissions |
+
+The yearly cycle is effectively two months free — the built-in first discount layer. Before paying either rate, check the second layer: the live coupon list on our [PixelPad coupon codes](/codes/pixelpad-codes/) page, currently carrying a 50%-off-three-months seasonal code and a 20%-off-annual code. How to combine the two layers is worked through in the [SaaS discount stacking guide](/guides/saas-discount-stacking-guide/).
+
+## Who PixelPad is for — and when to pick something else
+
+**A good fit when:** you produce social graphics, slide decks, or simple print pieces regularly; you want zero install; or a small team needs shared templates more than it needs a full vector toolchain.
+
+**Look elsewhere when:** you need pixel-precise vector editing, offline work, or versioned design files — a desktop vector suite fits better. And if your actual job is notes rather than design, the other tool on this site is the better spend: the [CloudNote notes app](/items/cloudnote-notes-app/) card covers a notes-first subscription at a lower price point, with its own [coupon page](/codes/cloudnote-codes/).
+
+## About the suggestion slot at the end of this page
+
+Pages like this one end with an optional **affiliate suggestion card** — the monetization slot for tool-entity content. On this template it is config-gated and ships empty, so nothing renders until a site owner adds picks. The wiring, for anyone reusing this page format:
+
+```ts
+// src/config/affiliates.ts — empty array = the slot renders nothing
+export const affiliates = {
+  suggestions: [
+    {
+      url: 'https://www.pixelpad.example/',
+      title: 'Try PixelPad Pro',
+      description: 'The design tool covered on this page.',
+      categories: ['items'],
+    },
+  ],
+};
+```
+
+Three things the slot handles automatically: the link gets `rel="sponsored nofollow noopener"`, a localized sponsored-disclosure label, and a max of two cards per page. Never hardcode affiliate links into article bodies — the config file is the single place to swap picks, and empty stays render-nothing (the same out-of-box contract as ads and comments).
+
+## Where to go from here
+
+Two adjacent pages complete the picture: the live [coupon list](/codes/pixelpad-codes/) for this season's codes, and the seasonal timing overview in the [Black Friday SaaS deals guide](/guides/black-friday-deals-guide/). This card is the demo of the `items` category as a tool-library page — the format carries over unchanged to real products, with your own pricing table, your own verified coupons, and your own configured suggestions.

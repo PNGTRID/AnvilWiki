@@ -8,9 +8,9 @@
  *   - Interactive TTY runs ask a language question first (1 = 中文, 2 =
  *     English; enter = the LANG-derived default).
  *   - Non-interactive runs (--answers, pipes, CI) NEVER ask — scripted answer
- *     files keep their exact positional order (18 entries, pinned by
- *     pnpm test:e2e) — and default to English. Pass `--lang zh` (or
- *     `--lang=zh`) to drive them in Chinese.
+ *     files keep their exact positional order (18 entries before the site-type
+ *     question, 19 since; both formats pinned by pnpm test:e2e) — and default
+ *     to English. Pass `--lang zh` (or `--lang=zh`) to drive them in Chinese.
  *
  * Boundary: only the apply-template CLI's own flow strings live here. Errors
  * from the shared lib layer (scripts/lib/apply-rewrites.ts) and the
@@ -58,12 +58,29 @@ const en = {
   qReleaseDate: 'Release date (ISO, optional)',
   qLocales: 'Locales',
   qCategories: 'Categories',
+  // Site type (qSiteType) — APPENDED after qRemoveLanding, before qProceed
+  // (prompt #18, answer index 17): the original 18-answer positional order is
+  // untouched, and 18-entry --answers files still work (legacy game-wiki).
+  qSiteType: 'Site type',
   qPreset: 'Preset [1/2/3]',
   qClearContent: 'Clear demo content?',
   qRemoveLanding: 'Remove the project landing page (/landing)?',
   qProceed: '\nProceed with these changes?',
 
-  hintCommonCategories: '   Common: bosses, guides, items, codes, tier-list, characters',
+  hintCommonCategories: [
+    '   Common: bosses, guides, items, codes, tier-list, characters.',
+    '   By site type — game-wiki: bosses, guides, items, codes · coupon-hub: codes, guides, items · tutorial-hub: guides only.',
+  ].join('\n'),
+  siteTypeMenu: [
+    '   1) game-wiki    — game wiki site (bosses/guides/items/codes — the current default)',
+    '   2) coupon-hub   — deals & coupon site (codes become "Deals", plus tools & saving guides)',
+    '   3) tutorial-hub — tutorial/knowledge-base site (guides become "Tutorials")',
+  ].join('\n'),
+  siteTypeNote:
+    '   Your pick decides which demo articles stay as starting content and which category labels fit.',
+  siteTypeError: (value: string) => `❌ Invalid site type "${value}". Answer 1, 2 or 3.`,
+  siteCategoryMismatchError: (preset: string, allowed: string, chosen: string) =>
+    `❌ Categories [${chosen}] do not fit the ${preset} site type — allowed: ${allowed}. Re-run and align the category answer (asked earlier) with the site type.`,
   presetMenu: [
     '   1) codes     — hero "All Codes", badge-list codes module (codes-driven sites)',
     '   2) guides    — hero wiki-style, steps module (guide-driven sites)',
@@ -94,6 +111,7 @@ const en = {
   plannedTheme: '   Theme:       ',
   plannedLocales: '   Locales:     ',
   plannedCategories: '   Categories:  ',
+  plannedSiteType: '   Site type:   ',
   plannedNone: '(none)',
   plannedClear: '   Clear demo:  ',
   plannedLanding: '   Remove /landing: ',
@@ -201,12 +219,28 @@ const zh: CliStrings = {
   qReleaseDate: '发行日期(ISO 格式,可选)',
   qLocales: '语言列表',
   qCategories: '栏目列表',
+  // 站点类型(qSiteType)——追加在 qRemoveLanding 之后、qProceed 之前(第 18 题、
+  // 答案 index 17):原有 18 项答案位置序不动,18 项旧 --answers 文件仍然可用
+  // (静默按 game-wiki 处理)。
+  qSiteType: '站点类型',
   qPreset: '首页预设 [1/2/3]',
   qClearContent: '清除 demo 示例内容?',
   qRemoveLanding: '删除项目官网页(/landing)?',
   qProceed: '\n确认执行以上修改?',
 
-  hintCommonCategories: '   常用:bosses, guides, items, codes, tier-list, characters',
+  hintCommonCategories: [
+    '   常用:bosses, guides, items, codes, tier-list, characters。',
+    '   按站点类型 — game-wiki: bosses, guides, items, codes · coupon-hub: codes, guides, items · tutorial-hub: 仅 guides。',
+  ].join('\n'),
+  siteTypeMenu: [
+    '   1) game-wiki    — 游戏 wiki 站(bosses/guides/items/codes——现在的默认)',
+    '   2) coupon-hub   — 优惠码/折扣站(codes 变「优惠码」,另有工具库与省钱攻略)',
+    '   3) tutorial-hub — 教程知识库站(guides 变「教程」)',
+  ].join('\n'),
+  siteTypeNote: '   选择决定哪些 demo 示例文章保留为起始内容,以及栏目标签用哪套语义。',
+  siteTypeError: (value) => `❌ 站点类型 "${value}" 不合法,请回答 1、2 或 3。`,
+  siteCategoryMismatchError: (preset, allowed, chosen) =>
+    `❌ 所选栏目 [${chosen}] 不属于 ${preset} 站点类型 — 允许:${allowed}。请重跑并让栏目答案(在前面的题)与站点类型保持一致。`,
   presetMenu: [
     '   1) codes     — 首页大标 "All Codes"、兑换码徽章模块(适合兑换码驱动的站)',
     '   2) guides    — wiki 式首页、步骤模块(适合攻略驱动的站)',
@@ -236,6 +270,7 @@ const zh: CliStrings = {
   plannedTheme: '   主题色:      ',
   plannedLocales: '   语言:        ',
   plannedCategories: '   栏目:        ',
+  plannedSiteType: '   站点类型:    ',
   plannedNone: '(无)',
   plannedClear: '   清除 demo 内容:  ',
   plannedLanding: '   删除 /landing: ',

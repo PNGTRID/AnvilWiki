@@ -11,6 +11,7 @@
  */
 
 import { stripControlChars } from './delimited';
+import { SITE_PRESETS, type PresetId } from './site-presets';
 
 
 export function slugify(s: string): string {
@@ -176,41 +177,43 @@ export interface SkinInput {
   clearLanding: boolean;
   /** Homepage preset: 'codes' | 'guides' | 'keep' */
   homePreset: 'codes' | 'guides' | 'keep';
+  /**
+   * Site type preset (qSiteType). Drives the nav/overview placeholder labels
+   * and the homepage copy flavor; 'game-wiki' reproduces the pre-preset
+   * output byte-for-byte (zero-breaking red line).
+   */
+  siteType: PresetId;
 }
 
 
 /**
- * Build a starter `home` namespace skeleton for a preset.
- * All copy uses the game name the user entered — placeholders to refine,
- * not demo-game leftovers. Module hrefs point at the categories they chose;
- * a fixed slot whose expected category was not picked substitutes a chosen
- * one (warn on stderr) instead of writing a dead link.
+ * Slot-href picker shared by every homepage preset builder.
+ *
+ * Preset slots carry fixed editorial ideas ("codes first, then bosses").
+ * When the user did not choose that category, the literal href used to be
+ * written anyway — a dead link on the homepage that reddened the fork's
+ * first `check-links` run (popular.quickLinks was always dynamic via
+ * cats.slice; this extends the same care to the fixed slots). Substitute
+ * the first chosen category not yet claimed by an earlier slot
+ * (deterministic: cats order), falling back to the first category, then to
+ * the literal href when no categories exist at all (the CLI already warns
+ * about that tree separately). Each real substitution warns on stderr; the
+ * copy around it stays the user-editable placeholder it always was.
+ *
+ * The same preferred key can appear in several slots (the codes preset has
+ * two "codes" slots: quickstart card + explore highlight). Substitution is
+ * memoized per key so both slots land on ONE page — without the memo, each
+ * call re-ran "first unclaimed" and a 4-category choice without codes
+ * diverged them (earlier slots had claimed more categories by then). Also
+ * collapses the duplicate per-slot warnings to one.
  */
-function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
-  if (input.homePreset === 'keep') return null;
-  const cats = input.categories.map((c) => c.key);
-  const first = cats[0] ?? 'guides';
-  const cap = (c: string) => c[0].toUpperCase() + c.slice(1);
-
-  // Preset slots carry fixed editorial ideas ("codes first, then bosses").
-  // When the user did not choose that category, the literal href used to be
-  // written anyway — a dead link on the homepage that reddened the fork's
-  // first `check-links` run (popular.quickLinks was always dynamic via
-  // cats.slice; this extends the same care to the fixed slots). Substitute
-  // the first chosen category not yet claimed by an earlier slot
-  // (deterministic: cats order), falling back to the first category, then to
-  // the literal href when no categories exist at all (the CLI already warns
-  // about that tree separately). Each real substitution warns on stderr; the
-  // copy around it stays the user-editable placeholder it always was.
+function makePickHref(cats: string[]): {
+  pick: (preferred: string) => string;
+  isClaimed: (key: string) => boolean;
+} {
   const claimed: string[] = [];
-  // The same preferred key can appear in several slots (the codes preset has
-  // two "codes" slots: quickstart card + explore highlight). Substitution is
-  // memoized per key so both slots land on ONE page — without the memo, each
-  // call re-ran "first unclaimed" and a 4-category choice without codes
-  // diverged them (earlier slots had claimed more categories by then). Also
-  // collapses the duplicate per-slot warnings to one.
   const substituted = new Map<string, string>();
-  const pickHref = (preferred: string): string => {
+  const pick = (preferred: string): string => {
     if (cats.includes(preferred)) {
       if (!claimed.includes(preferred)) claimed.push(preferred);
       return `/${preferred}`;
@@ -227,6 +230,169 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
     }
     return `/${actual}`;
   };
+  // The game-wiki codes preset's third card computes its preferred key
+  // OUTSIDE pick ("first category not yet claimed by an earlier card") —
+  // expose the live claim state so that read keeps its exact semantics.
+  return { pick, isClaimed: (key: string) => claimed.includes(key) };
+}
+
+/** Home-quicklink label for a category: the preset's nav override when it
+ * defines one, else the single-word TitleCase the game-wiki preset uses. */
+const homeQuickLinkLabel = (siteType: PresetId, key: string): string =>
+  SITE_PRESETS[siteType].uiCopy.navLabels[key] ?? (key.charAt(0).toUpperCase() + key.slice(1));
+
+/**
+ * Homepage skeleton for the coupon-hub preset (deals/coupon sites). "热门优惠"
+ * card deck first: the badge-list codes module doubles as the hot-deals slot.
+ * Field shapes are the game-wiki homepage contract verbatim (same keys, same
+ * types) — only the copy semantics differ, so check-i18n's key set and the
+ * home components' rendering expectations hold for every site type. The
+ * highlight label stays the CODE-PLACEHOLDER watermark (never a fabricated
+ * code — placeholder codes live in the preset demo articles only).
+ */
+function buildCouponHome(input: SkinInput): Record<string, unknown> {
+  const cats = input.categories.map((c) => c.key);
+  const { pick: pickHref } = makePickHref(cats);
+  const label = (key: string) => homeQuickLinkLabel(input.siteType, key);
+  return {
+    meta: {
+      title: `${input.gameName} — Deals, Coupons & Saving Guides`,
+      description: input.description,
+    },
+    updates: { title: 'Recent updates' },
+    popular: {
+      badge: 'Popular',
+      title: 'Most read',
+      quickLinks: cats.slice(0, 3).map((c) => ({ label: label(c), href: `/${c}` })),
+    },
+    closingCta: {
+      title: 'Never overpay again',
+      description: `Bookmark ${input.gameName} and check back before every purchase.`,
+      primary: 'Browse all deals',
+      secondary: 'Join the community',
+    },
+    hero: {
+      badge: 'Verified deals',
+      title: `${input.gameName} Deals`,
+      description: `All working ${input.gameName} coupons and discounts, with expiry dates and money-saving guides.`,
+      ctaPrimary: 'Browse deals',
+      ctaSecondary: 'Saving guides',
+    },
+    start: {
+      badge: 'Quick start',
+      title: 'Jump straight in',
+      cards: [
+        { number: '1', title: 'Hot deals', description: 'Active coupons this week', icon: 'lucide:gift', href: pickHref('codes') },
+        { number: '2', title: 'Tools', description: 'Software we cover', icon: 'lucide:package', href: pickHref('items') },
+        { number: '3', title: 'Saving guides', description: 'Spend less, get more', icon: 'lucide:book-open', href: pickHref('guides') },
+      ],
+    },
+    explore: {
+      title: 'Explore',
+      description: 'The essentials',
+      modules: [
+        {
+          order: 1,
+          name: 'Hot deals',
+          description: 'Verified coupons, updated weekly',
+          href: pickHref('codes'),
+          displayType: 'badge-list',
+          highlights: [
+            { label: 'CODE-PLACEHOLDER', detail: 'Tap to copy on the deals page', badge: 'NEW' },
+          ],
+        },
+      ],
+    },
+    faq: { title: 'FAQ', description: 'Common questions', items: [] },
+  };
+}
+
+/**
+ * Homepage skeleton for the tutorial-hub preset (how-to / knowledge-base
+ * sites). Mirrors the game-wiki "guides" homepage shape with tutorial
+ * wording; the steps module stays the isHomeSkeleton watermark (Step <n>).
+ */
+function buildTutorialHome(input: SkinInput): Record<string, unknown> {
+  const cats = input.categories.map((c) => c.key);
+  const { pick: pickHref } = makePickHref(cats);
+  const label = (key: string) => homeQuickLinkLabel(input.siteType, key);
+  return {
+    meta: {
+      title: `${input.gameName} — Tutorials & How-To Guides`,
+      description: input.description,
+    },
+    updates: { title: 'Recent updates' },
+    popular: {
+      badge: 'Popular',
+      title: 'Most read',
+      quickLinks: cats.slice(0, 3).map((c) => ({ label: label(c), href: `/${c}` })),
+    },
+    closingCta: {
+      title: 'Keep learning',
+      description: `Bookmark ${input.gameName} — new tutorials land as the tools change.`,
+      primary: 'Browse all tutorials',
+      secondary: 'Join the community',
+    },
+    hero: {
+      badge: 'Step-by-step tutorials',
+      title: `${input.gameName} Tutorials`,
+      description: `Practical ${input.gameName} tutorials that take you from zero to done — each with a quick answer and FAQ.`,
+      ctaPrimary: 'Start learning',
+      ctaSecondary: 'Browse all',
+    },
+    start: {
+      badge: 'Quick start',
+      title: 'New here?',
+      cards: cats.slice(0, 4).map((c, i) => ({
+        number: String(i + 1),
+        title: label(c),
+        description: `Browse ${label(c).toLowerCase()}`,
+        icon: 'lucide:book-open',
+        href: `/${c}`,
+      })),
+    },
+    explore: {
+      title: 'Explore',
+      description: 'The learning path',
+      modules: [
+        {
+          order: 1,
+          name: 'Getting started',
+          description: 'Follow the tutorials in order',
+          href: pickHref('guides'),
+          displayType: 'steps',
+          highlights: [
+            { label: 'Step 1', detail: 'Pick your topic', badge: '10 min' },
+            { label: 'Step 2', detail: 'Build the site', badge: '1 hour' },
+            { label: 'Step 3', detail: 'Publish and monetize', badge: 'ongoing' },
+          ],
+        },
+      ],
+    },
+    faq: { title: 'FAQ', description: 'Common questions', items: [] },
+  };
+}
+
+/**
+ * Build a starter `home` namespace skeleton for a preset.
+ * All copy uses the game name the user entered — placeholders to refine,
+ * not demo-game leftovers. Module hrefs point at the categories they chose;
+ * a fixed slot whose expected category was not picked substitutes a chosen
+ * one (warn on stderr) instead of writing a dead link.
+ *
+ * Site types: game-wiki keeps the historical output below (byte-identical —
+ * the zero-breaking red line); coupon-hub/tutorial-hub get their own builders
+ * above with the SAME key skeleton (check-i18n's flattenKeys treats arrays as
+ * leaves, so differing module counts/highlight lengths stay key-equal).
+ */
+function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
+  if (input.homePreset === 'keep') return null;
+  if (input.siteType === 'coupon-hub') return buildCouponHome(input);
+  if (input.siteType === 'tutorial-hub') return buildTutorialHome(input);
+  const cats = input.categories.map((c) => c.key);
+  const first = cats[0] ?? 'guides';
+  const cap = (c: string) => c[0].toUpperCase() + c.slice(1);
+  const { pick: pickHref, isClaimed } = makePickHref(cats);
 
   // Field shapes MUST match what the home components render (HomePage reads
   // meta.title/meta.description, CTA fields are plain strings rendered as link
@@ -270,7 +436,7 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
         cards: [
           { number: '1', title: 'Codes', description: 'Free gold, XP, cosmetics', icon: 'lucide:gift', href: pickHref('codes') },
           { number: '2', title: 'Bosses', description: 'Phase-by-phase strategy', icon: 'lucide:swords', href: pickHref('bosses') },
-          { number: '3', title: 'Tier list', description: 'Best weapons ranked', icon: 'lucide:bar-chart-3', href: pickHref(cats.find((c) => !claimed.includes(c)) ?? first) },
+          { number: '3', title: 'Tier list', description: 'Best weapons ranked', icon: 'lucide:bar-chart-3', href: pickHref(cats.find((c) => !isClaimed(c)) ?? first) },
         ],
       },
       explore: {
@@ -455,6 +621,13 @@ export function rewriteSiteTs(src: string, input: SkinInput): string | null {
       : '';
   const defaultAuthorBlock =
     keptDefaultAuthor !== '' ? `  defaultAuthor: '${esc(keptDefaultAuthor)}',\n` : '';
+  // Site-type signal for presentation variants (deals list view). Written ONLY
+  // for the non-default presets — a game-wiki fork emits no line at all, so the
+  // default-path output stays byte-identical (zero-breaking red line).
+  const siteTypeBlock =
+    input.siteType !== 'game-wiki'
+      ? `  // Written by apply-template — drives presentation variants (e.g. the coupon deals list).\n  siteType: '${input.siteType}',\n`
+      : '';
   const newSite = `export const site: SiteConfig = {
   name: '${esc(input.gameName)} Wiki',
   shortName: '${esc(input.shortName)}',
@@ -462,7 +635,7 @@ export function rewriteSiteTs(src: string, input: SkinInput): string | null {
   domain: '${esc(input.domain)}',
   tagline: '${esc(input.tagline)}',
   legalNotice: '${esc(input.legalNotice)}',
-  // Set a real address if you run no social channels — the contact page
+${siteTypeBlock}  // Set a real address if you run no social channels — the contact page
   // renders it as a mailto link.
   contactEmail: '${esc(keptContactEmail)}',
 ${socialBlock}
@@ -603,18 +776,17 @@ const OVERVIEW_PLACEHOLDER_TAIL =
   '. Replace this overview text in the locale JSON — it feeds the category page title and description.';
 
 /**
- * Is this description still the machine placeholder a previous run wrote
- * (`<Category> content for <game>` + the fixed tail)? The prefix + tail make
- * a user-edited description essentially impossible to confuse with a
- * placeholder, while an untouched placeholder is ALWAYS regenerated — so a
- * game rename on a re-run refreshes placeholder copy but never user copy.
+ * Is this description still the machine placeholder a previous run wrote?
+ * Every generator (game-wiki AND the site-type presets) appends the same
+ * fixed OVERVIEW_PLACEHOLDER_TAIL; hand-edited copy drops it, so the tail
+ * alone is the machine watermark. (The historical check also required the
+ * "<Key> content for " head; the preset generators write deal/tutorial heads,
+ * which must regenerate on a rename exactly like the game-wiki ones.) `key`
+ * is kept in the signature for call-site stability.
  */
 export function isPlaceholderOverviewDesc(key: string, desc: string): boolean {
-  const capKey = key
-    .split(/[-_]/)
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-  return desc.startsWith(`${capKey} content for `) && desc.endsWith(OVERVIEW_PLACEHOLDER_TAIL);
+  void key;
+  return desc.endsWith(OVERVIEW_PLACEHOLDER_TAIL);
 }
 
 /**
@@ -735,22 +907,45 @@ export function rewriteLocaleJson(
   };
   const navCategories: Record<string, string> = {};
   const generatedOverview: Record<string, { overviewTitle: string; overviewDescription: string }> = {};
+  // Per-site-type placeholder copy (site-presets.ts). Unlisted keys fall back
+  // to the historical TitleCase / "All <Key>" templates, so the game-wiki
+  // preset (empty tables) writes byte-identical output. Every description
+  // ends with OVERVIEW_PLACEHOLDER_TAIL so isPlaceholderOverviewDesc keeps
+  // treating machine output — whatever the site type — as regenerable.
+  const presetCopy = SITE_PRESETS[input.siteType].uiCopy;
   for (const { key } of input.categories) {
-    navCategories[key] = cap(key);
+    navCategories[key] = presetCopy.navLabels[key] ?? cap(key);
     generatedOverview[key] = {
-      overviewTitle: `All ${cap(key)}`,
-      overviewDescription: `${cap(key)} content for ${input.gameName}. Replace this overview text in the locale JSON — it feeds the category page title and description.`,
+      overviewTitle: presetCopy.overviewTitles[key] ?? `All ${cap(key)}`,
+      overviewDescription:
+        (presetCopy.overviewDescriptions[key] ?? `${cap(key)} content for ${input.gameName}`).replace(
+          '{game}',
+          input.gameName,
+        ) + OVERVIEW_PLACEHOLDER_TAIL,
     };
   }
-  // Keep a previous run's labels, but ONLY for keys this run still owns — a
-  // demo category the forker did not choose must not leak back into nav as a
-  // stale key nothing renders and no gate checks. Overlay order is
-  // fixed keys < generated placeholders < previous labels, so labels a user
-  // translated on an earlier run survive re-runs instead of being reset.
+  // Keep a previous run's labels, but ONLY for keys this run still owns AND
+  // only on a genuine RE-RUN: on a first run the file still carries the
+  // DEMO's labels, and a site type that owns a label for a key must win it
+  // (a coupon fork kept the game demo's "Codes" instead of "Deals" when the
+  // demo label rode the overlay). Scope the first-run suppression to exactly
+  // that scenario: non-game-wiki presets reset every nav key to the preset /
+  // TitleCase placeholders so no game-demo label leaks, while game-wiki
+  // (empty preset tables) keeps the unconditional overlay — byte-identical
+  // to the pre-preset behavior for EVERY locale, including ja (the demo
+  // ja.json ships real Japanese labels). Re-runs always keep the user's own
+  // labels. Overlay order is fixed keys < generated placeholders < previous
+  // labels, so labels a user translated on an earlier run survive re-runs
+  // instead of being reset.
+  const rerun = existing !== undefined && !isDemoLocaleContent(existing);
   const ownable = new Set([...Object.keys(navFixed), ...Object.keys(navCategories)]);
   const prevNav = Object.fromEntries(
     Object.entries((obj.nav ?? {}) as Record<string, unknown>).filter(
-      ([k, v]) => ownable.has(k) && typeof v === 'string' && v.trim() !== '',
+      ([k, v]) =>
+        ownable.has(k) &&
+        typeof v === 'string' &&
+        v.trim() !== '' &&
+        (rerun || (input.siteType === 'game-wiki' && presetCopy.navLabels[k] === undefined)),
     ),
   );
   obj.nav = { ...navFixed, ...navCategories, ...prevNav };
@@ -759,7 +954,6 @@ export function rewriteLocaleJson(
   // a file that still carries the demo site.name is a FIRST run and must be
   // overwritten wholesale, or demo copy leaks into the fork (v2.6.3
   // semantics). Only a non-demo file can hold user copy worth keeping.
-  const rerun = existing !== undefined && !isDemoLocaleContent(existing);
   if (rerun) {
     const prevOverview = (obj.overview ?? {}) as Record<string, unknown>;
     const keptOverview: Record<string, { overviewTitle: string; overviewDescription: string }> = {};
@@ -1076,19 +1270,18 @@ export function rewriteWranglerVars(input: { domain: string }, src: string): str
  * authors to put their own inline card images, so an rm -rf there would
  * destroy user work on a re-run. Keep in sync with the "Clear demo content"
  * step in .github/workflows/setup.yml — pinned by tests/apply-template.test.ts.
+ *
+ * DEMO_COVERS is the flat union of every site preset's demoAssets
+ * (scripts/lib/site-presets.ts — the single source per preset). The order
+ * below is deterministic (game-wiki → coupon-hub → tutorial-hub); the setup.yml
+ * sync test compares SORTED sets, so grouping here is free.
  */
 export const DEMO_COVERS = [
-  'beginner-guide-cover.png',
-  'emberfang-cover.png',
-  'stormcaller-cover.png',
-  'weapon-tier-list-cover.png',
-  'codes-cover.png',
+  ...SITE_PRESETS['game-wiki'].demoAssets,
   // v2.6.0 demo content batch — same by-name rule: never delete a cover a
   // fork user created. Keep in sync with setup.yml's rm -f list.
-  'en-bosses-frostbound-monarch.png',
-  'en-guides-forging-guide.png',
-  'en-items-emberforged-armor-set.png',
-  'en-items-forging-materials-guide.png',
+  ...SITE_PRESETS['coupon-hub'].demoAssets,
+  ...SITE_PRESETS['tutorial-hub'].demoAssets,
 ];
 
 export const DEMO_GALLERY_IMAGES = [
@@ -1205,17 +1398,83 @@ export interface WikiArticleEntry {
   src: string;
 }
 
+export interface ClassifyWikiOptions {
+  /**
+   * The locales this run keeps. A registry demo whose locale is NOT in this
+   * list is cleared unconditionally (cross-preset + cross-locale): an
+   * unselected locale's demo article would render nothing (astro skips
+   * entries for undeclared locales) and is pure demo-identity residue.
+   */
+  selectedLocales?: string[];
+  /**
+   * The preset this run chose (SITE_PRESETS id). Registry demos of OTHER
+   * presets are cleared regardless of locale — only the chosen preset's
+   * demos survive as starting content (spec §3). Omitted on the setup.yml
+   * Initialize channel, which has no preset input.
+   */
+  preset?: PresetId;
+}
+
+/**
+ * Resolve a rel path ('<locale>/<category>/<slug>.mdx') to the preset whose
+ * demoArticles registry claims it, or null. The registry is keyed
+ * locale → paths-relative-to-src/content/wiki/<locale>/, so a lookup joins
+ * the entry's locale segment back onto the rest of the path.
+ */
+function registryPresetFor(rel: string): PresetId | null {
+  const slash = rel.indexOf('/');
+  if (slash === -1) return null;
+  const locale = rel.slice(0, slash);
+  const rest = rel.slice(slash + 1);
+  for (const preset of Object.values(SITE_PRESETS)) {
+    if ((preset.demoArticles[locale] ?? []).includes(rest)) return preset.id;
+  }
+  return null;
+}
+
 /**
  * Split wiki articles into demo-authored (safe to delete) and everything else
  * (the forker's own work — warn-and-keep). Pure: the caller owns all IO.
+ *
+ * Two layers, checked in order:
+ *   1. SITE_PRESETS registry (site-presets.ts) — the coupon-hub/tutorial-hub
+ *      demo articles never mention the Anvil Quest game, so the historical
+ *      content marker cannot see them. A registry hit clears or keeps per
+ *      the options above; with NO options at all (clear-demo-content.ts /
+ *      setup.yml Initialize — no locales or preset known) every registered
+ *      demo is cleared, matching the workflow's "only safe deletions"
+ *      semantics. A file claimed by the CHOSEN preset in a CHOSEN locale is
+ *      kept as the preset's starting content.
+ *   2. Fallback: the historical Anvil Quest content marker
+ *      (isDemoArticleContent) — how the game-wiki demo articles have always
+ *      been cleared, unchanged.
+ * The bare (entries) call keeps its exact previous verdicts for Anvil Quest
+ * content and now additionally clears the registry demos — that is the
+ * intended single-source upgrade of the setup.yml channel.
  */
-export function classifyWikiArticles(entries: WikiArticleEntry[]): {
+export function classifyWikiArticles(
+  entries: WikiArticleEntry[],
+  options?: ClassifyWikiOptions,
+): {
   demo: WikiArticleEntry[];
   kept: WikiArticleEntry[];
 } {
   const demo: WikiArticleEntry[] = [];
   const kept: WikiArticleEntry[] = [];
+  const chosenLocales = options?.selectedLocales
+    ? new Set(options.selectedLocales)
+    : null;
   for (const entry of entries) {
+    const presetId = registryPresetFor(entry.rel);
+    if (presetId !== null) {
+      const locale = entry.rel.slice(0, entry.rel.indexOf('/'));
+      // NO options at all (setup.yml Initialize) keeps nothing registered —
+      // without chosen locales there is no preset starting content to keep.
+      const localeKept = chosenLocales !== null && chosenLocales.has(locale);
+      const presetKept = options?.preset === undefined || options.preset === presetId;
+      (localeKept && presetKept ? kept : demo).push(entry);
+      continue;
+    }
     (isDemoArticleContent(entry.src) ? demo : kept).push(entry);
   }
   return { demo, kept };

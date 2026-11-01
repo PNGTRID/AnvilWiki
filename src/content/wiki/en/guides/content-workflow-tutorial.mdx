@@ -1,0 +1,103 @@
+---
+title: 'The AI Content Workflow: From Keyword to Publish-Ready Page'
+description: 'A repeatable six-step workflow for trustworthy AI pages: the facts table, drafting prompts, human verification, a publish checklist, and a freshness routine.'
+category: 'guides'
+image: '../../../../assets/covers/en-guides-content-workflow-tutorial.png'
+date: 2026-11-01
+lastModified: 2026-11-01
+tags: ['guide', 'progression', 'ai-tutorial', 'site-building']
+summary: 'AI drafts fast but invents confidently, so the workflow that works is built around verification: pick one keyword, write a facts table from sources you checked, have AI draft against it, verify every claim line by line, publish through a checklist, then re-review time-sensitive pages on a fixed schedule. Each step here is a reusable routine.'
+faq:
+  - question: 'Why does pure AI-written content fail?'
+    answer: 'Because language models optimize for fluent text, not for true text. They invent statistics, dates and codes with complete confidence. Search engines and readers both punish that, and one fabricated number can cost a site its trust permanently.'
+  - question: 'How long should one article take with this workflow?'
+    answer: 'Plan on one focused session for a first draft and a second session for verification. As your facts tables get better, drafting shrinks — but verification never goes to zero, and it should not.'
+  - question: 'Can I publish AI drafts without checking them?'
+    answer: 'No. Keep drafts marked as drafts until a human has verified every checkable claim. Publishing unverified drafts is the single fastest way to lose the trust this whole series is built on.'
+  - question: 'What belongs in the facts table?'
+    answer: 'Every fact the article will state: values, dates, names, steps — each with its source and the date you checked it. If a row has no source you verified yourself, the article does not get to state it.'
+  - question: 'How many internal links should a page have?'
+    answer: 'At least three, placed inside natural sentences rather than stacked at the end. Internal links help readers continue and help search engines understand how your pages relate.'
+  - question: 'How often should old pages be reviewed?'
+    answer: 'Time-sensitive pages — anything with dates, prices, codes or versions — need a re-verification pass on a fixed schedule, with the check date written on the page. Evergreen tutorials need attention only when something they describe changes.'
+---
+
+The direct answer: AI is a fast drafting engine bolted to a strict verification routine — the routine is the workflow. One keyword becomes a facts table you filled in yourself; AI drafts against the table; a human verifies every claim; a checklist gates publishing; a schedule keeps pages honest afterward. Skip any step and the speed advantage turns into a liability.
+
+import Callout from '~/components/mdx/Callout.astro';
+import Accordion from '~/components/mdx/Accordion.astro';
+
+## Why does "let AI write everything" fail?
+
+A language model produces the most plausible-sounding sentence, not the most correct one. Ask it for statistics, prices, dates or codes and it will supply them — fluently, confidently, and sometimes from nothing. On a content site that failure mode is fatal in both directions: readers who catch one invented number never come back, and search systems increasingly reward pages that demonstrably answer with verifiable facts.
+
+So the rule underneath this whole workflow is one line: **AI never gets to introduce a fact.** It structures, phrases, formats and drafts — humans supply facts.
+
+## What does the repeatable workflow look like?
+
+Six steps, same order every time:
+
+| Step | Input | Output |
+| --- | --- | --- |
+| 1. Pick the keyword | Your validated topic list | One query this page will answer |
+| 2. Fill the facts table | Official sources, communities, your own checks | Every fact, with source + check date |
+| 3. Draft with AI | Facts table + a writing prompt | A structured draft that only uses table rows |
+| 4. Verify | The draft, line by line | Corrected draft; uncheckable claims deleted |
+| 5. Publish through the checklist | Corrected draft | A live page with metadata, links, dates |
+| 6. Schedule the re-check | The live page | Fresh page with a new verified date |
+
+The table in step 2 is the load-bearing wall: everything downstream inherits its accuracy.
+
+## How do you feed AI facts it cannot invent?
+
+Before any drafting, make a three-column table for the page: **fact / source / checked on**. The source column must point at something you actually opened — an official announcement, a documentation page, a screenshot you took. Rows without a source get deleted or marked "unknown", never guessed.
+
+Then instruct the draft explicitly, in the prompt:
+
+```text
+Write the page from the facts table below.
+- Use ONLY facts from the table; if something is missing, write "not verified" and move on.
+- Answer the reader question in the first paragraph.
+- Headings are questions readers actually search.
+- Do not add statistics, dates, prices or codes that are not rows in the table.
+```
+
+That last line is the seatbelt. AI will still drift occasionally — which is why step 4 exists.
+
+## What does a publish-ready page contain?
+
+Use this checklist before anything goes live:
+
+- **First paragraph answers the question** in two to four sentences — no warm-up.
+- **Headings are questions or clear steps**, each section leading with its answer.
+- **A short FAQ** (five to eight real questions) near the end, mirroring what people actually ask.
+- **At least three internal links** inside natural sentences, connecting this page to its siblings.
+- **Title and description written for the search result**, not for you — title under about eighty characters, description a full sentence a searcher would click.
+- **A date you stand behind** — published date plus a last-verified date on anything time-sensitive.
+
+<Accordion title="A quick example of the checklist applied">
+  A page about extending a trial of some software opens with the exact current extension policy in sentence one, shows the steps as a numbered list, closes with an FAQ covering edge cases, and links to its sibling pages about the same tool. Every policy detail in it traces to a row in the facts table, with the date the author read the official help page.
+</Accordion>
+
+## How do you review AI output before publishing?
+
+Read the draft against the facts table, line by line, in this order:
+
+1. **Numbers, dates, names, codes** — every one must match a table row or die.
+2. **Claims about how things work** — re-derive each from your source, not from the draft's confidence.
+3. **Structure** — question headings, direct answers, no filler paragraphs.
+4. **Voice** — one consistent author voice; strip phrases that sound like a machine apologizing.
+
+<Callout type="warn" title="Draft until verified">While a page is unverified, it stays marked as a draft and invisible to the public site. The draft flag is not bureaucracy — it is what lets you write fast without shipping fast.</Callout>
+
+## How do you keep pages fresh after publishing?
+
+Freshness is a schedule, not a mood:
+
+- **Time-sensitive pages** get a re-verification pass on a fixed cadence — when the check happens, update the verified date on the page itself, so readers and search engines can see it.
+- **Expired facts move to an archive section** rather than being silently deleted — a visible history of what changed is itself a trust signal.
+- **A simple audit list** (page, category, last checked) reviewed weekly is enough for a site of up to a few hundred pages.
+
+## What to do next
+
+This workflow assumes the site exists and the keywords are validated — if not, start at the [niche-picking tutorial](/guides/pick-your-niche-tutorial/) and the [one-day build tutorial](/guides/build-site-with-ai-tutorial/). Once pages accumulate, connect the workflow to revenue with the [monetization tutorial](/guides/monetize-site-tutorial/), and keep an eye on what the library is becoming via [recent updates](/recent/) or the [tag index](/tags/).

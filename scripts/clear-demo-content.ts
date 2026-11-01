@@ -3,11 +3,21 @@
  * setup.yml (zero-terminal) channel, single-sourced with apply-template's
  * "Clear demo content?" through lib/apply-rewrites.ts (classifyWikiArticles).
  *
- * Deletes only files positively identified as demo content (authored around
- * the demo game, same rule as isDemoLocaleContent for locale JSONs); anything
+ * Deletes only files positively identified as demo content; anything
  * else under src/content/wiki/ — the forker's own articles, rewrites of
  * demo-path files, scaffolds — is kept with a loud warning. A re-run must
- * never destroy user work.
+ * never destroy user work. Two demo layers decide "demo":
+ *   1. The SITE_PRESETS registry (scripts/lib/site-presets.ts): the
+ *      coupon-hub/tutorial-hub demo articles never mention the demo game, so
+ *      this channel clears EVERY registered demo. This channel receives no
+ *      locales/preset input (Initialize only does safe deletions), so unlike
+ *      apply-template's run it cannot keep the chosen preset's demos as
+ *      starting content — users who init through the workflow write their own
+ *      articles from the scaffold step instead. Registered demos are
+ *      template-branded content by definition; deleting them here is always
+ *      safe.
+ *   2. The historical Anvil Quest content marker (isDemoArticleContent) —
+ *      unchanged.
  *
  *   pnpm exec tsx scripts/clear-demo-content.ts [--dry-run]
  *

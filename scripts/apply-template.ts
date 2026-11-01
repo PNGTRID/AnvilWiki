@@ -19,12 +19,15 @@
  *   pnpm apply-template --keep-landing      keep the project landing page (/landing).
  *   pnpm apply-template --answers answers.json  non-interactive: JSON array of
  *                               raw answers, one per prompt in order ("" = enter
- *                               = default). For CI and scripted runs.
+ *                               = default). For CI and scripted runs. The site
+ *                               type question is APPENDED last-but-one: 18-entry
+ *                               files (pre-site-type) still work and default to
+ *                               game-wiki; 19 entries answer it ("1"-"3").
  *   pnpm apply-template --lang zh          force the CLI UI language (en|zh).
  *                               Interactive TTY runs are asked instead (enter =
  *                               the LANG-derived default); --answers/piped/CI
  *                               runs never ask and default to English, so the
- *                               18-answer positional order stays stable.
+ *                               answer positional order stays stable.
  *
  * What this does NOT do (left for the user, see docs/apply-template.md):
  *   - Homepage modules (home.hero / start / explore / faq in locales)
@@ -81,6 +84,12 @@ import {
   type CliLang,
   type CliStrings,
 } from './lib/apply-template-i18n';
+import {
+  LEGACY_ANSWER_COUNT,
+  SITE_PRESETS,
+  siteTypeFromAnswer,
+  type PresetId,
+} from './lib/site-presets';
 
 const ROOT = process.cwd();
 const ARGS = process.argv.slice(2);
@@ -463,7 +472,11 @@ function countWikiArticles(): number {
  * platforms — clear-demo-content.ts (the setup.yml channel) walks the same
  * way, so both channels report identically.
  */
-function clearDemoContent(categories: { key: string }[]): { removed: number; kept: string[] } {
+function clearDemoContent(
+  categories: { key: string }[],
+  selectedLocales: string[],
+  preset: PresetId,
+): { removed: number; kept: string[] } {
   const base = path.resolve(ROOT, 'src/content/wiki');
   if (!fs.existsSync(base)) return { removed: 0, kept: [] };
   const chosen = new Set(categories.map((c) => c.key));
@@ -471,7 +484,16 @@ function clearDemoContent(categories: { key: string }[]): { removed: number; kep
     rel: path.relative(base, p).split(path.sep).join('/'),
     src: fs.readFileSync(p, 'utf8'),
   }));
-  const { demo, kept } = classifyWikiArticles(entries);
+  // Two demo layers (classifyWikiArticles): the SITE_PRESETS registry decides
+  // the coupon-hub/tutorial-hub demo articles — other presets' demos clear
+  // unconditionally, the chosen preset's demos clear only for locales this
+  // run did NOT pick (kept as starting content for the picked ones). The
+  // Anvil Quest game-wiki demos keep clearing through the historical
+  // content-marker rule.
+  const { demo, kept } = classifyWikiArticles(entries, {
+    selectedLocales,
+    preset,
+  });
   if (!DRY_RUN) {
     for (const file of demo) fs.unlinkSync(path.join(base, file.rel));
     // Prune directories that are now empty AND not chosen — a leftover empty
@@ -608,6 +630,16 @@ const LANDING_PATHS = [
   'src/pages/landing', // directory (docs hub + chapter routes)
   'src/pages/zh/landing.astro', // file — coexists with the src/pages/zh/landing/ dir
   'src/pages/zh/landing', // directory (zh docs routes)
+  // Flagship tutorial line (v2.39+) — official-site marketing content
+  // (src/content/tutorials collection + its landing routes). The collection
+  // must NOT survive the fork: unlike docs/handbook (kept as repo docs) these
+  // are demo-identity pages. Paths may not exist yet on older trees —
+  // removeLandingPage skips missing entries, so listing them here is safe.
+  'src/pages/landing/tutorials.astro', // tutorial hub (en)
+  'src/pages/landing/tutorials', // directory ([slug] detail routes)
+  'src/pages/zh/landing/tutorials.astro', // tutorial hub (zh)
+  'src/pages/zh/landing/tutorials', // directory (zh [slug] detail routes)
+  'src/content/tutorials', // tutorial collection source (en+zh .md)
   'public/images/showcase', // directory (demo screenshots + community site screenshots — landing only)
   'public/images/wechat-qr.jpg', // maintainer's personal QR — not needed by forks
   'public/_redirects', // 301s for renamed handbook lesson slugs — only the demo serves /landing/docs routes
@@ -619,6 +651,12 @@ const LANDING_PATHS = [
 // makes the fork's build fail to resolve the import. Same for the setup.yml
 // rm line. Pinned by the survive pins in tests/redirects.test.ts and the e2e
 // positive tripwire.
+//
+// ⚠️ NEVER add src/lib/landing-tutorials.ts either — deliberate SURVIVE file:
+// tests/tutorials.test.ts and tests/landing-paths.test.ts statically import
+// it, so deleting it reddens fork CI. Only the tutorials collection
+// (src/content/tutorials, listed above) and its routes are cleanup targets;
+// see the survive note in that file's L3 header.
 
 function removeLandingPage(): number {
   let removed = 0;
@@ -663,6 +701,22 @@ function removeLandingPage(): number {
 
 async function main() {
   loadScriptedAnswers();
+
+  // Pre-site-type --answers compatibility (site-presets.LEGACY_ANSWER_COUNT):
+  // the qSiteType question was APPENDED, so an exactly-18-entry file is still
+  // a valid pre-preset sheet — site type silently defaults to game-wiki,
+  // qSiteType consumes nothing, one stderr note says so. 19 entries answer
+  // qSiteType (validated "1"|"2"|"3", loud ❌ before any write); fewer than 18
+  // keeps the existing loud Ran-out failure; more than 19 keeps the existing
+  // leftover-answers warning at the end. The count is only meaningful BEFORE
+  // any consumption (the queue shrinks as prompts eat it), hence detection
+  // here at the top. Scripted diagnostics stay English (i18n boundary).
+  const legacySiteTypeCompat = scripted !== null && scripted.length === LEGACY_ANSWER_COUNT;
+  if (legacySiteTypeCompat) {
+    console.warn(
+      `ℹ️  ${LEGACY_ANSWER_COUNT}-answer answers file detected (pre-site-type format) — site type defaults to game-wiki. Insert the site-type answer ("1", "2" or "3") as entry ${LEGACY_ANSWER_COUNT + 1}, before the final Proceed answer, to choose it.`,
+    );
+  }
 
   if (LANG_FLAG === 'invalid') {
     console.error("❌ Unknown --lang value. Use 'en' or 'zh'.(--lang 语言代码只支持 en / zh)");
@@ -843,6 +897,44 @@ async function main() {
     clearLanding = await askBool(rl, T.qRemoveLanding, true);
   }
 
+  // --- Site type (qSiteType, appended) ------------------------------------
+  // Prompt #18 / answer index 17 (after qRemoveLanding, before qProceed):
+  // appended last-but-one so the original 18-answer positional order never
+  // moved. An 18-entry --answers file takes the legacy path above and never
+  // consumes an answer here.
+  console.log('\n' + T.siteTypeMenu);
+  console.log(T.siteTypeNote);
+  let siteType: PresetId;
+  if (legacySiteTypeCompat) {
+    siteType = 'game-wiki';
+  } else {
+    const siteTypeAnswer = await ask(rl, T.qSiteType, '1');
+    const resolved = siteTypeFromAnswer(siteTypeAnswer);
+    if (resolved === null) {
+      console.error(T.siteTypeError(siteTypeAnswer));
+      process.exit(1);
+    }
+    siteType = resolved;
+  }
+  // Category narrowing is a POST-check by construction: qCategories is asked
+  // at index 13, long before qSiteType at index 17, so the choice cannot be
+  // narrowed at question time without shifting the answer order (a breaking
+  // change the preset contract forbids). Instead the chosen set is validated
+  // against the preset right after the site-type answer — LOUD exit before
+  // ANY file write, on the same path for interactive and --answers runs.
+  const presetCategories = SITE_PRESETS[siteType].categories;
+  const invalidCategories = categories.filter((c) => !presetCategories.includes(c.key));
+  if (invalidCategories.length > 0) {
+    console.error(
+      T.siteCategoryMismatchError(
+        siteType,
+        presetCategories.join(', '),
+        invalidCategories.map((c) => c.key).join(', '),
+      ),
+    );
+    process.exit(1);
+  }
+
   // --- Summarize planned changes -----------------------------------------
   const skinInput: SkinInput = {
     gameName,
@@ -862,6 +954,7 @@ async function main() {
     clearContent,
     clearLanding,
     homePreset,
+    siteType,
   };
 
   console.log('\n' + '━'.repeat(60));
@@ -873,6 +966,7 @@ async function main() {
   console.log(`${T.plannedTheme}${themeHex} → HSL(${preview.h}, ${preview.s}%, ${preview.l}%)`);
   console.log(`${T.plannedLocales}${uniqueLocales.join(', ')}`);
   console.log(`${T.plannedCategories}${categories.map((c) => c.key).join(', ') || T.plannedNone}`);
+  console.log(`${T.plannedSiteType}${siteType}`);
   console.log(`${T.plannedClear}${clearContent ? T.plannedYes : T.plannedNo}`);
   console.log(`${T.plannedLanding}${skinInput.clearLanding ? T.plannedYes : T.plannedNo}`);
   console.log(T.plannedFilesHeader);
@@ -1034,7 +1128,7 @@ async function main() {
   }
 
   if (clearContent) {
-    const { removed, kept } = clearDemoContent(categories);
+    const { removed, kept } = clearDemoContent(categories, uniqueLocales, skinInput.siteType);
     const assets = clearDemoAssets();
     console.log(T.clearedArticles(removed, DRY_RUN));
     console.log(T.clearedAssets(assets, DRY_RUN));

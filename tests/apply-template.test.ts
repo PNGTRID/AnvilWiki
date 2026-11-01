@@ -13,7 +13,7 @@
  *     covers initially landed in neither list).
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, test, vi } from 'vitest';
 import {
@@ -21,7 +21,6 @@ import {
   DEMO_ARTICLE_IMAGES,
   DEMO_COVERS,
   DEMO_DOMAINS,
-  DEMO_GAME_NAMES,
   DEMO_GALLERY_IMAGES,
   DEMO_INDEXNOW_KEY_FILE,
   DEMO_PUBLIC_FILES,
@@ -58,6 +57,15 @@ import {
   envDefaultLang,
   langFromFlag,
 } from '../scripts/lib/apply-template-i18n';
+import {
+  DEMO_CODE_PLACEHOLDER_PREFIX,
+  LEGACY_ANSWER_COUNT,
+  SITE_PRESETS,
+  isPlaceholderCodesFrontmatter,
+  siteTypeFromAnswer,
+  type PresetId,
+} from '../scripts/lib/site-presets';
+import { CONTENT_TYPES, NAVIGATION_CONFIG } from '../src/config/navigation';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -84,6 +92,7 @@ function makeInput(overrides: Partial<SkinInput> = {}): SkinInput {
     clearContent: true,
     clearLanding: true,
     homePreset: 'codes',
+    siteType: 'game-wiki',
     ...overrides,
   };
 }
@@ -707,6 +716,19 @@ describe('rewriteSiteTs (quote/backslash-safe, $-expansion-proof site.ts rewriti
   test('no site block → null (caller aborts, file untouched)', () => {
     expect(rewriteSiteTs('nothing here', makeInput())).toBeNull();
   });
+
+  test('siteType is written only for non-default presets (game-wiki stays byte-identical)', () => {
+    // Default: NO siteType line at all — the zero-breaking output contract.
+    const gameWiki = rewriteSiteTs(SITE_TS, makeInput({ siteType: 'game-wiki' }));
+    expect(gameWiki).not.toContain('siteType');
+    // Non-default presets emit the build-time signal presentation variants read.
+    expect(rewriteSiteTs(SITE_TS, makeInput({ siteType: 'coupon-hub' }))).toContain(
+      "siteType: 'coupon-hub'",
+    );
+    expect(rewriteSiteTs(SITE_TS, makeInput({ siteType: 'tutorial-hub' }))).toContain(
+      "siteType: 'tutorial-hub'",
+    );
+  });
 });
 
 describe('hyphen locales (zh-tw / pt-br) generate legal TypeScript', () => {
@@ -824,11 +846,12 @@ describe('demo locale deletion is content-aware (rebranded locales must survive 
 });
 
 describe('demo article clearing is content-aware (re-runs must keep user work)', () => {
-  test('every shipped demo article carries the demo-game marker (marker drift guard)', () => {
+  test('every shipped demo article is demo-identifiable: game marker OR preset-registry claim (marker drift guard)', () => {
     // Mirrors the locale marker guard above: if a template author ships a demo
-    // article that never mentions the demo game, content-aware clearing would
-    // KEEP it forever — this goes red in the template repo until the article
-    // carries the marker. Vacuous in forks after a first-run clear.
+    // article that is neither Anvil-Quest-marked nor registered in
+    // SITE_PRESETS, BOTH clearing layers would KEEP it forever — this goes red
+    // in the template repo until the article carries a marker or joins the
+    // registry. Vacuous in forks after a first-run clear.
     const base = join(repoRoot, 'src/content/wiki');
     const walk = (dir: string): string[] =>
       existsSync(dir)
@@ -840,13 +863,37 @@ describe('demo article clearing is content-aware (re-runs must keep user work)',
                 : [],
           )
         : [];
+    const registryRels = new Set(
+      Object.values(SITE_PRESETS).flatMap((p) =>
+        Object.entries(p.demoArticles).flatMap(([locale, files]) =>
+          files.map((f) => `${locale}/${f}`),
+        ),
+      ),
+    );
     const files = walk(base);
     expect(files.length, 'the template repo should ship demo wiki articles').toBeGreaterThan(0);
     for (const file of files) {
+      const rel = relative(base, file).split(sep).join('/');
+      const src = readFileSync(file, 'utf8');
       expect(
-        isDemoArticleContent(readFileSync(file, 'utf8')),
-        `${file} lacks the demo-game marker (${DEMO_GAME_NAMES.join(', ')}) — content-aware clearing would keep it`,
+        isDemoArticleContent(src) || registryRels.has(rel),
+        `${file} is neither Anvil-Quest-marked nor in the SITE_PRESETS registry — demo clearing would keep it forever`,
       ).toBe(true);
+    }
+  });
+
+  test('preset registry demos never rely on the Anvil Quest marker (the two layers stay disjoint)', () => {
+    const base = join(repoRoot, 'src/content/wiki');
+    for (const preset of Object.values(SITE_PRESETS)) {
+      for (const [locale, files] of Object.entries(preset.demoArticles)) {
+        for (const rel of files) {
+          const src = readFileSync(join(base, locale, rel), 'utf8');
+          expect(
+            isDemoArticleContent(src),
+            `${locale}/${rel} mentions the Anvil Quest demo game — a registry demo must be brand-independent`,
+          ).toBe(false);
+        }
+      }
     }
   });
 
@@ -1471,5 +1518,450 @@ describe('apply-template CLI bilingual UI (--lang + interactive language questio
     expect(t.scaffoldCreated(3)).toContain('3 scaffold articles (');
     expect(t.landingRemoved(1)).toContain('1 project landing page file (');
     expect(t.landingRemoved(5)).toContain('5 project landing page files (');
+  });
+});
+
+// ===========================================================================
+// Site-type presets (qSiteType / SITE_PRESETS) — registry contract, --answers
+// 18/19 compatibility, preset-aware locale rewrites, and the demo internal-
+// link whitelist (the template-side twin of the fork's check-links gate).
+// ===========================================================================
+
+const registryRelSet = (): Set<string> =>
+  new Set(
+    Object.values(SITE_PRESETS).flatMap((p) =>
+      Object.entries(p.demoArticles).flatMap(([locale, files]) => files.map((f) => `${locale}/${f}`)),
+    ),
+  );
+
+describe('SITE_PRESETS registry ↔ disk demo files (bidirectional contract)', () => {
+  const wikiBase = join(repoRoot, 'src/content/wiki');
+  const coversBase = join(repoRoot, 'src/assets/covers');
+
+  test('preset categories are CONTENT_TYPES subsets in NAVIGATION_CONFIG menu order', () => {
+    for (const preset of Object.values(SITE_PRESETS)) {
+      expect(preset.categories.length, `${preset.id}: at least one category`).toBeGreaterThan(0);
+      const seen = new Set<string>();
+      let cursor = -1;
+      for (const key of preset.categories) {
+        expect(CONTENT_TYPES, `${preset.id}: "${key}" is a NAVIGATION_CONFIG key`).toContain(key);
+        expect(seen.has(key), `${preset.id}: "${key}" listed once`).toBe(false);
+        seen.add(key);
+        const menuIndex = NAVIGATION_CONFIG.findIndex((n) => n.key === key);
+        expect(
+          menuIndex,
+          `${preset.id}: "${key}" must follow NAVIGATION_CONFIG menu order`,
+        ).toBeGreaterThan(cursor);
+        cursor = menuIndex;
+      }
+    }
+  });
+
+  test('every registry demo article exists on disk (forward direction)', () => {
+    for (const preset of Object.values(SITE_PRESETS)) {
+      for (const [locale, files] of Object.entries(preset.demoArticles)) {
+        for (const rel of files) {
+          expect(
+            existsSync(join(wikiBase, locale, rel)),
+            `${preset.id}: src/content/wiki/${locale}/${rel} is registered but missing — create it or fix the registry`,
+          ).toBe(true);
+        }
+      }
+    }
+  });
+
+  test('every registry demo cover exists in src/assets/covers (forward direction)', () => {
+    for (const preset of Object.values(SITE_PRESETS)) {
+      for (const name of preset.demoAssets) {
+        expect(
+          existsSync(join(coversBase, name)),
+          `${preset.id}: src/assets/covers/${name} is registered but missing — generate it (pnpm gen-covers) or fix the registry`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  test('DEMO_COVERS is the flat union of every preset demoAssets (single source, no dupes)', () => {
+    const union = Object.values(SITE_PRESETS).flatMap((p) => p.demoAssets);
+    expect(new Set(union).size).toBe(union.length);
+    expect([...DEMO_COVERS].sort()).toEqual([...union].sort());
+  });
+
+  test('presets never claim the same demo file or asset (no cross-preset overlap)', () => {
+    const rels = registryRelSet();
+    expect(rels.size).toBe(
+      Object.values(SITE_PRESETS).reduce(
+        (n, p) => n + Object.values(p.demoArticles).flat().length,
+        0,
+      ),
+    );
+    const assets = Object.values(SITE_PRESETS).flatMap((p) => p.demoAssets);
+    expect(new Set(assets).size).toBe(assets.length);
+  });
+});
+
+describe('classifyWikiArticles registry layer (site-type demos + locale dimension)', () => {
+  const couponDemo = SITE_PRESETS['coupon-hub'].demoArticles;
+  const tutorialDemo = SITE_PRESETS['tutorial-hub'].demoArticles;
+  const entry = (rel: string, src = 'demo body'): { rel: string; src: string } => ({ rel, src });
+
+  test('chosen preset + chosen locale → kept as the preset starting content', () => {
+    const rel = `en/${couponDemo.en[0]}`;
+    const out = classifyWikiArticles([entry(rel)], {
+      selectedLocales: ['en', 'zh'],
+      preset: 'coupon-hub',
+    });
+    expect(out.kept).toHaveLength(1);
+    expect(out.demo).toHaveLength(0);
+  });
+
+  test('chosen preset + unselected locale → cleared unconditionally (locale dimension)', () => {
+    const files = couponDemo.ja.map((f) => entry(`ja/${f}`));
+    const out = classifyWikiArticles(files, {
+      selectedLocales: ['en', 'zh'],
+      preset: 'coupon-hub',
+    });
+    expect(out.demo).toHaveLength(files.length);
+    expect(out.kept).toHaveLength(0);
+  });
+
+  test('OTHER presets demos are cleared even in chosen locales (cross-preset, spec §3)', () => {
+    const files = [
+      ...tutorialDemo.en.map((f) => entry(`en/${f}`)),
+      ...couponDemo.en.map((f) => entry(`en/${f}`)),
+    ];
+    const out = classifyWikiArticles(files, { selectedLocales: ['en'], preset: 'tutorial-hub' });
+    expect(out.kept.map((e) => e.rel)).toEqual(tutorialDemo.en.map((f) => `en/${f}`));
+    expect(out.demo.map((e) => e.rel)).toEqual(couponDemo.en.map((f) => `en/${f}`));
+  });
+
+  test('no options at all (setup.yml Initialize channel) → every registered demo cleared', () => {
+    const files = [
+      ...couponDemo.en.map((f) => entry(`en/${f}`)),
+      ...couponDemo.ja.map((f) => entry(`ja/${f}`)),
+      ...tutorialDemo.en.map((f) => entry(`en/${f}`)),
+    ];
+    expect(classifyWikiArticles(files).demo).toHaveLength(files.length);
+    expect(classifyWikiArticles(files).kept).toHaveLength(0);
+  });
+
+  test('registry hit + chosen locale but NO preset info → kept (locales-only caller)', () => {
+    const out = classifyWikiArticles([entry(`en/${couponDemo.en[0]}`)], { selectedLocales: ['en'] });
+    expect(out.kept).toHaveLength(1);
+  });
+
+  test('Anvil Quest fallback unchanged: marked content cleared, user content kept', () => {
+    const asDemo = { rel: 'en/bosses/emberfang.mdx', src: 'Anvil Quest strategy.' };
+    const user = { rel: 'en/bosses/mine.mdx', src: 'My own boss guide.' };
+    const out = classifyWikiArticles([asDemo, user], {
+      selectedLocales: ['en'],
+      preset: 'game-wiki',
+    });
+    expect(out.demo.map((e) => e.rel)).toEqual([asDemo.rel]);
+    expect(out.kept.map((e) => e.rel)).toEqual([user.rel]);
+  });
+
+  test('win32 backslash rels never match the registry (content rule decides)', () => {
+    const out = classifyWikiArticles(
+      [{ rel: 'en\\codes\\pixelpad-codes.mdx', src: 'user article body' }],
+      { selectedLocales: ['en'], preset: 'game-wiki' },
+    );
+    expect(out.kept).toHaveLength(1);
+  });
+});
+
+describe('--answers 18/19 site-type compatibility (pure rules + CLI wiring pins)', () => {
+  const cliSrc = readFileSync(join(repoRoot, 'scripts/apply-template.ts'), 'utf8');
+
+  test('LEGACY_ANSWER_COUNT is 18 and siteTypeFromAnswer maps 1/2/3 only', () => {
+    expect(LEGACY_ANSWER_COUNT).toBe(18);
+    expect(siteTypeFromAnswer('1')).toBe('game-wiki');
+    expect(siteTypeFromAnswer('2')).toBe('coupon-hub');
+    expect(siteTypeFromAnswer('3')).toBe('tutorial-hub');
+    expect(siteTypeFromAnswer(' 2 ')).toBe('coupon-hub');
+    for (const bad of ['', '0', '4', 'abc', 'game-wiki']) {
+      expect(siteTypeFromAnswer(bad), JSON.stringify(bad)).toBeNull();
+    }
+  });
+
+  test('the CLI detects the legacy count before consuming answers and defaults silently to game-wiki', () => {
+    // Detection must run BEFORE any prompt consumes an entry (the queue
+    // shrinks as prompts eat it) — pinned at the top of main(), next to
+    // loadScriptedAnswers.
+    expect(cliSrc).toMatch(/scripted !== null && scripted\.length === LEGACY_ANSWER_COUNT/);
+    expect(cliSrc).toMatch(/if \(legacySiteTypeCompat\) \{\s*\n\s*siteType = 'game-wiki';/);
+  });
+
+  test('an invalid qSiteType answer and a category×preset mismatch both exit loudly before writes', () => {
+    expect(cliSrc).toMatch(/siteTypeFromAnswer\(siteTypeAnswer\)/);
+    expect(cliSrc).toMatch(/T\.siteTypeError\(siteTypeAnswer\)/);
+    // The category question is asked BEFORE qSiteType (index 13 vs 17), so
+    // narrowing is a POST-check — it must sit between the site-type answer
+    // and the first file write.
+    const siteIdx = cliSrc.indexOf('T.siteTypeError');
+    const mismatchIdx = cliSrc.indexOf('T.siteCategoryMismatchError');
+    const firstWriteIdx = cliSrc.indexOf("write('src/config/site.ts'");
+    expect(siteIdx).toBeGreaterThan(-1);
+    expect(mismatchIdx).toBeGreaterThan(siteIdx);
+    expect(mismatchIdx).toBeLessThan(firstWriteIdx);
+  });
+
+  test('qSiteType sits after qRemoveLanding and before qProceed in the prompt sequence', () => {
+    const removeIdx = cliSrc.indexOf('T.qRemoveLanding');
+    const siteIdx = cliSrc.indexOf('T.qSiteType');
+    const proceedIdx = cliSrc.indexOf('T.qProceed');
+    expect(removeIdx).toBeGreaterThan(-1);
+    expect(siteIdx).toBeGreaterThan(removeIdx);
+    expect(proceedIdx).toBeGreaterThan(siteIdx);
+  });
+
+  test('clearDemoContent forwards the chosen locales + preset to the shared classifier', () => {
+    expect(cliSrc).toMatch(/classifyWikiArticles\(entries, \{\s*\n\s*selectedLocales,\s*\n\s*preset,/);
+  });
+
+  test('SkinInput carries siteType and the planned output names it', () => {
+    const libSrc = readFileSync(join(repoRoot, 'scripts/lib/apply-rewrites.ts'), 'utf8');
+    expect(libSrc).toMatch(/siteType: PresetId;/);
+    expect(cliSrc).toMatch(/T\.plannedSiteType\}\$\{siteType\}/);
+  });
+
+  test('zh table mirrors the new site-type keys (zh-mirrors-en contract covers them)', () => {
+    const { en, zh } = APPLY_TEMPLATE_STRINGS;
+    for (const key of ['qSiteType', 'siteTypeMenu', 'siteTypeNote'] as const) {
+      expect(typeof zh[key]).toBe('string');
+      expect(zh[key]).not.toBe(en[key]); // translated, not copied
+    }
+    expect(zh.siteTypeError('9')).toContain('1、2 或 3');
+    expect(en.siteTypeError('9')).toContain('1, 2 or 3');
+  });
+});
+
+describe('preset-aware rewriteLocaleJson (nav/overview labels + cross-preset key parity)', () => {
+  const OVERVIEW_TAIL =
+    '. Replace this overview text in the locale JSON — it feeds the category page title and description.';
+  const allCats = [
+    { key: 'bosses', icon: 'lucide:swords' },
+    { key: 'guides', icon: 'lucide:book-open' },
+    { key: 'items', icon: 'lucide:package' },
+    { key: 'codes', icon: 'lucide:gift' },
+  ];
+
+  // Mirrors scripts/check-i18n.ts flattenKeys (arrays are leaf keys).
+  function flattenKeys(obj: unknown, prefix = ''): string[] {
+    if (typeof obj !== 'object' || obj === null) return [];
+    return Object.entries(obj as Record<string, unknown>).flatMap(([k, v]) =>
+      typeof v === 'object' && v !== null && !Array.isArray(v)
+        ? flattenKeys(v, prefix ? `${prefix}.${k}` : k)
+        : [prefix ? `${prefix}.${k}` : k],
+    );
+  }
+
+  test('the locale JSON key skeleton is identical across site types (same categories in)', () => {
+    // Constraint e: the preset copy pack swaps VALUES, never keys — arrays are
+    // leaves, so differing module counts/highlight lengths cannot move the key
+    // set. Only category choices move it, hence the same cats for all three.
+    const demoEn = readFileSync(join(repoRoot, 'src/locales/en.json'), 'utf8');
+    const keySets = (['game-wiki', 'coupon-hub', 'tutorial-hub'] as PresetId[]).map((siteType) =>
+      flattenKeys(
+        JSON.parse(rewriteLocaleJson(makeInput({ siteType, categories: allCats }), 'en', 2026, demoEn)),
+      ).sort(),
+    );
+    expect(keySets[0]).toEqual(keySets[1]);
+    expect(keySets[0]).toEqual(keySets[2]);
+  });
+
+  test('game-wiki keeps the historical TitleCase labels byte-for-byte', () => {
+    const out = JSON.parse(rewriteLocaleJson(makeInput({ siteType: 'game-wiki' }), 'en', 2026));
+    expect(out.nav.codes).toBe('Codes');
+    expect(out.overview.codes.overviewTitle).toBe('All Codes');
+    expect(out.overview.codes.overviewDescription).toBe(`Codes content for Test Game${OVERVIEW_TAIL}`);
+  });
+
+  test('coupon-hub writes Deals/Saving Guides/Tools labels and deal-flavored overviews', () => {
+    const out = JSON.parse(
+      rewriteLocaleJson(makeInput({ siteType: 'coupon-hub', categories: allCats }), 'en', 2026),
+    );
+    expect(out.nav.codes).toBe('Deals');
+    expect(out.nav.guides).toBe('Saving Guides');
+    expect(out.nav.items).toBe('Tools');
+    expect(out.overview.codes.overviewTitle).toBe('All Deals');
+    expect(out.overview.codes.overviewDescription).toBe(`Active coupons and deals for Test Game${OVERVIEW_TAIL}`);
+    expect(out.overview.items.overviewTitle).toBe('All Tools');
+  });
+
+  test('a FIRST run over the demo file does not let demo labels override the preset labels', () => {
+    // The demo en.json carries English nav labels ('Codes'…). Before the
+    // prevNav overlay was gated on re-runs, those rode the overlay on FIRST
+    // runs too and a coupon fork got game-flavored "Codes" instead of
+    // "Deals" (everything else preset-flavored). A demo-marked file is a
+    // first run by definition (v2.6.3 semantics) — its labels must never
+    // win for a preset-owned key.
+    const demoFile = JSON.stringify({
+      site: { name: 'Anvil Quest Wiki' },
+      nav: { home: 'Home', bosses: 'Bosses', guides: 'Guides', items: 'Items', codes: 'Codes' },
+    });
+    const out = JSON.parse(
+      rewriteLocaleJson(makeInput({ siteType: 'coupon-hub', categories: allCats }), 'en', 2026, demoFile),
+    );
+    expect(out.nav.codes).toBe('Deals');
+    expect(out.nav.guides).toBe('Saving Guides');
+    expect(out.nav.items).toBe('Tools');
+  });
+
+  test('a game-wiki FIRST run over the REAL demo ja.json keeps its Japanese labels (zero-breaking)', () => {
+    // The shipped demo ja.json carries real Japanese nav labels (ボス…). The
+    // pre-preset overlay kept them on first runs; gating the overlay on
+    // re-runs regressed every non-default locale to English TitleCase
+    // placeholders ("Bosses" where ボス belongs). game-wiki must stay
+    // byte-identical to that behavior for every locale; only the
+    // preset-owned-key scenario (coupon → Deals) suppresses first-run
+    // labels. Reads the real src/locales/ja.json — synthetic English
+    // fixtures cannot catch this (their demo labels equal the defaults).
+    const realJa = readFileSync(join(repoRoot, 'src/locales/ja.json'), 'utf8');
+    const ja = JSON.parse(realJa) as { site: { name: string }; nav: Record<string, string> };
+    expect(ja.site.name).toBe('Anvil Quest Wiki'); // demo-marked → first run
+    const out = JSON.parse(rewriteLocaleJson(makeInput({ siteType: 'game-wiki' }), 'ja', 2026, realJa));
+    expect(out.nav.bosses).toBe('ボス');
+    expect(out.nav.home).toBe('ホーム');
+    expect(out.nav.codes).toBe('コード');
+    expect(out.nav.search).toBe('検索');
+    // The suppression stays scoped: the same real ja.json under coupon-hub
+    // still takes the preset labels (the original fix's intent).
+    const coupon = JSON.parse(
+      rewriteLocaleJson(makeInput({ siteType: 'coupon-hub', categories: allCats }), 'ja', 2026, realJa),
+    );
+    expect(coupon.nav.codes).toBe('Deals');
+    expect(coupon.nav.guides).toBe('Saving Guides');
+    expect(coupon.nav.items).toBe('Tools');
+  });
+
+  test('tutorial-hub labels guides as Tutorials', () => {
+    const out = JSON.parse(
+      rewriteLocaleJson(
+        makeInput({ siteType: 'tutorial-hub', categories: [{ key: 'guides', icon: 'x' }] }),
+        'en',
+        2026,
+      ),
+    );
+    expect(out.nav.guides).toBe('Tutorials');
+    expect(out.overview.guides.overviewTitle).toBe('All Tutorials');
+    expect(out.overview.guides.overviewDescription).toBe(`Step-by-step tutorials from Test Game${OVERVIEW_TAIL}`);
+  });
+
+  test('placeholder overview detection covers every preset head (rename regenerates, hand edits stay)', () => {
+    expect(isPlaceholderOverviewDesc('codes', `Active coupons and deals for X${OVERVIEW_TAIL}`)).toBe(true);
+    expect(isPlaceholderOverviewDesc('codes', `Codes content for X${OVERVIEW_TAIL}`)).toBe(true);
+    expect(isPlaceholderOverviewDesc('codes', 'Hand-written deals intro.')).toBe(false);
+  });
+});
+
+describe('preset home builders (coupon/tutorial) keep the game-wiki shape and watermarks', () => {
+  const catsFor = (id: PresetId) => SITE_PRESETS[id].categories.map((key) => ({ key, icon: 'lucide:gift' }));
+
+  test('coupon-hub home: game-wiki key skeleton, hot-deals slots inside chosen categories', () => {
+    const cats = catsFor('coupon-hub');
+    const game = JSON.parse(
+      rewriteLocaleJson(makeInput({ siteType: 'game-wiki', categories: cats }), 'en', 2026),
+    ).home;
+    const out = JSON.parse(
+      rewriteLocaleJson(makeInput({ siteType: 'coupon-hub', categories: cats }), 'en', 2026),
+    ).home;
+    expect(Object.keys(out).sort()).toEqual(Object.keys(game).sort());
+    // Fixed editorial slots (Hot deals / Tools / Saving guides) — independent
+    // of the preset category order.
+    expect(out.start.cards.map((c: { href: string }) => c.href)).toEqual(['/codes', '/items', '/guides']);
+    expect(out.explore.modules[0].displayType).toBe('badge-list');
+    expect(out.explore.modules[0].highlights[0].label).toBe('CODE-PLACEHOLDER');
+    // quickLinks follow the preset's category order (NAVIGATION_CONFIG menu
+    // order) but carry the coupon-hub labels.
+    expect(out.popular.quickLinks.map((q: { label: string }) => q.label)).toEqual([
+      'Saving Guides',
+      'Tools',
+      'Deals',
+    ]);
+    // Machine-skeleton watermark intact (a re-run may replace it silently).
+    expect(isHomeSkeleton(out)).toBe(true);
+    // Never a fabricated code in the home copy — placeholder codes live in
+    // the preset demo ARTICLES only (never in en.json/ja.json highlights).
+    expect(JSON.stringify(out)).not.toMatch(/DEMO-/);
+  });
+
+  test('tutorial-hub home: steps module, chosen-category hrefs, watermark intact', () => {
+    const cats = catsFor('tutorial-hub');
+    const out = JSON.parse(
+      rewriteLocaleJson(makeInput({ siteType: 'tutorial-hub', categories: cats }), 'en', 2026),
+    ).home;
+    expect(out.start.cards.map((c: { href: string }) => c.href)).toEqual(['/guides']);
+    expect(out.explore.modules[0].displayType).toBe('steps');
+    expect(out.explore.modules[0].highlights.map((h: { label: string }) => h.label)).toEqual([
+      'Step 1',
+      'Step 2',
+      'Step 3',
+    ]);
+    expect(isHomeSkeleton(out)).toBe(true);
+  });
+
+  test('homePreset "keep" still means keep on every site type (explicit user choice)', () => {
+    for (const siteType of ['coupon-hub', 'tutorial-hub'] as PresetId[]) {
+      const out = JSON.parse(rewriteLocaleJson(makeInput({ siteType, homePreset: 'keep' }), 'en', 2026));
+      expect(out.home).toBeUndefined();
+    }
+  });
+});
+
+describe('preset demo internal links whitelist (template side of the fork check-links gate)', () => {
+  // A fork's eight-gate CI runs `pnpm check-links` over dist/ (constraint a2),
+  // while LANDING_PATHS deletes /landing and the preset narrows the retained
+  // categories — so a demo article linking a deleted route or a category
+  // outside its preset's set would redden EVERY fork of that type on day one.
+  // The template repo gates the same fact statically: every internal markdown
+  // link in a registered demo must stay inside the owning preset's retained
+  // categories ∪ system pages (homepage/tags/recent/faq), and never /landing.
+  const SYSTEM_SEGMENTS = new Set(['tags', 'recent', 'faq']);
+  const wikiBase = join(repoRoot, 'src/content/wiki');
+
+  for (const preset of Object.values(SITE_PRESETS)) {
+    for (const [locale, files] of Object.entries(preset.demoArticles)) {
+      for (const rel of files) {
+        const full = `${locale}/${rel}`;
+        test(`${full}: links stay inside ${preset.id} retained categories ∪ system pages`, () => {
+          const raw = readFileSync(join(wikiBase, locale, rel), 'utf8');
+          const closing = raw.indexOf('\n---', 3);
+          const body = closing === -1 ? raw : raw.slice(closing + 4);
+          const links = Array.from(body.matchAll(/\]\((\/[^)\s]*)\)/g)).map((m) => m[1]);
+          expect(
+            links.length,
+            `${full}: at least 3 internal links (content-format rule)`,
+          ).toBeGreaterThanOrEqual(3);
+          const base = locale === 'en' ? '' : `/${locale}`;
+          for (const href of links) {
+            const noAnchor = href.split('#')[0] ?? '';
+            if (noAnchor === '' || noAnchor === `${base}/`) continue; // same-page anchor / homepage
+            expect(
+              href.startsWith('/landing'),
+              `${full}: ${href} links the fork-deleted /landing routes`,
+            ).toBe(false);
+            const first = (noAnchor.slice(base.length).split('/').filter(Boolean)[0] ?? '');
+            expect(
+              preset.categories.includes(first) || SYSTEM_SEGMENTS.has(first),
+              `${full}: ${href} escapes the ${preset.id} whitelist (retained: ${preset.categories.join(', ')}; system: tags/recent/faq)`,
+            ).toBe(true);
+          }
+        });
+      }
+    }
+  }
+});
+
+describe('placeholder codes convention (refresh-audit freshness skip)', () => {
+  test('all-DEMO- frontmatter is a placeholder page; anything else is not', () => {
+    const fm = (codes: string[]) => ['codes:', ...codes.map((c) => `  - code: ${c}`)].join('\n');
+    expect(isPlaceholderCodesFrontmatter(fm([`${DEMO_CODE_PLACEHOLDER_PREFIX}XXXX`]))).toBe(true);
+    expect(isPlaceholderCodesFrontmatter(fm([`"${DEMO_CODE_PLACEHOLDER_PREFIX}AAAA"`]))).toBe(true);
+    // One real code among placeholders → the page deserves freshness attention.
+    expect(isPlaceholderCodesFrontmatter(fm([`${DEMO_CODE_PLACEHOLDER_PREFIX}AAAA`, 'REAL-CODE']))).toBe(false);
+    // No codes entries at all → not a placeholder page (never skip silently).
+    expect(isPlaceholderCodesFrontmatter('title: Deals')).toBe(false);
+    expect(DEMO_CODE_PLACEHOLDER_PREFIX).toBe('DEMO-');
   });
 });

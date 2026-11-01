@@ -1,0 +1,88 @@
+---
+title: 'How to Build a Website with AI: From Zero to a Live Site in One Day'
+description: 'The one-day build tutorial: what to prepare, which free tools an AI-assisted site needs, the build loop with your AI assistant, and deploying to free static hosting.'
+category: 'guides'
+image: '../../../../assets/covers/en-guides-build-site-with-ai-tutorial.png'
+date: 2026-11-01
+lastModified: 2026-11-01
+tags: ['guide', 'beginner', 'ai-tutorial', 'site-building']
+summary: 'You can take a content site from an empty folder to a live URL in one day without writing code: start from an open-source static site template, answer the setup questions with your AI assistant, replace the demo branding with your own, then connect the repository to a free static host that builds on every push.'
+faq:
+  - question: 'Do I need to know how to code to build a site this way?'
+    answer: 'No. A good template already contains the whole site; your job is answering its configuration questions and writing content. The AI assistant handles any command you do not recognize, one step at a time.'
+  - question: 'Is one day actually realistic?'
+    answer: 'Yes for the site itself: template setup, branding and deployment comfortably fit a day. What does not fit in a day is content — write the first few pages that day, and grow the library over the following weeks.'
+  - question: 'What does an AI-assisted build cost?'
+    answer: 'The stack in this tutorial is free at the start: an open-source template, a free code editor tier or your existing AI assistant, a free Git repository, and free static hosting on a subdomain. The only typical purchase is a custom domain later.'
+  - question: 'Can I just use a website builder instead?'
+    answer: 'You can, but hosted builders usually lock the design, limit structured content like FAQ data, and charge monthly. A static template gives you full ownership of the files and free hosting — which matters once the site starts earning.'
+  - question: 'What if the AI assistant makes a mistake?'
+    answer: 'It will, occasionally. Treat every suggestion as a draft: run the site locally after each change, keep changes small, and let a broken build stop you before it hides anything. The verify-after-every-step habit is the tutorial.'
+  - question: 'Do I need a custom domain on day one?'
+    answer: 'No. Launch on the free hosting subdomain, then add a custom domain when you are confident the site will live on. If you do buy one early, point it at the site immediately and set the site address in the template configuration the same day.'
+---
+
+The direct answer: you do not write a website anymore — you configure one. Start from an open-source static site template, let an AI assistant walk you through its setup questions, replace the demo branding with your own, and connect the repository to a free static host. The loop below takes one focused day from an empty folder to a live URL, with zero code written by you.
+
+import Callout from '~/components/mdx/Callout.astro';
+
+## What do you need before you start?
+
+Gather four things first; the build itself stays smooth only when these exist:
+
+1. **A validated niche.** The [niche-picking tutorial](/guides/pick-your-niche-tutorial/) ends with a build decision — that decision is this lesson's input.
+2. **A notes file with your site facts**: working title, the topics you plan to cover, the language or languages you will write in.
+3. **Accounts**: a Git hosting account and, later, a static hosting account. Both have free tiers.
+4. **Tools on your machine**: a code editor and an AI coding assistant. Ask the assistant to install anything missing — it will give you the exact command and explain it.
+
+<Callout type="warn" title="Do not skip the local preview">Everything in this tutorial assumes you can see the site running on your own machine before it goes online. If a step cannot be previewed locally, ask the AI assistant how to preview it — that single habit catches nearly every build problem while it is still cheap.</Callout>
+
+## Which tools does an AI-assisted site need?
+
+The stack has four roles. Every role has a free option; pick one per role and move on:
+
+| Role | What it does | What to choose |
+| --- | --- | --- |
+| Site template | The actual website — pages, layout, SEO, search | An open-source static site template that matches your content type |
+| Editor + AI assistant | Where you edit files and ask questions | Any code editor with an AI assistant built in or attached |
+| Repository | Stores the site's files and its history | Any free Git host |
+| Static hosting | Serves the built site to visitors | A free static host that builds from your repository on every push |
+
+Why a *static* site: the hosting is free at meaningful traffic levels, pages load fast, and there is no server for you to maintain. For a content site this is the whole game.
+
+## How does the AI-assisted build loop work?
+
+The loop is the same regardless of which template you chose. Five moves:
+
+1. **Get the template.** Follow the template's two or three setup commands. When a command confuses you, paste it into the AI assistant and ask what it does before running it.
+2. **Run it locally.** One command starts a preview on your machine. Confirm you see the demo site before changing anything.
+3. **Answer the setup questions.** Good templates ship an initialization command or a short config file. Answer with your own site facts from the notes file — one question at a time, reading each before answering.
+4. **Brand it.** Site name, tagline, colors, navigation labels, languages — all live in the template's configuration files, not in code. Ask the assistant to change each one and show you the diff.
+5. **Build for production.** One command produces the final site. If the build fails, read the error with the assistant — nine times out of ten it is a typo in a content file, and the message names the file.
+
+<Callout type="tip" title="Let AI assign the tasks">The strongest way to work with an assistant: instead of asking "how do I make a website", paste the template's own setup guide and say "walk me through initialization, asking me for each value as you need it." The assistant drives, you supply answers, and nothing happens that you did not see.</Callout>
+
+## How do you put the site online for free?
+
+Deployment is a one-time connection, not a repeated chore:
+
+1. **Push the repository** from your machine to your Git host.
+2. **Connect the repository** in your static host's dashboard and point it at the build command from step 5 above.
+3. **Let it build.** The host builds the site and serves it on a free subdomain.
+4. **From now on, publishing is a push.** Every time you push new content, the host rebuilds automatically. There is no step four on publishing day.
+
+When you buy a custom domain later, connect it in the host's dashboard **and** set the site's own address in the template configuration the same day — a site whose pages advertise the wrong address confuses search engines and social cards alike.
+
+## What should you check before inviting anyone?
+
+Run this five-point checklist on the deployed site, not the local preview:
+
+- The build completed without errors, and the homepage loads on the live URL.
+- Every page in the navigation opens — no dead links.
+- The site is readable on a phone.
+- The search box finds content you wrote.
+- Each article shows a verified or published date you actually stand behind.
+
+## What to do next
+
+The site is live and empty — that is correct. Fill it with the [AI content workflow](/guides/content-workflow-tutorial/), and read the [monetization tutorial](/guides/monetize-site-tutorial/) before the content library grows, so advertising slots and disclosure pages are planned rather than bolted on. If you skipped the groundwork, the [niche-picking tutorial](/guides/pick-your-niche-tutorial/) is where the series starts; all guides live under [recently updated guides](/recent/) as they are updated.

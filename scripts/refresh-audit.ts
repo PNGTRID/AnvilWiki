@@ -12,6 +12,11 @@
  *   - STALE categories (bosses, tier-list) older than 90 days → P1
  *   - codes articles older than 7 days → P0 (players assume daily updates)
  *   - codes articles older than 30 days → P0 + "likely contains dead codes"
+ *   - codes pages whose frontmatter codes are ALL `DEMO-` placeholders are
+ *     SKIPPED by the freshness rules: placeholder codes (the site-preset demo
+ *     pages) can never be "verified", so auditing them would only produce
+ *     permanent P0 noise. Fork users swapping in real codes restore the rule
+ *     automatically (the marker lives in site-presets.ts).
  *   - homepage explore highlights (home.explore.modules badge-list) whose
  *     badge contradicts the same-locale codes page frontmatter — expired
  *     shown as Active → P0. Labels absent from the codes page fall back to
@@ -30,6 +35,7 @@
 import * as fs from 'node:fs';
 import { todayIso } from './lib/today';
 import { STALE_AFTER_DAYS, STALE_CATEGORIES } from '~/lib/content-utils';
+import { isPlaceholderCodesFrontmatter } from './lib/site-presets';
 import { walkFiles } from './lib/walk';
 import * as path from 'node:path';
 
@@ -69,6 +75,9 @@ for (const file of files) {
   const rel = path.relative(ROOT, file);
 
   if (category === 'codes') {
+    // All-DEMO- placeholder pages (site-preset demos) never "verify" — skip
+    // instead of piling permanent P0 rows into the daily issue.
+    if (isPlaceholderCodesFrontmatter(fm)) continue;
     if (days >= CODES_CRITICAL_DAYS) {
       items.push({
         priority: 'P0',
