@@ -177,3 +177,31 @@ export const SITE_PRESETS: Record<PresetId, SitePreset>;
 - 一致性：§4.2 声明「零新路由」与 §5 demo 注册表改动不冲突（内容层 vs 路由层）；§6 教程集合与 handbook 的 survives-fork 差异已显式区分。
 - 范围：M1 可独立成实现计划；M2 依赖 M1 的 preset 机制但可并行写内容——适合拆两份计划。
 - 歧义：qSiteType 默认值、18/19 答案兼容行为、demo 清理语义均已写死为可测断言。
+
+---
+
+## 追加设计：recipe-hub 第四类型的分类键方案（2026-11-01 定案）
+
+recipe-hub 需要 `/recipes/` URL，但 NAVIGATION_CONFIG 只有游戏四键——「preset 的分类 ⊆ 全局键」约束反转为「preset 可引入新键」。定案：
+
+**分类目录（category catalog）**——navigation.ts 新增：
+
+```ts
+/** Preset-only categories: legal content types no game-wiki menu shows. */
+export const PRESET_ONLY_CATEGORIES: NavigationItem[] = [
+  { key: 'recipes', path: '/recipes', icon: 'lucide:cake', isContentType: true },
+];
+```
+
+**职责切分**（防 demo 污染与路由蔓延）：
+
+| 面 | 规则 |
+|---|---|
+| CONTENT_TYPES（路由/sitemap/菜单遍历） | **保持 = NAVIGATION_CONFIG 四键不变**——demo 与 game-wiki fork 永不生成 /recipes/ 列表页 |
+| Schema 合法分类（z.enum） | 扩为 `LEGAL_CONTENT_TYPES = [...CONTENT_TYPES, ...PRESET_ONLY_CATEGORIES keys]`——recipe demo 文章 frontmatter 合法 |
+| check-config 三处一致 | 校验面改为 LEGAL 集合：demo en/ja.json 需补 nav.recipes + overview.recipes 标签，demo en/recipes/、ja/recipes/ 目录随 demo 文章存在 |
+| game-wiki fork | CLI 照旧：未选 preset 的 demo 文章按注册表清除，rewriteLocaleJson ownable 过滤删 nav.recipes——**游戏 fork 产物无 recipes 痕迹** |
+| recipe-hub fork | CLI 写其 navigation.ts = [recipes, guides, items]（registry categories 全量来自 catalog∪NAVIGATION），qCategories 菜单按 preset 列全 |
+| demo 站孤儿文章问题 | recipe demo 文章在 game demo 无列表页可达——`noindex: true` 写进 recipe demo frontmatter（fork 替换内容时自行摘除，docs/apply-template.md 注明） |
+
+**其余增量**（§4 系列格式）：schema 可选 `recipe` frontmatter 对象（cuisine/servings/prepTime/cookTime/ingredients[]/tools[]，全 string 数组与标量，boss 同款有则渲染）→ RecipeCard 组件 + ArticlePage 分支 + Recipe JSON-LD（Google 食谱富结果资格，name/image 必备 + prepTime/cookTime/recipeYield/recipeIngredient/recipeInstructions 推荐项）→ registry 第四 preset（categories: ['recipes','guides','items']，demo 虚构食谱 en+ja ≥6 篇——公有领域经典配方原创撰写，无商标问题）→ demo 文案包 + E2E 第四流程 + 教程线「怎么做食谱站」选题留 M3。
