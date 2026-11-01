@@ -223,6 +223,13 @@ const description = pageDescription ?? t.description;
             <span>{t.handbook.manuals.dev.label}</span>
           </a>
           <a
+            href={locale === 'en' ? '/landing/tutorials/' : '/zh/landing/tutorials/'}
+            class="flex items-center gap-2 px-3 py-2 text-sm transition hover:bg-muted"
+          >
+            <Icon name="lucide:library-big" class="h-4 w-4" />
+            <span>{t.tutorials.navLabel}</span>
+          </a>
+          <a
             href={locale === 'en' ? '/landing/templates/' : '/zh/landing/templates/'}
             class="flex items-center gap-2 px-3 py-2 text-sm transition hover:bg-muted"
           >
@@ -296,6 +303,13 @@ const description = pageDescription ?? t.description;
         >
           <Icon name="lucide:wrench" class="h-4 w-4" />
           <span>{t.handbook.manuals.dev.label}</span>
+        </a>
+        <a
+          href={locale === 'en' ? '/landing/tutorials/' : '/zh/landing/tutorials/'}
+          class="hidden items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground sm:inline-flex"
+        >
+          <Icon name="lucide:library-big" class="h-4 w-4" />
+          <span>{t.tutorials.navLabel}</span>
         </a>
         <a
           href={locale === 'en' ? '/landing/templates/' : '/zh/landing/templates/'}
@@ -379,6 +393,12 @@ const description = pageDescription ?? t.description;
           </div>
         </div>
         <div class="flex items-center gap-4 text-sm">
+          <a
+            href={locale === 'en' ? '/landing/tutorials/' : '/zh/landing/tutorials/'}
+            class="text-foreground/70 transition hover:text-foreground"
+          >
+            {t.tutorials.navLabel}
+          </a>
           <a
             href={locale === 'en' ? '/landing/templates/' : '/zh/landing/templates/'}
             class="text-foreground/70 transition hover:text-foreground"

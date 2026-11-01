@@ -102,6 +102,12 @@ export const GET: APIRoute = async () => {
     lines.push(
       `- [Game Wiki Page Templates — every page type, live](${siteUrl}/landing/templates/): One card per page type the AnvilWiki template produces (boss guide, codes page, tier list, beginner guide, item pages, docs center), each linked to a real page on the demo wiki, with the template mechanics behind each (structured codes frontmatter, gallery layout, Quick Answer summary, gameVersion badge).`,
     );
+
+    // Flagship tutorial line — build-your-own-content-site guides, one per
+    // site type the template ships. Same landing-layer lifecycle as above.
+    lines.push(
+      `- [Build Your Own Content Site — tutorials](${siteUrl}/landing/tutorials/): Hands-on guides anchored on what the reader wants to do — build a game redeem-codes site, run a SaaS coupon hub, put up a tutorial knowledge base, build a site with AI in a day, get indexed by Google, monetize a game wiki — each ending with the matching template preset, the community entry and a same-topic next read.`,
+    );
   }
 
   return new Response(lines.join('\n') + '\n', {

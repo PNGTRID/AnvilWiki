@@ -74,6 +74,19 @@ const wiki = defineCollection({
         })
         .optional(),
       /**
+       * Optional structured tool card (coupon-hub items pages) — rendered as
+       * a scannable head card above the body: one-line tagline, pricing
+       * summary, and an optional product/affiliate link CTA. Follows the
+       * `boss` pattern: present = card renders, absent = plain article.
+       */
+      tool: z
+        .object({
+          tagline: z.string().max(120),
+          pricing: z.string().max(80),
+          url: z.url().optional(),
+        })
+        .optional(),
+      /**
        * Optional related YouTube video IDs (lazy-loaded embeds at the article
        * bottom — zero JS until click). Hard gate on the 11-char ID shape:
        * a pasted full URL would flow through unchecked into VideoObject
@@ -185,4 +198,49 @@ const handbook = defineCollection({
   }),
 });
 
-export const collections = { wiki, handbook };
+/**
+ * Tutorials collection — the AnvilWiki flagship tutorial line at
+ * /landing/tutorials (+ /zh/landing/tutorials). Topics anchor on what the
+ * reader wants to DO ("how to build a game codes site"), with the template
+ * introduced as the answer — NOT handbook documentation (how-to-use stays
+ * in the docs center; tutorials link there instead of duplicating it).
+ *
+ * Unlike the handbook (which survives forks on purpose), this is landing
+ * MARKETING content: the whole `src/content/tutorials/` directory is
+ * registered in apply-template's LANDING_PATHS and removed together with
+ * the landing routes (three-channel sync: LANDING_PATHS / setup.yml rm line
+ * / e2e absence assertions).
+ *
+ * Files: src/content/tutorials/<locale>/<slug>.md → id "<locale>/<slug>".
+ * zh files reuse the en ASCII slug 1:1 (CJK filenames percent-encode in
+ * URLs; 1:1 pairing keeps the en/zh parity test trivial — handbook
+ * precedent). Plain .md: tutorials are prose + markdown links and code
+ * fences; they do not use the wiki component vocabulary.
+ *
+ * 🚨 Fork note: with the collection base missing, the astro glob loader
+ * only warns and yields an empty collection (verified against the astro
+ * glob loader source) — a fork whose removal channel drifted still builds.
+ */
+const tutorials = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/tutorials' }),
+  schema: z.object({
+    title: z.string().max(80),
+    description: z.string().min(40).max(165),
+    /** Position in the reading order (1-based, unique across the line). */
+    order: z.number().int(),
+    /**
+     * REQUIRED (unlike handbook's optional one): the en/zh twins must share
+     * the same `updated` value — the bilingual pairing iron rule — and a
+     * required field plus the parity test is what enforces that from both
+     * sides. Feeds the TechArticle JSON-LD dates on the tutorial page.
+     */
+    updated: z.coerce.date(),
+    /**
+     * 40–60 word direct answer, rendered as the TL;DR card (AI Overviews
+     * candidate). Same 480-char cap as the handbook schema.
+     */
+    tldr: z.string().max(480).optional(),
+  }),
+});
+
+export const collections = { wiki, handbook, tutorials };

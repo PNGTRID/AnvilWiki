@@ -1,0 +1,125 @@
+---
+/**
+ * Tutorials hub (/landing/tutorials, English) — the flagship tutorial line's
+ * chooser, grouped by site-type direction: one section per apply-template
+ * preset (game wiki / coupon hub / tutorial hub), each listing its tutorials
+ * in reading order. Grouping = lib/landing-tutorials' tutorialsForPreset over
+ * TUTORIAL_META; section headings come from the landing `directions` copy, so
+ * this hub and the landing root's direction cards stay word-for-word in sync.
+ * Source markdown lives in src/content/tutorials/en/<slug>.md — landing-layer
+ * content that is removed from forks together with this route
+ * (src/content/tutorials is registered in LANDING_PATHS / setup.yml / e2e
+ * absence assertions). 中文版在 /zh/landing/tutorials。
+ */
+import { getCollection } from 'astro:content';
+import { Icon } from 'astro-icon/components';
+import LandingLayout from '~/components/landing/LandingLayout.astro';
+import { landingContent } from '~/config/landing';
+import { siteUrl } from '~/config/site';
+import {
+  parseTutorialId,
+  tutorialPath,
+  tutorialsForLocale,
+  tutorialsForPreset,
+  type TutorialPreset,
+} from '~/lib/landing-tutorials';
+
+const t = landingContent.en;
+const all = await getCollection('tutorials');
+const tutorials = tutorialsForLocale(all, 'en');
+const presets: TutorialPreset[] = ['game-wiki', 'coupon-hub', 'tutorial-hub'];
+
+const alternates = [
+  { hreflang: 'en', href: `${siteUrl}/landing/tutorials/` },
+  { hreflang: 'zh', href: `${siteUrl}/zh/landing/tutorials/` },
+];
+
+// ItemList JSON-LD: hub-and-spoke signal for the tutorial structure. Kept
+// flat in reading order regardless of the visual grouping — one list, one path.
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: t.tutorials.hubTitle,
+    itemListElement: tutorials.map((entry, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: entry.data.title,
+      url: `${siteUrl}${tutorialPath('en', parseTutorialId(entry.id)?.slug ?? '')}`,
+    })),
+  },
+];
+---
+
+<LandingLayout
+  locale="en"
+  alternates={alternates}
+  pageTitle={`${t.tutorials.hubTitle} | AnvilWiki`}
+  pageDescription={t.tutorials.hubSubtitle}
+  togglePath="/zh/landing/tutorials/"
+  extraJsonLd={jsonLd}
+>
+  <section class="section" data-pagefind-body>
+    <div class="mx-auto max-w-5xl">
+      <h1 class="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+        {t.tutorials.hubTitle}
+      </h1>
+      <p class="mx-auto mt-4 max-w-3xl text-muted-foreground">{t.tutorials.hubSubtitle}</p>
+
+      {
+        presets.map((preset) => {
+          const copy = t.directions.items[preset];
+          const group = tutorialsForPreset(tutorials, preset);
+          if (group.length === 0) return null;
+          return (
+            <div class="mt-12">
+              <div class="flex flex-wrap items-center gap-3">
+                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-nav/10">
+                  <Icon name={copy.icon} class="h-4 w-4 text-nav" />
+                </span>
+                <h2 class="text-xl font-bold text-foreground">{copy.title}</h2>
+                <span class="text-sm text-muted-foreground">{copy.earn}</span>
+              </div>
+              <div class="mt-5 grid gap-5">
+                {group.map((entry) => {
+                  const slug = parseTutorialId(entry.id)?.slug ?? '';
+                  const updated = entry.data.updated.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  });
+                  return (
+                    <a href={tutorialPath('en', slug)} class="card group flex flex-col p-6">
+                      <div class="flex flex-wrap items-center gap-3">
+                        <h3 class="text-lg font-bold text-foreground transition group-hover:text-nav">
+                          {entry.data.title}
+                        </h3>
+                        <span class="ml-auto text-xs text-muted-foreground">
+                          {t.tutorials.updatedLabel} {updated}
+                        </span>
+                      </div>
+                      <p class="mt-3 text-sm leading-relaxed text-muted-foreground">
+                        {entry.data.description}
+                      </p>
+                      {entry.data.tldr && (
+                        <p class="mt-3 border-l-2 border-nav/40 pl-3 text-sm leading-relaxed text-foreground/80">
+                          {entry.data.tldr}
+                        </p>
+                      )}
+                      <span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-nav">
+                        <span class="border-b border-transparent transition group-hover:border-nav">
+                          {t.tutorials.readLabel}
+                        </span>
+                        <Icon name="lucide:arrow-right" class="h-4 w-4 transition group-hover:translate-x-0.5" />
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </section>
+</LandingLayout>

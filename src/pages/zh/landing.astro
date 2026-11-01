@@ -6,9 +6,13 @@
  * NOTE: this route is intentionally outside the wiki i18n system (locales
  * en/ja are the DEMO GAME's content languages). The landing page speaks for
  * the PROJECT, so it ships its own en/zh pair via src/config/landing.ts.
+ * 章节顺序与 /landing 同构:Hero(教程优先叙事) → DirectionCards(选方向) →
+ * 产品卖点区(下沉)。
  */
+import { getCollection } from 'astro:content';
 import LandingLayout from '~/components/landing/LandingLayout.astro';
 import LandingHero from '~/components/landing/LandingHero.astro';
+import DirectionCards from '~/components/landing/DirectionCards.astro';
 import SocialProofBar from '~/components/landing/SocialProofBar.astro';
 import FeatureGrid from '~/components/landing/FeatureGrid.astro';
 import CompareTable from '~/components/landing/CompareTable.astro';
@@ -23,8 +27,10 @@ import AdsterraSlotPair from '~/components/ads/AdsterraSlotPair.astro';
 import AdsterraSlot from '~/components/ads/AdsterraSlot.astro';
 import { landingContent } from '~/config/landing';
 import { siteUrl } from '~/config/site';
+import { tutorialsForLocale } from '~/lib/landing-tutorials';
 
 const t = landingContent.zh;
+const tutorials = tutorialsForLocale(await getCollection('tutorials'), 'zh');
 const alternates = [
   { hreflang: 'en', href: `${siteUrl}/landing/` },
   { hreflang: 'zh', href: `${siteUrl}/zh/landing/` },
@@ -42,6 +48,7 @@ const alternates = [
         taller vertical card stack. */}
     <AdsterraSlot name="native-banner" width={700} height={240} />
     <LandingHero t={t} />
+    <DirectionCards t={t} locale="zh" tutorials={tutorials} />
     <SocialProofBar t={t} />
     <FeatureGrid t={t} />
     {/* Adsterra pair wraps the marketing core: 728×90 after FeatureGrid,

@@ -28,19 +28,19 @@ export const zh: LandingContent = {
     privacyHref: '/zh/landing/privacy/',
   },
   description:
-    '开源游戏 wiki 模板 + AI 原生内容工作流:选对游戏、和 AI 对话就能产页、codes 页自动保鲜。Lighthouse 4×100、Cloudflare 免费部署、广告收入 100% 归你。',
+    'AnvilWiki 建站赚钱教程——手把手教你用开源模板搭游戏 wiki 攻略站、SaaS 优惠码站、教程知识库站:建站、收录、变现全流程。模板免费、Cloudflare 免费部署、收入 100% 归你。',
   announcement: {
-    text: `AnvilWiki 模板更新日志（v${PROJECT_VERSION}）：样品站根路径改为项目门面——打开 anvil.wiki 直接进中文落地页（301 跳转），英文 wiki 样品首页迁至 /demo/（fork 构建逐字节零变化）；手册课页与落地页顶部新增紧凑 native banner 广告位（复用既有单元）；VibeCafé 作品统计改为 env 门控开关式接入，fork 开箱零第三方脚本契约恢复硬约束；落地页新增「关于作者」区块并同步 README——主理人袁锐钦（Ruiqin，PNG 部落主理人）的公开路径首次有了正文面。另含第 35 轮以来审计深挖修复与文档漂移批全量记账。24 套件/401 条测试护航。fork 用户 merge 上游、照常 pnpm install 即可。本条为模板发版通告，非站点故障；详情与完整变更见 GitHub Releases。`,
+    text: `AnvilWiki 模板更新日志（v${PROJECT_VERSION}）：官网首页改为「先教程后模板」的门面——打开就是按方向的建站赚钱教程选方向入口；并新增旗舰教程线（/landing/tutorials + 中文版）——围着「你想做的事」写的实操教程（搭游戏兑换码站、开 SaaS 优惠码站、做教程知识库、拿收录、做变现），每篇结尾给出对应模板站点类型的 Fork 指引、微信进群入口与同题材下一篇；初始化 CLI 现在会问你要建什么站（默认游戏 wiki / 优惠码站 / 教程知识库）并直接搭出对应形态。本周期内的 check-versions 门禁与审计重建修复已全量记账。26 个测试套件护航。fork 用户 merge 上游、照常 pnpm install 即可。本条为模板发版通告，非站点故障；详情与完整变更见 GitHub Releases。`,
     href: RELEASES,
     dismissLabel: '关闭公告',
   },
   hero: {
-    badge: '开源 · MIT 协议 · Cloudflare Pages',
-    title: '把一个爆发期游戏,24 小时变成你的流量站',
+    badge: '开源免费 · MIT · Cloudflare Pages',
+    title: '教你用 AnvilWiki 从零建一个能赚钱的网站',
     subtitle:
-      'SEO 强化的游戏 wiki 模板(Astro + Cloudflare Pages,Lighthouse 4×100、免费无限带宽)+ 随仓库分发的 AI 内容工作流:跟 AI 对话就能产页、codes 页自动保鲜——每一分广告收入都归你。',
-    primaryCta: { label: 'Fork 本仓库', href: FORK_URL },
-    secondaryCta: { label: 'GitHub 加星', href: 'https://github.com/PNGTRID/AnvilWiki' },
+      '按方向写的实操教程:游戏 wiki 攻略站、SaaS 优惠码站、教程知识库站——建站、收录、变现全流程。教程里的每一步都有现成模板能力承接,AI 工作流让你像对话一样产出页面。',
+    primaryCta: { label: '选个方向,开始学', href: '#directions' },
+    secondaryCta: { label: 'Fork 本仓库', href: FORK_URL },
     tertiaryCta: { label: '查看 Demo', href: '/demo/' },
     installCommand: `git clone https://github.com/PNGTRID/AnvilWiki.git
 cd anvilwiki
@@ -50,6 +50,36 @@ pnpm install && pnpm dev`,
     terminalLabel: '终端',
     copyLabel: '复制',
     copiedLabel: '已复制!',
+  },
+  directions: {
+    title: '选一个方向,开始建你的赚钱站',
+    subtitle:
+      '每个方向都是一条完整路线:做什么站、靠什么赚、从哪篇教程开始。选定方向后,初始化 CLI 会直接搭出对应的站点形态——教程怎么教,模板就怎么给。',
+    startLabel: '从第一篇教程开始',
+    moreLabel: '查看全部教程',
+    items: {
+      'game-wiki': {
+        icon: 'lucide:swords',
+        title: '做游戏 wiki 攻略站',
+        description:
+          '围着爆发期游戏建攻略站:boss 数据卡、兑换码页、装备攻略。新游爆发后的 2-8 周是黄金窗口——快,就是全部。',
+        earn: '变现:广告位 + 兑换码页搜索流量',
+      },
+      'coupon-hub': {
+        icon: 'lucide:ticket',
+        title: '做 SaaS 优惠码站',
+        description:
+          '按商家收录软件优惠码:有效/过期自动分区、CSV 每日批量同步、黑五季集中爆发——同一套兑换码引擎直接换皮。',
+        earn: '变现:SaaS 联盟佣金,用户续费你持续拿',
+      },
+      'tutorial-hub': {
+        icon: 'lucide:graduation-cap',
+        title: '做教程知识库站',
+        description:
+          '单主题 how-to 站:Quick Answer + FAQ 结构化答案,专门承接 AI 搜索(ChatGPT / Perplexity)的引用流量——你的页面越像答案,被引用得越多。',
+        earn: '变现:教程内工具联盟 + 引用流量',
+      },
+    },
   },
   socialProof: {
     lighthouse: [
@@ -496,6 +526,31 @@ pnpm install && pnpm dev`,
     },
     openManualLabel: '打开这本手册',
     chaptersCountLabel: '课',
+  },
+  tutorials: {
+    navLabel: '建站教程',
+    hubTitle: '动手做你自己的内容站——教程线',
+    hubSubtitle:
+      '围着「你想做的事」写的实操教程:搭一个游戏兑换码站、开一个优惠码站、做一个教程知识库、被 Google 收录、开始变现。每篇走完全流程,结尾给出对应的模板站点类型。',
+    readLabel: '阅读教程',
+    updatedLabel: '更新于',
+    backToHub: '全部教程',
+    prevLabel: '上一篇',
+    nextLabel: '下一篇',
+    ctaTitle: '这套流程用 AnvilWiki 模板直接落地',
+    ctaSubtitle:
+      '本篇教程的每一步都对应模板已有的能力:构建期校验的 MDX 页面、自动保鲜的兑换码页、Cloudflare Pages 免费无限流量托管。',
+    ctaPrimaryLabel: '在 GitHub 上 Fork',
+    presetCta: {
+      'game-wiki': '初始化 CLI 问你站点类型时,选默认的游戏 wiki 站——本篇教程与它一一对应。',
+      'coupon-hub': '初始化 CLI 问你站点类型时,选优惠码站——同一套兑换码引擎直接承载你的优惠页。',
+      'tutorial-hub': '初始化 CLI 问你站点类型时,选教程知识库站——单栏目教程站,为 AI 引用调优。',
+    },
+    docsHint: '操作细节在手册里:',
+    communityTitle: '正在动手做?',
+    communityHint:
+      '主理人在微信上有一个建站交流群——部署卡点、选题、变现数字都在里面聊。扫下面的码加主理人好友,拉你进群。',
+    nextInTopicLabel: '同题材继续读',
   },
   finalCta: {
     title: '准备好上线你的游戏 wiki 了吗?',

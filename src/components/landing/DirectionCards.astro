@@ -1,0 +1,94 @@
+---
+/**
+ * DirectionCards — the landing root's "pick a direction" section, the face of
+ * the tutorials-first repositioning: one card per launched apply-template
+ * site-type preset. Each card groups its direction's tutorials from the
+ * collection (lib/landing-tutorials' tutorialsForPreset via TUTORIAL_META),
+ * leads with lesson one as the entry CTA, and links the grouped hub. Copy
+ * comes from landing-en/zh.ts `directions` — this component adds no wording,
+ * so a fourth direction (recipe sites) lights up by extending that copy block
+ * plus the preset list here.
+ */
+import { Icon } from 'astro-icon/components';
+import { type LandingContent, type LandingLocale } from '~/config/landing';
+import {
+  parseTutorialId,
+  tutorialPath,
+  tutorialsForPreset,
+  type TutorialPreset,
+} from '~/lib/landing-tutorials';
+
+interface Props {
+  t: LandingContent;
+  locale: LandingLocale;
+  /** Locale-filtered tutorial entries (the page collects from the collection). */
+  tutorials: { id: string; data: { title: string; order: number } }[];
+}
+const { t, locale, tutorials } = Astro.props;
+const d = t.directions;
+const presets: TutorialPreset[] = ['game-wiki', 'coupon-hub', 'tutorial-hub'];
+---
+
+<section id="directions" class="section scroll-mt-24 border-t border-border">
+  <div class="mx-auto max-w-7xl">
+    <h2 class="text-3xl font-extrabold tracking-tight text-foreground">{d.title}</h2>
+    <p class="mt-3 max-w-3xl text-muted-foreground">{d.subtitle}</p>
+
+    <div class="mt-8 grid gap-5 lg:grid-cols-3">
+      {
+        presets.map((preset) => {
+          const copy = d.items[preset];
+          const list = tutorialsForPreset(tutorials, preset);
+          const first = list[0];
+          const firstSlug = first ? (parseTutorialId(first.id)?.slug ?? '') : '';
+          return (
+            <div class="card flex flex-col p-6">
+              <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-nav/10">
+                  <Icon name={copy.icon} class="h-5 w-5 text-nav" />
+                </span>
+                <h3 class="text-lg font-bold text-foreground">{copy.title}</h3>
+              </div>
+              <p class="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">{copy.description}</p>
+              <p class="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-foreground">
+                <Icon name="lucide:coins" class="h-4 w-4 shrink-0 text-nav" />
+                {copy.earn}
+              </p>
+              <div class="mt-4 flex-0 border-t border-border pt-4">
+                {first && (
+                  <a
+                    href={tutorialPath(locale, firstSlug)}
+                    class="btn-primary inline-flex w-full items-center justify-center gap-1.5"
+                  >
+                    <Icon name="lucide:play" class="h-4 w-4" />
+                    {d.startLabel}
+                  </a>
+                )}
+                <ul class="mt-3 space-y-2">
+                  {list.map((entry) => (
+                    <li>
+                      <a
+                        href={tutorialPath(locale, parseTutorialId(entry.id)?.slug ?? '')}
+                        class="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition hover:text-nav"
+                      >
+                        <Icon name="lucide:file-text" class="h-3.5 w-3.5 shrink-0" />
+                        {entry.data.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={tutorialPath(locale, '', true)}
+                  class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-nav transition hover:underline"
+                >
+                  {d.moreLabel}
+                  <Icon name="lucide:arrow-right" class="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

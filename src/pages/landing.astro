@@ -4,19 +4,22 @@
  * project. NOT the demo game site (that's at /). 中文版在 /zh/landing。
  *
  * Sections (top to bottom):
- *   1. Hero (title + CTAs + install command)
- *   2. SocialProofBar (Lighthouse 4×100)
- *   3. FeatureGrid (6 cards)
- *   4. CommunitySites (real community-built sites)
- *   5. CompareTable (vs Fandom / Starlight / DIY)
- *   6. Showcase (demo screenshots)
- *   7. DocsEntry (4 doc cards)
- *   8. DevGuide (5-step how-to walkthrough)
- *   9. AuthorCard (who builds AnvilWiki)
- *   10. FinalCta (Community is a floating WeChat QR pill, bottom-right)
+ *   1. Hero (tutorials-first narrative + CTAs + install command)
+ *   2. DirectionCards ("pick a direction" — one card per site-type preset)
+ *   3. SocialProofBar (Lighthouse 4×100)
+ *   4. FeatureGrid (6 cards)
+ *   5. CommunitySites (real community-built sites)
+ *   6. CompareTable (vs Fandom / Starlight / DIY)
+ *   7. Showcase (demo screenshots)
+ *   8. DocsEntry (4 doc cards)
+ *   9. DevGuide (5-step how-to walkthrough)
+ *  10. AuthorCard (who builds AnvilWiki)
+ *  11. FinalCta (Community is a floating WeChat QR pill, bottom-right)
  */
+import { getCollection } from 'astro:content';
 import LandingLayout from '~/components/landing/LandingLayout.astro';
 import LandingHero from '~/components/landing/LandingHero.astro';
+import DirectionCards from '~/components/landing/DirectionCards.astro';
 import SocialProofBar from '~/components/landing/SocialProofBar.astro';
 import FeatureGrid from '~/components/landing/FeatureGrid.astro';
 import CompareTable from '~/components/landing/CompareTable.astro';
@@ -31,8 +34,10 @@ import AdsterraSlotPair from '~/components/ads/AdsterraSlotPair.astro';
 import AdsterraSlot from '~/components/ads/AdsterraSlot.astro';
 import { landingContent } from '~/config/landing';
 import { siteUrl } from '~/config/site';
+import { tutorialsForLocale } from '~/lib/landing-tutorials';
 
 const t = landingContent.en;
+const tutorials = tutorialsForLocale(await getCollection('tutorials'), 'en');
 const alternates = [
   { hreflang: 'en', href: `${siteUrl}/landing/` },
   { hreflang: 'zh', href: `${siteUrl}/zh/landing/` },
@@ -50,6 +55,7 @@ const alternates = [
         taller vertical card stack. */}
     <AdsterraSlot name="native-banner" width={700} height={240} />
     <LandingHero t={t} />
+    <DirectionCards t={t} locale="en" tutorials={tutorials} />
     <SocialProofBar t={t} />
     <FeatureGrid t={t} />
     {/* Adsterra pair wraps the marketing core: 728×90 after FeatureGrid,

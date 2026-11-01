@@ -11,6 +11,9 @@
 
 export type LandingLocale = 'en' | 'zh';
 
+/** The apply-template site presets a landing direction card points at. */
+export type LandingPreset = 'game-wiki' | 'coupon-hub' | 'tutorial-hub';
+
 interface ManualCopy {
   label: string;
   description: string;
@@ -46,6 +49,31 @@ export interface LandingContent {
     terminalLabel: string;
     copyLabel: string;
     copiedLabel: string;
+  };
+  /**
+   * "Pick a direction" — the tutorials-first face of the landing root. One
+   * card per launched site-type preset; each card's tutorial links are
+   * grouped from the tutorials collection by preset (lib/landing-tutorials'
+   * tutorialsForPreset), so this block carries copy only — no slugs, no
+   * counts. A fourth direction (recipe sites) joins when that preset ships.
+   */
+  directions: {
+    title: string;
+    subtitle: string;
+    /** Card CTA label jumping to lesson one of the direction. */
+    startLabel: string;
+    /** Card link label to the grouped tutorials hub. */
+    moreLabel: string;
+    items: Record<
+      LandingPreset,
+      {
+        icon: string;
+        title: string;
+        description: string;
+        /** One line: how this direction earns money. */
+        earn: string;
+      }
+    >;
   };
   socialProof: {
     lighthouse: { label: string; score: number }[];
@@ -239,6 +267,38 @@ export interface LandingContent {
     openManualLabel: string;
     /** "N chapters" counter label on manual pages. */
     chaptersCountLabel: string;
+  };
+  /**
+   * Flagship tutorial line (/landing/tutorials + /zh/landing/tutorials) —
+   * landing-layer marketing content, removed from forks with the rest of
+   * the landing tree. Labels shared by the hub + article pages; the tail
+   * trio (fork CTA → WeChat → same-topic next) is component-rendered so it
+   * can never be dropped from an article.
+   */
+  tutorials: {
+    /** Short header/footer nav label. */
+    navLabel: string;
+    hubTitle: string;
+    hubSubtitle: string;
+    /** Hub card link label ("Read tutorial"). */
+    readLabel: string;
+    updatedLabel: string;
+    backToHub: string;
+    prevLabel: string;
+    nextLabel: string;
+    /** Tail CTA card (fork the template). */
+    ctaTitle: string;
+    ctaSubtitle: string;
+    ctaPrimaryLabel: string;
+    /** Per-site-type line: what to pick when the CLI asks for the site type. */
+    presetCta: Record<LandingPreset, string>;
+    /** Tail link into the matching handbook lesson ("go deeper" layer). */
+    docsHint: string;
+    /** Tail WeChat card (QR itself is the shared /images/wechat-qr.jpg asset). */
+    communityTitle: string;
+    communityHint: string;
+    /** Tail "same-topic next" recommendation label. */
+    nextInTopicLabel: string;
   };
   finalCta: {
     title: string;

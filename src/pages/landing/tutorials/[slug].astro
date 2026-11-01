@@ -1,0 +1,98 @@
+---
+/**
+ * Tutorial article route (/landing/tutorials/<slug>, English). Source
+ * markdown: src/content/tutorials/en/<slug>.md — landing-layer content,
+ * removed from forks with the landing tree. zh twin lives at
+ * /zh/landing/tutorials/<slug> (same slug — hreflang pairs are always real;
+ * parity is enforced by tests/tutorials.test.ts).
+ */
+import { getCollection, render } from 'astro:content';
+import LandingLayout from '~/components/landing/LandingLayout.astro';
+import TutorialArticle from '~/components/landing/TutorialArticle.astro';
+import { landingContent } from '~/config/landing';
+import { siteUrl } from '~/config/site';
+import {
+  nextInTopic,
+  parseTutorialId,
+  prevNext,
+  tutorialsForLocale,
+  tutorialPath,
+} from '~/lib/landing-tutorials';
+
+export async function getStaticPaths() {
+  // Dynamic import: getStaticPaths compiles to its own module (AGENTS.md gotcha #3).
+  const { getCollection: gc } = await import('astro:content');
+  const all = await gc('tutorials');
+  return all
+    .map((entry) => ({ entry, parsed: parseTutorialId(entry.id) }))
+    .filter((x) => x.parsed?.locale === 'en')
+    .map((x) => ({ params: { slug: x.parsed!.slug }, props: { entry: x.entry } }));
+}
+
+const { entry } = Astro.props;
+const slug = Astro.params.slug ?? parseTutorialId(entry.id)?.slug ?? '';
+const { Content, headings } = await render(entry);
+
+const t = landingContent.en;
+const all = await getCollection('tutorials');
+const tutorials = tutorialsForLocale(all, 'en');
+const { prev, next } = prevNext(tutorials, entry.id);
+const nextTopic = nextInTopic(tutorials, entry.id);
+const articlePath = tutorialPath('en', slug);
+
+const alternates = [
+  { hreflang: 'en', href: `${siteUrl}${articlePath}` },
+  { hreflang: 'zh', href: `${siteUrl}${tutorialPath('zh', slug)}` },
+];
+
+// Breadcrumb (hub → article) + TechArticle markup for the tutorial prose.
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: t.tutorials.hubTitle,
+        item: `${siteUrl}${tutorialPath('en', '', true)}`,
+      },
+      { '@type': 'ListItem', position: 2, name: entry.data.title, item: `${siteUrl}${articlePath}` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: entry.data.title,
+    description: entry.data.description,
+    // `updated` is REQUIRED on this collection, so the dates are always the
+    // authors' own freshness claim — never a build-time fabrication.
+    datePublished: entry.data.updated.toISOString(),
+    dateModified: entry.data.updated.toISOString(),
+    author: { '@type': 'Organization', name: 'AnvilWiki' },
+    isAccessibleForFree: true,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteUrl}${articlePath}` },
+  },
+];
+---
+
+<LandingLayout
+  locale="en"
+  alternates={alternates}
+  pageTitle={`${entry.data.title} | AnvilWiki`}
+  pageDescription={entry.data.description}
+  togglePath={tutorialPath('zh', slug)}
+  extraJsonLd={jsonLd}
+>
+  <TutorialArticle
+    locale="en"
+    tutorial={entry}
+    t={t}
+    headings={headings}
+    prev={prev}
+    next={next}
+    nextTopic={nextTopic}
+  >
+    <Content />
+  </TutorialArticle>
+</LandingLayout>

@@ -1,0 +1,231 @@
+---
+/**
+ * TutorialArticle — the article body for /landing/tutorials/[slug].
+ * Single tutorial page: title header + TL;DR card + prose + the FIXED tail
+ * trio from the blueprint (§6.5) — fork CTA (site-type aware) → WeChat group
+ * card (QR always rendered, never removable) → same-topic next pick — then a
+ * linear prev/next footer. Both the en and zh route twins render through this
+ * component, so the trio cannot be dropped from any locale's page.
+ *
+ * Pagefind: data-pagefind-body opts the prose into the site-wide search index
+ * (handbook precedent — once ANY page marks a body, unmarked pages are
+ * excluded site-wide). The tail trio + footer sit inside the article but
+ * carry data-pagefind-ignore so CTA copy never becomes a search result.
+ */
+import { Icon } from 'astro-icon/components';
+import TableOfContents from '~/components/article/TableOfContents.astro';
+import { type LandingContent } from '~/config/landing';
+import { FORK_URL } from '~/config/landing-shared';
+import { handbookPath } from '~/lib/handbook';
+import {
+  parseTutorialId,
+  TUTORIAL_META,
+  tutorialPath,
+  type TutorialEntry,
+  type TutorialLocale,
+} from '~/lib/landing-tutorials';
+
+interface Props {
+  locale: TutorialLocale;
+  tutorial: TutorialEntry;
+  t: LandingContent;
+  /** Headings from render() — feeds the on-page TOC. */
+  headings: { depth: number; slug: string; text: string }[];
+  prev: TutorialEntry | null;
+  next: TutorialEntry | null;
+  /** Same-topic next pick for the tail recommendation slot (lib.nextInTopic). */
+  nextTopic: TutorialEntry | null;
+}
+
+const { locale, tutorial, t, headings, prev, next, nextTopic } = Astro.props;
+const slug = parseTutorialId(tutorial.id)?.slug ?? '';
+const meta = TUTORIAL_META[slug];
+const updated = tutorial.data.updated.toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+const presetLine = meta ? t.tutorials.presetCta[meta.preset] : '';
+---
+
+<section class="section">
+  <div class="mx-auto grid max-w-6xl grid-cols-1 justify-center gap-8 lg:grid-cols-[minmax(0,1fr)_13rem]">
+    <article data-pagefind-body class="mx-auto w-full min-w-0 max-w-3xl xl:mx-0">
+      <!--
+        AdsterraSlot intentionally not mounted at the top of content (the
+        handbook/landing-root 700×240 native-banner pattern): the tail CTA
+        card owns this article's conversion slot, and stacking a banner above
+        it competed with the fork CTA on mobile (measured on the handbook
+        layout). If a banner is wanted later, mirror HandbookChapter's
+        placement — do not put one INSIDE the trio.
+      -->
+
+      <header>
+        <div class="flex flex-wrap items-center gap-3">
+          <a
+            href={tutorialPath(locale, '', true)}
+            class="inline-flex items-center gap-1.5 rounded-full bg-nav/10 px-2.5 py-0.5 text-xs font-semibold text-nav transition hover:bg-nav/20"
+          >
+            <Icon name="lucide:library-big" class="h-3.5 w-3.5" />
+            {t.tutorials.navLabel}
+          </a>
+          <span class="text-xs text-muted-foreground">
+            {t.tutorials.updatedLabel} {updated}
+          </span>
+        </div>
+        <h1
+          data-pagefind-meta={`title:${tutorial.data.title}`}
+          class="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl"
+        >
+          {tutorial.data.title}
+        </h1>
+        <p class="mt-3 text-lg text-muted-foreground">{tutorial.data.description}</p>
+      </header>
+
+      {tutorial.data.tldr && (
+        <aside
+          class="mt-6 rounded-lg border-l-4 border-nav bg-nav/5 px-4 py-3"
+          aria-label={t.handbook.tldrLabel}
+        >
+          <p class="text-xs font-bold uppercase tracking-wide text-nav">{t.handbook.tldrLabel}</p>
+          <p class="mt-1 text-sm leading-relaxed text-foreground/90">{tutorial.data.tldr}</p>
+        </aside>
+      )}
+
+      {/* On-page TOC — collapsible below lg (the sticky right column takes over then) */}
+      <div class="mt-6 lg:hidden">
+        <TableOfContents headings={headings} heading={t.handbook.onThisPageLabel} desktopAt="lg" />
+      </div>
+
+      <div
+        class="prose prose-lg mt-8 max-w-none dark:prose-invert prose-headings:scroll-mt-28 lg:prose-headings:scroll-mt-20 prose-a:text-nav"
+      >
+        <slot />
+      </div>
+
+      {/* ===== Fixed tail trio (blueprint §6.5): CTA → WeChat → same-topic next ===== */}
+      <div data-pagefind-ignore class="mt-12 space-y-5">
+        <div class="card p-6">
+          <h2 class="text-lg font-bold text-foreground">{t.tutorials.ctaTitle}</h2>
+          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{t.tutorials.ctaSubtitle}</p>
+          {presetLine && (
+            <p class="mt-3 rounded-md bg-nav/5 px-3 py-2 text-sm font-medium text-nav">{presetLine}</p>
+          )}
+          <div class="mt-4 flex flex-wrap items-center gap-4">
+            <a
+              href={FORK_URL}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2 rounded-md bg-nav px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+            >
+              <Icon name="lucide:github" class="h-4 w-4" />
+              {t.tutorials.ctaPrimaryLabel}
+            </a>
+            {meta && (
+              <a
+                href={handbookPath(locale, meta.docsSlug)}
+                class="inline-flex items-center gap-1 text-sm font-medium text-nav transition hover:underline"
+              >
+                {t.tutorials.docsHint}
+                <Icon name="lucide:arrow-right" class="h-3.5 w-3.5" />
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* WeChat entry — the QR renders unconditionally (no JS, no fold):
+            the iron rule is that this slot is never removable and ships
+            expanded. Reuses the shared community copy keys for the QR
+            captions so the widget and this card can't drift apart. */}
+        <div class="card flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-start">
+          <img
+            src="/images/wechat-qr.jpg"
+            alt={t.community.qrAlt}
+            width="480"
+            height="693"
+            loading="lazy"
+            decoding="async"
+            class="w-36 shrink-0 rounded-md"
+          />
+          <div class="text-center sm:text-left">
+            <h2 class="text-lg font-bold text-foreground">{t.tutorials.communityTitle}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{t.tutorials.communityHint}</p>
+            <p class="mt-3 flex items-center justify-center gap-1 text-xs font-medium text-nav sm:justify-start">
+              <Icon name="lucide:qr-code" class="h-3.5 w-3.5" />
+              {t.community.qrCaption}
+            </p>
+            <p class="mt-1 flex items-center justify-center gap-1 text-xs text-muted-foreground sm:justify-start">
+              <Icon name="lucide:message-circle" class="h-3.5 w-3.5" />
+              {t.community.qrNote}
+            </p>
+          </div>
+        </div>
+
+        {/* Same-topic next recommendation */}
+        {nextTopic && (
+          <a
+            href={tutorialPath(locale, parseTutorialId(nextTopic.id)?.slug ?? '')}
+            class="card group flex flex-col gap-1 p-5 transition hover:border-nav/40"
+          >
+            <span class="text-xs font-semibold uppercase tracking-wide text-nav">
+              {t.tutorials.nextInTopicLabel}
+            </span>
+            <span class="font-semibold text-foreground transition group-hover:text-nav">
+              {nextTopic.data.title}
+            </span>
+          </a>
+        )}
+      </div>
+
+      {/* Footer: linear prev/next + back to hub */}
+      <footer data-pagefind-ignore class="mt-10 border-t border-border pt-6">
+        <div class="grid gap-3 sm:grid-cols-2">
+          {prev ? (
+            <a
+              href={tutorialPath(locale, parseTutorialId(prev.id)?.slug ?? '')}
+              class="card group flex flex-col gap-1 p-4"
+            >
+              <span class="text-xs font-medium text-muted-foreground">
+                ← {t.tutorials.prevLabel}
+              </span>
+              <span class="font-semibold text-foreground transition group-hover:text-nav">
+                {prev.data.title}
+              </span>
+            </a>
+          ) : (
+            <span class="hidden sm:block"></span>
+          )}
+          {next && (
+            <a
+              href={tutorialPath(locale, parseTutorialId(next.id)?.slug ?? '')}
+              class="card group flex flex-col items-end gap-1 p-4 text-right"
+            >
+              <span class="text-xs font-medium text-muted-foreground">
+                {t.tutorials.nextLabel} →
+              </span>
+              <span class="font-semibold text-foreground transition group-hover:text-nav">
+                {next.data.title}
+              </span>
+            </a>
+          )}
+        </div>
+        <div class="mt-6">
+          <a
+            href={tutorialPath(locale, '', true)}
+            class="inline-flex items-center gap-1 text-sm text-muted-foreground transition hover:text-nav"
+          >
+            <Icon name="lucide:arrow-left" class="h-3.5 w-3.5" />
+            {t.tutorials.backToHub}
+          </a>
+        </div>
+      </footer>
+    </article>
+
+    {/* Right: on-page TOC (sticky), same pattern as HandbookChapter */}
+    <aside class="hidden lg:block">
+      <div class="sticky top-20">
+        <TableOfContents headings={headings} heading={t.handbook.onThisPageLabel} desktopAt="lg" />
+      </div>
+    </aside>
+  </div>
+</section>

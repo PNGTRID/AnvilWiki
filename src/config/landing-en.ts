@@ -16,19 +16,19 @@ export const en: LandingContent = {
   htmlLang: 'en',
   title: 'AnvilWiki — Open-Source Game Wiki Template for Cloudflare',
   description:
-    'An open-source game wiki template with an AI-native content workflow: pick the right game, generate pages by talking to your AI tool, codes pages stay fresh on autopilot. Lighthouse 4×100, free on Cloudflare, 100% ad revenue yours.',
+    'Learn to build money-making websites on the AnvilWiki template — hands-on tutorials for game wiki hubs, SaaS coupon sites and tutorial knowledge bases: build, get indexed, monetize. Free template, free Cloudflare hosting, 100% of revenue yours.',
   announcement: {
-    text: `AnvilWiki template update log (v${PROJECT_VERSION}): the demo site root becomes the project gateway — anvil.wiki now lands on the Chinese page (301) and the English wiki demo moves to /demo/ (fork builds stay byte-identical); handbook and landing pages gain a compact top native-banner slot (reusing the existing unit); VibeCafé analytics switches to env-gated opt-in, restoring the zero-third-party-scripts-on-first-run contract for forks; the landing page adds an "About the author" section (synced to the README) — maintainer Yuan Ruiqin (Ruiqin, PNGTRIBE) shares the path behind the template. Audit-fix and doc-drift batches since round 35 are all logged. 24 suites / 401 tests. Forks: merge upstream and pnpm install as usual. This bar tracks template releases — details & full changelog on GitHub Releases.`,
+    text: `AnvilWiki template update log (v${PROJECT_VERSION}): the official site homepage becomes a tutorials-first face — you land on a pick-a-direction entry into the build-and-earn tutorials; plus the flagship tutorial line (/landing/tutorials + Chinese twin) — hands-on guides anchored on what you want to do (build a game codes site, run a SaaS coupon hub, put up a tutorial knowledge base, get indexed, monetize), each ending with the matching template preset CTA, the WeChat group entry and a same-topic next read; the setup CLI now also asks for your site type (game wiki default / coupon hub / tutorial hub) and scaffolds the matching shape. Check-versions gating and audit-rebuild fixes from this cycle are all logged. 26 test suites. Forks: merge upstream and pnpm install as usual. This bar tracks template releases — details & full changelog on GitHub Releases.`,
     href: RELEASES,
     dismissLabel: 'Dismiss announcement',
   },
   hero: {
-    badge: 'Open Source · MIT · Cloudflare Pages',
-    title: 'Turn a trending game into a traffic site — in 24 hours, not weeks',
+    badge: 'Open Source · Free Tutorials · Cloudflare Pages',
+    title: 'Learn to build a money-making website with AnvilWiki',
     subtitle:
-      'An SEO-hardened game wiki template (Astro + Cloudflare Pages — Lighthouse 4×100, free unlimited bandwidth) with an AI content workflow that ships inside your repo: talk to your AI to generate pages, codes stay fresh on autopilot. Every ad dollar is yours.',
-    primaryCta: { label: 'Fork on GitHub', href: FORK_URL },
-    secondaryCta: { label: 'Star on GitHub', href: 'https://github.com/PNGTRID/AnvilWiki' },
+      'Hands-on tutorials by direction: game wiki hubs, SaaS coupon sites, tutorial knowledge bases — build, get indexed, monetize. Every step maps to a capability the template already ships, with an AI workflow that turns conversation into pages.',
+    primaryCta: { label: 'Pick a direction, start learning', href: '#directions' },
+    secondaryCta: { label: 'Fork on GitHub', href: FORK_URL },
     tertiaryCta: { label: 'Live Demo', href: '/demo/' },
     installCommand: `git clone https://github.com/PNGTRID/AnvilWiki.git
 cd anvilwiki
@@ -38,6 +38,36 @@ pnpm install && pnpm dev`,
     terminalLabel: 'Terminal',
     copyLabel: 'Copy',
     copiedLabel: 'Copied!',
+  },
+  directions: {
+    title: 'Pick a direction and build your money-making site',
+    subtitle:
+      'Each direction is a complete route: what site to build, how it earns, where lesson one lives. Pick one and the setup CLI scaffolds exactly that shape — the template ships what the tutorials teach.',
+    startLabel: 'Start with lesson one',
+    moreLabel: 'Browse all tutorials',
+    items: {
+      'game-wiki': {
+        icon: 'lucide:swords',
+        title: 'Build a game wiki hub',
+        description:
+          'A guide hub around a trending game: boss stat cards, redeem-code pages, gear guides. The 2-8 weeks after a game blows up is the golden window — speed is everything.',
+        earn: 'Monetize: display ads + codes-page search traffic',
+      },
+      'coupon-hub': {
+        icon: 'lucide:ticket',
+        title: 'Run a SaaS coupon site',
+        description:
+          'Software promo codes, merchant by merchant: active/expired auto-split, daily CSV sync, Black Friday spikes — the same codes engine, rebranded.',
+        earn: 'Monetize: SaaS affiliate commissions that recur with subscriptions',
+      },
+      'tutorial-hub': {
+        icon: 'lucide:graduation-cap',
+        title: 'Put up a tutorial knowledge base',
+        description:
+          'A single-topic how-to site: Quick Answer + FAQ structured answers tuned to earn citations from AI search (ChatGPT / Perplexity) — the more your page reads like the answer, the more it gets cited.',
+        earn: 'Monetize: tool affiliates inside tutorials + citation traffic',
+      },
+    },
   },
   socialProof: {
     lighthouse: [
@@ -518,6 +548,34 @@ pnpm install && pnpm dev`,
     },
     openManualLabel: 'Open this manual',
     chaptersCountLabel: 'lessons',
+  },
+  tutorials: {
+    navLabel: 'Tutorials',
+    hubTitle: 'Build Your Own Content Site — Tutorials',
+    hubSubtitle:
+      'Hands-on guides anchored on what you want to do: build a game codes site, run a coupon hub, put up a tutorial knowledge base, get indexed, monetize. Each one walks the whole job and ends with the exact template preset that ships it.',
+    readLabel: 'Read tutorial',
+    updatedLabel: 'Updated',
+    backToHub: 'All tutorials',
+    prevLabel: 'Previous',
+    nextLabel: 'Next',
+    ctaTitle: 'Ship this with the AnvilWiki template',
+    ctaSubtitle:
+      'Everything in this tutorial maps to features the open-source template already ships: MDX pages validated at build time, codes pages that stay fresh on autopilot, free unlimited hosting on Cloudflare Pages.',
+    ctaPrimaryLabel: 'Fork on GitHub',
+    presetCta: {
+      'game-wiki':
+        'When the setup CLI asks for your site type, keep the default game wiki — this guide maps onto it one-to-one.',
+      'coupon-hub':
+        'When the setup CLI asks for your site type, pick coupon hub — the same codes engine carries your deal pages.',
+      'tutorial-hub':
+        'When the setup CLI asks for your site type, pick tutorial hub — a single-guides knowledge base tuned for AI citations.',
+    },
+    docsHint: 'Go deeper in the handbook:',
+    communityTitle: 'Building this right now?',
+    communityHint:
+      'The maintainer runs a builder group on WeChat — deployment snags, niche picks, monetization numbers. Scan the code to add the maintainer and get pulled in.',
+    nextInTopicLabel: 'Keep reading on this topic',
   },
   finalCta: {
     title: 'Ready to launch your game wiki?',

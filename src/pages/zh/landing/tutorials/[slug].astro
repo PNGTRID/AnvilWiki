@@ -1,0 +1,94 @@
+---
+/**
+ * 教程文章中文路由 (/zh/landing/tutorials/<slug>)。源:src/content/tutorials/zh/
+ * <slug>.md,slug 与英文版一一对应(hreflang 永远成对真实;parity 由
+ * tests/tutorials.test.ts 钉死)。属 landing 层内容,fork 时随整层清理。
+ */
+import { getCollection, render } from 'astro:content';
+import LandingLayout from '~/components/landing/LandingLayout.astro';
+import TutorialArticle from '~/components/landing/TutorialArticle.astro';
+import { landingContent } from '~/config/landing';
+import { siteUrl } from '~/config/site';
+import {
+  nextInTopic,
+  parseTutorialId,
+  prevNext,
+  tutorialsForLocale,
+  tutorialPath,
+} from '~/lib/landing-tutorials';
+
+export async function getStaticPaths() {
+  // 动态 import:getStaticPaths 编译为独立模块(AGENTS.md 踩坑 #3)。
+  const { getCollection: gc } = await import('astro:content');
+  const all = await gc('tutorials');
+  return all
+    .map((entry) => ({ entry, parsed: parseTutorialId(entry.id) }))
+    .filter((x) => x.parsed?.locale === 'zh')
+    .map((x) => ({ params: { slug: x.parsed!.slug }, props: { entry: x.entry } }));
+}
+
+const { entry } = Astro.props;
+const slug = Astro.params.slug ?? parseTutorialId(entry.id)?.slug ?? '';
+const { Content, headings } = await render(entry);
+
+const t = landingContent.zh;
+const all = await getCollection('tutorials');
+const tutorials = tutorialsForLocale(all, 'zh');
+const { prev, next } = prevNext(tutorials, entry.id);
+const nextTopic = nextInTopic(tutorials, entry.id);
+const articlePath = tutorialPath('zh', slug);
+
+const alternates = [
+  { hreflang: 'en', href: `${siteUrl}${tutorialPath('en', slug)}` },
+  { hreflang: 'zh', href: `${siteUrl}${articlePath}` },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: t.tutorials.hubTitle,
+        item: `${siteUrl}${tutorialPath('zh', '', true)}`,
+      },
+      { '@type': 'ListItem', position: 2, name: entry.data.title, item: `${siteUrl}${articlePath}` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: entry.data.title,
+    description: entry.data.description,
+    // 本集合 `updated` 为必填:日期永远来自作者标注,不用构建时间伪造新鲜度。
+    datePublished: entry.data.updated.toISOString(),
+    dateModified: entry.data.updated.toISOString(),
+    author: { '@type': 'Organization', name: 'AnvilWiki' },
+    isAccessibleForFree: true,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteUrl}${articlePath}` },
+  },
+];
+---
+
+<LandingLayout
+  locale="zh"
+  alternates={alternates}
+  pageTitle={`${entry.data.title} | AnvilWiki`}
+  pageDescription={entry.data.description}
+  togglePath={tutorialPath('en', slug)}
+  extraJsonLd={jsonLd}
+>
+  <TutorialArticle
+    locale="zh"
+    tutorial={entry}
+    t={t}
+    headings={headings}
+    prev={prev}
+    next={next}
+    nextTopic={nextTopic}
+  >
+    <Content />
+  </TutorialArticle>
+</LandingLayout>

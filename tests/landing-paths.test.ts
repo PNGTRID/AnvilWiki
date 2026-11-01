@@ -17,6 +17,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
 import { landingPath } from '~/config/landing';
 import { handbookPath } from '~/lib/handbook';
+import { tutorialPath } from '~/lib/landing-tutorials';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -53,6 +54,17 @@ describe('landing layer trailing-slash contract', () => {
     expect(handbookPath('zh', 'weekly-ops')).toBe('/zh/landing/docs/weekly-ops/');
   });
 
+  test('tutorialPath() (tutorials hreflang/toggle source) ends with "/"', () => {
+    expect(tutorialPath('en', '', true)).toBe('/landing/tutorials/');
+    expect(tutorialPath('en', 'build-a-game-codes-site')).toBe(
+      '/landing/tutorials/build-a-game-codes-site/',
+    );
+    expect(tutorialPath('zh', 'build-a-game-codes-site')).toBe(
+      '/zh/landing/tutorials/build-a-game-codes-site/',
+    );
+    expect(tutorialPath('zh', '', true)).toBe('/zh/landing/tutorials/');
+  });
+
   test('each of the six alternates-bearing landing pages pins its hreflang pair WITH trailing slashes', () => {
     // [route file, en href path, zh href path] — the pages whose alternates
     // used to read `${siteUrl}/landing` and 308'd on every crawler visit.
@@ -63,6 +75,10 @@ describe('landing layer trailing-slash contract', () => {
       ['src/pages/zh/landing/comparison.astro', '/landing/comparison/', '/zh/landing/comparison/'],
       ['src/pages/landing/community.astro', '/landing/community/', '/zh/landing/community/'],
       ['src/pages/zh/landing/community.astro', '/landing/community/', '/zh/landing/community/'],
+      // Tutorials hubs (the [slug] pages build alternates via tutorialPath(),
+      // pinned by the unit test above — same split as handbookPath()).
+      ['src/pages/landing/tutorials.astro', '/landing/tutorials/', '/zh/landing/tutorials/'],
+      ['src/pages/zh/landing/tutorials.astro', '/landing/tutorials/', '/zh/landing/tutorials/'],
     ];
     for (const [rel, enPath, zhPath] of expected) {
       const src = readFileSync(join(root, rel), 'utf8');
