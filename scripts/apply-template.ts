@@ -320,7 +320,25 @@ function rewriteNavigationTs(input: SkinInput): string {
   }
   // Function replacer everywhere: string-mode replace would expand `$&`-style
   // sequences from user input into the rewritten file.
-  return src.replace(navRe, () => newArray);
+  let result = src.replace(navRe, () => newArray);
+
+  // Preset-only categories (e.g. `recipes`) live in a separate array below
+  // NAVIGATION_CONFIG. Non-recipe forks must not carry them — check-config
+  // parses every `key:` in this file and would demand en.json labels for
+  // categories the fork's nav never shows. Recipe-hub keeps the array as-is
+  // (its nav includes the key). The LEGAL_CONTENT_TYPES spread below the
+  // array is structural code — no entries to strip.
+  if (!input.categories.some((c) => c.key === 'recipes')) {
+    const presetOnlyRe =
+      /export const PRESET_ONLY_CATEGORIES: NavigationItem\[\] = \[[\s\S]*?\];/;
+    if (presetOnlyRe.test(result)) {
+      result = result.replace(
+        presetOnlyRe,
+        () => 'export const PRESET_ONLY_CATEGORIES: NavigationItem[] = [];',
+      );
+    }
+  }
+  return result;
 }
 
 function rewriteGlobalsCss(input: SkinInput): string {
