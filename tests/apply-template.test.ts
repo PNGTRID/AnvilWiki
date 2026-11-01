@@ -66,7 +66,7 @@ import {
   siteTypeFromAnswer,
   type PresetId,
 } from '../scripts/lib/site-presets';
-import { CONTENT_TYPES, NAVIGATION_CONFIG } from '../src/config/navigation';
+import { CONTENT_TYPES, NAVIGATION_CONFIG, PRESET_ONLY_CATEGORIES } from '../src/config/navigation';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -1539,21 +1539,38 @@ describe('SITE_PRESETS registry ↔ disk demo files (bidirectional contract)', (
   const wikiBase = join(repoRoot, 'src/content/wiki');
   const coversBase = join(repoRoot, 'src/assets/covers');
 
-  test('preset categories are CONTENT_TYPES subsets in NAVIGATION_CONFIG menu order', () => {
+  test('preset categories are LEGAL_CONTENT_TYPES subsets in catalog menu order', () => {
+    // Preset-only keys (recipes) are legal content types but absent from the
+    // game-wiki NAVIGATION_CONFIG — their menu order is defined by
+    // PRESET_ONLY_CATEGORIES (appended after the game keys, in declared
+    // order). The game-wiki preset must still use NAVIGATION_CONFIG keys only.
+    const catalogOrder = [...NAVIGATION_CONFIG, ...PRESET_ONLY_CATEGORIES];
+    const catalogKeys = catalogOrder.map((n) => n.key);
     for (const preset of Object.values(SITE_PRESETS)) {
       expect(preset.categories.length, `${preset.id}: at least one category`).toBeGreaterThan(0);
       const seen = new Set<string>();
       let cursor = -1;
       for (const key of preset.categories) {
-        expect(CONTENT_TYPES, `${preset.id}: "${key}" is a NAVIGATION_CONFIG key`).toContain(key);
+        expect(
+          catalogKeys,
+          `${preset.id}: "${key}" is a legal category (catalog) key`,
+        ).toContain(key);
         expect(seen.has(key), `${preset.id}: "${key}" listed once`).toBe(false);
         seen.add(key);
-        const menuIndex = NAVIGATION_CONFIG.findIndex((n) => n.key === key);
+        const menuIndex = catalogOrder.findIndex((n) => n.key === key);
         expect(
           menuIndex,
-          `${preset.id}: "${key}" must follow NAVIGATION_CONFIG menu order`,
+          `${preset.id}: "${key}" must follow the catalog menu order`,
         ).toBeGreaterThan(cursor);
         cursor = menuIndex;
+      }
+      if (preset.id === 'game-wiki') {
+        for (const key of preset.categories) {
+          expect(
+            CONTENT_TYPES,
+            'game-wiki categories stay inside NAVIGATION_CONFIG (game menu only)',
+          ).toContain(key);
+        }
       }
     }
   });
@@ -1674,13 +1691,14 @@ describe('classifyWikiArticles registry layer (site-type demos + locale dimensio
 describe('--answers 18/19 site-type compatibility (pure rules + CLI wiring pins)', () => {
   const cliSrc = readFileSync(join(repoRoot, 'scripts/apply-template.ts'), 'utf8');
 
-  test('LEGACY_ANSWER_COUNT is 18 and siteTypeFromAnswer maps 1/2/3 only', () => {
+  test('LEGACY_ANSWER_COUNT is 18 and siteTypeFromAnswer maps 1/2/3/4', () => {
     expect(LEGACY_ANSWER_COUNT).toBe(18);
     expect(siteTypeFromAnswer('1')).toBe('game-wiki');
     expect(siteTypeFromAnswer('2')).toBe('coupon-hub');
     expect(siteTypeFromAnswer('3')).toBe('tutorial-hub');
+    expect(siteTypeFromAnswer('4')).toBe('recipe-hub');
     expect(siteTypeFromAnswer(' 2 ')).toBe('coupon-hub');
-    for (const bad of ['', '0', '4', 'abc', 'game-wiki']) {
+    for (const bad of ['', '0', '5', 'abc', 'game-wiki']) {
       expect(siteTypeFromAnswer(bad), JSON.stringify(bad)).toBeNull();
     }
   });
@@ -1732,8 +1750,8 @@ describe('--answers 18/19 site-type compatibility (pure rules + CLI wiring pins)
       expect(typeof zh[key]).toBe('string');
       expect(zh[key]).not.toBe(en[key]); // translated, not copied
     }
-    expect(zh.siteTypeError('9')).toContain('1、2 或 3');
-    expect(en.siteTypeError('9')).toContain('1, 2 or 3');
+    expect(zh.siteTypeError('9')).toContain('1、2、3 或 4');
+    expect(en.siteTypeError('9')).toContain('1, 2, 3 or 4');
   });
 });
 

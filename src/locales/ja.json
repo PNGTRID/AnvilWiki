@@ -13,6 +13,7 @@
     "guides": "ガイド",
     "items": "アイテム",
     "codes": "コード",
+    "recipes": "レシピ",
     "toggleTheme": "テーマ切替",
     "menu": "メニュー",
     "close": "閉じる",
@@ -84,6 +85,14 @@
     "feedbackThanks": "フィードバックありがとうございます!",
     "sponsoredLabel": "スポンサード",
     "visitSite": "公式サイト",
+    "recipeCard": {
+      "servings": "分量",
+      "prepTime": "下ごしらえ",
+      "cookTime": "調理",
+      "cuisine": "料理ジャンル",
+      "ingredients": "材料",
+      "tools": "道具"
+    },
     "relatedVideos": "関連動画",
     "gallery": "ギャラリー",
     "gameVersion": "対応ゲームバージョン",
@@ -144,6 +153,10 @@
     "codes": {
       "overviewTitle": "全コード一覧",
       "overviewDescription": "Anvil Questの有効なコード一覧。コイン、ジェム、限定アイテムが入手可能。毎日検証済み。"
+    },
+    "recipes": {
+      "overviewTitle": "レシピ一覧",
+      "overviewDescription": "テンプレートのデモレシピ。自分のレシピに差し替えてください。"
     }
   },
   "home": {

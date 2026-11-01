@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { CONTENT_TYPES } from './config/navigation';
+import { LEGAL_CONTENT_TYPES } from './config/navigation';
 
 /**
  * Wiki content collection.
@@ -28,11 +28,12 @@ const wiki = defineCollection({
       title: z.string().max(80),
       description: z.string().min(40).max(165),
       /**
-       * Hard gate: the category MUST be a NAVIGATION_CONFIG key. A typo'd
-       * category would otherwise build a soft-404 page that sitemap/RSS/
-       * llms.txt still publish — the enum fails the build instead.
+       * Hard gate: the category MUST be in the legal union (game-wiki menu
+       * keys ∪ preset-only keys like `recipes`). A typo'd category would
+       * otherwise build a soft-404 page that sitemap/RSS/llms.txt still
+       * publish — the enum fails the build instead.
        */
-      category: z.enum(CONTENT_TYPES as [string, ...string[]]),
+      category: z.enum(LEGAL_CONTENT_TYPES as [string, ...string[]]),
       date: z.coerce.date(),
       lastModified: z.coerce.date().optional(),
       image: image().optional(),
@@ -84,6 +85,26 @@ const wiki = defineCollection({
           tagline: z.string().max(120),
           pricing: z.string().max(80),
           url: z.url().optional(),
+        })
+        .optional(),
+      /**
+       * Optional structured recipe card (recipe-hub pages) — rendered as a
+       * scannable head card (servings / prep / cook chips + ingredient and
+       * tool lists) and fed into Recipe JSON-LD for Google recipe rich
+       * results. `prepTime`/`cookTime` accept ISO 8601 durations (PT30M) —
+       * ISO-shaped values are what the rich-results validator wants, so the
+       * JSON-LD emits them verbatim; non-ISO display strings simply stay off
+       * the machine-readable layer. Same `boss`/`tool` pattern: present =
+       * card renders, absent = plain article.
+       */
+      recipe: z
+        .object({
+          cuisine: z.string().max(60).optional(),
+          servings: z.string().max(40),
+          prepTime: z.string().max(40),
+          cookTime: z.string().max(40),
+          ingredients: z.array(z.string().min(1)).min(1),
+          tools: z.array(z.string()).default([]),
         })
         .optional(),
       /**

@@ -374,6 +374,70 @@ function buildTutorialHome(input: SkinInput): Record<string, unknown> {
 }
 
 /**
+ * Homepage skeleton for the recipe-hub preset (recipe / kitchen sites). Same
+ * field contract as every other builder (identical keys, copy semantics
+ * only); the badge-list module doubles as the featured-recipe slot and keeps
+ * the RECIPE-PLACEHOLDER watermark — placeholder text only, real recipe
+ * names live in the preset demo articles.
+ */
+function buildRecipeHome(input: SkinInput): Record<string, unknown> {
+  const cats = input.categories.map((c) => c.key);
+  const { pick: pickHref } = makePickHref(cats);
+  const label = (key: string) => homeQuickLinkLabel(input.siteType, key);
+  return {
+    meta: {
+      title: `${input.gameName} — Recipes & Kitchen Guides`,
+      description: input.description,
+    },
+    updates: { title: 'Fresh out of the oven' },
+    popular: {
+      badge: 'Most baked',
+      title: 'Reader favourites',
+      quickLinks: cats.slice(0, 3).map((c) => ({ label: label(c), href: `/${c}` })),
+    },
+    closingCta: {
+      title: 'Happy baking',
+      description: `Bookmark ${input.gameName} — new recipes land every week.`,
+      primary: 'Browse all recipes',
+      secondary: 'Join the community',
+    },
+    hero: {
+      badge: 'Tried and tested',
+      title: `${input.gameName} Recipes`,
+      description: `Every ${input.gameName} recipe is tested end to end, with ingredients, tools, and step-by-step photos.`,
+      ctaPrimary: 'Browse recipes',
+      ctaSecondary: 'Kitchen guides',
+    },
+    start: {
+      badge: 'Quick start',
+      title: 'Pick your next bake',
+      cards: [
+        { number: '1', title: 'All recipes', description: 'Tested classics first', icon: 'lucide:cake', href: pickHref('recipes') },
+        { number: '2', title: 'Kitchen guides', description: 'Technique and prep', icon: 'lucide:book-open', href: pickHref('guides') },
+        { number: '3', title: 'Kitchen tools', description: 'Gear we actually use', icon: 'lucide:wrench', href: pickHref('items') },
+      ],
+    },
+    explore: {
+      title: 'Explore',
+      description: 'The essentials',
+      modules: [
+        {
+          order: 1,
+          name: 'Featured recipes',
+          description: 'Reader favourites, updated weekly',
+          href: pickHref('recipes'),
+          displayType: 'badge-list',
+          highlights: [
+            { label: 'RECIPE-PLACEHOLDER', detail: 'Full recipe on its own page', badge: 'NEW' },
+          ],
+        },
+      ],
+    },
+    faq: { title: 'FAQ', description: 'Common questions', items: [] },
+  };
+}
+
+/**
  * Build a starter `home` namespace skeleton for a preset.
  * All copy uses the game name the user entered — placeholders to refine,
  * not demo-game leftovers. Module hrefs point at the categories they chose;
@@ -389,6 +453,7 @@ function buildHomePreset(input: SkinInput): Record<string, unknown> | null {
   if (input.homePreset === 'keep') return null;
   if (input.siteType === 'coupon-hub') return buildCouponHome(input);
   if (input.siteType === 'tutorial-hub') return buildTutorialHome(input);
+  if (input.siteType === 'recipe-hub') return buildRecipeHome(input);
   const cats = input.categories.map((c) => c.key);
   const first = cats[0] ?? 'guides';
   const cap = (c: string) => c[0].toUpperCase() + c.slice(1);
@@ -1282,6 +1347,7 @@ export const DEMO_COVERS = [
   // fork user created. Keep in sync with setup.yml's rm -f list.
   ...SITE_PRESETS['coupon-hub'].demoAssets,
   ...SITE_PRESETS['tutorial-hub'].demoAssets,
+  ...SITE_PRESETS['recipe-hub'].demoAssets,
 ];
 
 export const DEMO_GALLERY_IMAGES = [

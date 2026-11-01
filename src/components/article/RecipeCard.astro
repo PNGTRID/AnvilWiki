@@ -1,0 +1,88 @@
+---
+/**
+ * RecipeCard — structured recipe head card (recipe-hub pages), driven by the
+ * optional `recipe` frontmatter object (same pattern as `boss` →
+ * BossStatCard): servings / prep / cook / cuisine chips above a two-column
+ * ingredient + tool list. Labels come from locale JSON
+ * (`shared.recipeCard.*`) — no hardcoded copy. The same fields feed
+ * Recipe JSON-LD (lib/seo.ts) for Google recipe rich results.
+ */
+import { Icon } from 'astro-icon/components';
+
+interface RecipeData {
+  cuisine?: string;
+  servings: string;
+  prepTime: string;
+  cookTime: string;
+  ingredients: string[];
+  tools: string[];
+}
+
+interface Props {
+  recipe: RecipeData;
+  /** i18n labels from shared.recipeCard. */
+  labels: Record<string, string>;
+}
+const { recipe, labels } = Astro.props;
+const t = (key: string, fallback: string) => labels[key] ?? fallback;
+const meta = [
+  { icon: 'lucide:users', label: t('servings', 'Servings'), value: recipe.servings },
+  { icon: 'lucide:timer', label: t('prepTime', 'Prep'), value: recipe.prepTime },
+  { icon: 'lucide:flame', label: t('cookTime', 'Cook'), value: recipe.cookTime },
+  ...(recipe.cuisine
+    ? [{ icon: 'lucide:globe', label: t('cuisine', 'Cuisine'), value: recipe.cuisine }]
+    : []),
+];
+---
+
+<div class="not-prose mt-6 rounded-lg border border-border bg-card p-5">
+  <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    {
+      meta.map((m) => (
+        <div class="rounded-lg border border-border bg-background p-3">
+          <p class="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground">
+            <Icon name={m.icon} class="h-3.5 w-3.5 shrink-0 text-nav" />
+            {m.label}
+          </p>
+          <p class="mt-1 text-sm font-semibold text-foreground">{m.value}</p>
+        </div>
+      ))
+    }
+  </div>
+  <div class="mt-4 grid gap-4 sm:grid-cols-2">
+    <div>
+      <p class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
+        <Icon name="lucide:list-checks" class="h-4 w-4 shrink-0 text-nav" />
+        {t('ingredients', 'Ingredients')}
+      </p>
+      <ul class="mt-2 space-y-1.5">
+        {
+          recipe.ingredients.map((item) => (
+            <li class="flex items-start gap-2 text-sm text-muted-foreground">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-nav/60" />
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    {
+      recipe.tools.length > 0 && (
+        <div>
+          <p class="flex items-center gap-1.5 text-sm font-semibold text-foreground">
+            <Icon name="lucide:wrench" class="h-4 w-4 shrink-0 text-nav" />
+            {t('tools', 'Tools')}
+          </p>
+          <ul class="mt-2 space-y-1.5">
+            {recipe.tools.map((item) => (
+              <li class="flex items-start gap-2 text-sm text-muted-foreground">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-nav/60" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+</div>

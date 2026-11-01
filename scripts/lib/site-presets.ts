@@ -33,7 +33,7 @@
  *           prompt sequence changes, update LEGACY_ANSWER_COUNT.
  */
 
-export type PresetId = 'game-wiki' | 'coupon-hub' | 'tutorial-hub';
+export type PresetId = 'game-wiki' | 'coupon-hub' | 'tutorial-hub' | 'recipe-hub';
 
 /**
  * Per-preset English placeholder copy written into the locale JSONs by
@@ -217,14 +217,80 @@ const tutorialHub: SitePreset = {
   },
 };
 
+const recipeHub: SitePreset = {
+  id: 'recipe-hub',
+  // 'recipes' is a PRESET-ONLY category (src/config/navigation.ts
+  // PRESET_ONLY_CATEGORIES): legal in the wiki schema's LEGAL_CONTENT_TYPES
+  // union, but absent from the game-wiki NAVIGATION_CONFIG — the game demo
+  // and game-wiki forks build no /recipes/ list page. A recipe-hub fork's
+  // apply-template-written navigation.ts carries it, so the fork behaves
+  // like any single-category site.
+  categories: ['guides', 'items', 'recipes'],
+  demoArticles: {
+    en: [
+      'recipes/classic-vanilla-sponge-cake.mdx',
+      'recipes/banana-bread.mdx',
+      'recipes/chocolate-chip-cookies.mdx',
+      'recipes/fluffy-pancakes.mdx',
+      'recipes/tomato-garlic-pasta.mdx',
+      'recipes/roasted-pumpkin-soup.mdx',
+    ],
+    ja: [
+      'recipes/classic-vanilla-sponge-cake.mdx',
+      'recipes/banana-bread.mdx',
+      'recipes/chocolate-chip-cookies.mdx',
+      'recipes/fluffy-pancakes.mdx',
+      'recipes/tomato-garlic-pasta.mdx',
+      'recipes/roasted-pumpkin-soup.mdx',
+    ],
+  },
+  demoAssets: [
+    'en-recipes-classic-vanilla-sponge-cake.png',
+    'en-recipes-banana-bread.png',
+    'en-recipes-chocolate-chip-cookies.png',
+    'en-recipes-fluffy-pancakes.png',
+    'en-recipes-tomato-garlic-pasta.png',
+    'en-recipes-roasted-pumpkin-soup.png',
+    'ja-recipes-classic-vanilla-sponge-cake.png',
+    'ja-recipes-banana-bread.png',
+    'ja-recipes-chocolate-chip-cookies.png',
+    'ja-recipes-fluffy-pancakes.png',
+    'ja-recipes-tomato-garlic-pasta.png',
+    'ja-recipes-roasted-pumpkin-soup.png',
+  ],
+  uiCopy: {
+    navLabels: {
+      recipes: 'Recipes',
+      guides: 'Kitchen Guides',
+      items: 'Kitchen Tools',
+    },
+    overviewTitles: {
+      recipes: 'All Recipes',
+      guides: 'All Kitchen Guides',
+      items: 'All Kitchen Tools',
+    },
+    overviewDescriptions: {
+      recipes: 'Tried-and-true recipes from {game}',
+      guides: 'Technique and prep guides for {game}',
+      items: 'Tools and gear used in {game}',
+    },
+  },
+};
+
 export const SITE_PRESETS: Record<PresetId, SitePreset> = {
   'game-wiki': gameWiki,
   'coupon-hub': couponHub,
   'tutorial-hub': tutorialHub,
+  'recipe-hub': recipeHub,
 };
 
-/** The site-type menu options in CLI answer order (qSiteType '1' | '2' | '3'). */
-export const PRESET_ANSWER_ORDER: readonly PresetId[] = ['game-wiki', 'coupon-hub', 'tutorial-hub'];
+/** The site-type menu options in CLI answer order (qSiteType '1' | '2' | '3' | '4'). */
+export const PRESET_ANSWER_ORDER: readonly PresetId[] = [
+  'game-wiki',
+  'coupon-hub',
+  'tutorial-hub',
+  'recipe-hub',
+];
 
 // ---------------------------------------------------------------------------
 // --answers compatibility — the qSiteType question was APPENDED after the

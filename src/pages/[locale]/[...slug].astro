@@ -10,7 +10,7 @@
  */
 import ListPage from '~/components/article/ListPage.astro';
 import ArticlePage from '~/components/article/ArticlePage.astro';
-import { CONTENT_TYPES } from '~/config/navigation';
+import { CONTENT_TYPES, LEGAL_CONTENT_TYPES } from '~/config/navigation';
 import { isLocale, defaultLocale, locales, type Locale } from '~/i18n/routing';
 import { getEntryWithFallback, localesForEntry, localesForCategory, parseEntryId, type ResolvedEntry } from '~/lib/content';
 import { detailPath, languageAlternates, listPath } from '~/lib/url';
@@ -86,7 +86,7 @@ if (parts.length === 1) {
   view = CONTENT_TYPES.includes(category) ? 'list' : 'not-found';
 } else {
   category = parts[0];
-  if (CONTENT_TYPES.includes(category)) {
+  if (LEGAL_CONTENT_TYPES.includes(category)) {
     resolved = await getEntryWithFallback(category, articleSlug, locale);
     view = resolved ? 'article' : 'not-found';
   }

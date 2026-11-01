@@ -13,6 +13,7 @@
     "guides": "Guides",
     "items": "Items",
     "codes": "Codes",
+    "recipes": "Recipes",
     "toggleTheme": "Toggle theme",
     "menu": "Menu",
     "close": "Close",
@@ -84,6 +85,14 @@
     "feedbackThanks": "Thanks for the feedback!",
     "sponsoredLabel": "Sponsored",
     "visitSite": "Visit site",
+    "recipeCard": {
+      "servings": "Servings",
+      "prepTime": "Prep",
+      "cookTime": "Cook",
+      "cuisine": "Cuisine",
+      "ingredients": "Ingredients",
+      "tools": "Tools"
+    },
     "relatedVideos": "Related videos",
     "gallery": "Gallery",
     "gameVersion": "Game version",
@@ -144,6 +153,10 @@
     "codes": {
       "overviewTitle": "All Codes",
       "overviewDescription": "Active Anvil Quest codes for free coins, gems, and exclusive items. Verified daily."
+    },
+    "recipes": {
+      "overviewTitle": "All Recipes",
+      "overviewDescription": "Template demo recipes — swap in your own tested cooking."
     }
   },
   "home": {

@@ -297,3 +297,47 @@ export function videoGameJsonLd() {
     ...(site.game.releaseDate ? { datePublished: site.game.releaseDate } : {}),
   };
 }
+
+/**
+ * Recipe JSON-LD — Google recipe rich-results eligibility for recipe-hub
+ * pages. `name` + `image` are Google's required fields; times are emitted
+ * only when ISO 8601-shaped (PT30M) — plain display strings stay off the
+ * machine-readable layer instead of producing an invalid duration. Recipe
+ * instructions live in the visible body prose (Google marks them
+ * recommended, not required); add structured steps only if a preset fork
+ * later wants the extra rich-result real estate.
+ */
+export function recipeJsonLd(opts: {
+  name: string;
+  description: string;
+  image: string;
+  url: string;
+  authorName?: string;
+  datePublished?: Date;
+  cuisine?: string;
+  servings: string;
+  prepTime?: string;
+  cookTime?: string;
+  ingredients: string[];
+  tools: string[];
+}) {
+  const isIsoDuration = (v: string | undefined) => /^PT[0-9]/.test(v ?? '');
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Recipe',
+    name: opts.name,
+    description: opts.description,
+    image: opts.image,
+    url: opts.url,
+    ...(opts.authorName ? { author: { '@type': 'Person', name: opts.authorName } } : {}),
+    ...(opts.datePublished ? { datePublished: opts.datePublished.toISOString() } : {}),
+    ...(opts.cuisine ? { recipeCuisine: opts.cuisine } : {}),
+    recipeYield: opts.servings,
+    ...(isIsoDuration(opts.prepTime) ? { prepTime: opts.prepTime } : {}),
+    ...(isIsoDuration(opts.cookTime) ? { cookTime: opts.cookTime } : {}),
+    recipeIngredient: opts.ingredients,
+    ...(opts.tools.length > 0
+      ? { tool: opts.tools.map((t) => ({ '@type': 'HowToTool', name: t })) }
+      : {}),
+  };
+}

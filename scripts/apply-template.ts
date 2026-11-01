@@ -864,6 +864,7 @@ async function main() {
     guides: 'lucide:book-open',
     items: 'lucide:package',
     codes: 'lucide:gift',
+    recipes: 'lucide:cake',
     'tier-list': 'lucide:bar-chart-3',
     characters: 'lucide:users',
     weapons: 'lucide:sword',

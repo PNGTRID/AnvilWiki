@@ -36,3 +36,33 @@ export const NAVIGATION_CONFIG: NavigationItem[] = [
 
 /** Derived list of content type slugs (e.g. ['bosses', 'guides', 'items', 'codes']). */
 export const CONTENT_TYPES: string[] = NAVIGATION_CONFIG.map((n) => n.key);
+
+/**
+ * Preset-only categories — legal content types that NO game-wiki menu shows.
+ * Introduced by site-type presets (site-presets.ts): a recipe-hub fork's
+ * apply-template-written navigation.ts carries `recipes` in NAVIGATION_CONFIG,
+ * so its routes/sitemap/menu treat it exactly like any other category. The
+ * demo repo never lists it here, which is why the demo builds no /recipes/
+ * list page — recipe demo articles (noindex'd) are reachable by direct URL
+ * only, keeping the game-wiki demo and every game-wiki fork free of preset
+ * leftovers.
+ *
+ * ⚠️ This array is the ONLY place preset-only keys may be declared: the wiki
+ * schema's legal-category enum derives from LEGAL_CONTENT_TYPES below, and
+ * the recipe-hub preset registry references the same keys.
+ */
+export const PRESET_ONLY_CATEGORIES: NavigationItem[] = [
+  { key: 'recipes', path: '/recipes', icon: 'lucide:cake', isContentType: true },
+];
+
+/**
+ * Every legal frontmatter category = game-wiki menu keys ∪ preset-only keys.
+ * The wiki schema validates against THIS union (a recipe-hub fork's
+ * `category: 'recipes'` is legal; a typo still fails the build). Routes,
+ * menus, and sitemap iterate CONTENT_TYPES only — the split is what keeps
+ * preset content buildable without leaking into the game-wiki chrome.
+ */
+export const LEGAL_CONTENT_TYPES: string[] = [
+  ...CONTENT_TYPES,
+  ...PRESET_ONLY_CATEGORIES.map((n) => n.key),
+];

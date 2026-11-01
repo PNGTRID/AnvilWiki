@@ -182,6 +182,21 @@ const TUTORIAL_DEMO_FILES = [
   'ja/guides/monetize-site-tutorial.mdx',
 ];
 
+const RECIPE_DEMO_FILES = [
+  'en/recipes/classic-vanilla-sponge-cake.mdx',
+  'en/recipes/banana-bread.mdx',
+  'en/recipes/chocolate-chip-cookies.mdx',
+  'en/recipes/fluffy-pancakes.mdx',
+  'en/recipes/tomato-garlic-pasta.mdx',
+  'en/recipes/roasted-pumpkin-soup.mdx',
+  'ja/recipes/classic-vanilla-sponge-cake.mdx',
+  'ja/recipes/banana-bread.mdx',
+  'ja/recipes/chocolate-chip-cookies.mdx',
+  'ja/recipes/fluffy-pancakes.mdx',
+  'ja/recipes/tomato-garlic-pasta.mdx',
+  'ja/recipes/roasted-pumpkin-soup.mdx',
+];
+
 // ===========================================================================
 // Flow 1 — 18 answers, game-wiki: the legacy full regression.
 // ===========================================================================
@@ -603,4 +618,65 @@ if (failed) process.exit(1);
 buildAndGate(tutorialScratch, { checkLinks: true });
 console.log('\n✅ Flow 3 (19 answers, tutorial-hub) passed');
 
-console.log('\n✅ E2E passed — apply-template real mode produces buildable sites for all three flows');
+// ===========================================================================
+// Flow 4 — 19 answers, recipe-hub: preset-only category (recipes) + tool
+// frontmatter survival, fork link integrity.
+// ===========================================================================
+const recipeScratch = newScratch();
+installDeps(recipeScratch);
+const recipeAnswers = [
+  'Test Recipes', // Full site/game name
+  '', // Short name (default)
+  'testrecipes.pages.dev', // Domain
+  '', // Tagline
+  '', // Description
+  '', // Legal notice
+  '', // Official URL
+  '#3b82f6', // Theme color
+  '', // Platform
+  '', // Developer
+  '', // Genre
+  '', // Release date
+  'en,zh', // Locales (ja NOT chosen — ja demos must clear)
+  'recipes,guides,items', // Categories (the recipe-hub set)
+  'y', // Clear demo content? YES
+  '1', // Homepage preset (codes → recipe home)
+  '', // Remove landing? (default yes)
+  '4', // Site type: recipe-hub
+  'y', // Proceed? YES
+];
+writeFileSync(join(recipeScratch, 'e2e-answers.json'), JSON.stringify(recipeAnswers, null, 2));
+runCli(recipeScratch, 'e2e-answers.json');
+
+step('Assert recipe-hub fork shape');
+// The chosen preset's demos survive for chosen locales — en recipe demos stay
+// (they carry the recipe frontmatter and cover references the build needs).
+expectPresent(
+  recipeScratch,
+  RECIPE_DEMO_FILES.filter((p) => p.startsWith('en/')).map(wikiPath),
+  'recipe-hub demo missing after its own init — preset starting content was not kept',
+);
+expectAbsent(
+  recipeScratch,
+  [
+    ...RECIPE_DEMO_FILES.filter((p) => p.startsWith('ja/')).map(wikiPath),
+    ...COUPON_DEMO_FILES.map(wikiPath), // other presets → cleared
+    ...TUTORIAL_DEMO_FILES.map(wikiPath),
+    'src/content/wiki/en/bosses/emberfang.mdx', // Anvil Quest → content rule
+  ],
+  'unexpected demo residue in the recipe-hub fork',
+);
+const recipeEn = JSON.parse(readFileSync(join(recipeScratch, 'src/locales/en.json'), 'utf8'));
+const recipeChecks = [
+  ['recipes nav label follows the recipe-hub semantics', recipeEn.nav?.recipes === 'Recipes'],
+  ['no game-wiki nav keys remain', recipeEn.nav?.bosses === undefined && recipeEn.nav?.codes === undefined],
+];
+for (const [name, ok] of recipeChecks) {
+  console.log(`  ${ok ? '✅' : '❌'} ${name}`);
+  if (!ok) fail(name);
+}
+if (failed) process.exit(1);
+buildAndGate(recipeScratch, { checkLinks: true });
+console.log('\n✅ Flow 4 (19 answers, recipe-hub) passed');
+
+console.log('\n✅ E2E passed — apply-template real mode produces buildable sites for all four flows');

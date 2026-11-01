@@ -69,16 +69,17 @@ const en = {
 
   hintCommonCategories: [
     '   Common: bosses, guides, items, codes, tier-list, characters.',
-    '   By site type — game-wiki: bosses, guides, items, codes · coupon-hub: codes, guides, items · tutorial-hub: guides only.',
+    '   By site type — game-wiki: bosses, guides, items, codes · coupon-hub: codes, guides, items · tutorial-hub: guides only · recipe-hub: recipes, guides, items.',
   ].join('\n'),
   siteTypeMenu: [
     '   1) game-wiki    — game wiki site (bosses/guides/items/codes — the current default)',
     '   2) coupon-hub   — deals & coupon site (codes become "Deals", plus tools & saving guides)',
     '   3) tutorial-hub — tutorial/knowledge-base site (guides become "Tutorials")',
+    '   4) recipe-hub   — recipe site (recipes/guides become a kitchen site, plus kitchen tools)',
   ].join('\n'),
   siteTypeNote:
     '   Your pick decides which demo articles stay as starting content and which category labels fit.',
-  siteTypeError: (value: string) => `❌ Invalid site type "${value}". Answer 1, 2 or 3.`,
+  siteTypeError: (value: string) => `❌ Invalid site type "${value}". Answer 1, 2, 3 or 4.`,
   siteCategoryMismatchError: (preset: string, allowed: string, chosen: string) =>
     `❌ Categories [${chosen}] do not fit the ${preset} site type — allowed: ${allowed}. Re-run and align the category answer (asked earlier) with the site type.`,
   presetMenu: [
@@ -230,15 +231,16 @@ const zh: CliStrings = {
 
   hintCommonCategories: [
     '   常用:bosses, guides, items, codes, tier-list, characters。',
-    '   按站点类型 — game-wiki: bosses, guides, items, codes · coupon-hub: codes, guides, items · tutorial-hub: 仅 guides。',
+    '   按站点类型 — game-wiki: bosses, guides, items, codes · coupon-hub: codes, guides, items · tutorial-hub: 仅 guides · recipe-hub: recipes, guides, items。',
   ].join('\n'),
   siteTypeMenu: [
     '   1) game-wiki    — 游戏 wiki 站(bosses/guides/items/codes——现在的默认)',
     '   2) coupon-hub   — 优惠码/折扣站(codes 变「优惠码」,另有工具库与省钱攻略)',
     '   3) tutorial-hub — 教程知识库站(guides 变「教程」)',
+    '   4) recipe-hub   — 食谱站(recipes 食谱 + guides 变「下厨指南」+ 厨房工具)',
   ].join('\n'),
   siteTypeNote: '   选择决定哪些 demo 示例文章保留为起始内容,以及栏目标签用哪套语义。',
-  siteTypeError: (value) => `❌ 站点类型 "${value}" 不合法,请回答 1、2 或 3。`,
+  siteTypeError: (value) => `❌ 站点类型 "${value}" 不合法,请回答 1、2、3 或 4。`,
   siteCategoryMismatchError: (preset, allowed, chosen) =>
     `❌ 所选栏目 [${chosen}] 不属于 ${preset} 站点类型 — 允许:${allowed}。请重跑并让栏目答案(在前面的题)与站点类型保持一致。`,
   presetMenu: [

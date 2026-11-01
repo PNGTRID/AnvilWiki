@@ -319,7 +319,19 @@ jobs:
                 src/assets/covers/ja-guides-pick-your-niche-tutorial.png \
                 src/assets/covers/ja-guides-build-site-with-ai-tutorial.png \
                 src/assets/covers/ja-guides-content-workflow-tutorial.png \
-                src/assets/covers/ja-guides-monetize-site-tutorial.png
+                src/assets/covers/ja-guides-monetize-site-tutorial.png \
+                src/assets/covers/en-recipes-classic-vanilla-sponge-cake.png \
+                src/assets/covers/en-recipes-banana-bread.png \
+                src/assets/covers/en-recipes-chocolate-chip-cookies.png \
+                src/assets/covers/en-recipes-fluffy-pancakes.png \
+                src/assets/covers/en-recipes-tomato-garlic-pasta.png \
+                src/assets/covers/en-recipes-roasted-pumpkin-soup.png \
+                src/assets/covers/ja-recipes-classic-vanilla-sponge-cake.png \
+                src/assets/covers/ja-recipes-banana-bread.png \
+                src/assets/covers/ja-recipes-chocolate-chip-cookies.png \
+                src/assets/covers/ja-recipes-fluffy-pancakes.png \
+                src/assets/covers/ja-recipes-tomato-garlic-pasta.png \
+                src/assets/covers/ja-recipes-roasted-pumpkin-soup.png
           python3 - <<'EOF'
           import re
           p = 'src/config/authors.ts'

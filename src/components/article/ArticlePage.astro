@@ -25,17 +25,18 @@ import ShareButton from '~/components/article/ShareButton.astro';
 import BossStatCard from '~/components/article/BossStatCard.astro';
 import CodesTable from '~/components/article/CodesTable.astro';
 import ToolCard from '~/components/article/ToolCard.astro';
+import RecipeCard from '~/components/article/RecipeCard.astro';
 import ArticleGallery from '~/components/article/ArticleGallery.astro';
 import BackToTop from '~/components/article/BackToTop.astro';
 import WikiSidebar from '~/components/sidebar/WikiSidebar.astro';
-import { NAVIGATION_CONFIG } from '~/config/navigation';
+import { CONTENT_TYPES, NAVIGATION_CONFIG } from '~/config/navigation';
 import { siteUrl } from '~/config/site';
 import { type Locale } from '~/i18n/routing';
 import { getUi } from '~/i18n/ui';
 import { getRelatedEntries, getEntriesByCategory, isPossiblyOutdated, parseEntryId, slugifyTag, estimateReadMinutes, type WikiEntry, type ResolvedEntry } from '~/lib/content';
 import LazyYouTube from '~/components/video/LazyYouTube.astro';
 import SponsorCard from '~/components/article/SponsorCard.astro';
-import { articleJsonLd, breadcrumbJsonLd, pageTitle, videoObjectJsonLd, imageObjectJsonLd, faqPageJsonLd } from '~/lib/seo';
+import { articleJsonLd, breadcrumbJsonLd, pageTitle, videoObjectJsonLd, imageObjectJsonLd, faqPageJsonLd, recipeJsonLd } from '~/lib/seo';
 import { listPath, detailPath, tagPath, homeUrl } from '~/lib/url';
 import { site } from '~/config/site';
 import { getAuthor } from '~/config/authors';
@@ -64,6 +65,10 @@ const parsed = parseEntryId(entry.id);
 const slug = parsed?.slug ?? '';
 const category = entry.data.category;
 const categoryLabel = overview?.overviewTitle ?? nav[category] ?? category;
+// Preset-only categories (recipes on the game demo) build no list page — the
+// breadcrumb category crumb renders as plain text there. Forks whose
+// navigation includes the category get the full link.
+const categoryHasList = CONTENT_TYPES.includes(category);
 
 const coverUrl = entry.data.image
   ? `${siteUrl}${entry.data.image.src}`
@@ -148,6 +153,26 @@ const jsonLd = [
       uploadDate: entry.data.date,
     }),
   ),
+  // Recipe rich results (recipe-hub preset) — required name/image come from
+  // the article; ISO-shaped times only (see recipeJsonLd).
+  ...(entry.data.recipe
+    ? [
+        recipeJsonLd({
+          name: entry.data.title,
+          description: entry.data.description,
+          image: coverUrl,
+          url: `${siteUrl}${detailPath(category, slug, locale)}`,
+          authorName: entry.data.author,
+          datePublished: entry.data.date,
+          cuisine: entry.data.recipe.cuisine,
+          servings: entry.data.recipe.servings,
+          prepTime: entry.data.recipe.prepTime,
+          cookTime: entry.data.recipe.cookTime,
+          ingredients: entry.data.recipe.ingredients,
+          tools: entry.data.recipe.tools,
+        }),
+      ]
+    : []),
   // One ImageObject per gallery image — Google Images eligibility.
   ...entry.data.gallery.map((g: { image: { src: string }; caption?: string; alt?: string }) =>
     imageObjectJsonLd({ url: `${siteUrl}${g.image.src}`, caption: g.caption, alt: g.alt }),
@@ -187,10 +212,19 @@ const jsonLd = [
   <div class="flex gap-8">
     <article class="mx-auto min-w-0 max-w-3xl flex-1">
     {/* Breadcrumb */}
+    {/* Breadcrumb — preset-only categories (e.g. recipes on the game demo)
+        have no list page: fall back to home for the category crumb. The
+        breadcrumbJsonLd above keeps the list URL for a recipe-hub fork,
+        where the list page does build. */}
     <nav class="text-sm text-muted-foreground" aria-label={shared.breadcrumbAria ?? 'Breadcrumb'}>
       <a href={homeUrl(locale)} class="hover:text-nav">{nav.home}</a>
-      <span class="mx-1">/</span>
-      <a href={listPath(category, locale)} class="hover:text-nav">{categoryLabel}</a>
+      {categoryHasList ? (
+        <span class="mx-1">/</span>
+        <a href={listPath(category, locale)} class="hover:text-nav">{categoryLabel}</a>
+      ) : (
+        <span class="mx-1">/</span>
+        <span>{categoryLabel}</span>
+      )}
     </nav>
 
     {/* Header */}
@@ -309,6 +343,9 @@ const jsonLd = [
 
     {/* Tool card — coupon-hub items pages (optional `tool` frontmatter, boss-pattern) */}
     {entry.data.tool && <ToolCard tool={entry.data.tool} visitLabel={shared.visitSite} />}
+
+    {/* Recipe card — recipe-hub pages (optional `recipe` frontmatter, boss-pattern) */}
+    {entry.data.recipe && <RecipeCard recipe={entry.data.recipe} labels={shared.recipeCard ?? {}} />}
 
     {/* Structured codes table — Active (copy blocks) / Expired (long-tail table) */}
     {entry.data.codes && entry.data.codes.length > 0 && (
