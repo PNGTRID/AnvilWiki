@@ -22,11 +22,13 @@ import LocaleLayout from '~/components/layout/LocaleLayout.astro';
 import VideoSection from '~/components/home/VideoSection.astro';
 import QuickStart from '~/components/home/QuickStart.astro';
 import ExploreModules from '~/components/home/ExploreModules.astro';
+import DealsOverview from '~/components/article/DealsOverview.astro';
 import { site } from '~/config/site';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
 import { type Locale } from '~/i18n/routing';
 import { getUi, type HomeUi } from '~/i18n/ui';
-import { getRecentEntries, parseEntryId } from '~/lib/content';
+import { getEntriesByCategory, getRecentEntries, parseEntryId } from '~/lib/content';
+import { toDealMerchants } from '~/lib/content-utils';
 import { localizePath, listPath, detailPath } from '~/lib/url';
 
 interface Props {
@@ -45,6 +47,28 @@ const home = ui.home;
 const shared = ui.shared;
 
 const recent = await getRecentEntries(locale, 6);
+
+// Coupon-hub homepage strip: a compact live-deals board (3 merchants × 2
+// active codes) aggregated from the codes category. Gated on the build-time
+// siteType signal — game-wiki forks never carry the line, so this stays dead
+// code there and the default output is byte-identical. Title/CTA reuse
+// existing keys (overview.codes / shared.browseAll) — zero new i18n.
+const couponDeals =
+  site.siteType === 'coupon-hub'
+    ? await (async () => {
+        const entries = await getEntriesByCategory('codes', locale);
+        const overview = ui.overview as Record<string, { overviewTitle?: string }> | undefined;
+        return {
+          title:
+            overview?.codes?.overviewTitle ??
+            (ui.nav as Record<string, string>).codes ??
+            'Deals',
+          merchants: toDealMerchants(entries)
+            .slice(0, 3)
+            .map((m) => ({ ...m, href: detailPath('codes', m.slug, locale) })),
+        };
+      })()
+    : null;
 
 // Per-field fallbacks: a locale JSON whose meta object exists but lacks
 // title/description must not pass undefined into BaseLayout (title.includes
@@ -144,6 +168,28 @@ function trendingLabel(link: QuickLink): string {
     title={start.title}
     cards={start.cards}
   />
+
+  {/* ─────────────────── Coupon-hub live deals strip ───────────────────── */}
+  {
+    couponDeals && couponDeals.merchants.length > 0 && (
+      <section class="section border-t border-border">
+        <div class="flex items-baseline justify-between">
+          <h2 class="text-2xl font-bold">{couponDeals.title}</h2>
+          <a href={listPath('codes', locale)} class="text-sm text-foreground hover:text-nav hover:underline">
+            {shared.browseAll}
+          </a>
+        </div>
+        <div class="mt-4">
+          <DealsOverview
+            merchants={couponDeals.merchants}
+            perMerchantLimit={2}
+            labels={shared.codesTable ?? {}}
+            copiedText={shared.copied}
+          />
+        </div>
+      </section>
+    )
+  }
 
   {/* ───────────────────── Recent Updates + Trending ───────────────────── */}
   <section class="section border-t border-border">

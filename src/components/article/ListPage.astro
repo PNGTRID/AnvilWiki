@@ -8,10 +8,13 @@
 import { Icon } from 'astro-icon/components';
 import LocaleLayout from '~/components/layout/LocaleLayout.astro';
 import ArticleCover from '~/components/article/ArticleCover.astro';
+import DealsOverview from '~/components/article/DealsOverview.astro';
 import { NAVIGATION_CONFIG } from '~/config/navigation';
+import { site } from '~/config/site';
 import { type Locale } from '~/i18n/routing';
 import { getUi } from '~/i18n/ui';
 import { getEntriesByCategory, parseEntryId } from '~/lib/content';
+import { toDealMerchants } from '~/lib/content-utils';
 import { itemListJsonLd, pageTitle, simpleBreadcrumbJsonLd } from '~/lib/seo';
 import { detailPath, homeUrl, listPath } from '~/lib/url';
 
@@ -40,6 +43,16 @@ const description =
   (String(shared.defaultListDescription ?? '').replace('{title}', title) || title);
 
 const entries = await getEntriesByCategory(category, locale);
+
+// Coupon-hub presentation variant: the codes list becomes a merchant-grouped
+// deals board instead of article cards. Build-time signal from site.ts —
+// game-wiki forks never carry the line, so this branch is dead code there.
+const dealView = site.siteType === 'coupon-hub' && category === 'codes' && entries.length > 0;
+const merchants = toDealMerchants(entries).map((m) => ({
+  title: m.title,
+  href: detailPath(category, m.slug, locale),
+  codes: m.codes,
+}));
 
 const jsonLd = [
   // Empty ItemList (itemListElement: []) is invalid structured data — only
@@ -97,6 +110,12 @@ const jsonLd = [
           <Icon name="lucide:inbox" class="mx-auto h-10 w-10 text-muted-foreground" />
           <p class="mt-3 text-muted-foreground">{shared.noArticles}</p>
         </div>
+      ) : dealView ? (
+        <DealsOverview
+          merchants={merchants}
+          labels={shared.codesTable ?? {}}
+          copiedText={shared.copied}
+        />
       ) : (
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {entries.map((entry) => {

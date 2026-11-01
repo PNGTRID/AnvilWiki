@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseEntryId, isPossiblyOutdated, selectRelatedEntries, estimateReadMinutes, STALE_AFTER_DAYS } from '~/lib/content-utils';
+import { parseEntryId, isPossiblyOutdated, selectRelatedEntries, estimateReadMinutes, STALE_AFTER_DAYS, toDealMerchants } from '~/lib/content-utils';
 
 describe('parseEntryId', () => {
   it('parses a simple id into locale/category/slug', () => {
@@ -157,6 +157,25 @@ describe('selectRelatedEntries', () => {
     expect(selectRelatedEntries([...mkPool()].reverse(), current, 2).map((e) => e.id)).toEqual([
       'en/guides/forging.mdx',
       'en/items/armor.mdx',
+    ]);
+  });
+});
+
+describe('toDealMerchants (coupon deals views)', () => {
+  it('maps codes-category entries into merchant groups, preserving input order', () => {
+    const entries = [
+      { id: 'en/codes/pixelpad.mdx', data: { title: 'PixelPad codes', codes: [{ code: 'DEMO-A', status: 'active' as const }] } },
+      { id: 'en/codes/deep/nested.mdx', data: { title: 'Nested', codes: [] } },
+    ];
+    expect(toDealMerchants(entries)).toEqual([
+      { title: 'PixelPad codes', slug: 'pixelpad', codes: [{ code: 'DEMO-A', status: 'active' }] },
+      { title: 'Nested', slug: 'deep/nested', codes: [] },
+    ]);
+  });
+
+  it('entries without codes frontmatter still form a group with empty codes', () => {
+    expect(toDealMerchants([{ id: 'en/codes/bare.mdx', data: { title: 'Bare' } }])).toEqual([
+      { title: 'Bare', slug: 'bare', codes: [] },
     ]);
   });
 });

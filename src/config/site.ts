@@ -59,6 +59,14 @@ export interface SiteConfig {
   ogImageHeight: number;
   /** Default author name for articles without an explicit `author` in frontmatter (E-E-A-T signal). */
   defaultAuthor?: string;
+  /**
+   * Build-time site-type signal, written by apply-template for the non-default
+   * presets only ('coupon-hub' | 'tutorial-hub'). Game-wiki forks carry NO
+   * line at all (absent = game-wiki), keeping the zero-breaking output
+   * byte-identical. Read by presentation-layer variants — e.g. the coupon
+   * deals overview on the codes list page.
+   */
+  siteType?: 'coupon-hub' | 'tutorial-hub';
 }
 
 export const site: SiteConfig = {
@@ -102,3 +110,6 @@ export const siteUrl: string = (process.env.SITE_URL || `https://${site.domain}`
   /\/$/,
   '',
 );
+
+/** Resolved site type — an absent `siteType` line means the default game wiki. */
+export const siteType: 'game-wiki' | 'coupon-hub' | 'tutorial-hub' = site.siteType ?? 'game-wiki';

@@ -125,3 +125,37 @@ export function selectRelatedEntries<T extends RelatedLike>(
   }
   return chosen;
 }
+
+/** One structured redeem-code entry as the coupon deals views consume it. */
+export interface DealCode {
+  code: string;
+  reward?: string;
+  status: 'active' | 'expired';
+  expiryDate?: string;
+}
+
+/** One merchant group for the coupon deals views (list overview + homepage strip). */
+export interface DealMerchant {
+  title: string;
+  slug: string;
+  codes: DealCode[];
+}
+
+/**
+ * Map codes-category entries into merchant groups for the coupon deals views
+ * (the coupon-hub presentation variants keyed off the siteType signal). Input
+ * order is preserved — callers sort/select upstream. Entries without codes
+ * frontmatter still form a group (empty codes → counts render as 0/0), and
+ * slug keeps any nested path segment (parseEntryId joins rest segments).
+ */
+export function toDealMerchants<T>(entries: readonly T[]): DealMerchant[] {
+  return entries.map((entry) => {
+    const { id, data } = entry as { id: string; data: { title: string; codes?: DealCode[] } };
+    const parsed = parseEntryId(id);
+    return {
+      title: data.title,
+      slug: parsed?.slug ?? '',
+      codes: Array.isArray(data.codes) ? data.codes : [],
+    };
+  });
+}

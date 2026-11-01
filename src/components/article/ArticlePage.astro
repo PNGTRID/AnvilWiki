@@ -24,6 +24,7 @@ import TableOfContents from '~/components/article/TableOfContents.astro';
 import ShareButton from '~/components/article/ShareButton.astro';
 import BossStatCard from '~/components/article/BossStatCard.astro';
 import CodesTable from '~/components/article/CodesTable.astro';
+import ToolCard from '~/components/article/ToolCard.astro';
 import ArticleGallery from '~/components/article/ArticleGallery.astro';
 import BackToTop from '~/components/article/BackToTop.astro';
 import WikiSidebar from '~/components/sidebar/WikiSidebar.astro';
@@ -305,6 +306,9 @@ const jsonLd = [
         labels={shared.bossCard ?? {}}
       />
     )}
+
+    {/* Tool card — coupon-hub items pages (optional `tool` frontmatter, boss-pattern) */}
+    {entry.data.tool && <ToolCard tool={entry.data.tool} visitLabel={shared.visitSite} />}
 
     {/* Structured codes table — Active (copy blocks) / Expired (long-tail table) */}
     {entry.data.codes && entry.data.codes.length > 0 && (

@@ -1,0 +1,46 @@
+---
+/**
+ * ToolCard — structured head card for coupon-hub items pages, driven by the
+ * optional `tool` frontmatter object (same pattern as `boss` → BossStatCard):
+ * one-line tagline, pricing summary, and an optional product/affiliate link.
+ * The link carries rel="sponsored" — when a site owner points it at an
+ * affiliate URL, search engines get the paid-relationship signal without any
+ * extra markup work.
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  tool: { tagline: string; pricing: string; url?: string };
+  /** shared.visitSite label (i18n — no hardcoded English in UI). */
+  visitLabel: string;
+}
+const { tool, visitLabel } = Astro.props;
+---
+
+<div class="not-prose mt-6 rounded-lg border border-border bg-card p-5">
+  <div class="flex flex-wrap items-start gap-x-4 gap-y-2">
+    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-nav/10">
+      <Icon name="lucide:wrench" class="h-5 w-5 text-nav" />
+    </span>
+    <div class="min-w-0 flex-1">
+      <p class="font-semibold leading-snug text-foreground">{tool.tagline}</p>
+      <p class="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+        <Icon name="lucide:tag" class="h-3.5 w-3.5 shrink-0" />
+        {tool.pricing}
+      </p>
+    </div>
+    {
+      tool.url && (
+        <a
+          href={tool.url}
+          target="_blank"
+          rel="sponsored noopener"
+          class="btn-outline inline-flex items-center gap-1.5 self-center text-sm"
+        >
+          <Icon name="lucide:external-link" class="h-4 w-4" />
+          {visitLabel}
+        </a>
+      )
+    }
+  </div>
+</div>
