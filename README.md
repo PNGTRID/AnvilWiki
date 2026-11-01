@@ -56,7 +56,7 @@
 
 **跑完这一节你会得到**:一个跑在 Cloudflare 免费版上、属于你自己的 wiki 站(先以 demo 内容上线,换成你的游戏、清掉 demo,随时可以做)。
 
-**开始前需要**:[Node.js 22.13+](https://nodejs.org)(pnpm 11 的版本门槛) 和 pnpm(没装 pnpm?终端跑 `npm install -g pnpm`;或跟着[学习手册「装好 6 样工具」一课](https://anvil.wiki/zh/landing/docs/install-tools)把 6 样工具一次装齐)。
+**开始前需要**:[Node.js 22.23.4+](https://nodejs.org)(Astro 7.4 的版本门槛) 和 pnpm(没装 pnpm?终端跑 `npm install -g pnpm`;或跟着[学习手册「装好 6 样工具」一课](https://anvil.wiki/zh/landing/docs/install-tools)把 6 样工具一次装齐)。
 
 ```bash
 # 1. Fork 本仓库(仓库右上角 Fork 按钮),然后克隆你的 fork(换成你的 GitHub 用户名)
@@ -201,7 +201,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 
 **What you'll have when this section is done**: your own wiki live on Cloudflare's free tier (it ships with demo content first — rebranding and demo removal come whenever you're ready).
 
-**Prerequisites**: [Node.js 22.13+](https://nodejs.org) (the pnpm 11 floor) and pnpm (no pnpm? run `npm install -g pnpm` — or let [the "Install the 6 Tools" lesson](https://anvil.wiki/landing/docs/install-tools) walk you through all six tools).
+**Prerequisites**: [Node.js 22.23.4+](https://nodejs.org) (the Astro 7.4 floor) and pnpm (no pnpm? run `npm install -g pnpm` — or let [the "Install the 6 Tools" lesson](https://anvil.wiki/landing/docs/install-tools) walk you through all six tools).
 
 ```bash
 # 1. Fork this repo (Fork button, top right), then clone YOUR fork (replace the username)

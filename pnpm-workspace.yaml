@@ -7,5 +7,23 @@ allowBuilds:
 # patch lines (and dropped extract-zip from the tree entirely), so those
 # pins are reclaimed. fflate is the one remaining floor: @iconify/tools
 # (astro-icon's SVG pipeline) still requires <0.7.5 upstream.
+#
+# 2026-11-01 refresh (audit 回潮 44→2): direct bumps (astro 7.4.4 / vitest
+# 4.1.12 / satori 0.33.5 / sharp 0.35.5) fixed astro/devalue/vite/@vitest/
+# mocker natively; the overrides below collapse same-major transitive strays
+# onto their advisory patch lines. minimatch is the deliberate remainder:
+# the only vulnerable instances (3.1.5 / 10.2.6, moderate glob-parsing DoS)
+# live in the dev-only eslint/vitest toolchain, 3.x has no patch line, and a
+# cross-major override would break CJS consumers — accepted + documented.
 overrides:
   fflate: ^0.7.5
+  sharp: ^0.35.5
+  zod: ^4.6.7
+  fast-uri: ^3.1.9
+  smol-toml: ^1.9.1
+  source-map-js: ^1.2.2
+  undici: ^8.12.3
+  brace-expansion@1.x: ^1.1.21
+  brace-expansion@5.x: ^5.0.12
+  postcss-selector-parser@6.x: ^6.1.5
+  postcss-selector-parser@7.x: ^7.1.6

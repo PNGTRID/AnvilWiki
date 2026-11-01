@@ -1504,3 +1504,7 @@ This release covers everything since v0.2.0: the full PRD roadmap (v1.1–v2.0) 
 [1.0.0]: https://github.com/PNGTRID/AnvilWiki/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/PNGTRID/AnvilWiki/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/PNGTRID/AnvilWiki/releases/tag/v0.1.0
+
+### Security
+
+- **依赖漏洞回潮清零（44 条 → 1 条，2026-10-27 回潮批收官）**：直接升级四件——astro 7.3.2→**7.4.4**（原生修复 astro/devalue/vite/@vitest/mocker 全部告警，附带 Node 地板上抬 ≥22.23.4：engines/README 中英/deployment 三处同步，CI 的 Node 24 无感）、vitest ^4.1.12、satori ^0.33.5、sharp ^0.35.5；overrides 新钉同 major 补丁线八条——zod ^4.6.7 / fast-uri ^3.1.9 / smol-toml ^1.9.1 / source-map-js ^1.2.2 / undici ^8.12.3 / brace-expansion@1.x ^1.1.21 + @5.x ^5.0.12（双大版本线分钉）/ postcss-selector-parser@6.x ^6.1.5 + @7.x ^7.1.6（同前例），pnpm-workspace.yaml 注释载明钉线理由。**残余 1 条有意接受**：minimatch（moderate，glob 解析 DoS）仅存于 dev-only eslint/vitest 工具链，3.x 无补丁线、跨 major override 必炸 CJS 消费方——记录在案不做危险强升。**产物级回归**：八门禁全绿（493 单测/typecheck/lint/build/check-links/check-config/check-content/strict-i18n）+ demo 首页 pre/post（astro 7.3.2 vs 7.4.4）构建字节 diff 全录——仅 generator 版本号/bundle 哈希名/script 标签前空白三类，零结构变化。fork 影响：Node 地板上抬为唯一行为变更（老 Node 用户 `pnpm build` 得 astro 明确报错提示升级）；常规 merge 零迁移。

@@ -29,7 +29,7 @@ Goal: let beginners deploy a game wiki site to Cloudflare Pages for free (unlimi
 | Sitemap     | `@astrojs/sitemap`                              | Auto-generates hreflang alternates from the i18n config.                                                                                                                                            |
 | Deploy      | Cloudflare Pages                                | `pnpm build` → `dist/`                                                                                                                                                                              |
 | Pkg manager | pnpm 11                                         | **`allowBuilds:` in `pnpm-workspace.yaml`** (NOT `onlyBuiltDependencies` — that's pnpm 10, dead in v11). esbuild + sharp need build approval or `astro build` fails during its pre-build dep check. |
-| Node        | 22 LTS (pnpm 11 requires ≥22.13)                |                                                                                                                                                                                                     |
+| Node        | 22 LTS (Astro 7.4 requires ≥22.23.4)            |                                                                                                                                                                                                     |
 
 ## Architecture: Code/Config/Content Separation (critical)
 

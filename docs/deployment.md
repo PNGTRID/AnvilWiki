@@ -63,7 +63,7 @@ Cloudflare 会自动检测 Astro，但请确认以下设置：
 
 | 变量名                    | 值                            | 说明                                   |
 | ------------------------- | ----------------------------- | -------------------------------------- |
-| `NODE_VERSION`            | `22`                          | 确保 Node 版本（pnpm 11 需要 ≥22.13）  |
+| `NODE_VERSION`            | `22`                          | 确保 Node 版本（Astro 7.4 要求 ≥22.23.4）  |
 | `SITE_URL`                | `https://<project>.pages.dev` | **先用临时域名**，必须含 `https://` 前缀 |
 | `PUBLIC_ADSENSE_CLIENT`    | （你的 AdSense Publisher ID） | 可选，留空则不显示广告                 |
 
@@ -225,7 +225,7 @@ Dashboard（方案 C）在 Pages → **Settings** → **Environment variables** 
 | --------------------------- | ---- | ------------------------------------------------------ |
 | `SITE_URL`                  | ✅   | 站点绝对 URL（含 `https://`，无尾斜杠），影响 sitemap/og:image/robots |
 | `INDEXNOW_KEY`              | 兼容 | 旧站的 IndexNow key 环境变量覆盖；新 fork 初始化时自动生成 `.indexnow-key`，无需配置 |
-| `NODE_VERSION`              | ✅   | 固定 `22`（pnpm 11 要求 ≥22.13）                       |
+| `NODE_VERSION`              | ✅   | 固定 `22`（Astro 7.4 要求 ≥22.23.4）                       |
 | `PUBLIC_ADSENSE_CLIENT`      | 可选 | AdSense Publisher ID（`ca-pub-XXXXXXXXXXXXXXXX`）      |
 | `PUBLIC_ADSENSE_SLOT_STICKY` | 可选 | Sticky 粘顶横幅 slot ID                                |
 | `PUBLIC_ADSENSE_SLOT_SIDEBAR`| 可选 | Sidebar 桌面端侧边栏 slot ID                           |

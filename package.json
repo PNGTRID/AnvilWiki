@@ -27,7 +27,7 @@
     "lighthouse-100"
   ],
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=22.23.4"
   },
   "packageManager": "pnpm@11.1.1",
   "scripts": {
@@ -65,7 +65,7 @@
     "@astrojs/mdx": "^8.0.1",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.2.1",
-    "astro": "^7.3.2",
+    "astro": "^7.4.4",
     "astro-icon": "^1.2.0"
   },
   "devDependencies": {
@@ -83,13 +83,13 @@
     "prettier": "^3.4.2",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.6.9",
-    "satori": "^0.33.3",
-    "sharp": "^0.35.4",
+    "satori": "^0.33.5",
+    "sharp": "^0.35.5",
     "subset-font": "^2.5.0",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
-    "vitest": "^4.1.11",
+    "vitest": "^4.1.12",
     "yaml": "^2.9.0"
   },
   "private": true
