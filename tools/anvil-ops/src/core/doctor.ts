@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import { loadOpsEnv } from './env.js';
 import { loadSiteConfig } from './site.js';
-import { createGscClient } from './providers/gsc.js';
+import { createGscClient, resolveGscProperty } from './providers/gsc.js';
 import type { GscClient } from './providers/gsc.js';
 import { queryCloudflare } from './providers/cloudflare.js';
 import { OpsError } from './errors.js';
@@ -82,14 +82,16 @@ export async function runDoctor(opts: { cwd: string; deps?: DoctorDeps }): Promi
     const client = deps.gscClient ?? createGscClient({ credential: env.gscServiceAccount, siteUrl });
     try {
       const sites = await client.listAccessibleSites();
-      const wanted = siteUrl.endsWith('/') ? siteUrl : siteUrl + '/';
-      if (sites.some((s) => s.replace(/\/$/, '') === wanted.replace(/\/$/, ''))) {
-        checks.push({ name: 'gsc-access', ok: true, detail: `property ${wanted} accessible` });
+      // Domain properties (sc-domain:host) don't string-match the URL-prefix
+      // form site.ts derives — resolve through the shared fallback.
+      const resolved = resolveGscProperty(sites, siteUrl);
+      if (resolved) {
+        checks.push({ name: 'gsc-access', ok: true, detail: `property ${resolved} accessible` });
       } else {
         checks.push({
           name: 'gsc-access',
           ok: false,
-          detail: `property ${wanted} not in accessible list (${sites.length} sites)`,
+          detail: `property ${siteUrl} not in accessible list (${sites.length} sites)`,
           fix: 'Search Console > Settings > Users and permissions > Add user, add the service account email as Restricted.',
         });
       }

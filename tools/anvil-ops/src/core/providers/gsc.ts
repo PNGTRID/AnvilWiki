@@ -144,6 +144,34 @@ export function gscQueryUrl(siteUrl: string): string {
   return `https://searchconsole.googleapis.com/webmasters/v3/sites/${encodeURIComponent(property)}/searchAnalytics/query`;
 }
 
+/**
+ * Resolve the GSC property a site URL maps to, from the account's accessible
+ * list. Domain properties (sc-domain:anvil.wiki) are the Search Console
+ * default for root domains and do NOT match the URL-prefix form
+ * (https://anvil.wiki/) that site.ts derives — this fallback is what makes
+ * ops work on accounts that only registered the domain property.
+ *
+ * Order: exact match → sc-domain:<hostname> → URL-prefix with trailing
+ * slash. Returns null when nothing matches (caller keeps its existing
+ * not-accessible error path).
+ */
+export function resolveGscProperty(available: readonly string[], siteUrl: string): string | null {
+  let host: string;
+  try {
+    host = new URL(siteUrl).hostname;
+  } catch {
+    return null;
+  }
+  const candidates = [siteUrl, `sc-domain:${host}`, `https://${host}/`];
+  for (const candidate of candidates) {
+    const hit = available.find(
+      (s) => s === candidate || s.replace(/\/$/, '') === candidate.replace(/\/$/, ''),
+    );
+    if (hit) return hit;
+  }
+  return null;
+}
+
 function assertNotGscError(json: unknown): void {
   const maybeError = json as { error?: { code?: number; message?: string } };
   if (maybeError?.error) {
@@ -219,10 +247,31 @@ export function createGscClient(opts: { credential: GscCredential; siteUrl: stri
     key: opts.credential.privateKey,
     scopes: [GSC_SCOPE],
   });
+  // Resolve the REAL property form once (memoized): URL-prefix or sc-domain.
+  // Every query then targets the resolved property — this is what makes ops
+  // work on accounts that registered the domain property only.
+  let resolvedProperty: Promise<string> | undefined;
+  const property = () => {
+    resolvedProperty ??= (async () => {
+      const data = (await gscRequest(auth, {
+        url: 'https://searchconsole.googleapis.com/webmasters/v3/sites',
+      })) as { siteEntry?: { siteUrl?: string }[] };
+      const available = (data.siteEntry ?? []).map((s) => s.siteUrl ?? '').filter(Boolean);
+      const resolved = resolveGscProperty(available, opts.siteUrl);
+      if (!resolved) {
+        throw new OpsError(
+          `Property ${opts.siteUrl} not in the service account's accessible list (${available.length} sites).`,
+          'Share the Search Console property with your service account email (Search Console > Settings > Users and permissions > Add user).',
+        );
+      }
+      return resolved;
+    })();
+    return resolvedProperty;
+  };
   return {
     async query({ days }) {
       const data = await gscRequest(auth, {
-        url: gscQueryUrl(opts.siteUrl),
+        url: gscQueryUrl(await property()),
         method: 'POST',
         data: { ...windowDays(days), dimensions: ['page', 'query'], rowLimit: 1000 },
       });
@@ -236,7 +285,7 @@ export function createGscClient(opts: { credential: GscCredential; siteUrl: stri
     },
     async probeAiOverviews({ days }): Promise<AioProbeResult> {
       const data = await gscRequest(auth, {
-        url: gscQueryUrl(opts.siteUrl),
+        url: gscQueryUrl(await property()),
         method: 'POST',
         data: buildAioRequestBody(days),
       });
