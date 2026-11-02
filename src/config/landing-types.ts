@@ -306,6 +306,22 @@ export interface LandingContent {
     primaryCta: { label: string; href: string };
     secondaryCta: { label: string; href: string };
   };
+  /**
+   * Template bridge — the ONE compact section that keeps the landing root a
+   * tutorials-first page without hiding the open-source template. Absorbs
+   * what FeatureGrid / SocialProofBar / CompareTable / Showcase / DocsEntry /
+   * DevGuide each said separately (2026-11-02 de-clutter batch); deep-dive
+   * content lives on its own pages (/landing/comparison, /landing/docs).
+   */
+  bridge: {
+    title: string;
+    description: string;
+    /** Proof chips (Lighthouse / deploy / init time / license). */
+    chips: string[];
+    ctaPrimaryLabel: string;
+    ctaSecondaryLabel: string;
+    ctaSecondaryHref: string;
+  };
   community: {
     title: string;
     subtitle: string;

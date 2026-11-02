@@ -1,0 +1,51 @@
+---
+/**
+ * TemplateBridge — the ONE compact template-pitch section on the tutorials-
+ * first landing root. Replaces the six-section template block (FeatureGrid /
+ * SocialProofBar / CompareTable / Showcase / DocsEntry / DevGuide, removed
+ * 2026-11-02): those sections served fork-leaners; the tutorials-first page
+ * serves learners. The bridge carries only what a learner needs at the
+ * bottom — "everything you just read ships in the template" — plus proof
+ * chips and two exits (fork / full comparison). Deep-dive content lives on
+ * its own pages (/landing/comparison, /landing/docs center).
+ */
+import { Icon } from 'astro-icon/components';
+import { type LandingContent } from '~/config/landing';
+import { FORK_URL } from '~/config/landing-shared';
+
+interface Props {
+  t: LandingContent;
+}
+const { t } = Astro.props;
+const b = t.bridge;
+const proofIcons = ['lucide:gauge', 'lucide:cloud', 'lucide:timer', 'lucide:scale'];
+---
+
+<section class="section border-t border-border">
+  <div class="mx-auto max-w-4xl text-center">
+    <h2 class="text-3xl font-extrabold tracking-tight text-foreground">{b.title}</h2>
+    <p class="mx-auto mt-4 max-w-2xl text-muted-foreground">{b.description}</p>
+
+    <div class="mx-auto mt-7 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
+      {
+        b.chips.map((chip, i) => (
+          <div class="flex items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground">
+            <Icon name={proofIcons[i % proofIcons.length]} class="h-4 w-4 shrink-0 text-nav" />
+            {chip}
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+      <a href={FORK_URL} target="_blank" rel="noopener" class="btn-primary inline-flex items-center gap-1.5">
+        <Icon name="lucide:rocket" class="h-4 w-4" />
+        {b.ctaPrimaryLabel}
+      </a>
+      <a href={b.ctaSecondaryHref} class="inline-flex items-center gap-1 text-sm font-medium text-nav transition hover:underline">
+        {b.ctaSecondaryLabel}
+        <Icon name="lucide:arrow-right" class="h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</section>

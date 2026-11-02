@@ -4,7 +4,8 @@
  * builds AnvilWiki, why, and where to find them. Copy comes from the
  * landing-en/zh.ts `author` pair — part of the landing demo-identity layer,
  * so apply-template removes it together with the rest of the landing files.
- * Text + outbound links only: no avatar asset, no form, no JS.
+ * Avatar is the maintainer's own image (/images/author-avatar.jpg) — a fork
+ * deleting the landing layer removes this whole card, so no preset leak.
  */
 import { Icon } from 'astro-icon/components';
 import type { LandingContent } from '~/config/landing';
@@ -22,12 +23,16 @@ const author = t.author;
       {author.title}
     </h2>
     <div class="mt-8 rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
-      <div class="flex items-center gap-3">
-        <span
-          class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-nav/10 text-nav"
-        >
-          <Icon name="lucide:user-round" class="h-5 w-5" />
-        </span>
+      <div class="flex items-center gap-4">
+        <img
+          src="/images/author-avatar.jpg"
+          alt={author.name}
+          width="56"
+          height="56"
+          loading="lazy"
+          decoding="async"
+          class="h-14 w-14 shrink-0 rounded-full border border-border object-cover"
+        />
         <div>
           <p class="font-bold text-foreground">{author.name}</p>
           <p class="text-sm text-muted-foreground">{author.role}</p>

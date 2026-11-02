@@ -1,33 +1,31 @@
 ---
 /**
- * Landing page (/landing, English) — introduces the AnvilWiki open-source
- * project. NOT the demo game site (that's at /). 中文版在 /zh/landing。
+ * Landing page (/landing, English) — the tutorials-first face of AnvilWiki.
+ * NOT the demo game site (that's at /). 中文版在 /zh/landing。
+ *
+ * De-clutter batch (2026-11-02): 12 sections → 7. The page serves LEARNERS
+ * (hero + directions + author); the template pitch compresses into ONE
+ * bridge section. Deep-dive pitch content lives on its own pages:
+ * /landing/comparison (full table), /landing/docs (handbooks). Parked
+ * components (SocialProofBar / FeatureGrid / CompareTable / Showcase /
+ * DocsEntry / DevGuide) stay in src/components/landing/ — unused by any
+ * page, tree-shaken from the build, kept for easy reinstatement.
  *
  * Sections (top to bottom):
  *   1. Hero (tutorials-first narrative + CTAs + install command)
  *   2. DirectionCards ("pick a direction" — one card per site-type preset)
- *   3. SocialProofBar (Lighthouse 4×100)
- *   4. FeatureGrid (6 cards)
- *   5. CommunitySites (real community-built sites)
- *   6. CompareTable (vs Fandom / Starlight / DIY)
- *   7. Showcase (demo screenshots)
- *   8. DocsEntry (4 doc cards)
- *   9. DevGuide (5-step how-to walkthrough)
- *  10. AuthorCard (who builds AnvilWiki)
- *  11. FinalCta (Community is a floating WeChat QR pill, bottom-right)
+ *   3. AuthorCard (who builds AnvilWiki — trust right after directions)
+ *   4. TemplateBridge (compact template pitch + proof chips + fork/comparison)
+ *   5. CommunitySites (real community-built sites — social proof)
+ *   6. FinalCta (Community is a floating WeChat QR pill, bottom-right)
  */
 import { getCollection } from 'astro:content';
 import LandingLayout from '~/components/landing/LandingLayout.astro';
 import LandingHero from '~/components/landing/LandingHero.astro';
 import DirectionCards from '~/components/landing/DirectionCards.astro';
-import SocialProofBar from '~/components/landing/SocialProofBar.astro';
-import FeatureGrid from '~/components/landing/FeatureGrid.astro';
-import CompareTable from '~/components/landing/CompareTable.astro';
-import Showcase from '~/components/landing/Showcase.astro';
-import CommunitySites from '~/components/landing/CommunitySites.astro';
-import DocsEntry from '~/components/landing/DocsEntry.astro';
-import DevGuide from '~/components/landing/DevGuide.astro';
 import AuthorCard from '~/components/landing/AuthorCard.astro';
+import TemplateBridge from '~/components/landing/TemplateBridge.astro';
+import CommunitySites from '~/components/landing/CommunitySites.astro';
 import FinalCta from '~/components/landing/FinalCta.astro';
 import Community from '~/components/landing/Community.astro';
 import AdsterraSlotPair from '~/components/ads/AdsterraSlotPair.astro';
@@ -56,18 +54,13 @@ const alternates = [
     <AdsterraSlot name="native-banner" width={700} height={240} />
     <LandingHero t={t} />
     <DirectionCards t={t} locale="en" tutorials={tutorials} />
-    <SocialProofBar t={t} />
-    <FeatureGrid t={t} />
-    {/* Adsterra pair wraps the marketing core: 728×90 after FeatureGrid,
-        responsive native after DevGuide; FinalCta keeps its position after
-        the native unit via the pair's `after` slot. */}
+    <AuthorCard t={t} />
+    {/* Adsterra pair: 728×90 after the bridge (mid-page), responsive native
+        after CommunitySites; FinalCta keeps its position after the native
+        unit via the pair's `after` slot. */}
     <AdsterraSlotPair>
+      <TemplateBridge t={t} />
       <CommunitySites t={t} />
-      <CompareTable t={t} />
-      <Showcase t={t} />
-      <DocsEntry t={t} />
-      <DevGuide t={t} />
-      <AuthorCard t={t} />
       <Fragment slot="after">
         <FinalCta t={t} />
       </Fragment>

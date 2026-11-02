@@ -578,10 +578,19 @@ pnpm install && pnpm dev`,
     nextInTopicLabel: 'Keep reading on this topic',
   },
   finalCta: {
-    title: 'Ready to launch your game wiki?',
-    subtitle: 'Fork, configure, deploy — all in 30 minutes, completely free.',
+    title: 'Ready to build your money-making site?',
+    subtitle: 'Fork, pick a direction, deploy — 30 minutes, completely free.',
     primaryCta: { label: 'Fork on GitHub', href: FORK_URL },
     secondaryCta: { label: 'Open the docs center', href: '/landing/docs/' },
+  },
+  bridge: {
+    title: 'Every tutorial step ships in the template',
+    description:
+      'AnvilWiki is an open-source (MIT) Astro content-site template — the keyword sourcing, site building, AI page generation, SEO, and monetization you read about in the tutorials are built in, not stitched together. Finish a tutorial, fork, and the site is yours.',
+    chips: ['Lighthouse 4×100', 'Free Cloudflare deploy', '30-minute init', 'MIT open source'],
+    ctaPrimaryLabel: 'Fork on GitHub',
+    ctaSecondaryLabel: 'Full comparison vs Fandom & more →',
+    ctaSecondaryHref: '/landing/comparison/',
   },
   community: {
     title: 'Join the discussion',

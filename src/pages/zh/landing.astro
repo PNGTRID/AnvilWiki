@@ -6,21 +6,24 @@
  * NOTE: this route is intentionally outside the wiki i18n system (locales
  * en/ja are the DEMO GAME's content languages). The landing page speaks for
  * the PROJECT, so it ships its own en/zh pair via src/config/landing.ts.
- * 章节顺序与 /landing 同构:Hero(教程优先叙事) → DirectionCards(选方向) →
- * 产品卖点区(下沉)。
+ *
+ * 减乱批(2026-11-02):12 板块 → 7。页面服务「学建站的人」(hero + 方向卡 +
+ * 作者);模板推销压缩为一条桥(sect 4)。深挖内容各有独立页:/landing/comparison
+ * (完整对比)、/landing/docs(手册中心)。闲置组件(SocialProofBar/FeatureGrid/
+ * CompareTable/Showcase/DocsEntry/DevGuide)留在 src/components/landing/——
+ * 无页面引用,构建时摇树,保留便于恢复。
+ *
+ * 章节顺序与 /landing 同构:Hero(教程优先) → DirectionCards(选方向) →
+ * AuthorCard(作者) → TemplateBridge(模板桥) → CommunitySites(真实案例) →
+ * FinalCta。
  */
 import { getCollection } from 'astro:content';
 import LandingLayout from '~/components/landing/LandingLayout.astro';
 import LandingHero from '~/components/landing/LandingHero.astro';
 import DirectionCards from '~/components/landing/DirectionCards.astro';
-import SocialProofBar from '~/components/landing/SocialProofBar.astro';
-import FeatureGrid from '~/components/landing/FeatureGrid.astro';
-import CompareTable from '~/components/landing/CompareTable.astro';
-import Showcase from '~/components/landing/Showcase.astro';
-import CommunitySites from '~/components/landing/CommunitySites.astro';
-import DocsEntry from '~/components/landing/DocsEntry.astro';
-import DevGuide from '~/components/landing/DevGuide.astro';
 import AuthorCard from '~/components/landing/AuthorCard.astro';
+import TemplateBridge from '~/components/landing/TemplateBridge.astro';
+import CommunitySites from '~/components/landing/CommunitySites.astro';
 import FinalCta from '~/components/landing/FinalCta.astro';
 import Community from '~/components/landing/Community.astro';
 import AdsterraSlotPair from '~/components/ads/AdsterraSlotPair.astro';
@@ -49,18 +52,13 @@ const alternates = [
     <AdsterraSlot name="native-banner" width={700} height={240} />
     <LandingHero t={t} />
     <DirectionCards t={t} locale="zh" tutorials={tutorials} />
-    <SocialProofBar t={t} />
-    <FeatureGrid t={t} />
-    {/* Adsterra pair wraps the marketing core: 728×90 after FeatureGrid,
-        responsive native after DevGuide; FinalCta keeps its position after
-        the native unit via the pair's `after` slot. */}
+    <AuthorCard t={t} />
+    {/* Adsterra pair: 728×90 after the bridge (mid-page), responsive native
+        after CommunitySites; FinalCta keeps its position after the native
+        unit via the pair's `after` slot. */}
     <AdsterraSlotPair>
+      <TemplateBridge t={t} />
       <CommunitySites t={t} />
-      <CompareTable t={t} />
-      <Showcase t={t} />
-      <DocsEntry t={t} />
-      <DevGuide t={t} />
-      <AuthorCard t={t} />
       <Fragment slot="after">
         <FinalCta t={t} />
       </Fragment>

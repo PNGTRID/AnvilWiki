@@ -553,10 +553,19 @@ pnpm install && pnpm dev`,
     nextInTopicLabel: '同题材继续读',
   },
   finalCta: {
-    title: '准备好上线你的游戏 wiki 了吗?',
-    subtitle: 'Fork、配置、部署——30 分钟搞定,完全免费。',
+    title: '准备好建你的赚钱站了吗?',
+    subtitle: 'Fork、选方向、部署——30 分钟搞定,完全免费。',
     primaryCta: { label: 'Fork 开始建站', href: FORK_URL },
     secondaryCta: { label: '打开文档中心', href: '/zh/landing/docs/' },
+  },
+  bridge: {
+    title: '教程里的每一步,都是模板的原生能力',
+    description:
+      'AnvilWiki 是 MIT 开源的 Astro 内容站模板——教程里讲的选词、建站、AI 产页、SEO、变现,全部内建,不拼第三方。读完教程,Fork 就是你的站。',
+    chips: ['Lighthouse 4×100', 'Cloudflare 兼容 · 免费部署', '30 分钟初始化', 'MIT 开源'],
+    ctaPrimaryLabel: 'Fork 本仓库',
+    ctaSecondaryLabel: '深度对比 Fandom 等 →',
+    ctaSecondaryHref: '/zh/landing/comparison/',
   },
   community: {
     title: '扫码进群,一起讨论',
