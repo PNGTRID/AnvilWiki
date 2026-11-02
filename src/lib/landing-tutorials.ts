@@ -30,7 +30,7 @@ export type TutorialLocale = (typeof TUTORIAL_LOCALES)[number];
 export type TutorialTopic = 'codes' | 'site' | 'growth';
 
 /** The three apply-template site presets a tutorial's tail CTA points at. */
-export type TutorialPreset = 'game-wiki' | 'coupon-hub' | 'tutorial-hub';
+export type TutorialPreset = 'game-wiki' | 'coupon-hub' | 'tutorial-hub' | 'recipe-hub';
 
 /** Minimal shape shared by collection entries (structural typing keeps this testable). */
 export interface TutorialLike {
@@ -66,20 +66,33 @@ export const TUTORIAL_TOPICS: Record<string, TutorialTopic> = {
   'start-a-tutorial-site': 'site',
   'get-indexed-by-google': 'growth',
   'game-wiki-monetization': 'growth',
+  'start-a-recipe-site': 'site',
+  'keyword-research-for-content-sites': 'growth',
+  'set-up-website-ads': 'growth',
+  'deploy-on-cloudflare-pages': 'site',
 };
 
 /**
  * 尾部 CTA 注册表:slug → 该教程对应的站点类型 preset + 深入手册课
  * (handbook slug——手册 URL 由 handbookPath() 按 locale 拼接)。
  * 「怎么用模板」仍由 docs center 承担(蓝图 §6.4 双层原则),教程正文链接过去。
+ * docsSlug 可选:recipe 线暂无对应手册课,缺省时尾部不渲染手册链接
+ * (宁缺毋错——链到不相干的课比没有更伤信任)。
  */
-export const TUTORIAL_META: Record<string, { preset: TutorialPreset; docsSlug: string }> = {
+export const TUTORIAL_META: Record<
+  string,
+  { preset: TutorialPreset; docsSlug?: string }
+> = {
   'build-a-game-codes-site': { preset: 'game-wiki', docsSlug: 'codes-page' },
   'build-a-coupon-site': { preset: 'coupon-hub', docsSlug: 'codes-page' },
   'ai-one-day-content-site': { preset: 'game-wiki', docsSlug: 'first-article' },
   'start-a-tutorial-site': { preset: 'tutorial-hub', docsSlug: 'first-article' },
   'get-indexed-by-google': { preset: 'game-wiki', docsSlug: 'get-on-google' },
   'game-wiki-monetization': { preset: 'game-wiki', docsSlug: 'enable-ads' },
+  'start-a-recipe-site': { preset: 'recipe-hub' },
+  'keyword-research-for-content-sites': { preset: 'game-wiki', docsSlug: 'find-candidates' },
+  'set-up-website-ads': { preset: 'game-wiki', docsSlug: 'enable-ads' },
+  'deploy-on-cloudflare-pages': { preset: 'game-wiki', docsSlug: 'run-your-site' },
 };
 
 /**

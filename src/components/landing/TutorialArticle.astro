@@ -121,7 +121,7 @@ const presetLine = meta ? t.tutorials.presetCta[meta.preset] : '';
               <Icon name="lucide:github" class="h-4 w-4" />
               {t.tutorials.ctaPrimaryLabel}
             </a>
-            {meta && (
+            {meta?.docsSlug && (
               <a
                 href={handbookPath(locale, meta.docsSlug)}
                 class="inline-flex items-center gap-1 text-sm font-medium text-nav transition hover:underline"

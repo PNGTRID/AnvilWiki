@@ -67,6 +67,13 @@ pnpm install && pnpm dev`,
           'A single-topic how-to site: Quick Answer + FAQ structured answers tuned to earn citations from AI search (ChatGPT / Perplexity) — the more your page reads like the answer, the more it gets cited.',
         earn: 'Monetize: tool affiliates inside tutorials + citation traffic',
       },
+      'recipe-hub': {
+        icon: 'lucide:cake',
+        title: 'Build a recipe site',
+        description:
+          'Recipe frontmatter + Recipe JSON-LD: ingredients, tools, and times as structured data that wins Google recipe rich results (ratings, cook time, and photos straight on the search page) — cheap, steady traffic.',
+        earn: 'Monetize: kitchen-tool affiliates + rich-result traffic',
+      },
     },
   },
   socialProof: {
@@ -570,6 +577,8 @@ pnpm install && pnpm dev`,
         'When the setup CLI asks for your site type, pick coupon hub — the same codes engine carries your deal pages.',
       'tutorial-hub':
         'When the setup CLI asks for your site type, pick tutorial hub — a single-guides knowledge base tuned for AI citations.',
+      'recipe-hub':
+        'When the setup CLI asks for your site type, pick recipe hub — recipe frontmatter and Recipe JSON-LD are built in, with kitchen-tool affiliate slots ready.',
     },
     docsHint: 'Go deeper in the handbook:',
     communityTitle: 'Building this right now?',

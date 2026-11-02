@@ -12,7 +12,7 @@
 export type LandingLocale = 'en' | 'zh';
 
 /** The apply-template site presets a landing direction card points at. */
-export type LandingPreset = 'game-wiki' | 'coupon-hub' | 'tutorial-hub';
+export type LandingPreset = 'game-wiki' | 'coupon-hub' | 'tutorial-hub' | 'recipe-hub';
 
 interface ManualCopy {
   label: string;
