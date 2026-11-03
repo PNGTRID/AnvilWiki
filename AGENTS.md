@@ -111,7 +111,7 @@ pnpm submit-indexnow  # scripts/submit-indexnow.ts — manual IndexNow top-up (l
 pnpm template-audit   # scripts/template-audit.ts — template health check (code purity / rebrand leftovers / health score)
 pnpm bulk-new-posts   # scripts/bulk-new-posts.ts — batch-create draft MDX from a new-posts.csv keyword list (--dry-run preview)
 pnpm sync-codes       # scripts/sync-codes.ts — batch-apply a codes-sync.csv into codes pages' frontmatter codes array (add/expire; --dry-run preview)
-pnpm refresh-audit    # scripts/refresh-audit.ts — deterministic freshness report (codes pages >7d, stale categories >90d, home-explore highlights ↔ codes frontmatter cross-check; pages whose frontmatter codes are ALL DEMO- placeholders are skipped — preset demo pages can never "verify")
+pnpm refresh-audit    # scripts/refresh-audit.ts — deterministic freshness report (codes pages >7d, stale categories >90d, tutorials >180d en-side — zh twin shares updated by schema iron rule, home-explore highlights ↔ codes frontmatter cross-check; pages whose frontmatter codes are ALL DEMO- placeholders are skipped — preset demo pages can never "verify")
 pnpm apply-template   # interactive template-apply CLI (site-type preset qSiteType: game-wiki default / coupon-hub / tutorial-hub, registry in scripts/lib/site-presets.ts; hex→HSL theme, rewrite config/locales per preset; bilingual en/zh prompts — TTY runs are asked, or --lang zh|en; non-interactive defaults to English so --answers order is untouched; 18-answer files pre-qSiteType still work and default to game-wiki, 19-answer files answer it at index 17 with a loud post-check that categories fit the preset)
 pnpm new-post         # interactive MDX article scaffold
 ```

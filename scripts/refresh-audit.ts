@@ -34,7 +34,7 @@
 
 import * as fs from 'node:fs';
 import { todayIso } from './lib/today';
-import { STALE_AFTER_DAYS, STALE_CATEGORIES } from '~/lib/content-utils';
+import { STALE_AFTER_DAYS, STALE_CATEGORIES, TUTORIALS_STALE_AFTER_DAYS } from '~/lib/content-utils';
 import { isPlaceholderCodesFrontmatter } from './lib/site-presets';
 import { walkFiles } from './lib/walk';
 import * as path from 'node:path';
@@ -97,6 +97,36 @@ for (const file of files) {
       days,
       reason: `stale ${days}d (> ${STALE_AFTER_DAYS}d) — banner shown on page`,
     });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Tutorials freshness sweep (2026-11-03 night-audit gap). refresh-audit's
+// BASE is src/content/wiki, so the tutorials collection (10+ bilingual
+// how-to pages and growing) had NO staleness view at all. Tutorials are
+// evergreen (180d, not codes' 7d), use the required `updated` field, and
+// en/zh twins share it (schema bilingual iron rule) — so scanning the en
+// side alone covers both locales without duplicate rows.
+// ---------------------------------------------------------------------------
+const tutorialsBase = path.resolve(ROOT, 'src/content/tutorials/en');
+if (fs.existsSync(tutorialsBase)) {
+  for (const file of walkFiles(tutorialsBase, { exts: ['.md'] })) {
+    const fm = fs.readFileSync(file, 'utf8').split('---')[1] ?? '';
+    if (/^draft:\s*true\s*$/m.test(fm)) continue;
+    const updatedStr = fm.match(/^updated:\s*(.+)$/m)?.[1]?.trim().replace(/['"]/g, '');
+    if (!updatedStr) continue; // schema makes it required; degraded mode = gate's job
+    const updated = new Date(updatedStr);
+    if (Number.isNaN(updated.getTime())) continue;
+    const days = Math.floor((now - updated.getTime()) / DAY);
+    if (days >= TUTORIALS_STALE_AFTER_DAYS) {
+      items.push({
+        priority: 'P1',
+        file: path.relative(ROOT, file),
+        category: 'tutorials',
+        days,
+        reason: `stale ${days}d (> ${TUTORIALS_STALE_AFTER_DAYS}d) — platform UI/algorithms drift`,
+      });
+    }
   }
 }
 
