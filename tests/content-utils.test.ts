@@ -179,3 +179,16 @@ describe('toDealMerchants (coupon deals views)', () => {
     ]);
   });
 });
+
+describe('TUTORIALS_STALE_AFTER_DAYS', () => {
+  // Refresh-audit's tutorials sweep consumes this threshold (2026-11-03
+  // night-audit gap: tutorials had no staleness view at all). Evergreen
+  // how-to content gets a looser floor than game-sensitive categories —
+  // pinning the relation keeps a future tweak from silently tightening it.
+  it('is a positive integer at least as loose as the category floor', async () => {
+    const { TUTORIALS_STALE_AFTER_DAYS, STALE_AFTER_DAYS } = await import('~/lib/content-utils');
+    expect(Number.isInteger(TUTORIALS_STALE_AFTER_DAYS)).toBe(true);
+    expect(TUTORIALS_STALE_AFTER_DAYS).toBeGreaterThan(0);
+    expect(TUTORIALS_STALE_AFTER_DAYS).toBeGreaterThanOrEqual(STALE_AFTER_DAYS);
+  });
+});

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **refresh-audit 扩扫教程集合——补 43 篇时代后的保鲜盲区（PR #121 后续）**：`scripts/refresh-audit.ts` 的 BASE 写死 `src/content/wiki`，教程集合（10 篇双语 how-to 且持续扩产）从未进过任何时效视野（11-03 夜巡确认）。新增教程扫描段：阈值 `TUTORIALS_STALE_AFTER_DAYS = 180` 落 `src/lib/content-utils.ts` 单源（常青 how-to 用比 codes 7 天/分类 90 天宽松的半年节奏，调松调紧改一个数），扫 en 侧 `.md`（zh twin 共享 updated，由 tutorials.test 双语铁律 schema 门禁保证，避免重复报对）；P1 行报「platform UI/algorithms drift」。红路径实证：阈值临时置 -1 时 10 篇全部正确开火，恢复 180 后零误报；阈值关系契约测试入 tests/content-utils.test.ts（常青地板 ≥ 分类地板 90）。AGENTS 命令表行同步。
+
 ## [2.39.0] - 2026-11-01
 
 ### Added

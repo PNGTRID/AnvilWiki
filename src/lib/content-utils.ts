@@ -55,6 +55,20 @@ export const STALE_CATEGORIES = ['bosses', 'tier-list'];
 export const STALE_AFTER_DAYS = 90;
 
 /**
+ * [WHY]:    教程是常青 how-to(时效敏感度远低于 codes/boss),但部分课有真实
+ *           保质期(平台 UI/算法变化),完全无时效检查会让 10→N 篇的教程线成为
+ *           保鲜盲区——refresh-audit 的 BASE 写死 src/content/wiki,tutorials
+ *           集合从未进过任何时效视野(2026-11-03 夜巡确认)。
+ * [INPUT]:  教程 frontmatter `updated`(必填,z.coerce.date;en/zh 成对相等由
+ *           tutorials.test 双语铁律钉死,审计只需扫 en 侧)。
+ * [OUTPUT]: TUTORIALS_STALE_AFTER_DAYS 供 refresh-audit 的教程扫描段消费。
+ * [BOUND]:  只定阈值,不定义教程内容本身的正确性;180 天=半年节奏,常驻告警
+ *           噪音与盲区风险之间的取舍,调松调紧改这一个数。
+ * [PROTOCOL]: 教程集合再加新 locale 时,审计扫描目录同步扩。
+ */
+export const TUTORIALS_STALE_AFTER_DAYS = 180;
+
+/**
  * True when the article is in a time-sensitive category and its
  * lastModified (or date) is older than STALE_AFTER_DAYS.
  * Pure function (testable without a build).
