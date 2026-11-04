@@ -1,6 +1,6 @@
 ---
 name: anvil-refresh
-description: 内容新鲜度巡检——扫描全站 lastModified 超 90 天的时效性文章(bosses/tier-list)、codes 页日期、sitemap 覆盖缺口,输出一份"该更新什么"的优先级清单。触发词:内容巡检 / 哪些文章过期了 / freshness check / 该更新什么。
+description: 内容新鲜度巡检——扫描全站 lastModified 超 90 天的时效性文章(bosses/tier-list)、codes 页日期、教程集合(updated 超 180 天)、sitemap 覆盖缺口,输出一份"该更新什么"的优先级清单。触发词:内容巡检 / 哪些文章过期了 / freshness check / 该更新什么。
 ---
 
 # AnvilWiki 内容新鲜度巡检
@@ -13,7 +13,7 @@ description: 内容新鲜度巡检——扫描全站 lastModified 超 90 天的�
 
 仓库自带 `pnpm refresh-audit`(scripts/refresh-audit.ts,与每周一定时
 content-pipeline workflow 同一引擎):codes 超 7/30 天 = P0,bosses/tier-list
-超 90 天 = P1,自动跳过 draft,输出优先级表格。直接跑它,把输出作为报告基础:
+超 90 天 = P1,tutorials 超 180 天 = P1(扫 en 侧,zh twin 共享 updated 由双语铁律门禁保证),自动跳过 draft,输出优先级表格。直接跑它,把输出作为报告基础:
 
 ```bash
 pnpm refresh-audit
