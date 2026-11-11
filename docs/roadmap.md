@@ -19,7 +19,7 @@ AnvilWiki 的版本历史不是功能大杂烩,而是一条主线:**不断把「
 | 媒体与规模化 | v1.17 – v1.18 | 补齐媒体示范、把一个站变多个站 | demo 全类型媒体示范、`template-audit` 模板健康检查、`bulk-new-posts` 批量产页、学习手册第 9/10 章 |
 | SEO 进阶 | v1.19 | 对齐 2026 搜索新格局 | 学习手册「SEO 进阶」课(排名 + AI 引用;现拆为课 28 + 课 29)、`docs/seo.md` 收录 2026 Google 官方更新记录、封面图升级为图片搜索入口、本路线图 |
 | **内容经营操作系统** | **v2.0** | **机器接管「产出与运营」环节** | PR 门控内容管道(auto-content.yml:确定性生成 → 八道门禁前置 → draft PR)、anvilwiki-ops 1.0 多站管理 + AI 引用追踪、`pnpm gen-covers` 封面产能(1200×675 + max-image-preview)、AffiliateSuggestion 建议位 |
-| **模板泛化与旗舰教程站(当前)** | **v2.39** | **从「游戏 wiki 专用」长出「教大家做各种站」** | `apply-template` 站点类型 Preset(qSiteType:game-wiki 默认/coupon-hub/tutorial-hub,三套 demo 骨架与文案语义,零 breaking)、官网旗舰教程线 `/landing/tutorials` en+zh(首批 6 篇,选题经挖词验证)、官网首页「教程优先」门面(hero 换「教建站赚钱」叙事+「选方向」三卡+tutorials hub 按方向分组) |
+| **模板泛化与旗舰教程站(当前)** | **v2.39** | **从「游戏 wiki 专用」长出「教大家做各种站」** | `apply-template` 站点类型 Preset(qSiteType 四选:game-wiki 默认/coupon-hub/tutorial-hub/recipe-hub,四套 demo 骨架与文案语义,零 breaking)、官网旗舰教程线 `/landing/tutorials` en+zh(10 篇=首批 6+第二批 4,选题经挖词验证)、官网首页「教程优先」门面(hero 换「教建站赚钱」叙事+「选方向」四卡+tutorials hub 按方向分组);同批发布落地页减乱(12→7 板块)与依赖清零(44→1) |
 
 一个可以观察到的规律:**每个阶段都在为下一个阶段铺路**——比如三层分离(v1.0)让模板化(v1.18)成为可能,check 工具链(v1.7)让 AI 技能(v1.13)有了验收标准,作者体系(v1.7)在 AI Overviews 时代(2026)变成了引用偏好里的信任信号。
 
@@ -29,7 +29,7 @@ AnvilWiki 的版本历史不是功能大杂烩,而是一条主线:**不断把「
 
 按「用户目标函数」排序——玩家做站要的是 选品 → 产能 → 流量 → 变现,v2.0 补强了「产能」(管道/封面)与「运营」(多站/AI 引用)两侧,接下来补两头:
 
-- **站点类型 Preset 机制 + 官网旗舰教程线** ✅ **已交付(v2.39.0,2026-11-01)**:蓝图 `docs/superpowers/specs/2026-11-01-site-type-presets-flagship-tutorial-design.md`——M1 = apply-template qSiteType 四 preset(game-wiki 默认逐字节零 breaking/coupon-hub/tutorial-hub/recipe-hub)+demo 18 篇+文案换皮+E2E 四流程;M2 = `/landing/tutorials` en+zh 教程线(集合/路由/三通道/首批 6 篇);门面批 = 首页改「教程优先」(hero 换叙事+DirectionCards 三方向卡+tutorials hub 按方向分组,tutorialsForPreset 分组+TUTORIAL_META 全注册双契约钉死)。定位依据与后置项见 spec §1/§9。
+- **站点类型 Preset 机制 + 官网旗舰教程线** ✅ **已交付(v2.39.0,2026-11-01)**:蓝图 `docs/superpowers/specs/2026-11-01-site-type-presets-flagship-tutorial-design.md`——M1 = apply-template qSiteType 四 preset(game-wiki 默认逐字节零 breaking/coupon-hub/tutorial-hub/recipe-hub)+demo 18 篇+文案换皮+E2E 四流程;M2 = `/landing/tutorials` en+zh 教程线(集合/路由/三通道/首批 6 篇,第二批 4 篇见 [Unreleased]);门面批 = 首页改「教程优先」(hero 换叙事+DirectionCards 四方向卡+tutorials hub 按方向分组,tutorialsForPreset 分组+TUTORIAL_META 全注册双契约钉死)。定位依据与后置项见 spec §1/§9。
 - **M3 变现层(后置,spec §9)**:教程线内嵌真实在用工具的联盟链接(`affiliates.ts` 首批 2-3 个)+按挖词数据扩产教程+首个「活案例」数据回填。**触发条件**:真实联盟账号开通(当前未开通,教程线如实不挂联盟链接)或教程线跑出首批流量数据。
 - **排行榜 money page 规范**(后置,spec §9/§1.4):站内 money page 层而非独立站型。**触发条件**:coupon-hub/tutorial-hub preset 出现真实 fork 站并验证 codes 页转化后,再定规范。
 - **目录站付费收录机制**(后置,spec §1.4):**触发条件**:模板泛化(§1.5)落地且出现目录型 fork 需求信号;在此之前不做。

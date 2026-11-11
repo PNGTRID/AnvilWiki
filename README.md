@@ -48,7 +48,7 @@
 | 看看做出来长什么样 | 🎮 [在线 Demo](https://anvil.wiki/demo/)——虚构游戏「Anvil Quest」的完整 wiki |
 | 对比 Fandom / Wiki.js / 其他方案 | ⚖️ [完整对比页](https://anvil.wiki/zh/landing/comparison)——三种物种、Fandom 用户搬家指南、自托管引擎数据表、什么时候不该选 AnvilWiki |
 | 看「游戏 wiki 页面模板」长什么样 | 🧩 [模板展示页](https://anvil.wiki/zh/landing/templates)——Boss 攻略/兑换码/强度榜/物品页/文档中心,每型挂 demo 真实页面 |
-| 学「怎么做出各种内容站」 | 🎓 [建站教程线](https://anvil.wiki/zh/landing/tutorials)——兑换码站/优惠码站/教程知识库/AI 一天建站/收录/变现,每篇带对应模板指引 |
+| 学「怎么做出各种内容站」 | 🎓 [建站教程线](https://anvil.wiki/zh/landing/tutorials)——兑换码站/优惠码站/教程知识库/AI 一天建站/收录/变现/选品挖词/广告设置/食谱站/Cloudflare 部署,每篇带对应模板指引 |
 
 ## 📖 中文文档
 
@@ -195,7 +195,7 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | See what it looks like | 🎮 [Live demo](https://anvil.wiki/demo/) — a complete wiki for the fictional game "Anvil Quest" |
 | Compare Fandom / Wiki.js / alternatives | ⚖️ [Full comparison](https://anvil.wiki/landing/comparison) |
 | See what the wiki page templates look like | 🧩 [Templates showcase](https://anvil.wiki/landing/templates) — boss guide, codes, tier list, item pages, docs center, each linked to a real demo page |
-| Learn how to build these kinds of sites | 🎓 [Tutorials](https://anvil.wiki/landing/tutorials) — game codes sites, SaaS coupon hubs, tutorial knowledge bases, AI-in-a-day builds, indexing, monetization — each mapped to a template preset |
+| Learn how to build these kinds of sites | 🎓 [Tutorials](https://anvil.wiki/landing/tutorials) — game codes sites, SaaS coupon hubs, tutorial knowledge bases, AI-in-a-day builds, indexing, monetization, keyword research, ad setup, recipe sites, Cloudflare deploy — each mapped to a template preset |
 
 ### Quick Start (5 min)
 
