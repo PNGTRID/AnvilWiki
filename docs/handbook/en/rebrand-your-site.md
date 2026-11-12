@@ -41,7 +41,7 @@ Type `pnpm apply-template`; it asks question by question (19 in total), Enter af
 | Clear demo content? | Enter (default no) | Keep sample articles as reference; clear before launch |
 | Homepage preset | Enter (pick 1) | 1 = codes-style homepage (most people), 2 = guides-style, 3 = keep the sample |
 | Remove landing page? | Enter (default yes) | /landing is the template project's own pitch page — your game site doesn't need it |
-| Site type | Enter (default 1 = game wiki); `2` = SaaS coupon hub, `3` = tutorial knowledge base | The CLI keeps that type's demo articles (your chosen locales only), writes type-fitting nav/overview/homepage wording and checks your categories against the type's allowed set (registry: `scripts/lib/site-presets.ts`); picking game wiki keeps today's behavior byte-for-byte |
+| Site type | Enter (default 1 = game wiki); `2` = SaaS coupon hub, `3` = tutorial knowledge base, `4` = recipe hub | The CLI keeps that type's demo articles (your chosen locales only), writes type-fitting nav/overview/homepage wording and checks your categories against the type's allowed set (registry: `scripts/lib/site-presets.ts`); picking game wiki keeps today's behavior byte-for-byte |
 
 > The 16-row table above covers 18 of the 19 questions: platform/developer/genre share one row, and a final "Proceed with these changes?" confirm (not listed) ends the run — type `y` to start writing files, Enter aborts safely.
 

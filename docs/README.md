@@ -38,7 +38,7 @@
 0. 站内学习手册           ← 引导式主线:选品→建站→AI 产页→部署→变现运营
                             (https://anvil.wiki/zh/landing/docs,含提示词)
    (案例向:官网建站教程线 https://anvil.wiki/zh/landing/tutorials ——兑换码站/
-    优惠码站/教程知识库/AI 一天建站/收录/变现六篇,每篇对应一种站点类型)
+    优惠码站/教程知识库/AI 一天建站/收录/变现/选品挖词/广告设置/食谱站/Cloudflare 部署十篇,覆盖全部四种站点类型)
 1. game-selection.md      ← 先回答"做哪个游戏",这比建站重要
    └ sourcing.md          ← 候选池不够大时:9 个挖词渠道 + 选词决策管理表
    (懒人通道:对 AI 说「帮我挖词」——/anvil-find-keywords 自动跑挖候选→快验→打分)

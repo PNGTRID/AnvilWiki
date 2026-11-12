@@ -1097,7 +1097,9 @@ const show = !!(client && slot);
 
 **套用模板** = 把通用 AnvilWiki 模板变成特定游戏的站点。只改配置层和内容层，代码层不动。
 
-完整的配置参考见 [`docs/apply-template.md`](./apply-template.md)——按文件组织，你要改什么就查对应章节。也可用 `pnpm apply-template` CLI 自动完成基础配置：CLI 先问一句**站点类型**（qSiteType，`scripts/lib/site-presets.ts` 的 `SITE_PRESETS` 注册表单源）——game-wiki（游戏 wiki，默认）/ coupon-hub（优惠码站）/ tutorial-hub（教程站）——再按类型保留对应 demo 起始内容、写对应语义的 nav/overview/首页文案（locale JSON 键集不变）、校验所选栏目属于该类型的保留集；不选或选 game-wiki 时产物与历史版本逐字节一致。第一个站跑通后、复制下一个站前，用 `pnpm template-audit` 检查模板健康度（见学习手册课 26「复制第二个站」）。
+完整的配置参考见 [`docs/apply-template.md`](./apply-template.md)——按文件组织，你要改什么就查对应章节。也可用 `pnpm apply-template` CLI 自动完成基础配置：CLI 先问一句**站点类型**（qSiteType，`scripts/lib/site-presets.ts` 的 `SITE_PRESETS` 注册表单源）——game-wiki（游戏 wiki，默认）/ coupon-hub（优惠码站）/ tutorial-hub（教程站）/ recipe-hub（食谱站）——再按类型保留对应 demo 起始内容、写对应语义的 nav/overview/首页文案（locale JSON 键集不变）、校验所选栏目属于该类型的保留集；不选或选 game-wiki 时产物与历史版本逐字节一致。第一个站跑通后、复制下一个站前，用 `pnpm template-audit` 检查模板健康度（见学习手册课 26「复制第二个站」）。
+
+**recipe-hub（食谱站）的 preset-only 分类机制**：`recipes` 是 `PRESET_ONLY_CATEGORIES` 键——schema 枚举扩为 `LEGAL_CONTENT_TYPES` 并集（游戏菜单键 ∪ preset-only 键），路由/菜单/sitemap 遍历仍走 `CONTENT_TYPES`，游戏 demo 与游戏 fork 永不生成 /recipes/ 列表页；schema 加可选 `recipe` frontmatter（cuisine/servings/prepTime/cookTime/ingredients/tools，ISO 时长正则门控进 Recipe JSON-LD）；`RecipeCard.astro` 组件（servings/prep/cook/cuisine chips + 食材/工具双栏）+ `recipeJsonLd` helper（seo.ts，Google 食谱富结果）；非 recipe fork 的 navigation.ts 清空 `PRESET_ONLY_CATEGORIES`（check-config 否则误报 nav.recipes 缺失）。
 
 ### 11.2 改动对象与 AnvilWiki 路径对照
 
@@ -1668,7 +1670,8 @@ PUBLIC_GISCUS_MAPPING=pathname
 
 | 日期 | 版本 | 说明 |
 |---|---|---|
-| 2026-11-01 | v2.39.0 | 官网旗舰教程线批：`/landing/tutorials` + `/zh/landing/tutorials` 双语上线——新 tutorials collection（src/content/tutorials，updated 必填）+ lib/landing-tutorials 单源（URL/排序/prevNext/同题材下一篇）+ 路由四件（hreflang 成对、ItemList/Breadcrumb/TechArticle JSON-LD、data-pagefind-body）+ TutorialArticle 尾部三件套（preset Fork CTA→微信群二维码不可移除→同题材下一篇）+ LandingLayout 导航三处 + landing-types 接口 + 首批 6 篇 en+zh 成对（兑换码站/优惠码站/AI 一天建站/教程知识库站/Google 收录/wiki 变现，选题经 anvil-find-keywords SERP 快验）；fork 三通道同步 + 新第 26 套件 tutorials.test.ts 16 条；llms.txt/README/docs README/AGENTS 同步；官网首页同步改「教程优先」门面（hero 换「教建站赚钱」叙事 + DirectionCards 三方向卡 + tutorials hub 按方向分组）；详见 CHANGELOG [2.39.0] |
+| 2026-11-01 | v2.39.0 | 官网旗舰教程线批：`/landing/tutorials` + `/zh/landing/tutorials` 双语上线——新 tutorials collection（src/content/tutorials，updated 必填）+ lib/landing-tutorials 单源（URL/排序/prevNext/同题材下一篇）+ 路由四件（hreflang 成对、ItemList/Breadcrumb/TechArticle JSON-LD、data-pagefind-body）+ TutorialArticle 尾部三件套（preset Fork CTA→微信群二维码不可移除→同题材下一篇）+ LandingLayout 导航三处 + landing-types 接口 + 首批 6 篇 en+zh 成对（兑换码站/优惠码站/AI 一天建站/教程知识库站/Google 收录/wiki 变现，选题经 anvil-find-keywords SERP 快验）；fork 三通道同步 + 新第 26 套件 tutorials.test.ts 16 条；llms.txt/README/docs README/AGENTS 同步；官网首页同步改「教程优先」门面（hero 换「教建站赚钱」叙事 + DirectionCards 三方向卡 + tutorials hub 按方向分组）；详见 CHANGELOG [2.39.0] |；同 tag 内折入并补记：recipe-hub 第四类型（qSiteType 四选/preset-only 分类/RecipeCard+Recipe JSON-LD）、落地页减乱批（12→7 板块，TemplateBridge+头像收敛）、依赖清零收官（44→1，astro 7.4.4+八条同 major overrides，minimatch 1 条有意接受）；教程第二批 4 篇+第四方向卡见 [Unreleased]
+
 | 2026-08-11 | v0.1 | PRD 初稿；技术事实已通过 Astro 官方文档核实 |
 | 2026-08-12 | v0.2 | MVP 全部实现（MVP-0 至 MVP-5 + P0-P3）；更新待验证清单状态 |
 | 2026-08-12 | v0.3 | SEO 章节更新：Schema 状态（§8.6）、FAQ rich results 废弃说明、INP 阈值修正为 ≤ 200ms |
